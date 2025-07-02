@@ -8,7 +8,7 @@
         "start": "next start",
         "lint": "next lint --max-warnings 0",
         "format": "prettier --write 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'",
-        "check-format": "prettier --check 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx} 'lib/**/*.{ts,tsx}''"
+        "check-format": "prettier --check 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx} 'lib/**/*.{ts,tsx}'"
     },
     "dependencies": {
         "clsx": "^2.1.1",
