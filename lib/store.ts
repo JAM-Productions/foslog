@@ -68,7 +68,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>()(
     persist(
-        (set, get) => ({
+        (set /* , get */) => ({
             // Theme
             theme: 'system',
             setTheme: (theme) => set({ theme }),

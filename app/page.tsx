@@ -92,7 +92,7 @@ export default function HomePage() {
     }: {
         title: string;
         subtitle: string;
-        icon: any;
+        icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     }) => (
         <div className="mb-6 flex items-center gap-3">
             <div className="bg-primary/10 rounded-lg p-2">
