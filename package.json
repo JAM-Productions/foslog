@@ -1,32 +1,36 @@
 {
-  "name": "foslog",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.523.0",
-    "next": "15.3.4",
-    "next-auth": "^5.0.0-beta.29",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.1",
-    "zustand": "^5.0.5"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "name": "foslog",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint --max-warnings 0",
+        "format": "prettier --write 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'",
+        "check-format": "prettier --check 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx} 'lib/**/*.{ts,tsx}''"
+    },
+    "dependencies": {
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.523.0",
+        "next": "15.3.4",
+        "next-auth": "^5.0.0-beta.29",
+        "prettier-plugin-tailwindcss": "^0.6.13",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "tailwind-merge": "^3.3.1",
+        "zustand": "^5.0.5"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.3.4",
+        "prettier": "3.6.2",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
 }
