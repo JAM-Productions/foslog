@@ -2,13 +2,15 @@
     "name": "foslog",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint --max-warnings 0",
         "format": "prettier --write 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'",
-        "check-format": "prettier --check 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'"
+        "check-format": "prettier --check 'app/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}'",
+        "test": "vitest run"
     },
     "dependencies": {
         "clsx": "^2.1.1",
@@ -24,13 +26,19 @@
     "devDependencies": {
         "@eslint/eslintrc": "^3",
         "@tailwindcss/postcss": "^4",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/user-event": "^14.6.1",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "@vitejs/plugin-react": "^4.6.0",
         "eslint": "^9",
         "eslint-config-next": "15.3.4",
+        "jsdom": "^26.1.0",
         "prettier": "3.6.2",
         "tailwindcss": "^4",
-        "typescript": "^5"
+        "typescript": "^5",
+        "vitest": "^3.2.4"
     }
 }
