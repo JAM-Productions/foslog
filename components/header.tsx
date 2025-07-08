@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Search,
     Sun,
@@ -29,13 +29,13 @@ const MediaTypeFilter = () => {
     ] as const;
 
     return (
-        <div className="bg-muted flex items-center gap-1 rounded-lg p-1">
+        <div className="bg-muted flex items-center gap-1 overflow-x-auto rounded-lg p-1">
             {mediaTypes.map((type) => (
                 <button
                     key={type.value}
                     onClick={() => setSelectedMediaType(type.value)}
                     className={cn(
-                        'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                        'flex flex-col rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
                         selectedMediaType === type.value
                             ? 'bg-background text-foreground shadow-sm'
                             : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
@@ -50,6 +50,8 @@ const MediaTypeFilter = () => {
 };
 
 const ThemeToggle = () => {
+    const menuRef = useRef<HTMLDivElement>(null);
+
     const { theme, setTheme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -61,8 +63,31 @@ const ThemeToggle = () => {
 
     const currentTheme = themes.find((t) => t.value === theme);
 
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        if (
+            menuRef.current &&
+            !menuRef.current.contains(event.target as Node)
+        ) {
+            setIsOpen(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, handleClickOutside]);
+
     return (
-        <div className="relative">
+        <div
+            className="relative"
+            ref={menuRef}
+        >
             <Button
                 variant="ghost"
                 size="icon"
@@ -98,12 +123,37 @@ const ThemeToggle = () => {
 };
 
 const UserMenu = () => {
+    const menuRef = useRef<HTMLDivElement>(null);
+
     const { user, setUser } = useAppStore();
     const [isOpen, setIsOpen] = useState(false);
 
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        if (
+            menuRef.current &&
+            !menuRef.current.contains(event.target as Node)
+        ) {
+            setIsOpen(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, handleClickOutside]);
+
     if (!user) {
         return (
-            <div className="flex items-center gap-2">
+            <div
+                className="flex items-center gap-2"
+                ref={menuRef}
+            >
                 <Button
                     variant="ghost"
                     size="sm"
@@ -116,7 +166,10 @@ const UserMenu = () => {
     }
 
     return (
-        <div className="relative">
+        <div
+            className="relative"
+            ref={menuRef}
+        >
             <Button
                 variant="ghost"
                 onClick={() => setIsOpen(!isOpen)}

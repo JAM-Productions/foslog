@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, Eye, Calendar } from 'lucide-react';
+import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MediaItem } from '@/lib/store';
 import { cn } from '@/lib/utils';
@@ -56,13 +56,19 @@ const StarRating = ({
                         size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
                     )}
                 />
-                {/* TODO: Solve half star preview */}
-                {(filled || halfFilled) && (
+                {filled && (
                     <Star
                         className={cn(
                             'absolute top-0 left-0 fill-amber-400 text-amber-400',
-                            size === 'sm' ? 'h-3 w-3' : 'h-4 w-4',
-                            halfFilled && 'w-1/2 overflow-hidden'
+                            size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
+                        )}
+                    />
+                )}
+                {halfFilled && (
+                    <StarHalf
+                        className={cn(
+                            'absolute top-0 left-0 fill-amber-400 text-amber-400',
+                            size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
                         )}
                     />
                 )}
