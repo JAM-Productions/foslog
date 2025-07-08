@@ -96,7 +96,7 @@ export const mockMediaItems: MediaItem[] = [
         type: 'game',
         year: 2023,
         genre: ['Action', 'Adventure', 'RPG'],
-        cover: 'https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_656/b_white/f_auto/q_auto/ncom/software/switch/70010000063714/c346d82f0d20c0fe1dc9d9c9bf3bef0f4c7b548b7f4d5b5b9b4a5c3b9c5b9b5b',
+        cover: 'https://pics.filmaffinity.com/The_Legend_of_Zelda_Tears_of_the_Kingdom-994717065-large.jpg',
         description:
             'An epic adventure across the land and skies of Hyrule awaits in The Legend of Zelda: Tears of the Kingdom.',
         averageRating: 4.6,

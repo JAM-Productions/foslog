@@ -1,0 +1,61 @@
+{
+  "HomePage": {
+    "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
+    "discover": "Descubre y reseña tu próximo {mediaType} favorito",
+    "media": "contenido",
+    "welcomeTitle": "Bienvenido a Foslog",
+    "welcomeDescription": "Tu diario personal de reseñas de medios. Rastrea y reseña películas, series, libros, juegos y música, todo en un solo lugar.",
+    "getStarted": "Comenzar",
+    "learnMore": "Saber Más"
+  },
+  "MediaTypes": {
+    "all": "Todos los Medios",
+    "films": "Películas",
+    "series": "Series",
+    "games": "Juegos",
+    "books": "Libros",
+    "music": "Música",
+    "film": "película",
+    "serie": "serie",
+    "game": "juego",
+    "book": "libro",
+    "musicSingle": "música"
+  },
+  "Stats": {
+    "topRated": "Mejor Valorado",
+    "totalItems": "Total de Elementos",
+    "recentlyAdded": "Añadido Recientemente",
+    "highestRatedInCollection": "Mejor valorado en la colección",
+    "allMediaTypes": "Todos los tipos de medios"
+  },
+  "Sections": {
+    "trending": "Tendencias Ahora",
+    "trendingSubtitle": "Selecciones populares de la comunidad",
+    "recommended": "Recomendado para Ti",
+    "recommendedSubtitle": "Basado en tus preferencias"
+  },
+  "Metadata": {
+    "title": "Foslog - Tu Diario de Reseñas de Medios",
+    "description": "Reseña y rastrea películas, series, libros, juegos y música. Descubre nuevos favoritos y comparte tus pensamientos."
+  },
+  "Header": {
+    "search": "Buscar medios...",
+    "profile": "Perfil",
+    "settings": "Configuración"
+  },
+  "Search": {
+    "searchResults": "Resultados de Búsqueda",
+    "resultsFor": "{count} resultados para \"{query}\"",
+    "trending": "{mediaType} en Tendencia",
+    "popularWith": "{mediaType} populares con excelentes reseñas",
+    "noResultsFound": "No se encontraron resultados",
+    "noMediaFound": "No se encontraron {mediaType} que coincidan con \"{query}\"",
+    "noMediaAvailable": "No hay {mediaType} disponibles",
+    "clearSearch": "Limpiar Búsqueda"
+  },
+  "CTA": {
+    "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
+    "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
+    "addNewReview": "Agregar Nueva Reseña"
+  }
+}

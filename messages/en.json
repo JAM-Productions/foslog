@@ -1,0 +1,61 @@
+{
+  "HomePage": {
+    "welcomeBack": "Welcome back, {name}! 👋",
+    "discover": "Discover and review your next favorite {mediaType}",
+    "media": "media",
+    "welcomeTitle": "Welcome to Foslog",
+    "welcomeDescription": "Your personal media review journal. Track and review films, series, books, games, and music all in one place.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "MediaTypes": {
+    "all": "All Media",
+    "films": "Films",
+    "series": "Series",
+    "games": "Games",
+    "books": "Books",
+    "music": "Music",
+    "film": "film",
+    "serie": "series",
+    "game": "game",
+    "book": "book",
+    "musicSingle": "music"
+  },
+  "Stats": {
+    "topRated": "Top Rated",
+    "totalItems": "Total Items",
+    "recentlyAdded": "Recently Added",
+    "highestRatedInCollection": "Highest rated in collection",
+    "allMediaTypes": "All media types"
+  },
+  "Sections": {
+    "trending": "Trending Now",
+    "trendingSubtitle": "Popular picks from the community",
+    "recommended": "Recommended for You",
+    "recommendedSubtitle": "Based on your preferences"
+  },
+  "Metadata": {
+    "title": "Foslog - Your Media Review Journal",
+    "description": "Review and track films, series, books, games, and music. Discover new favorites and share your thoughts."
+  },
+  "Header": {
+    "search": "Search media...",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "Search": {
+    "searchResults": "Search Results",
+    "resultsFor": "{count} results for \"{query}\"",
+    "trending": "Trending {mediaType}",
+    "popularWith": "Popular {mediaType} with great reviews",
+    "noResultsFound": "No results found",
+    "noMediaFound": "No {mediaType} found matching \"{query}\"",
+    "noMediaAvailable": "No {mediaType} available",
+    "clearSearch": "Clear Search"
+  },
+  "CTA": {
+    "addReviewsTitle": "Want to add your own reviews?",
+    "addReviewsDescription": "Start building your personal media collection and share your thoughts",
+    "addNewReview": "Add New Review"
+  }
+}
