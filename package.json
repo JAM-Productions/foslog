@@ -13,7 +13,6 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "clsx": "^2.1.1",
         "lucide-react": "^0.523.0",
         "next": "15.3.4",
         "next-auth": "^5.0.0-beta.29",
@@ -21,7 +20,6 @@
         "prettier-plugin-tailwindcss": "^0.6.13",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "tailwind-merge": "^3.3.1",
         "zustand": "^5.0.5"
     },
     "devDependencies": {

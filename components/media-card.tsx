@@ -1,7 +1,7 @@
 'use client';
 
 import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { MediaItem } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
@@ -90,7 +90,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                 className
             )}
         >
-            <CardContent className="p-0">
+            <div className="p-0">
                 {/* Image */}
                 <div className="bg-muted relative aspect-[2/3] overflow-hidden rounded-t-lg">
                     {imageUrl ? (
@@ -179,7 +179,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                         </div>
                     </div>
                 </div>
-            </CardContent>
+            </div>
         </Card>
     );
 }
