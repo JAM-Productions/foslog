@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface RatingInputProps {
     value?: number;
@@ -51,7 +50,9 @@ export function RatingInput({
     };
 
     return (
-        <div className={cn('flex items-center gap-1', className)}>
+        <div
+            className={`flex items-center gap-1${className ? ` ${className}` : ''}`}
+        >
             <div
                 className="flex items-center"
                 onMouseLeave={handleMouseLeave}
@@ -67,22 +68,26 @@ export function RatingInput({
                             onClick={() => handleStarClick(starValue)}
                             onMouseEnter={() => handleStarHover(starValue)}
                             disabled={readonly}
-                            className={cn(
+                            className={[
                                 'focus:ring-ring rounded transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none',
                                 !readonly &&
                                     'transform transition-transform hover:scale-110',
-                                readonly && 'cursor-default'
-                            )}
+                                readonly && 'cursor-default',
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
                         >
                             <Star
-                                className={cn(
+                                className={[
                                     sizeClasses[size],
                                     'transition-colors',
                                     isFilled
                                         ? 'fill-amber-400 text-amber-400'
                                         : 'text-muted-foreground hover:text-amber-400',
-                                    !readonly && 'hover:text-amber-400'
-                                )}
+                                    !readonly && 'hover:text-amber-400',
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')}
                             />
                         </button>
                     );

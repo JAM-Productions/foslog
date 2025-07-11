@@ -3,7 +3,6 @@
 import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { MediaItem } from '@/lib/store';
-import { cn } from '@/lib/utils';
 
 interface MediaCardProps {
     media: MediaItem;
@@ -51,25 +50,16 @@ const StarRating = ({
                 className="relative"
             >
                 <Star
-                    className={cn(
-                        'text-muted-foreground',
-                        size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
-                    )}
+                    className={`text-muted-foreground ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
                 />
                 {filled && (
                     <Star
-                        className={cn(
-                            'absolute top-0 left-0 fill-amber-400 text-amber-400',
-                            size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
-                        )}
+                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
                     />
                 )}
                 {halfFilled && (
                     <StarHalf
-                        className={cn(
-                            'absolute top-0 left-0 fill-amber-400 text-amber-400',
-                            size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'
-                        )}
+                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
                     />
                 )}
             </div>
@@ -85,10 +75,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
     return (
         <Card
-            className={cn(
-                'group cursor-pointer transition-all hover:shadow-lg',
-                className
-            )}
+            className={`group cursor-pointer transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
         >
             <div className="p-0">
                 {/* Image */}

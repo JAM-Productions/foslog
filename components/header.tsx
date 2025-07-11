@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { useTheme } from '@/components/theme-provider';
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 const MediaTypeFilter = () => {
@@ -34,12 +33,14 @@ const MediaTypeFilter = () => {
                 <button
                     key={type.value}
                     onClick={() => setSelectedMediaType(type.value)}
-                    className={cn(
+                    className={[
                         'flex flex-col rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
                         selectedMediaType === type.value
                             ? 'bg-background text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
-                    )}
+                            : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
+                    ]
+                        .filter(Boolean)
+                        .join(' ')}
                 >
                     <span className="mr-1.5">{type.icon}</span>
                     {type.label}
@@ -106,11 +107,13 @@ const ThemeToggle = () => {
                                 setTheme(themeOption.value);
                                 setIsOpen(false);
                             }}
-                            className={cn(
+                            className={[
                                 'hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 px-3 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg',
                                 theme === themeOption.value &&
-                                    'bg-accent text-accent-foreground'
-                            )}
+                                    'bg-accent text-accent-foreground',
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
                         >
                             <themeOption.icon className="h-4 w-4" />
                             {themeOption.label}
