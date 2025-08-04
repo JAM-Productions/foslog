@@ -34,7 +34,7 @@ const MediaTypeFilter = () => {
                     key={type.value}
                     onClick={() => setSelectedMediaType(type.value)}
                     className={[
-                        'flex flex-col rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
+                        'flex flex-col items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
                         selectedMediaType === type.value
                             ? 'bg-background text-foreground shadow-sm'
                             : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
@@ -42,7 +42,7 @@ const MediaTypeFilter = () => {
                         .filter(Boolean)
                         .join(' ')}
                 >
-                    <span className="mr-1.5">{type.icon}</span>
+                    <span className="sm:mr-1.5">{type.icon}</span>
                     {type.label}
                 </button>
             ))}
