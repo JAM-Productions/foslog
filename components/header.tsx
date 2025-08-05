@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
     Search,
     Sun,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { useTheme } from '@/components/theme-provider';
 import Image from 'next/image';
+import { useClickOutside } from '@/hooks/useClickOutside';
 
 const MediaTypeFilter = () => {
     const { selectedMediaType, setSelectedMediaType } = useAppStore();
@@ -64,25 +65,7 @@ const ThemeToggle = () => {
 
     const currentTheme = themes.find((t) => t.value === theme);
 
-    const handleClickOutside = useCallback((event: MouseEvent) => {
-        if (
-            menuRef.current &&
-            !menuRef.current.contains(event.target as Node)
-        ) {
-            setIsOpen(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen, handleClickOutside]);
+    useClickOutside(menuRef, isOpen, setIsOpen);
 
     return (
         <div
@@ -131,25 +114,7 @@ const UserMenu = () => {
     const { user, setUser } = useAppStore();
     const [isOpen, setIsOpen] = useState(false);
 
-    const handleClickOutside = useCallback((event: MouseEvent) => {
-        if (
-            menuRef.current &&
-            !menuRef.current.contains(event.target as Node)
-        ) {
-            setIsOpen(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen, handleClickOutside]);
+    useClickOutside(menuRef, isOpen, setIsOpen);
 
     if (!user) {
         return (
