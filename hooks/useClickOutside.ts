@@ -9,8 +9,8 @@ export const useClickOutside = (
         (event: MouseEvent) => {
             if (
                 ref.current &&
-                event.target &&
-                !ref.current.contains(event.target as Node)
+                event.target instanceof Node &&
+                !ref.current.contains(event.target)
             ) {
                 setIsOpen(false);
             }
@@ -19,9 +19,9 @@ export const useClickOutside = (
     );
 
     useEffect(() => {
-        if (!isOpen) return;
-
-        document.addEventListener('mousedown', handleClickOutside);
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
