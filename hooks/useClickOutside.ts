@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 export const useClickOutside = (
-    ref: React.RefObject<HTMLDivElement | null>,
+    ref: React.RefObject<HTMLElement | null>,
     isOpen: boolean,
     setIsOpen: (isOpen: boolean) => void
 ) => {
@@ -15,11 +15,9 @@ export const useClickOutside = (
     );
 
     useEffect(() => {
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
+        if (!isOpen) return;
+
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
