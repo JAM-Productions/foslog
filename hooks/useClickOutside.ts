@@ -7,7 +7,11 @@ export const useClickOutside = (
 ) => {
     const handleClickOutside = useCallback(
         (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
+            if (
+                ref.current &&
+                event.target &&
+                !ref.current.contains(event.target as Node)
+            ) {
                 setIsOpen(false);
             }
         },
