@@ -28,7 +28,7 @@ _At this point, try to add a new team member to the project_
 
 ## 0.5.0
 
-- [ ] Manage media resources state (when search for a media resource that is not in the database, it will be added to the database, fetching the info from free APIs, or even add the possibility to add the media resource manually).
+- [ ] Manage media resources state (when searching for a media resource that is not in the database, it will be added to the database, fetching the info from free APIs, or even add the possibility to add the media resource manually).
 - [ ] Profile stats
 - [ ] Share a review
 - [ ] Improve SEO
