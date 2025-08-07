@@ -6,9 +6,14 @@ This is a roadmap for the project. It is not a commitment, but a guide to the fu
 
 - [ ] Login/Signup with SSO
 - [ ] Dark/Light mode
+- [ ] Language selector
 
 ## 0.3.0
 
+- [ ] Create a media resource (e.g. a movie, a series, a book, etc.) manually.
+- [ ] Define admin role (this will be able to create, update, delete media resources and delete reviews, etc.)
+- [ ] Update/Delete a media resource (only admin can do this)
+- [ ] Media resource UI. Here the user can see the media resource details, the reviews (and in a future the comments, the likes, the dislikes, the bookmarks, etc.). The user can review the media resource from this page.
 - [ ] Create a review
 - [ ] Update a review
 - [ ] Delete a review
