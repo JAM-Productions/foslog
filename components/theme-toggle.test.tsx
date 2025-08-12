@@ -14,23 +14,6 @@ vi.mock('@/hooks/useClickOutside', () => ({
     useClickOutside: vi.fn(),
 }));
 
-vi.mock('@/components/ui/button', () => ({
-    Button: ({
-        children,
-        onClick,
-        className,
-        ...props
-    }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-        <button
-            onClick={onClick}
-            className={className}
-            {...props}
-        >
-            {children}
-        </button>
-    ),
-}));
-
 describe('ThemeToggle', () => {
     const mockSetTheme = vi.fn();
     const mockedUseTheme = vi.mocked(useTheme);
