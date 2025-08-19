@@ -37,7 +37,7 @@ Make sure you have installed:
 Clone the repository and navigate to the folder:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/JAM-Productions/foslog.git
 cd foslog
 ```
 
