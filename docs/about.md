@@ -28,8 +28,8 @@ Unlike apps like _Letterboxd_ or _Goodreads_ that are limited to just one kind o
 
 ## Quick Setup
 
-Follow the setup guide in [`docs/setup.md`](docs/setup.md).
+Follow the setup guide in [`docs/setup.md`](./setup.md).
 
 ## Roadmap
 
-Check out the development plan and upcoming features in [`docs/roadmap.md`](docs/roadmap.md).
+Check out the development plan and upcoming features in [`docs/roadmap.md`](./roadmap.md).
