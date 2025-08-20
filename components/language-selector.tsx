@@ -10,9 +10,7 @@ import { ChevronDownIcon, GlobeIcon } from 'lucide-react';
 const locales = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Español' },
-    { code: 'ca', name: 'Català' },
+    { code: 'ca', name: 'Català', flag: '🏴' },
 ] as const;
 
 export default function LanguageSelector() {
