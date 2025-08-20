@@ -43,6 +43,10 @@
     "profile": "Profile",
     "settings": "Settings"
   },
+  "LanguageSelector": {
+    "selectLanguage": "Select language",
+    "languageOptions": "Language options"
+  },
   "Search": {
     "searchResults": "Search Results",
     "resultsFor": "{count} results for \"{query}\"",

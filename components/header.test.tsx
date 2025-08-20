@@ -19,6 +19,10 @@ vi.mock('@/components/search-bar', () => ({
     default: () => <div data-testid="search-bar">Search Bar</div>,
 }));
 
+vi.mock('@/components/language-selector', () => ({
+    default: () => <div data-testid="language-selector">Language Selector</div>,
+}));
+
 // Mock Next.js Image component
 vi.mock('next/image', () => ({
     default: ({
@@ -78,6 +82,7 @@ describe('Header', () => {
         render(<Header />);
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
+        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
         expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
@@ -118,7 +123,8 @@ describe('Header', () => {
         );
 
         // Actions section
-        const actionsSection = screen.getByTestId('theme-toggle').parentElement;
+        const actionsSection =
+            screen.getByTestId('language-selector').parentElement;
         expect(actionsSection).toHaveClass('flex', 'items-center', 'gap-2');
     });
 
@@ -158,10 +164,11 @@ describe('Header', () => {
         const header = screen.getByRole('banner');
         const children = Array.from(header.querySelectorAll('[data-testid]'));
 
-        // Should have theme toggle, user menu, search bars (desktop + mobile), and media filter
-        expect(children.length).toBeGreaterThanOrEqual(4);
+        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), and media filter
+        expect(children.length).toBeGreaterThanOrEqual(5);
 
         // Verify specific components exist
+        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
         expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
