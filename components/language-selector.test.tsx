@@ -26,7 +26,7 @@ describe('LanguageSelector', () => {
 
         mockUseRouter.mockReturnValue({
             replace: mockReplace,
-        } as any);
+        } as unknown as ReturnType<typeof useRouter>);
 
         mockUsePathname.mockReturnValue('/test-path');
 
@@ -36,7 +36,7 @@ describe('LanguageSelector', () => {
                 languageOptions: 'Language options',
             };
             return translations[key as keyof typeof translations] || key;
-        }) as any);
+        }) as unknown as ReturnType<typeof useTranslations>);
     });
 
     it('renders with English locale', () => {
@@ -178,7 +178,7 @@ describe('LanguageSelector', () => {
         });
     });
 
-    it('displays flag emoji on small screens', () => {
+    it('displays country code on small screens', () => {
         mockUseLocale.mockReturnValue('en');
         render(<LanguageSelector />);
         expect(screen.getByText('English')).toHaveClass('hidden', 'sm:inline');
