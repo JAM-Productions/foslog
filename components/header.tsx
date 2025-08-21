@@ -3,6 +3,7 @@ import MediaTypeFilter from '@/components/media-type-filter';
 import ThemeToggle from '@/components/theme-toggle';
 import UserMenu from '@/components/user-menu';
 import SearchBar from '@/components/search-bar';
+import LanguageSelector from '@/components/language-selector';
 
 export default function Header() {
     return (
@@ -32,6 +33,7 @@ export default function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
+                        <LanguageSelector />
                         <ThemeToggle />
                         <UserMenu />
                     </div>

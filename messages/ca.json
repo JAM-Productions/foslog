@@ -43,6 +43,10 @@
     "profile": "Perfil",
     "settings": "Configuració"
   },
+  "LanguageSelector": {
+    "selectLanguage": "Seleccionar idioma",
+    "languageOptions": "Opcions d'idioma"
+  },
   "Search": {
     "searchResults": "Resultats de Cerca",
     "resultsFor": "{count} resultats per \"{query}\"",
