@@ -5,6 +5,7 @@ import { User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { useRouter } from 'next/navigation';
 
 const UserMenu = () => {
     const menuRef = useRef<HTMLDivElement>(null);
@@ -13,6 +14,12 @@ const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     useClickOutside(menuRef, isOpen, setIsOpen);
+
+    const router = useRouter();
+
+    const handleNavigate = (path: string) => {
+        router.push(path);
+    };
 
     if (!user) {
         return (
@@ -23,10 +30,16 @@ const UserMenu = () => {
                 <Button
                     variant="ghost"
                     size="sm"
+                    onClick={() => handleNavigate('/login')}
                 >
                     Log In
                 </Button>
-                <Button size="sm">Sign Up</Button>
+                <Button
+                    size="sm"
+                    onClick={() => handleNavigate('/signup')}
+                >
+                    Sign Up
+                </Button>
             </div>
         );
     }
