@@ -29,8 +29,8 @@ export default function LanguageSelector() {
         setIsOpen(false);
         try {
             window.localStorage.setItem('preferredLocale', newLocale);
-        } catch {
-            console.error('Failed to set preferred locale');
+        } catch (error) {
+            console.error('Failed to set preferred locale:', error);
         }
         router.replace(pathname, { locale: newLocale });
     };
