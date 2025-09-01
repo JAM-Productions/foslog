@@ -8,12 +8,12 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-export default function LoginPage() {
-    const tLoginPage = useTranslations('LoginPage');
+export default function RegisterPage() {
+    const tRegisterPage = useTranslations('RegisterPage');
     const tCTA = useTranslations('CTA');
 
-    const handleSignIn = () => {
-        console.log('Sign in clicked');
+    const handleSignUp = () => {
+        console.log('Sign up clicked');
     };
 
     return (
@@ -29,29 +29,35 @@ export default function LoginPage() {
                 </div>
                 <div className="mb-6 flex flex-col text-center">
                     <h2 className="text-2xl font-semibold">
-                        {tLoginPage('welcomeBack')}
+                        {tRegisterPage('createAccount')}
                     </h2>
                     <p className="text-muted-foreground text-sm">
-                        {tLoginPage('description')}
+                        {tRegisterPage('description')}
                     </p>
                 </div>
                 <form
                     className="mb-5 flex flex-col gap-4.5"
                     onSubmit={(e) => {
                         e.preventDefault();
-                        handleSignIn();
+                        handleSignUp();
                     }}
                 >
                     <Input
                         type="email"
-                        placeholder={tLoginPage('email')}
+                        placeholder={tRegisterPage('email')}
                         name="email"
                         required
                     />
                     <Input
                         type="password"
-                        placeholder={tLoginPage('password')}
+                        placeholder={tRegisterPage('password')}
                         name="password"
+                        required
+                    />
+                    <Input
+                        type="password"
+                        placeholder={tRegisterPage('confirmPassword')}
+                        name="confirmPassword"
                         required
                     />
 
@@ -69,7 +75,7 @@ export default function LoginPage() {
                     </div>
                     <div className="relative flex justify-center text-sm uppercase">
                         <span className="bg-background text-muted-foreground px-2">
-                            {tLoginPage('orContinueWith')}
+                            {tRegisterPage('orContinueWith')}
                         </span>
                     </div>
                 </div>
@@ -97,13 +103,13 @@ export default function LoginPage() {
                     </Button>
                 </div>
                 <div className="mt-5 flex justify-center">
-                    <div className="flex flex-col items-center gap-1 sm:flex-row sm:items-center sm:gap-2">
-                        {tLoginPage('noAccount')}
+                    <div className="flex flex-col items-center gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                        {tRegisterPage('alreadyHaveAccount')}
                         <Link
-                            href="/signup"
+                            href="/login"
                             className="text-primary"
                         >
-                            {tLoginPage('signUp')}
+                            {tRegisterPage('signIn')}
                         </Link>
                     </div>
                 </div>
