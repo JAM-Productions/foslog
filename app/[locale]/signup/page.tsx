@@ -47,11 +47,12 @@ export default function RegisterPage() {
     };
 
     const validateConfirmPassword = (
-        confirmPasswordValue: string
+        confirmPasswordValue: string,
+        passwordValue?: string
     ): string | undefined => {
         if (confirmPasswordValue.trim() === '') {
             return tRegisterPage('validation.confirmPasswordRequired');
-        } else if (confirmPasswordValue !== password) {
+        } else if (confirmPasswordValue !== (passwordValue ?? password)) {
             return tRegisterPage('validation.passwordsDoNotMatch');
         }
         return undefined;
@@ -88,16 +89,34 @@ export default function RegisterPage() {
         if (hasAttemptedSignUp) {
             // If user has attempted sign up, validate in real time
             const fieldError = validator(value);
-            setValidationErrors((prev) => ({
-                ...prev,
+            const newErrors: ValidationErrors = {
+                ...validationErrors,
                 [field]: fieldError,
-            }));
+            };
+
+            // If password is changing, re-validate confirm password with the new password value
+            if (field === 'password' && confirmPassword) {
+                const confirmPasswordError = validateConfirmPassword(
+                    confirmPassword,
+                    value
+                );
+                newErrors.confirmPassword = confirmPasswordError;
+            }
+
+            setValidationErrors(newErrors);
         } else if (validationErrors[field]) {
             // Clear validation error when user starts typing
-            setValidationErrors((prev) => ({
-                ...prev,
+            const newErrors = {
+                ...validationErrors,
                 [field]: undefined,
-            }));
+            };
+
+            // If password is changing and there's a confirm password error, clear it too
+            if (field === 'password' && validationErrors.confirmPassword) {
+                newErrors.confirmPassword = undefined;
+            }
+
+            setValidationErrors(newErrors);
         }
     };
 
@@ -197,7 +216,7 @@ export default function RegisterPage() {
                                 handleInputChange(
                                     'confirmPassword',
                                     e.target.value,
-                                    validateConfirmPassword
+                                    (value) => validateConfirmPassword(value)
                                 )
                             }
                             className={

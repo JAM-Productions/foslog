@@ -59,11 +59,11 @@
     },
     "LoginPage": {
         "welcomeBack": "Benvingut de nou",
-        "description": "Inicia sessió a la teva compte de Foslog",
+        "description": "Inicia sessió al teu compte de Foslog",
         "email": "Correu Electrònic",
         "password": "Contrasenya",
         "orContinueWith": "o continua amb",
-        "noAccount": "No tens una compte?",
+        "noAccount": "No tens un compte?",
         "signUp": "Registra't",
         "validation": {
             "emailRequired": "El correu electrònic és obligatori",
@@ -73,12 +73,12 @@
     },
     "RegisterPage": {
         "createAccount": "Crear compte",
-        "description": "Únete a Foslog per començar a reseñar i descobrir mitjans",
+        "description": "Uneix-te a Foslog per començar a reseñar i descobrir mitjans",
         "email": "Correu Electrònic",
         "password": "Contrasenya",
         "confirmPassword": "Confirmar Contrasenya",
         "orContinueWith": "o continua amb",
-        "alreadyHaveAccount": "¿Ja tens una compte?",
+        "alreadyHaveAccount": "Ja tens un compte?",
         "signIn": "Iniciar Sessió",
         "validation": {
             "emailRequired": "El correu electrònic és obligatori",
