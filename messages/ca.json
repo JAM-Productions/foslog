@@ -1,65 +1,103 @@
 {
-  "HomePage": {
-    "welcomeBack": "Benvingut de nou, {name}! 👋",
-    "discover": "Descobreix i ressenya el teu proper {mediaType} favorit",
-    "media": "contingut",
-    "welcomeTitle": "Benvingut a Foslog",
-    "welcomeDescription": "El teu diari personal de ressenyes de mitjans. Rastreja i ressenya pel·lícules, sèries, llibres, jocs i música, tot en un sol lloc.",
-    "getStarted": "Començar",
-    "learnMore": "Saber-ne Més"
-  },
-  "MediaTypes": {
-    "all": "Tots els Mitjans",
-    "films": "Pel·lícules",
-    "series": "Sèries",
-    "games": "Jocs",
-    "books": "Llibres",
-    "music": "Música",
-    "film": "pel·lícula",
-    "serie": "sèrie",
-    "game": "joc",
-    "book": "llibre",
-    "musicSingle": "música"
-  },
-  "Stats": {
-    "topRated": "Millor Valorat",
-    "totalItems": "Total d'Elements",
-    "recentlyAdded": "Afegit Recentment",
-    "highestRatedInCollection": "Millor valorat a la col·lecció",
-    "allMediaTypes": "Tots els tipus de mitjans"
-  },
-  "Sections": {
-    "trending": "Tendències Ara",
-    "trendingSubtitle": "Seleccions populars de la comunitat",
-    "recommended": "Recomanat per a Tu",
-    "recommendedSubtitle": "Basat en les teves preferències"
-  },
-  "Metadata": {
-    "title": "Foslog - El Teu Diari de Ressenyes de Mitjans",
-    "description": "Ressenya i rastreja pel·lícules, sèries, llibres, jocs i música. Descobreix nous favorits i comparteix els teus pensaments."
-  },
-  "Header": {
-    "search": "Cercar mitjans...",
-    "profile": "Perfil",
-    "settings": "Configuració"
-  },
-  "LanguageSelector": {
-    "selectLanguage": "Seleccionar idioma",
-    "languageOptions": "Opcions d'idioma"
-  },
-  "Search": {
-    "searchResults": "Resultats de Cerca",
-    "resultsFor": "{count} resultats per \"{query}\"",
-    "trending": "{mediaType} en Tendència",
-    "popularWith": "{mediaType} populars amb excel·lents ressenyes",
-    "noResultsFound": "No s'han trobat resultats",
-    "noMediaFound": "No s'han trobat {mediaType} que coincideixin amb \"{query}\"",
-    "noMediaAvailable": "No hi ha {mediaType} disponibles",
-    "clearSearch": "Netejar Cerca"
-  },
-  "CTA": {
-    "addReviewsTitle": "Vols afegir les teves pròpies ressenyes?",
-    "addReviewsDescription": "Comença a construir la teva col·lecció personal de mitjans i comparteix els teus pensaments",
-    "addNewReview": "Afegir Nova Ressenya"
-  }
+    "HomePage": {
+        "welcomeBack": "Benvingut de nou, {name}! 👋",
+        "discover": "Descobreix i ressenya el teu proper {mediaType} favorit",
+        "media": "contingut",
+        "welcomeTitle": "Benvingut a Foslog",
+        "welcomeDescription": "El teu diari personal de ressenyes de mitjans. Rastreja i ressenya pel·lícules, sèries, llibres, jocs i música, tot en un sol lloc.",
+        "getStarted": "Començar",
+        "learnMore": "Saber-ne Més"
+    },
+    "MediaTypes": {
+        "all": "Tots els Mitjans",
+        "films": "Pel·lícules",
+        "series": "Sèries",
+        "games": "Jocs",
+        "books": "Llibres",
+        "music": "Música",
+        "film": "pel·lícula",
+        "serie": "sèrie",
+        "game": "joc",
+        "book": "llibre",
+        "musicSingle": "música"
+    },
+    "Stats": {
+        "topRated": "Millor Valorat",
+        "totalItems": "Total d'Elements",
+        "recentlyAdded": "Afegit Recentment",
+        "highestRatedInCollection": "Millor valorat a la col·lecció",
+        "allMediaTypes": "Tots els tipus de mitjans"
+    },
+    "Sections": {
+        "trending": "Tendències Ara",
+        "trendingSubtitle": "Seleccions populars de la comunitat",
+        "recommended": "Recomanat per a Tu",
+        "recommendedSubtitle": "Basat en les teves preferències"
+    },
+    "Metadata": {
+        "title": "Foslog - El Teu Diari de Ressenyes de Mitjans",
+        "description": "Ressenya i rastreja pel·lícules, sèries, llibres, jocs i música. Descobreix nous favorits i comparteix els teus pensaments."
+    },
+    "Header": {
+        "search": "Cercar mitjans...",
+        "profile": "Perfil",
+        "settings": "Configuració"
+    },
+    "LanguageSelector": {
+        "selectLanguage": "Seleccionar idioma",
+        "languageOptions": "Opcions d'idioma"
+    },
+    "Search": {
+        "searchResults": "Resultats de Cerca",
+        "resultsFor": "{count} resultats per \"{query}\"",
+        "trending": "{mediaType} en Tendència",
+        "popularWith": "{mediaType} populars amb excel·lents ressenyes",
+        "noResultsFound": "No s'han trobat resultats",
+        "noMediaFound": "No s'han trobat {mediaType} que coincideixin amb \"{query}\"",
+        "noMediaAvailable": "No hi ha {mediaType} disponibles",
+        "clearSearch": "Netejar Cerca"
+    },
+    "LoginPage": {
+        "welcomeBack": "Benvingut de nou",
+        "description": "Inicia sessió al teu compte de Foslog",
+        "email": "Correu Electrònic",
+        "password": "Contrasenya",
+        "orContinueWith": "o continua amb",
+        "noAccount": "No tens un compte?",
+        "signUp": "Registra't",
+        "validation": {
+            "emailRequired": "El correu electrònic és obligatori",
+            "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
+            "passwordRequired": "La contrasenya és obligatòria"
+        }
+    },
+    "RegisterPage": {
+        "createAccount": "Crear compte",
+        "description": "Uneix-te a Foslog per començar a ressenyar i descobrir mitjans",
+        "email": "Correu Electrònic",
+        "password": "Contrasenya",
+        "confirmPassword": "Confirmar Contrasenya",
+        "orContinueWith": "o continua amb",
+        "alreadyHaveAccount": "Ja tens un compte?",
+        "signIn": "Iniciar Sessió",
+        "validation": {
+            "emailRequired": "El correu electrònic és obligatori",
+            "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
+            "passwordRequired": "La contrasenya és obligatòria",
+            "passwordTooShort": "La contrasenya ha de tenir almenys 8 caràcters",
+            "confirmPasswordRequired": "Si us plau, confirma la teva contrasenya",
+            "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
+        }
+    },
+    "CTA": {
+        "addReviewsTitle": "Vols afegir les teves pròpies ressenyes?",
+        "addReviewsDescription": "Comença a construir la teva col·lecció personal de mitjans i comparteix els teus pensaments",
+        "addNewReview": "Afegir Nova Ressenya",
+        "signIn": "Iniciar Sessió",
+        "signUp": "Registra't",
+        "signOut": "Tancar Sessió",
+        "google": "Google",
+        "github": "GitHub",
+        "settings": "Configuració"
+    }
 }

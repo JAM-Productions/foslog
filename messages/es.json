@@ -1,65 +1,103 @@
 {
-  "HomePage": {
-    "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
-    "discover": "Descubre y reseña tu próximo {mediaType} favorito",
-    "media": "contenido",
-    "welcomeTitle": "Bienvenido a Foslog",
-    "welcomeDescription": "Tu diario personal de reseñas de medios. Rastrea y reseña películas, series, libros, juegos y música, todo en un solo lugar.",
-    "getStarted": "Comenzar",
-    "learnMore": "Saber Más"
-  },
-  "MediaTypes": {
-    "all": "Todos los Medios",
-    "films": "Películas",
-    "series": "Series",
-    "games": "Juegos",
-    "books": "Libros",
-    "music": "Música",
-    "film": "película",
-    "serie": "serie",
-    "game": "juego",
-    "book": "libro",
-    "musicSingle": "música"
-  },
-  "Stats": {
-    "topRated": "Mejor Valorado",
-    "totalItems": "Total de Elementos",
-    "recentlyAdded": "Añadido Recientemente",
-    "highestRatedInCollection": "Mejor valorado en la colección",
-    "allMediaTypes": "Todos los tipos de medios"
-  },
-  "Sections": {
-    "trending": "Tendencias Ahora",
-    "trendingSubtitle": "Selecciones populares de la comunidad",
-    "recommended": "Recomendado para Ti",
-    "recommendedSubtitle": "Basado en tus preferencias"
-  },
-  "Metadata": {
-    "title": "Foslog - Tu Diario de Reseñas de Medios",
-    "description": "Reseña y rastrea películas, series, libros, juegos y música. Descubre nuevos favoritos y comparte tus pensamientos."
-  },
-  "Header": {
-    "search": "Buscar medios...",
-    "profile": "Perfil",
-    "settings": "Configuración"
-  },
-  "LanguageSelector": {
-    "selectLanguage": "Seleccionar idioma",
-    "languageOptions": "Opciones de idioma"
-  },
-  "Search": {
-    "searchResults": "Resultados de Búsqueda",
-    "resultsFor": "{count} resultados para \"{query}\"",
-    "trending": "{mediaType} en Tendencia",
-    "popularWith": "{mediaType} populares con excelentes reseñas",
-    "noResultsFound": "No se encontraron resultados",
-    "noMediaFound": "No se encontraron {mediaType} que coincidan con \"{query}\"",
-    "noMediaAvailable": "No hay {mediaType} disponibles",
-    "clearSearch": "Limpiar Búsqueda"
-  },
-  "CTA": {
-    "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
-    "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
-    "addNewReview": "Agregar Nueva Reseña"
-  }
+    "HomePage": {
+        "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
+        "discover": "Descubre y reseña tu próximo {mediaType} favorito",
+        "media": "contenido",
+        "welcomeTitle": "Bienvenido a Foslog",
+        "welcomeDescription": "Tu diario personal de reseñas de medios. Rastrea y reseña películas, series, libros, juegos y música, todo en un solo lugar.",
+        "getStarted": "Comenzar",
+        "learnMore": "Saber Más"
+    },
+    "MediaTypes": {
+        "all": "Todos los Medios",
+        "films": "Películas",
+        "series": "Series",
+        "games": "Juegos",
+        "books": "Libros",
+        "music": "Música",
+        "film": "película",
+        "serie": "serie",
+        "game": "juego",
+        "book": "libro",
+        "musicSingle": "música"
+    },
+    "Stats": {
+        "topRated": "Mejor Valorado",
+        "totalItems": "Total de Elementos",
+        "recentlyAdded": "Añadido Recientemente",
+        "highestRatedInCollection": "Mejor valorado en la colección",
+        "allMediaTypes": "Todos los tipos de medios"
+    },
+    "Sections": {
+        "trending": "Tendencias Ahora",
+        "trendingSubtitle": "Selecciones populares de la comunidad",
+        "recommended": "Recomendado para Ti",
+        "recommendedSubtitle": "Basado en tus preferencias"
+    },
+    "Metadata": {
+        "title": "Foslog - Tu Diario de Reseñas de Medios",
+        "description": "Reseña y rastrea películas, series, libros, juegos y música. Descubre nuevos favoritos y comparte tus pensamientos."
+    },
+    "Header": {
+        "search": "Buscar medios...",
+        "profile": "Perfil",
+        "settings": "Configuración"
+    },
+    "LanguageSelector": {
+        "selectLanguage": "Seleccionar idioma",
+        "languageOptions": "Opciones de idioma"
+    },
+    "Search": {
+        "searchResults": "Resultados de Búsqueda",
+        "resultsFor": "{count} resultados para \"{query}\"",
+        "trending": "{mediaType} en Tendencia",
+        "popularWith": "{mediaType} populares con excelentes reseñas",
+        "noResultsFound": "No se encontraron resultados",
+        "noMediaFound": "No se encontraron {mediaType} que coincidan con \"{query}\"",
+        "noMediaAvailable": "No hay {mediaType} disponibles",
+        "clearSearch": "Limpiar Búsqueda"
+    },
+    "LoginPage": {
+        "welcomeBack": "Bienvenido de vuelta",
+        "description": "Inicia sesión en tu cuenta de Foslog",
+        "email": "Correo Electrónico",
+        "password": "Contraseña",
+        "orContinueWith": "o continúa con",
+        "noAccount": "¿No tienes una cuenta?",
+        "signUp": "Regístrate",
+        "validation": {
+            "emailRequired": "El correo electrónico es obligatorio",
+            "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+            "passwordRequired": "La contraseña es obligatoria"
+        }
+    },
+    "RegisterPage": {
+        "createAccount": "Crear cuenta",
+        "description": "Únete a Foslog para comenzar a reseñar y descubrir medios",
+        "email": "Correo Electrónico",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña",
+        "orContinueWith": "o continúa con",
+        "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+        "signIn": "Iniciar Sesión",
+        "validation": {
+            "emailRequired": "El correo electrónico es obligatorio",
+            "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+            "passwordRequired": "La contraseña es obligatoria",
+            "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+            "confirmPasswordRequired": "Por favor confirma tu contraseña",
+            "passwordsDoNotMatch": "Las contraseñas no coinciden"
+        }
+    },
+    "CTA": {
+        "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
+        "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
+        "addNewReview": "Agregar Nueva Reseña",
+        "signIn": "Iniciar Sesión",
+        "signUp": "Regístrate",
+        "signOut": "Cerrar Sesión",
+        "google": "Google",
+        "github": "GitHub",
+        "settings": "Configuración"
+    }
 }

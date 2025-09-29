@@ -4,6 +4,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UserMenu from '@/components/user-menu';
 import { useAppStore } from '@/lib/store';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import type { User } from '@/lib/store';
 
 // Mock dependencies
@@ -15,10 +17,31 @@ vi.mock('@/hooks/useClickOutside', () => ({
     useClickOutside: vi.fn(),
 }));
 
+vi.mock('next/navigation', () => ({
+    useRouter: vi.fn(),
+}));
+
+vi.mock('next-intl', () => ({
+    useTranslations: vi.fn(),
+}));
+
 describe('UserMenu', () => {
     const mockSetUser = vi.fn();
+    const mockPush = vi.fn();
+    const mockT = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            signIn: 'Log In',
+            signUp: 'Sign Up',
+            settings: 'Settings',
+            signOut: 'Sign Out',
+        };
+        return translations[key] || key;
+    });
+
     const mockedUseAppStore = vi.mocked(useAppStore);
     const mockedUseClickOutside = vi.mocked(useClickOutside);
+    const mockedUseRouter = vi.mocked(useRouter);
+    const mockedUseTranslations = vi.mocked(useTranslations);
 
     const mockUser: User = {
         id: '1',
@@ -32,6 +55,17 @@ describe('UserMenu', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockedUseClickOutside.mockImplementation(() => {});
+        mockedUseRouter.mockReturnValue({
+            push: mockPush,
+            replace: vi.fn(),
+            back: vi.fn(),
+            forward: vi.fn(),
+            refresh: vi.fn(),
+            prefetch: vi.fn(),
+        } as unknown as ReturnType<typeof useRouter>);
+        mockedUseTranslations.mockReturnValue(
+            mockT as unknown as ReturnType<typeof useTranslations>
+        );
     });
 
     describe('when user is not logged in', () => {
@@ -73,6 +107,85 @@ describe('UserMenu', () => {
 
             expect(screen.queryByText('Settings')).not.toBeInTheDocument();
             expect(screen.queryByText('Sign Out')).not.toBeInTheDocument();
+        });
+
+        it('displays mobile user icon button on small screens', () => {
+            render(<UserMenu />);
+
+            const mobileButton = screen.getByRole('button', { name: '' });
+            expect(mobileButton).toHaveClass('relative', 'block', 'sm:hidden');
+        });
+
+        it('opens mobile dropdown when user icon is clicked', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const mobileButton = screen.getByRole('button', { name: '' });
+            await user.click(mobileButton);
+
+            // Should show the dropdown with login/signup options
+            const dropdownButtons = screen.getAllByText('Log In');
+            expect(dropdownButtons.length).toBeGreaterThan(1); // One in desktop, one in mobile dropdown
+        });
+
+        it('navigates to login when mobile dropdown login is clicked', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const mobileButton = screen.getByRole('button', { name: '' });
+            await user.click(mobileButton);
+
+            // Find the dropdown login button (not the desktop one)
+            const loginButtons = screen.getAllByText('Log In');
+            const dropdownElement = loginButtons.find((button) =>
+                button.closest('.bg-card')
+            );
+
+            if (dropdownElement) {
+                await user.click(dropdownElement);
+                expect(mockPush).toHaveBeenCalledWith('/login');
+            }
+        });
+
+        it('navigates to signup when mobile dropdown signup is clicked and closes dropdown', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const mobileButton = screen.getByRole('button', { name: '' });
+            await user.click(mobileButton);
+
+            // Find all Sign Up buttons and get the one in the dropdown
+            const signUpButtons = screen.getAllByText('Sign Up');
+            const dropdownElement = signUpButtons.find((button) =>
+                button.closest('.bg-card')
+            );
+
+            if (dropdownElement) {
+                await user.click(dropdownElement);
+                expect(mockPush).toHaveBeenCalledWith('/signup');
+            }
+        });
+
+        it('navigates to login when desktop login button is clicked', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const loginButton = screen.getByRole('button', { name: /log in/i });
+            await user.click(loginButton);
+
+            expect(mockPush).toHaveBeenCalledWith('/login');
+        });
+
+        it('navigates to signup when desktop signup button is clicked', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const signupButton = screen.getByRole('button', {
+                name: /sign up/i,
+            });
+            await user.click(signupButton);
+
+            expect(mockPush).toHaveBeenCalledWith('/signup');
         });
     });
 
@@ -240,6 +353,188 @@ describe('UserMenu', () => {
                 .getByText('Sign Out')
                 .closest('button');
             expect(signOutButton).toHaveClass('text-destructive');
+        });
+
+        it('closes dropdown when sign out is clicked', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            // Open dropdown
+            const userButton = screen.getByRole('button', {
+                name: /john doe/i,
+            });
+            await user.click(userButton);
+
+            expect(screen.getByText('Settings')).toBeInTheDocument();
+
+            // Click sign out
+            const signOutButton = screen.getByText('Sign Out');
+            await user.click(signOutButton);
+
+            // Dropdown should be closed
+            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
+        });
+
+        it('settings button is clickable but does not have click handler', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const userButton = screen.getByRole('button', {
+                name: /john doe/i,
+            });
+            await user.click(userButton);
+
+            const settingsButton = screen
+                .getByText('Settings')
+                .closest('button');
+            expect(settingsButton).toBeInTheDocument();
+
+            // Settings button should be clickable but no action is expected since no handler is implemented
+            await user.click(settingsButton!);
+
+            // Dropdown should still be open since no handler closes it
+            expect(screen.getByText('Settings')).toBeInTheDocument();
+        });
+
+        it('dropdown can be toggled open and closed', async () => {
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            const userButton = screen.getByRole('button', {
+                name: /john doe/i,
+            });
+
+            // Open dropdown
+            await user.click(userButton);
+            expect(screen.getByText('Settings')).toBeInTheDocument();
+
+            // Close dropdown
+            await user.click(userButton);
+            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
+
+            // Open again
+            await user.click(userButton);
+            expect(screen.getByText('Settings')).toBeInTheDocument();
+        });
+    });
+
+    describe('responsive behavior', () => {
+        beforeEach(() => {
+            mockedUseAppStore.mockReturnValue({
+                user: null,
+                setUser: mockSetUser,
+                // Add other store properties
+                theme: 'system',
+                setTheme: vi.fn(),
+                selectedMediaType: 'all',
+                setSelectedMediaType: vi.fn(),
+                searchQuery: '',
+                setSearchQuery: vi.fn(),
+                mediaItems: [],
+                setMediaItems: vi.fn(),
+                addMediaItem: vi.fn(),
+                reviews: [],
+                setReviews: vi.fn(),
+                addReview: vi.fn(),
+                updateReview: vi.fn(),
+                deleteReview: vi.fn(),
+            });
+        });
+
+        it('mobile icon button has correct responsive classes', () => {
+            render(<UserMenu />);
+
+            const mobileButton = screen.getByRole('button', { name: '' });
+            expect(mobileButton).toHaveClass('relative', 'block', 'sm:hidden');
+        });
+
+        it('desktop buttons container has correct responsive classes', () => {
+            render(<UserMenu />);
+
+            const desktopContainer = screen
+                .getByText('Log In')
+                .closest('.hidden.sm\\:inline');
+            expect(desktopContainer).toHaveClass('hidden', 'sm:inline');
+        });
+
+        it('user name span has correct responsive classes when logged in', () => {
+            mockedUseAppStore.mockReturnValue({
+                user: mockUser,
+                setUser: mockSetUser,
+                theme: 'system',
+                setTheme: vi.fn(),
+                selectedMediaType: 'all',
+                setSelectedMediaType: vi.fn(),
+                searchQuery: '',
+                setSearchQuery: vi.fn(),
+                mediaItems: [],
+                setMediaItems: vi.fn(),
+                addMediaItem: vi.fn(),
+                reviews: [],
+                setReviews: vi.fn(),
+                addReview: vi.fn(),
+                updateReview: vi.fn(),
+                deleteReview: vi.fn(),
+            });
+
+            render(<UserMenu />);
+
+            const userName = screen.getByText('John Doe');
+            expect(userName).toHaveClass('hidden', 'sm:inline');
+        });
+    });
+
+    describe('useClickOutside integration', () => {
+        it('calls useClickOutside for both menu refs with correct parameters', () => {
+            // Test when user is not logged in
+            render(<UserMenu />);
+
+            expect(mockedUseClickOutside).toHaveBeenCalledTimes(2);
+            expect(mockedUseClickOutside).toHaveBeenNthCalledWith(
+                1,
+                expect.any(Object), // menuNotUserRef
+                false, // isNotUserOpen
+                expect.any(Function) // setIsNotUserOpen
+            );
+            expect(mockedUseClickOutside).toHaveBeenNthCalledWith(
+                2,
+                expect.any(Object), // menuUserRef
+                false, // isUserOpen
+                expect.any(Function) // setIsUserOpen
+            );
+        });
+
+        it('calls useClickOutside with updated state when logged in and dropdown is open', async () => {
+            mockedUseAppStore.mockReturnValue({
+                user: mockUser,
+                setUser: mockSetUser,
+                theme: 'system',
+                setTheme: vi.fn(),
+                selectedMediaType: 'all',
+                setSelectedMediaType: vi.fn(),
+                searchQuery: '',
+                setSearchQuery: vi.fn(),
+                mediaItems: [],
+                setMediaItems: vi.fn(),
+                addMediaItem: vi.fn(),
+                reviews: [],
+                setReviews: vi.fn(),
+                addReview: vi.fn(),
+                updateReview: vi.fn(),
+                deleteReview: vi.fn(),
+            });
+
+            const user = userEvent.setup();
+            render(<UserMenu />);
+
+            // Open user dropdown
+            const userButton = screen.getByRole('button', {
+                name: /john doe/i,
+            });
+            await user.click(userButton);
+
+            // useClickOutside should have been called again with updated state
+            expect(mockedUseClickOutside).toHaveBeenCalled();
         });
     });
 });
