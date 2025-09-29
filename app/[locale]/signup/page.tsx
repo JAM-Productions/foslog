@@ -72,7 +72,6 @@ export default function RegisterPage() {
         return errors;
     };
 
-    // TODO: Can be abstracted to a custom hook
     const handleInputChange = (
         field: keyof ValidationErrors,
         value: string,

@@ -54,7 +54,6 @@ export default function LoginPage() {
         return errors;
     };
 
-    // TODO: Can be abstracted to a custom hook
     const handleInputChange = (
         field: keyof ValidationErrors,
         value: string,
