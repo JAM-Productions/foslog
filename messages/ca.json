@@ -73,7 +73,7 @@
     },
     "RegisterPage": {
         "createAccount": "Crear compte",
-        "description": "Uneix-te a Foslog per començar a reseñar i descobrir mitjans",
+        "description": "Uneix-te a Foslog per començar a ressenyar i descobrir mitjans",
         "email": "Correu Electrònic",
         "password": "Contrasenya",
         "confirmPassword": "Confirmar Contrasenya",
