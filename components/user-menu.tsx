@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { User, LogOut, Settings, SquareUser } from 'lucide-react';
+import { User, LogOut, Settings, CircleUser } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { useClickOutside } from '@/hooks/useClickOutside';
@@ -39,7 +39,7 @@ const UserMenu = () => {
                     className="relative block sm:hidden"
                     onClick={() => setIsNotUserOpen(!isNotUserOpen)}
                 >
-                    <SquareUser />
+                    <CircleUser className="h-4 w-4" />
                 </Button>
                 <div className="hidden sm:inline">
                     <div className="flex gap-2">
