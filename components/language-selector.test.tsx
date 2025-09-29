@@ -113,6 +113,7 @@ describe('LanguageSelector', () => {
         const spanishOption = screen.getByRole('option', { name: /Español/ });
         fireEvent.click(spanishOption);
 
+        expect(window.localStorage.getItem('preferredLocale')).toBe('es');
         expect(mockReplace).toHaveBeenCalledWith('/test-path', {
             locale: 'es',
         });

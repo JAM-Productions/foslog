@@ -27,6 +27,11 @@ export default function LanguageSelector() {
 
     const handleLocaleChange = (newLocale: string) => {
         setIsOpen(false);
+        try {
+            window.localStorage.setItem('preferredLocale', newLocale);
+        } catch (error) {
+            console.error('Failed to set preferred locale:', error);
+        }
         router.replace(pathname, { locale: newLocale });
     };
 
