@@ -71,6 +71,7 @@ export default function RegisterPage() {
         return errors;
     };
 
+    // TODO: Can be abstracted to a custom hook
     const handleInputChange = (
         field: keyof ValidationErrors,
         value: string,
@@ -84,7 +85,6 @@ export default function RegisterPage() {
             setConfirmPassword(value);
         }
 
-        // Handle validation logic
         if (hasAttemptedSignUp) {
             // If user has attempted sign up, validate in real time
             const fieldError = validator(value);

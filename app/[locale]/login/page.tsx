@@ -54,6 +54,7 @@ export default function LoginPage() {
         return errors;
     };
 
+    // TODO: Can be abstracted to a custom hook
     const handleInputChange = (
         field: keyof ValidationErrors,
         value: string,
@@ -65,7 +66,6 @@ export default function LoginPage() {
             setPassword(value);
         }
 
-        // Handle validation logic
         if (hasAttemptedSignIn) {
             // If user has attempted sign in, validate in real time
             const fieldError = validator(value);
