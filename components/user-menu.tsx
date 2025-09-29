@@ -6,8 +6,11 @@ import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 const UserMenu = () => {
+    const tCTA = useTranslations('CTA');
+
     const menuUserRef = useRef<HTMLDivElement>(null);
     const menuNotUserRef = useRef<HTMLDivElement>(null);
 
@@ -45,13 +48,13 @@ const UserMenu = () => {
                             size="sm"
                             onClick={() => handleNavigate('/login')}
                         >
-                            Log In
+                            {tCTA('signIn')}
                         </Button>
                         <Button
                             size="sm"
                             onClick={() => handleNavigate('/signup')}
                         >
-                            Sign Up
+                            {tCTA('signUp')}
                         </Button>
                     </div>
                 </div>
@@ -65,7 +68,7 @@ const UserMenu = () => {
                                     setIsNotUserOpen(false);
                                 }}
                             >
-                                Log In
+                                {tCTA('signIn')}
                             </button>
                             <button
                                 onClick={() => {
@@ -74,7 +77,7 @@ const UserMenu = () => {
                                 }}
                                 className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                             >
-                                Sign Up
+                                {tCTA('signUp')}
                             </button>
                         </div>
                     </div>
@@ -119,7 +122,7 @@ const UserMenu = () => {
                     <div className="p-1">
                         <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm">
                             <Settings className="h-4 w-4" />
-                            Settings
+                            {tCTA('settings')}
                         </button>
                         <button
                             onClick={() => {
@@ -129,7 +132,7 @@ const UserMenu = () => {
                             className="hover:bg-accent hover:text-accent-foreground text-destructive flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                         >
                             <LogOut className="h-4 w-4" />
-                            Sign Out
+                            {tCTA('signOut')}
                         </button>
                     </div>
                 </div>

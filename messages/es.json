@@ -64,7 +64,12 @@
         "password": "Contraseña",
         "orContinueWith": "o continúa con",
         "noAccount": "¿No tienes una cuenta?",
-        "signUp": "Regístrate"
+        "signUp": "Regístrate",
+        "validation": {
+            "emailRequired": "El correo electrónico es obligatorio",
+            "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+            "passwordRequired": "La contraseña es obligatoria"
+        }
     },
     "RegisterPage": {
         "createAccount": "Crear cuenta",
@@ -74,14 +79,25 @@
         "confirmPassword": "Confirmar Contraseña",
         "orContinueWith": "o continúa con",
         "alreadyHaveAccount": "¿Ya tienes una cuenta?",
-        "signIn": "Iniciar Sesión"
+        "signIn": "Iniciar Sesión",
+        "validation": {
+            "emailRequired": "El correo electrónico es obligatorio",
+            "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+            "passwordRequired": "La contraseña es obligatoria",
+            "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+            "confirmPasswordRequired": "Por favor confirma tu contraseña",
+            "passwordsDoNotMatch": "Las contraseñas no coinciden"
+        }
     },
     "CTA": {
         "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
         "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
         "addNewReview": "Agregar Nueva Reseña",
         "signIn": "Iniciar Sesión",
+        "signUp": "Regístrate",
+        "signOut": "Cerrar Sesión",
         "google": "Google",
-        "github": "GitHub"
+        "github": "GitHub",
+        "settings": "Configuración"
     }
 }

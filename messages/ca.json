@@ -64,7 +64,12 @@
         "password": "Contrasenya",
         "orContinueWith": "o continua amb",
         "noAccount": "No tens una compte?",
-        "signUp": "Registra't"
+        "signUp": "Registra't",
+        "validation": {
+            "emailRequired": "El correu electrònic és obligatori",
+            "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
+            "passwordRequired": "La contrasenya és obligatòria"
+        }
     },
     "RegisterPage": {
         "createAccount": "Crear compte",
@@ -74,14 +79,25 @@
         "confirmPassword": "Confirmar Contrasenya",
         "orContinueWith": "o continua amb",
         "alreadyHaveAccount": "¿Ja tens una compte?",
-        "signIn": "Iniciar Sessió"
+        "signIn": "Iniciar Sessió",
+        "validation": {
+            "emailRequired": "El correu electrònic és obligatori",
+            "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
+            "passwordRequired": "La contrasenya és obligatòria",
+            "passwordTooShort": "La contrasenya ha de tenir almenys 8 caràcters",
+            "confirmPasswordRequired": "Si us plau, confirma la teva contrasenya",
+            "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
+        }
     },
     "CTA": {
         "addReviewsTitle": "Vols afegir les teves pròpies ressenyes?",
         "addReviewsDescription": "Comença a construir la teva col·lecció personal de mitjans i comparteix els teus pensaments",
         "addNewReview": "Afegir Nova Ressenya",
         "signIn": "Iniciar Sessió",
+        "signUp": "Registra't",
+        "signOut": "Tancar Sessió",
         "google": "Google",
-        "github": "GitHub"
+        "github": "GitHub",
+        "settings": "Configuració"
     }
 }

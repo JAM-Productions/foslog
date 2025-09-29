@@ -64,7 +64,12 @@
         "password": "Password",
         "orContinueWith": "or continue with",
         "noAccount": "Don't have an account?",
-        "signUp": "Sign up"
+        "signUp": "Sign up",
+        "validation": {
+            "emailRequired": "Email is required",
+            "emailInvalid": "Please enter a valid email address",
+            "passwordRequired": "Password is required"
+        }
     },
     "RegisterPage": {
         "createAccount": "Create account",
@@ -74,14 +79,25 @@
         "confirmPassword": "Confirm Password",
         "orContinueWith": "or continue with",
         "alreadyHaveAccount": "Already have an account?",
-        "signIn": "Sign In"
+        "signIn": "Sign In",
+        "validation": {
+            "emailRequired": "Email is required",
+            "emailInvalid": "Please enter a valid email address",
+            "passwordRequired": "Password is required",
+            "passwordTooShort": "Password must be at least 8 characters",
+            "confirmPasswordRequired": "Please confirm your password",
+            "passwordsDoNotMatch": "Passwords do not match"
+        }
     },
     "CTA": {
         "addReviewsTitle": "Want to add your own reviews?",
         "addReviewsDescription": "Start building your personal media collection and share your thoughts",
         "addNewReview": "Add New Review",
         "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "signOut": "Sign Out",
         "google": "Google",
-        "github": "GitHub"
+        "github": "GitHub",
+        "settings": "Settings"
     }
 }
