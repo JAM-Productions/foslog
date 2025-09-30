@@ -1,11 +1,26 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { BackButton } from '@/components/ui/back-button';
+import { ReactNode } from 'react';
+
+interface MockLinkProps {
+    children: ReactNode;
+    href: string;
+    className?: string;
+    prefetch?: boolean;
+    [key: string]: unknown;
+}
 
 // Mock Next.js Link component
 vi.mock('next/link', () => {
     return {
-        default: ({ children, href, className, prefetch, ...props }: any) => (
+        default: ({
+            children,
+            href,
+            className,
+            prefetch,
+            ...props
+        }: MockLinkProps) => (
             <a
                 href={href}
                 className={className}
