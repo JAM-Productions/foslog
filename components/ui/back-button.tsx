@@ -25,10 +25,7 @@ export function BackButton({
             className={[baseClasses, className].filter(Boolean).join(' ')}
             aria-label={ariaLabel}
         >
-            <ArrowLeft
-                className="h-5 w-5"
-                style={{ width: iconSize, height: iconSize }}
-            />
+            <ArrowLeft style={{ width: iconSize, height: iconSize }} />
         </Link>
     );
 }

@@ -140,6 +140,6 @@ describe('BackButton', () => {
         render(<BackButton />);
         const icon = screen.getByRole('link').querySelector('svg');
 
-        expect(icon).toHaveClass('h-5', 'w-5');
+        expect(icon).toHaveStyle({ width: '20px', height: '20px' });
     });
 });
