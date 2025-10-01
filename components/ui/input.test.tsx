@@ -252,8 +252,8 @@ describe('Input', () => {
     });
 
     it('handles file input type with correct styling', () => {
-        render(<Input type="file" />);
-        const input = screen.getByRole('textbox', { hidden: true });
+        const { container } = render(<Input type="file" />);
+        const input = container.querySelector('input[type="file"]');
         expect(input).toHaveAttribute('type', 'file');
         expect(input).toHaveClass(
             'file:border-0',
