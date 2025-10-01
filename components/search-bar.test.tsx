@@ -3,6 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import SearchBar from '@/components/search-bar';
 import { useAppStore } from '@/lib/store';
+import { useTranslations } from 'next-intl';
+
+// Mock next-intl
+vi.mock('next-intl', () => ({
+    useTranslations: vi.fn(),
+}));
 
 // Mock the store
 vi.mock('@/lib/store', () => ({
@@ -12,9 +18,20 @@ vi.mock('@/lib/store', () => ({
 describe('SearchBar', () => {
     const mockSetSearchQuery = vi.fn();
     const mockedUseAppStore = vi.mocked(useAppStore);
+    const mockT = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            searchPlaceholder: 'Search films, books, games...',
+        };
+        return translations[key] || key;
+    });
+
+    const mockedUseTranslations = vi.mocked(useTranslations);
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockedUseTranslations.mockReturnValue(
+            mockT as unknown as ReturnType<typeof useTranslations>
+        );
         mockedUseAppStore.mockReturnValue({
             searchQuery: '',
             setSearchQuery: mockSetSearchQuery,
