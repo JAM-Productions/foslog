@@ -211,7 +211,9 @@ export default function HomePage() {
                         }
                     </p>
                     <p className="text-muted-foreground text-xs">
-                        From 2023 onwards
+                        {tStats('fromDateOnwards', {
+                            date: new Date().getFullYear(),
+                        })}
                     </p>
                 </div>
             </div>

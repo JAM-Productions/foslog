@@ -5,17 +5,20 @@ import { Sun, Moon, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { useTranslations } from 'next-intl';
 
 const ThemeToggle = () => {
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const t = useTranslations('ThemeToggle');
 
     const { theme, setTheme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
 
     const themes = [
-        { value: 'light', label: 'Light', icon: Sun },
-        { value: 'dark', label: 'Dark', icon: Moon },
-        { value: 'system', label: 'System', icon: Monitor },
+        { value: 'light', label: t('light'), icon: Sun },
+        { value: 'dark', label: t('dark'), icon: Moon },
+        { value: 'system', label: t('system'), icon: Monitor },
     ] as const;
 
     const currentTheme = themes.find((t) => t.value === theme);
