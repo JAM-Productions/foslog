@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/ui/back-button';
 import { Github } from 'lucide-react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
@@ -134,6 +135,9 @@ export default function RegisterPage() {
     return (
         <div className="bg-background absolute top-0 z-50 flex min-h-screen w-screen items-center justify-center">
             <div className="bg-muted mx-5 w-full max-w-md rounded-md border p-7">
+                <div className="mb-4 flex items-center justify-start">
+                    <BackButton />
+                </div>
                 <div className="mb-2 flex items-center justify-center">
                     <Image
                         src="/icon1.png"
