@@ -26,7 +26,8 @@
         "totalItems": "Total de Elementos",
         "recentlyAdded": "Añadido Recientemente",
         "highestRatedInCollection": "Mejor valorado en la colección",
-        "allMediaTypes": "Todos los tipos de medios"
+        "allMediaTypes": "Todos los tipos de medios",
+        "fromDateOnwards": "Desde {date} en adelante"
     },
     "Sections": {
         "trending": "Tendencias Ahora",
@@ -55,7 +56,13 @@
         "noResultsFound": "No se encontraron resultados",
         "noMediaFound": "No se encontraron {mediaType} que coincidan con \"{query}\"",
         "noMediaAvailable": "No hay {mediaType} disponibles",
-        "clearSearch": "Limpiar Búsqueda"
+        "clearSearch": "Limpiar Búsqueda",
+        "searchPlaceholder": "Buscar películas, libros, juegos..."
+    },
+    "ThemeToggle": {
+        "light": "Claro",
+        "dark": "Oscuro",
+        "system": "Sistema"
     },
     "LoginPage": {
         "welcomeBack": "Bienvenido de vuelta",

@@ -26,7 +26,8 @@
         "totalItems": "Total Items",
         "recentlyAdded": "Recently Added",
         "highestRatedInCollection": "Highest rated in collection",
-        "allMediaTypes": "All media types"
+        "allMediaTypes": "All media types",
+        "fromDateOnwards": "From {date} onwards"
     },
     "Sections": {
         "trending": "Trending Now",
@@ -55,7 +56,13 @@
         "noResultsFound": "No results found",
         "noMediaFound": "No {mediaType} found matching \"{query}\"",
         "noMediaAvailable": "No {mediaType} available",
-        "clearSearch": "Clear Search"
+        "clearSearch": "Clear Search",
+        "searchPlaceholder": "Search films, books, games..."
+    },
+    "ThemeToggle": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
     },
     "LoginPage": {
         "welcomeBack": "Welcome Back",

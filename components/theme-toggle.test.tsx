@@ -4,6 +4,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ThemeToggle from '@/components/theme-toggle';
 import { useTheme } from '@/components/theme-provider';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { useTranslations } from 'next-intl';
+
+// Mock next-intl
+vi.mock('next-intl', () => ({
+    useTranslations: vi.fn(),
+}));
 
 // Mock dependencies
 vi.mock('@/components/theme-provider', () => ({
@@ -18,9 +24,22 @@ describe('ThemeToggle', () => {
     const mockSetTheme = vi.fn();
     const mockedUseTheme = vi.mocked(useTheme);
     const mockedUseClickOutside = vi.mocked(useClickOutside);
+    const mockT = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            light: 'Light',
+            dark: 'Dark',
+            system: 'System',
+        };
+        return translations[key] || key;
+    });
+
+    const mockedUseTranslations = vi.mocked(useTranslations);
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockedUseTranslations.mockReturnValue(
+            mockT as unknown as ReturnType<typeof useTranslations>
+        );
         mockedUseTheme.mockReturnValue({
             theme: 'system',
             setTheme: mockSetTheme,

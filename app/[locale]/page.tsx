@@ -211,7 +211,9 @@ export default function HomePage() {
                         }
                     </p>
                     <p className="text-muted-foreground text-xs">
-                        From 2023 onwards
+                        {tStats('fromDateOnwards', {
+                            date: 2023, //TODO: Change to dynamic year, maybe last year or last 2 years
+                        })}
                     </p>
                 </div>
             </div>

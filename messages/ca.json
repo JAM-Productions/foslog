@@ -26,7 +26,8 @@
         "totalItems": "Total d'Elements",
         "recentlyAdded": "Afegit Recentment",
         "highestRatedInCollection": "Millor valorat a la col·lecció",
-        "allMediaTypes": "Tots els tipus de mitjans"
+        "allMediaTypes": "Tots els tipus de mitjans",
+        "fromDateOnwards": "Des de {date} en endavant"
     },
     "Sections": {
         "trending": "Tendències Ara",
@@ -55,7 +56,13 @@
         "noResultsFound": "No s'han trobat resultats",
         "noMediaFound": "No s'han trobat {mediaType} que coincideixin amb \"{query}\"",
         "noMediaAvailable": "No hi ha {mediaType} disponibles",
-        "clearSearch": "Netejar Cerca"
+        "clearSearch": "Netejar Cerca",
+        "searchPlaceholder": "Cercar pel·lícules, llibres, jocs..."
+    },
+    "ThemeToggle": {
+        "light": "Clar",
+        "dark": "Fosc",
+        "system": "Sistema"
     },
     "LoginPage": {
         "welcomeBack": "Benvingut de nou",

@@ -1,17 +1,19 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
+import { useTranslations } from 'next-intl';
 
 const MediaTypeFilter = () => {
+    const t = useTranslations('MediaTypes');
     const { selectedMediaType, setSelectedMediaType } = useAppStore();
 
     const mediaTypes = [
-        { value: 'all', label: 'All', icon: '🔍' },
-        { value: 'film', label: 'Films', icon: '🎬' },
-        { value: 'series', label: 'Series', icon: '📺' },
-        { value: 'game', label: 'Games', icon: '🎮' },
-        { value: 'book', label: 'Books', icon: '📚' },
-        { value: 'music', label: 'Music', icon: '🎵' },
+        { value: 'all', label: t('all'), icon: '🔍' },
+        { value: 'film', label: t('films'), icon: '🎬' },
+        { value: 'series', label: t('series'), icon: '📺' },
+        { value: 'game', label: t('games'), icon: '🎮' },
+        { value: 'book', label: t('books'), icon: '📚' },
+        { value: 'music', label: t('music'), icon: '🎵' },
     ] as const;
 
     return (
