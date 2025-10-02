@@ -42,8 +42,7 @@
     "Header": {
         "search": "Cercar mitjans...",
         "profile": "Perfil",
-        "settings": "Configuració",
-        "foslog": "Foslog"
+        "settings": "Configuració"
     },
     "LanguageSelector": {
         "selectLanguage": "Seleccionar idioma",

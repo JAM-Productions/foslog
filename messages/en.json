@@ -42,8 +42,7 @@
     "Header": {
         "search": "Search media...",
         "profile": "Profile",
-        "settings": "Settings",
-        "foslog": "Foslog"
+        "settings": "Settings"
     },
     "LanguageSelector": {
         "selectLanguage": "Select language",

@@ -1,12 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Header from '@/components/header';
-import { useTranslations } from 'next-intl';
-
-// Mock next-intl
-vi.mock('next-intl', () => ({
-    useTranslations: vi.fn(),
-}));
 
 // Mock all the sub-components
 vi.mock('@/components/media-type-filter', () => ({
@@ -49,20 +43,8 @@ vi.mock('next/image', () => ({
 }));
 
 describe('Header', () => {
-    const mockT = vi.fn((key: string) => {
-        const translations: Record<string, string> = {
-            foslog: 'Foslog',
-        };
-        return translations[key] || key;
-    });
-
-    const mockedUseTranslations = vi.mocked(useTranslations);
-
     beforeEach(() => {
         vi.clearAllMocks();
-        mockedUseTranslations.mockReturnValue(
-            mockT as unknown as ReturnType<typeof useTranslations>
-        );
     });
 
     it('renders the header with correct structure', () => {

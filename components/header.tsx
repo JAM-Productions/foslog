@@ -4,10 +4,8 @@ import ThemeToggle from '@/components/theme-toggle';
 import UserMenu from '@/components/user-menu';
 import SearchBar from '@/components/search-bar';
 import LanguageSelector from '@/components/language-selector';
-import { useTranslations } from 'next-intl';
 
 export default function Header() {
-    const t = useTranslations('Header');
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur">
             <div className="container mx-auto px-4">
@@ -24,7 +22,7 @@ export default function Header() {
                             />
                         </div>
                         <span className="text-xl font-bold tracking-tight">
-                            {t('foslog')}
+                            Foslog
                         </span>
                     </div>
 
