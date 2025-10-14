@@ -7,7 +7,7 @@ import { signOut } from '@/lib/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import type { User } from '@/lib/auth-client';
+import type { User, Session } from '@/lib/auth-client';
 
 // Mock dependencies
 vi.mock('@/lib/auth-provider', () => ({
@@ -225,7 +225,7 @@ describe('UserMenu', () => {
             const userWithoutImage = { ...mockUser, image: null };
             mockedUseAuth.mockReturnValue({
                 user: userWithoutImage,
-                session: { user: userWithoutImage } as any,
+                session: { user: userWithoutImage } as Session,
                 isLoading: false,
                 isAuthenticated: true,
             });
@@ -430,7 +430,7 @@ describe('UserMenu', () => {
         it('user name span has correct responsive classes when logged in', () => {
             mockedUseAuth.mockReturnValue({
                 user: mockUser,
-                session: { user: mockUser } as any,
+                session: { user: mockUser } as Session,
                 isLoading: false,
                 isAuthenticated: true,
             });
@@ -465,7 +465,7 @@ describe('UserMenu', () => {
         it('calls useClickOutside with updated state when logged in and dropdown is open', async () => {
             mockedUseAuth.mockReturnValue({
                 user: mockUser,
-                session: { user: mockUser } as any,
+                session: { user: mockUser } as Session,
                 isLoading: false,
                 isAuthenticated: true,
             });
