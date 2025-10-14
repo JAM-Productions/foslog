@@ -2,15 +2,20 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UserMenu from '@/components/user-menu';
-import { useAppStore } from '@/lib/store';
+import { useAuth } from '@/lib/auth-provider';
+import { signOut } from '@/lib/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import type { User } from '@/lib/store';
+import type { User } from '@/lib/auth-client';
 
 // Mock dependencies
-vi.mock('@/lib/store', () => ({
-    useAppStore: vi.fn(),
+vi.mock('@/lib/auth-provider', () => ({
+    useAuth: vi.fn(),
+}));
+
+vi.mock('@/lib/auth-client', () => ({
+    signOut: vi.fn(),
 }));
 
 vi.mock('@/hooks/useClickOutside', () => ({
@@ -26,7 +31,6 @@ vi.mock('next-intl', () => ({
 }));
 
 describe('UserMenu', () => {
-    const mockSetUser = vi.fn();
     const mockPush = vi.fn();
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
@@ -38,7 +42,8 @@ describe('UserMenu', () => {
         return translations[key] || key;
     });
 
-    const mockedUseAppStore = vi.mocked(useAppStore);
+    const mockedUseAuth = vi.mocked(useAuth);
+    const mockedSignOut = vi.mocked(signOut);
     const mockedUseClickOutside = vi.mocked(useClickOutside);
     const mockedUseRouter = vi.mocked(useRouter);
     const mockedUseTranslations = vi.mocked(useTranslations);
@@ -47,9 +52,10 @@ describe('UserMenu', () => {
         id: '1',
         name: 'John Doe',
         email: 'john@example.com',
+        emailVerified: true,
         image: 'https://example.com/avatar.jpg',
-        bio: 'Test user',
-        joinedAt: new Date('2023-01-01'),
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01'),
     };
 
     beforeEach(() => {
@@ -66,28 +72,16 @@ describe('UserMenu', () => {
         mockedUseTranslations.mockReturnValue(
             mockT as unknown as ReturnType<typeof useTranslations>
         );
+        mockedSignOut.mockImplementation(() => Promise.resolve());
     });
 
     describe('when user is not logged in', () => {
         beforeEach(() => {
-            mockedUseAppStore.mockReturnValue({
+            mockedUseAuth.mockReturnValue({
                 user: null,
-                setUser: mockSetUser,
-                // Add other store properties
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: null,
+                isLoading: false,
+                isAuthenticated: false,
             });
         });
 
@@ -191,24 +185,25 @@ describe('UserMenu', () => {
 
     describe('when user is logged in', () => {
         beforeEach(() => {
-            mockedUseAppStore.mockReturnValue({
+            const mockSession = {
                 user: mockUser,
-                setUser: mockSetUser,
-                // Add other store properties
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: {
+                    id: 'session-1',
+                    userId: mockUser.id,
+                    token: 'mock-token',
+                    expiresAt: new Date(Date.now() + 86400000), // 24 hours from now
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    ipAddress: '127.0.0.1',
+                    userAgent: 'test-agent'
+                }
+            };
+
+            mockedUseAuth.mockReturnValue({
+                user: mockUser,
+                session: mockSession,
+                isLoading: false,
+                isAuthenticated: true,
             });
         });
 
@@ -227,24 +222,12 @@ describe('UserMenu', () => {
         });
 
         it('displays user icon when no image is provided', () => {
-            const userWithoutImage = { ...mockUser, image: undefined };
-            mockedUseAppStore.mockReturnValue({
+            const userWithoutImage = { ...mockUser, image: null };
+            mockedUseAuth.mockReturnValue({
                 user: userWithoutImage,
-                setUser: mockSetUser,
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: { user: userWithoutImage } as any,
+                isLoading: false,
+                isAuthenticated: true,
             });
 
             render(<UserMenu />);
@@ -296,7 +279,7 @@ describe('UserMenu', () => {
             const signOutButton = screen.getByText('Sign Out');
             await user.click(signOutButton);
 
-            expect(mockSetUser).toHaveBeenCalledWith(null);
+            expect(mockedSignOut).toHaveBeenCalled();
         });
 
         it('calls useClickOutside hook with correct parameters', () => {
@@ -420,24 +403,11 @@ describe('UserMenu', () => {
 
     describe('responsive behavior', () => {
         beforeEach(() => {
-            mockedUseAppStore.mockReturnValue({
+            mockedUseAuth.mockReturnValue({
                 user: null,
-                setUser: mockSetUser,
-                // Add other store properties
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: null,
+                isLoading: false,
+                isAuthenticated: false,
             });
         });
 
@@ -458,23 +428,11 @@ describe('UserMenu', () => {
         });
 
         it('user name span has correct responsive classes when logged in', () => {
-            mockedUseAppStore.mockReturnValue({
+            mockedUseAuth.mockReturnValue({
                 user: mockUser,
-                setUser: mockSetUser,
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: { user: mockUser } as any,
+                isLoading: false,
+                isAuthenticated: true,
             });
 
             render(<UserMenu />);
@@ -505,23 +463,11 @@ describe('UserMenu', () => {
         });
 
         it('calls useClickOutside with updated state when logged in and dropdown is open', async () => {
-            mockedUseAppStore.mockReturnValue({
+            mockedUseAuth.mockReturnValue({
                 user: mockUser,
-                setUser: mockSetUser,
-                theme: 'system',
-                setTheme: vi.fn(),
-                selectedMediaType: 'all',
-                setSelectedMediaType: vi.fn(),
-                searchQuery: '',
-                setSearchQuery: vi.fn(),
-                mediaItems: [],
-                setMediaItems: vi.fn(),
-                addMediaItem: vi.fn(),
-                reviews: [],
-                setReviews: vi.fn(),
-                addReview: vi.fn(),
-                updateReview: vi.fn(),
-                deleteReview: vi.fn(),
+                session: { user: mockUser } as any,
+                isLoading: false,
+                isAuthenticated: true,
             });
 
             const user = userEvent.setup();
