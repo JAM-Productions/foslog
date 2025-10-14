@@ -195,8 +195,8 @@ describe('UserMenu', () => {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                     ipAddress: '127.0.0.1',
-                    userAgent: 'test-agent'
-                }
+                    userAgent: 'test-agent',
+                },
             };
 
             mockedUseAuth.mockReturnValue({
