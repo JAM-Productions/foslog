@@ -3,7 +3,8 @@
 import { useRef, useState } from 'react';
 import { User, LogOut, Settings, CircleUser } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/lib/store';
+import { useAuth } from '@/lib/auth-provider';
+import { signOut } from '@/lib/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -14,7 +15,7 @@ const UserMenu = () => {
     const menuUserRef = useRef<HTMLDivElement>(null);
     const menuNotUserRef = useRef<HTMLDivElement>(null);
 
-    const { user, setUser } = useAppStore();
+    const { user, isAuthenticated } = useAuth();
     const [isNotUserOpen, setIsNotUserOpen] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
 
@@ -27,7 +28,7 @@ const UserMenu = () => {
         router.push(path);
     };
 
-    if (!user) {
+    if (!isAuthenticated || !user) {
         return (
             <div
                 className="relative flex items-center gap-2"
@@ -125,9 +126,13 @@ const UserMenu = () => {
                             {tCTA('settings')}
                         </button>
                         <button
-                            onClick={() => {
-                                setUser(null);
-                                setIsUserOpen(false);
+                            onClick={async () => {
+                                try {
+                                    await signOut();
+                                    setIsUserOpen(false);
+                                } catch (error) {
+                                    console.error('Logout error:', error);
+                                }
                             }}
                             className="hover:bg-accent hover:text-accent-foreground text-destructive flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                         >

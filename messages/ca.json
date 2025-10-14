@@ -81,6 +81,7 @@
     "RegisterPage": {
         "createAccount": "Crear compte",
         "description": "Uneix-te a Foslog per començar a ressenyar i descobrir mitjans",
+        "name": "Nom Complet",
         "email": "Correu Electrònic",
         "password": "Contrasenya",
         "confirmPassword": "Confirmar Contrasenya",
@@ -88,6 +89,8 @@
         "alreadyHaveAccount": "Ja tens un compte?",
         "signIn": "Iniciar Sessió",
         "validation": {
+            "nameRequired": "El nom és obligatori",
+            "nameTooShort": "El nom ha de tenir almenys 2 caràcters",
             "emailRequired": "El correu electrònic és obligatori",
             "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
             "passwordRequired": "La contrasenya és obligatòria",

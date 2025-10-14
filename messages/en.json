@@ -81,6 +81,7 @@
     "RegisterPage": {
         "createAccount": "Create account",
         "description": "Join Foslog to start reviewing and discovering media",
+        "name": "Full Name",
         "email": "Email",
         "password": "Password",
         "confirmPassword": "Confirm Password",
@@ -88,6 +89,8 @@
         "alreadyHaveAccount": "Already have an account?",
         "signIn": "Sign In",
         "validation": {
+            "nameRequired": "Name is required",
+            "nameTooShort": "Name must be at least 2 characters",
             "emailRequired": "Email is required",
             "emailInvalid": "Please enter a valid email address",
             "passwordRequired": "Password is required",

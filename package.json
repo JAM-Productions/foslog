@@ -13,11 +13,16 @@
         "test": "vitest run"
     },
     "dependencies": {
+        "@prisma/client": "^6.16.3",
+        "@types/bcryptjs": "^2.4.6",
+        "bcryptjs": "^3.0.2",
+        "better-auth": "^1.3.25",
         "lucide-react": "^0.523.0",
         "next": "15.5.4",
         "next-auth": "^5.0.0-beta.29",
         "next-intl": "^4.3.4",
         "prettier-plugin-tailwindcss": "^0.6.13",
+        "prisma": "^6.16.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "zustand": "^5.0.5"

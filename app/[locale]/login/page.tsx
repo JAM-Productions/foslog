@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
+import { signIn } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 interface ValidationErrors {
     email?: string;
@@ -18,9 +20,12 @@ interface ValidationErrors {
 export default function LoginPage() {
     const tLoginPage = useTranslations('LoginPage');
     const tCTA = useTranslations('CTA');
+    const router = useRouter();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
         {}
@@ -82,15 +87,49 @@ export default function LoginPage() {
         }
     };
 
-    const handleSignIn = () => {
+    const handleSignIn = async () => {
         setHasAttemptedSignIn(true);
         const errors = validateForm();
         setValidationErrors(errors);
 
         if (Object.keys(errors).length === 0) {
-            console.log('Sign in clicked - form is valid');
-        } else {
-            console.log('Sign in clicked - form has validation errors');
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const result = await signIn.email({
+                    email,
+                    password,
+                    callbackURL: '/',
+                });
+
+                if (result.data) {
+                    router.push('/');
+                } else if (result.error) {
+                    setError(result.error.message || 'Login failed');
+                }
+            } catch (err) {
+                setError('An unexpected error occurred');
+                console.error('Login error:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
+
+    const handleSocialSignIn = async (provider: 'google' | 'github') => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await signIn.social({
+                provider,
+                callbackURL: '/',
+            });
+        } catch (err) {
+            setError(`${provider} login failed`);
+            console.error(`${provider} login error:`, err);
+            setIsLoading(false);
         }
     };
 
@@ -176,10 +215,17 @@ export default function LoginPage() {
                     <Button
                         type="submit"
                         className="mb-4 w-full"
+                        disabled={isLoading}
                     >
-                        {tCTA('signIn')}
+                        {isLoading ? 'Signing in...' : tCTA('signIn')}
                     </Button>
                 </form>
+
+                {error && (
+                    <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
 
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
@@ -195,6 +241,8 @@ export default function LoginPage() {
                     <Button
                         variant="outline"
                         className="flex-1"
+                        onClick={() => handleSocialSignIn('google')}
+                        disabled={isLoading}
                     >
                         <div className="flex items-center gap-2.5">
                             <Image
@@ -209,6 +257,8 @@ export default function LoginPage() {
                     <Button
                         variant="outline"
                         className="flex-1"
+                        onClick={() => handleSocialSignIn('github')}
+                        disabled={isLoading}
                     >
                         <Github className="mr-2 h-4 w-4" />
                         {tCTA('github')}

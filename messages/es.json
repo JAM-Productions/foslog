@@ -81,6 +81,7 @@
     "RegisterPage": {
         "createAccount": "Crear cuenta",
         "description": "Únete a Foslog para comenzar a reseñar y descubrir medios",
+        "name": "Nombre Completo",
         "email": "Correo Electrónico",
         "password": "Contraseña",
         "confirmPassword": "Confirmar Contraseña",
@@ -88,6 +89,8 @@
         "alreadyHaveAccount": "¿Ya tienes una cuenta?",
         "signIn": "Iniciar Sesión",
         "validation": {
+            "nameRequired": "El nombre es obligatorio",
+            "nameTooShort": "El nombre debe tener al menos 2 caracteres",
             "emailRequired": "El correo electrónico es obligatorio",
             "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
             "passwordRequired": "La contraseña es obligatoria",
