@@ -11,6 +11,7 @@ Unlike apps like _Letterboxd_ or _Goodreads_ that are limited to just one kind o
 ## Benefits
 
 - Discover **new hobbies and works** thanks to the variety of reviews gathered in one platform.
+
 - Expand your interests by connecting recommendations across different media types.
 
 ## Technology
