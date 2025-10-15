@@ -4,7 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const handler = toNextJsHandler(auth);
 
-async function addCorsHeaders(request: NextRequest, handler: Function) {
+async function addCorsHeaders(
+    request: NextRequest,
+    handler: (req: NextRequest | Request) => Promise<Response | NextResponse>
+) {
     const response = await handler(request);
     response.headers.set('Access-Control-Allow-Origin', '*');
     response.headers.set(
@@ -15,7 +18,7 @@ async function addCorsHeaders(request: NextRequest, handler: Function) {
         'Access-Control-Allow-Headers',
         'Content-Type, Authorization'
     );
-    return response;
+    return NextResponse.json(await response.json(), response);
 }
 
 export async function GET(request: NextRequest) {
@@ -26,7 +29,7 @@ export async function POST(request: NextRequest) {
     return addCorsHeaders(request, handler.POST);
 }
 
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS() {
     return new NextResponse(null, {
         status: 200,
         headers: {
