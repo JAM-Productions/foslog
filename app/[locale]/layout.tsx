@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Ubuntu_Mono } from 'next/font/google';
 import '../globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AuthProvider } from '@/lib/auth-provider';
 import Header from '@/components/header';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
@@ -83,8 +84,10 @@ export default async function LocaleLayout({
             >
                 <NextIntlClientProvider>
                     <ThemeProvider>
-                        <Header />
-                        <main className="flex-1">{children}</main>
+                        <AuthProvider>
+                            <Header />
+                            <main className="flex-1">{children}</main>
+                        </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>

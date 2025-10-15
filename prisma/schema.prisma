@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  reviews  Review[]
+
+  @@map("users")
+}
+
+model Account {
+  id                         String    @id @default(cuid())
+  userId                     String
+  accountId                  String
+  providerId                 String
+  accessToken                String?   @db.Text
+  refreshToken               String?   @db.Text
+  idToken                    String?   @db.Text
+  accessTokenExpiresAt       DateTime?
+  refreshTokenExpiresAt      DateTime?
+  scope                      String?
+  password                   String?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Verification {
+  id         String     @unique @default(cuid())
+  identifier String
+  token      String?
+  expiresAt  DateTime
+  value      Json?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([identifier, token])
+  @@map("verification")
+}
+
+// Media models
+model MediaItem {
+  id            String    @id @default(cuid())
+  title         String
+  type          MediaType
+  year          Int?
+  director      String?
+  author        String?
+  artist        String?
+  genre         String[]
+  poster        String?
+  cover         String?
+  description   String
+  averageRating Float     @default(0)
+  totalReviews  Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  reviews Review[]
+
+  @@map("media_items")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  review    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mediaId String
+  userId  String
+
+  media MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([mediaId, userId])
+  @@map("reviews")
+}
+
+enum MediaType {
+  FILM
+  SERIES
+  GAME
+  BOOK
+  MUSIC
+
+  @@map("media_type")
+}

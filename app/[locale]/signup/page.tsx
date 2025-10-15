@@ -9,8 +9,11 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
+import { signUp, signIn } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 interface ValidationErrors {
+    name?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -19,15 +22,28 @@ interface ValidationErrors {
 export default function RegisterPage() {
     const tRegisterPage = useTranslations('RegisterPage');
     const tCTA = useTranslations('CTA');
+    const router = useRouter();
 
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
         {}
     );
     const [hasAttemptedSignUp, setHasAttemptedSignUp] = useState(false);
+
+    const validateName = (nameValue: string): string | undefined => {
+        if (nameValue.trim() === '') {
+            return tRegisterPage('validation.nameRequired');
+        } else if (nameValue.trim().length < 2) {
+            return tRegisterPage('validation.nameTooShort');
+        }
+        return undefined;
+    };
 
     const validateEmail = (emailValue: string): string | undefined => {
         if (emailValue.trim() === '') {
@@ -62,10 +78,12 @@ export default function RegisterPage() {
     const validateForm = (): ValidationErrors => {
         const errors: ValidationErrors = {};
 
+        const nameError = validateName(name);
         const emailError = validateEmail(email);
         const passwordError = validatePassword(password);
         const confirmPasswordError = validateConfirmPassword(confirmPassword);
 
+        if (nameError) errors.name = nameError;
         if (emailError) errors.email = emailError;
         if (passwordError) errors.password = passwordError;
         if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
@@ -78,7 +96,9 @@ export default function RegisterPage() {
         value: string,
         validator: (value: string) => string | undefined
     ) => {
-        if (field === 'email') {
+        if (field === 'name') {
+            setName(value);
+        } else if (field === 'email') {
             setEmail(value);
         } else if (field === 'password') {
             setPassword(value);
@@ -120,15 +140,50 @@ export default function RegisterPage() {
         }
     };
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
         setHasAttemptedSignUp(true);
         const errors = validateForm();
         setValidationErrors(errors);
 
         if (Object.keys(errors).length === 0) {
-            console.log('Sign up clicked - form is valid');
-        } else {
-            console.log('Sign up clicked - form has validation errors');
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const result = await signUp.email({
+                    name,
+                    email,
+                    password,
+                    callbackURL: '/',
+                });
+
+                if (result.data) {
+                    router.push('/');
+                } else if (result.error) {
+                    setError(result.error.message || 'Sign up failed');
+                }
+            } catch (err) {
+                setError('An unexpected error occurred');
+                console.error('Sign up error:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
+
+    const handleSocialSignIn = async (provider: 'google' | 'github') => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await signIn.social({
+                provider,
+                callbackURL: '/',
+            });
+        } catch (err) {
+            setError(`${provider} sign up failed`);
+            console.error(`${provider} sign up error:`, err);
+            setIsLoading(false);
         }
     };
 
@@ -161,6 +216,29 @@ export default function RegisterPage() {
                         handleSignUp();
                     }}
                 >
+                    <div className="flex flex-col">
+                        <Input
+                            type="text"
+                            placeholder={tRegisterPage('name')}
+                            name="name"
+                            value={name}
+                            onChange={(e) =>
+                                handleInputChange(
+                                    'name',
+                                    e.target.value,
+                                    validateName
+                                )
+                            }
+                            className={
+                                validationErrors.name ? 'border-red-500' : ''
+                            }
+                        />
+                        {validationErrors.name && (
+                            <span className="mt-1.5 text-xs text-red-500">
+                                {validationErrors.name}
+                            </span>
+                        )}
+                    </div>
                     <div className="flex flex-col">
                         <Input
                             type="email"
@@ -238,10 +316,17 @@ export default function RegisterPage() {
                     <Button
                         type="submit"
                         className="mb-4 w-full"
+                        disabled={isLoading}
                     >
-                        {tCTA('signUp')}
+                        {isLoading ? 'Creating account...' : tCTA('signUp')}
                     </Button>
                 </form>
+
+                {error && (
+                    <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
 
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
@@ -257,6 +342,8 @@ export default function RegisterPage() {
                     <Button
                         variant="outline"
                         className="flex-1"
+                        onClick={() => handleSocialSignIn('google')}
+                        disabled={isLoading}
                     >
                         <div className="flex items-center gap-2.5">
                             <Image
@@ -271,6 +358,8 @@ export default function RegisterPage() {
                     <Button
                         variant="outline"
                         className="flex-1"
+                        onClick={() => handleSocialSignIn('github')}
+                        disabled={isLoading}
                     >
                         <Github className="mr-2 h-4 w-4" />
                         {tCTA('github')}
