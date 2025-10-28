@@ -2,11 +2,7 @@
     "HomePage": {
         "welcomeBack": "Benvingut de nou, {name}! 👋",
         "discover": "Descobreix i ressenya el teu proper {mediaType} favorit",
-        "media": "contingut",
-        "welcomeTitle": "Benvingut a Foslog",
-        "welcomeDescription": "El teu diari personal de ressenyes de mitjans. Rastreja i ressenya pel·lícules, sèries, llibres, jocs i música, tot en un sol lloc.",
-        "getStarted": "Començar",
-        "learnMore": "Saber-ne Més"
+        "media": "contingut"
     },
     "MediaTypes": {
         "all": "Tots els Mitjans",

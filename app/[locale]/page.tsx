@@ -2,12 +2,12 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useAppStore } from '@/lib/store';
-import { mockMediaItems, mockReviews, mockUsers } from '@/lib/mock-data';
+import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 import MediaCard from '@/components/media-card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/lib/auth-provider';
 
 export default function HomePage() {
     const t = useTranslations('HomePage');
@@ -21,19 +21,16 @@ export default function HomePage() {
         setReviews,
         selectedMediaType,
         searchQuery,
-        user,
-        setUser,
     } = useAppStore();
+    const { user } = useAuth();
 
     // Initialize with mock data
     useEffect(() => {
         if (mediaItems.length === 0) {
             setMediaItems(mockMediaItems);
             setReviews(mockReviews);
-            // For demo purposes, set a mock user
-            setUser(mockUsers[0]);
         }
-    }, [mediaItems.length, setMediaItems, setReviews, setUser]);
+    }, [mediaItems.length, setMediaItems, setReviews]);
 
     // Filter and search media items
     const filteredMedia = useMemo(() => {
@@ -111,56 +108,24 @@ export default function HomePage() {
         </div>
     );
 
-    if (!user) {
-        return (
-            <div className="container mx-auto px-4 py-16">
-                <div className="mx-auto max-w-2xl text-center">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center">
-                        <Image
-                            src="/favicon.svg"
-                            alt="Foslog"
-                            width={64}
-                            height={64}
-                            className="h-16 w-16"
-                        />
-                    </div>
-                    <h1 className="mb-4 text-4xl font-bold tracking-tight">
-                        {t('welcomeTitle')}
-                    </h1>
-                    <p className="text-muted-foreground mb-8 text-xl">
-                        {t('welcomeDescription')}
-                    </p>
-                    <div className="flex justify-center gap-4">
-                        <Button size="lg">{t('getStarted')}</Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                        >
-                            {t('learnMore')}
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Welcome Section */}
-            <div className="mb-12">
-                <h1 className="mb-2 text-3xl font-bold tracking-tight">
-                    {t('welcomeBack', { name: user.name })}
-                </h1>
-                <p className="text-muted-foreground">
-                    {t('discover', {
-                        mediaType:
-                            selectedMediaType === 'all'
-                                ? t('media')
-                                : tMediaTypes(selectedMediaType),
-                    })}
-                </p>
-            </div>
-
+            {user && (
+                <div className="mb-12">
+                    <h1 className="mb-2 text-3xl font-bold tracking-tight">
+                        {t('welcomeBack', { name: user.name })}
+                    </h1>
+                    <p className="text-muted-foreground">
+                        {t('discover', {
+                            mediaType:
+                                selectedMediaType === 'all'
+                                    ? t('media')
+                                    : tMediaTypes(selectedMediaType),
+                        })}
+                    </p>
+                </div>
+            )}
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="bg-card rounded-lg border p-4">

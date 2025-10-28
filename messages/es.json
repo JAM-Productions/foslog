@@ -2,11 +2,7 @@
     "HomePage": {
         "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
         "discover": "Descubre y reseña tu próximo {mediaType} favorito",
-        "media": "contenido",
-        "welcomeTitle": "Bienvenido a Foslog",
-        "welcomeDescription": "Tu diario personal de reseñas de medios. Rastrea y reseña películas, series, libros, juegos y música, todo en un solo lugar.",
-        "getStarted": "Comenzar",
-        "learnMore": "Saber Más"
+        "media": "contenido"
     },
     "MediaTypes": {
         "all": "Todos los Medios",
