@@ -66,12 +66,14 @@
     },
     "LoginPage": {
         "welcomeBack": "Bienvenido de vuelta",
-        "description": "Inicia sesión en tu cuenta de Foslog",
+        "description": "Accede a tu cuenta de Foslog",
         "email": "Correo Electrónico",
         "password": "Contraseña",
         "orContinueWith": "o continúa con",
         "noAccount": "¿No tienes una cuenta?",
         "signUp": "Regístrate",
+        "login": "Acceder",
+        "loggingIn": "Iniciando sesión...",
         "validation": {
             "emailRequired": "El correo electrónico es obligatorio",
             "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
@@ -87,7 +89,7 @@
         "confirmPassword": "Confirmar Contraseña",
         "orContinueWith": "o continúa con",
         "alreadyHaveAccount": "¿Ya tienes una cuenta?",
-        "signIn": "Iniciar Sesión",
+        "login": "Acceder",
         "validation": {
             "nameRequired": "El nombre es obligatorio",
             "nameTooShort": "El nombre debe tener al menos 2 caracteres",
@@ -103,7 +105,7 @@
         "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
         "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
         "addNewReview": "Agregar Nueva Reseña",
-        "signIn": "Iniciar Sesión",
+        "login": "Acceder",
         "signUp": "Regístrate",
         "signOut": "Cerrar Sesión",
         "google": "Google",

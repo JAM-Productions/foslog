@@ -217,7 +217,9 @@ export default function LoginPage() {
                         className="mb-4 w-full"
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Signing in...' : tCTA('signIn')}
+                        {isLoading
+                            ? tLoginPage('loggingIn')
+                            : tLoginPage('login')}
                     </Button>
                 </form>
 
