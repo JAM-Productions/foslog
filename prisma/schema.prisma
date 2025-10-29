@@ -62,6 +62,17 @@ model Session {
   @@map("sessions")
 }
 
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
 model MediaItem {
   id            String    @id @default(cuid())
   title         String
