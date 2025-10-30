@@ -49,7 +49,7 @@ const UserMenu = () => {
                             size="sm"
                             onClick={() => handleNavigate('/login')}
                         >
-                            {tCTA('signIn')}
+                            {tCTA('login')}
                         </Button>
                         <Button
                             size="sm"
@@ -69,7 +69,7 @@ const UserMenu = () => {
                                     setIsNotUserOpen(false);
                                 }}
                             >
-                                {tCTA('signIn')}
+                                {tCTA('login')}
                             </button>
                             <button
                                 onClick={() => {

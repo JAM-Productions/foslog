@@ -372,7 +372,7 @@ export default function RegisterPage() {
                             href="/login"
                             className="text-primary"
                         >
-                            {tRegisterPage('signIn')}
+                            {tRegisterPage('login')}
                         </Link>
                     </div>
                 </div>

@@ -34,7 +34,7 @@ describe('UserMenu', () => {
     const mockPush = vi.fn();
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
-            signIn: 'Log In',
+            login: 'Log In',
             signUp: 'Sign Up',
             settings: 'Settings',
             signOut: 'Sign Out',

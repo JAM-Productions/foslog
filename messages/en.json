@@ -2,11 +2,7 @@
     "HomePage": {
         "welcomeBack": "Welcome back, {name}! 👋",
         "discover": "Discover and review your next favorite {mediaType}",
-        "media": "media",
-        "welcomeTitle": "Welcome to Foslog",
-        "welcomeDescription": "Your personal media review journal. Track and review films, series, books, games, and music all in one place.",
-        "getStarted": "Get Started",
-        "learnMore": "Learn More"
+        "media": "media"
     },
     "MediaTypes": {
         "all": "All Media",
@@ -66,12 +62,14 @@
     },
     "LoginPage": {
         "welcomeBack": "Welcome Back",
-        "description": "Sign in to your Foslog account",
+        "description": "Login to your Foslog account",
         "email": "Email",
         "password": "Password",
         "orContinueWith": "or continue with",
         "noAccount": "Don't have an account?",
         "signUp": "Sign up",
+        "login": "Login",
+        "loggingIn": "Logging in...",
         "validation": {
             "emailRequired": "Email is required",
             "emailInvalid": "Please enter a valid email address",
@@ -87,7 +85,7 @@
         "confirmPassword": "Confirm Password",
         "orContinueWith": "or continue with",
         "alreadyHaveAccount": "Already have an account?",
-        "signIn": "Sign In",
+        "login": "Login",
         "validation": {
             "nameRequired": "Name is required",
             "nameTooShort": "Name must be at least 2 characters",
@@ -103,7 +101,7 @@
         "addReviewsTitle": "Want to add your own reviews?",
         "addReviewsDescription": "Start building your personal media collection and share your thoughts",
         "addNewReview": "Add New Review",
-        "signIn": "Sign In",
+        "login": "Login",
         "signUp": "Sign Up",
         "signOut": "Sign Out",
         "google": "Google",

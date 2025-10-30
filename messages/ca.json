@@ -2,11 +2,7 @@
     "HomePage": {
         "welcomeBack": "Benvingut de nou, {name}! 👋",
         "discover": "Descobreix i ressenya el teu proper {mediaType} favorit",
-        "media": "contingut",
-        "welcomeTitle": "Benvingut a Foslog",
-        "welcomeDescription": "El teu diari personal de ressenyes de mitjans. Rastreja i ressenya pel·lícules, sèries, llibres, jocs i música, tot en un sol lloc.",
-        "getStarted": "Començar",
-        "learnMore": "Saber-ne Més"
+        "media": "contingut"
     },
     "MediaTypes": {
         "all": "Tots els Mitjans",
@@ -66,12 +62,14 @@
     },
     "LoginPage": {
         "welcomeBack": "Benvingut de nou",
-        "description": "Inicia sessió al teu compte de Foslog",
+        "description": "Accedeix al teu compte de Foslog",
         "email": "Correu Electrònic",
         "password": "Contrasenya",
         "orContinueWith": "o continua amb",
         "noAccount": "No tens un compte?",
         "signUp": "Registra't",
+        "login": "Accedeix",
+        "loggingIn": "Iniciant sessió...",
         "validation": {
             "emailRequired": "El correu electrònic és obligatori",
             "emailInvalid": "Si us plau, introdueix una adreça de correu electrònic vàlida",
@@ -87,7 +85,7 @@
         "confirmPassword": "Confirmar Contrasenya",
         "orContinueWith": "o continua amb",
         "alreadyHaveAccount": "Ja tens un compte?",
-        "signIn": "Iniciar Sessió",
+        "login": "Accedeix",
         "validation": {
             "nameRequired": "El nom és obligatori",
             "nameTooShort": "El nom ha de tenir almenys 2 caràcters",
@@ -103,7 +101,7 @@
         "addReviewsTitle": "Vols afegir les teves pròpies ressenyes?",
         "addReviewsDescription": "Comença a construir la teva col·lecció personal de mitjans i comparteix els teus pensaments",
         "addNewReview": "Afegir Nova Ressenya",
-        "signIn": "Iniciar Sessió",
+        "login": "Accedeix",
         "signUp": "Registra't",
         "signOut": "Tancar Sessió",
         "google": "Google",
