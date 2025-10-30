@@ -2,11 +2,7 @@
     "HomePage": {
         "welcomeBack": "Welcome back, {name}! 👋",
         "discover": "Discover and review your next favorite {mediaType}",
-        "media": "media",
-        "welcomeTitle": "Welcome to Foslog",
-        "welcomeDescription": "Your personal media review journal. Track and review films, series, books, games, and music all in one place.",
-        "getStarted": "Get Started",
-        "learnMore": "Learn More"
+        "media": "media"
     },
     "MediaTypes": {
         "all": "All Media",
