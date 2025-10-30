@@ -18,15 +18,25 @@ export default function Header() {
     const isCollapsed = autoCollapsed || manuallyCollapsed;
 
     // Helper function for collapsible element classes
+    // Uses explicit Tailwind class names to avoid purging issues in production
     const getCollapsibleClasses = (
         baseClasses: string,
-        collapsedHeight = '0'
+        collapsedHeight: '0' | '20' | '40' = '0'
     ) => {
-        const collapsed = `max-h-${collapsedHeight} overflow-hidden opacity-0`;
-        const expanded =
-            collapsedHeight === '0'
-                ? 'opacity-100'
-                : `max-h-${collapsedHeight === '20' ? '20' : '40'} opacity-100`;
+        let collapsed = '';
+        let expanded = '';
+
+        if (collapsedHeight === '0') {
+            collapsed = 'max-h-0 overflow-hidden opacity-0';
+            expanded = 'opacity-100';
+        } else if (collapsedHeight === '20') {
+            collapsed = 'max-h-0 overflow-hidden opacity-0';
+            expanded = 'max-h-20 pb-4 opacity-100';
+        } else if (collapsedHeight === '40') {
+            collapsed = 'max-h-0 overflow-hidden opacity-0';
+            expanded = 'max-h-40 pb-4 opacity-100';
+        }
+
         return `${baseClasses} transition-all duration-300 ${isCollapsed ? collapsed : expanded}`;
     };
 
@@ -90,12 +100,12 @@ export default function Header() {
                 </div>
 
                 {/* Mobile Search */}
-                <div className={getCollapsibleClasses('pb-4 md:hidden', '20')}>
+                <div className={getCollapsibleClasses('md:hidden', '20')}>
                     <SearchBar />
                 </div>
 
                 {/* Media Type Filter */}
-                <div className={getCollapsibleClasses('pb-4', '40')}>
+                <div className={getCollapsibleClasses('', '40')}>
                     <MediaTypeFilter />
                 </div>
             </div>

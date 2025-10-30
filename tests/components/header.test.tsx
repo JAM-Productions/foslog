@@ -238,7 +238,7 @@ describe('Header', () => {
         const header = screen.getByRole('banner');
         const children = Array.from(header.querySelectorAll('[data-testid]'));
 
-        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), media filter, and chevron icons
+        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), media filter, and toggle button with chevron icon
         expect(children.length).toBeGreaterThanOrEqual(5);
 
         // Verify specific components exist
