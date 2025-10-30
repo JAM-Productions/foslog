@@ -3,45 +3,34 @@ import { toNextJsHandler } from 'better-auth/next-js';
 import { NextRequest, NextResponse } from 'next/server';
 
 const handler = toNextJsHandler(auth);
+const allowedOrigins = ['http://localhost:3000', 'https://foslog.vercel.app'];
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin':
-        'http://localhost:3000, https://foslog.vercel.app',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+const cors = (response: NextResponse) => {
+    const origin = response.headers.get('Origin');
+    if (origin && allowedOrigins.includes(origin)) {
+        response.headers.set('Access-Control-Allow-Origin', origin);
+    }
+    response.headers.set(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, OPTIONS'
+    );
+    response.headers.set(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    return response;
 };
 
-async function addCorsHeaders(
-    request: NextRequest,
-    handler: (req: NextRequest | Request) => Promise<Response | NextResponse>
-) {
-    const response = await handler(request);
-    Object.entries(corsHeaders).forEach(([key, value]) => {
-        response.headers.set(key, value);
-    });
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-        try {
-            const data = await response.json();
-            return NextResponse.json(data, response);
-        } catch {
-            return response;
-        }
-    }
-    return response;
-}
-
 export async function GET(request: NextRequest) {
-    return addCorsHeaders(request, handler.GET);
+    const response = await handler.GET(request);
+    return cors(response as NextResponse);
 }
 
 export async function POST(request: NextRequest) {
-    return addCorsHeaders(request, handler.POST);
+    const response = await handler.POST(request);
+    return cors(response as NextResponse);
 }
 
 export async function OPTIONS() {
-    return new NextResponse(null, {
-        status: 200,
-        headers: corsHeaders,
-    });
+    return cors(new NextResponse(null, { status: 204 }));
 }
