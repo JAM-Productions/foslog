@@ -2,25 +2,25 @@
 
 /* Light Theme by default */
 :root {
-    --background: #faf8f5;
-    --foreground: #2d1b11;
-    --card: #ffffff;
-    --card-foreground: #2d1b11;
-    --popover: #ffffff;
-    --popover-foreground: #2d1b11;
-    --primary: #8b4513;
-    --primary-foreground: #faf8f5;
-    --secondary: #d2b48c;
-    --secondary-foreground: #2d1b11;
-    --muted: #f5f1eb;
-    --muted-foreground: #6b5b47;
-    --accent: #deb887;
-    --accent-foreground: #2d1b11;
+    --background: #faf7f2;
+    --foreground: #3d2817;
+    --card: #fffbf5;
+    --card-foreground: #3d2817;
+    --popover: #fffbf5;
+    --popover-foreground: #3d2817;
+    --primary: #a0785a;
+    --primary-foreground: #fffbf5;
+    --secondary: #e8d7c3;
+    --secondary-foreground: #3d2817;
+    --muted: #f5f0e8;
+    --muted-foreground: #7a6854;
+    --accent: #d4bfa6;
+    --accent-foreground: #3d2817;
     --destructive: #dc2626;
     --destructive-foreground: #fef2f2;
-    --border: #e6d5c0;
-    --input: #e6d5c0;
-    --ring: #8b4513;
+    --border: #e8d7c3;
+    --input: #e8d7c3;
+    --ring: #a0785a;
     --radius: 8px;
 }
 
@@ -98,25 +98,25 @@
 
 /* Manual light theme (also takes precedence) */
 [data-theme='light'] {
-    --background: #faf8f5;
-    --foreground: #2d1b11;
-    --card: #ffffff;
-    --card-foreground: #2d1b11;
-    --popover: #ffffff;
-    --popover-foreground: #2d1b11;
-    --primary: #8b4513;
-    --primary-foreground: #faf8f5;
-    --secondary: #d2b48c;
-    --secondary-foreground: #2d1b11;
-    --muted: #f5f1eb;
-    --muted-foreground: #6b5b47;
-    --accent: #deb887;
-    --accent-foreground: #2d1b11;
+    --background: #faf7f2;
+    --foreground: #3d2817;
+    --card: #fffbf5;
+    --card-foreground: #3d2817;
+    --popover: #fffbf5;
+    --popover-foreground: #3d2817;
+    --primary: #a0785a;
+    --primary-foreground: #fffbf5;
+    --secondary: #e8d7c3;
+    --secondary-foreground: #3d2817;
+    --muted: #f5f0e8;
+    --muted-foreground: #7a6854;
+    --accent: #d4bfa6;
+    --accent-foreground: #3d2817;
     --destructive: #dc2626;
     --destructive-foreground: #fef2f2;
-    --border: #e6d5c0;
-    --input: #e6d5c0;
-    --ring: #8b4513;
+    --border: #e8d7c3;
+    --input: #e8d7c3;
+    --ring: #a0785a;
 }
 
 * {
