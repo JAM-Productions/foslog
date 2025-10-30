@@ -8,8 +8,9 @@ export const useScrollDirection = () => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
 
-            // Collapse when scrolling down beyond threshold (50px)
-            // Expand when scrolling up or near the top
+            // Expand when near the top (< 50px)
+            // Collapse when scrolling down beyond 100px
+            // Expand when scrolling back up
             if (currentScrollY < 50) {
                 setIsCollapsed(false);
             } else if (currentScrollY > lastScrollY && currentScrollY > 100) {

@@ -17,6 +17,19 @@ export default function Header() {
     // Header is collapsed if either auto-collapsed from scrolling or manually toggled
     const isCollapsed = autoCollapsed || manuallyCollapsed;
 
+    // Helper function for collapsible element classes
+    const getCollapsibleClasses = (
+        baseClasses: string,
+        collapsedHeight = '0'
+    ) => {
+        const collapsed = `max-h-${collapsedHeight} overflow-hidden opacity-0`;
+        const expanded =
+            collapsedHeight === '0'
+                ? 'opacity-100'
+                : `max-h-${collapsedHeight === '20' ? '20' : '40'} opacity-100`;
+        return `${baseClasses} transition-all duration-300 ${isCollapsed ? collapsed : expanded}`;
+    };
+
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
             <div className="container mx-auto px-4">
@@ -39,7 +52,9 @@ export default function Header() {
 
                     {/* Search */}
                     <div
-                        className={`mx-8 hidden max-w-md flex-1 transition-all duration-300 md:flex ${isCollapsed ? 'max-h-0 overflow-hidden opacity-0' : 'opacity-100'}`}
+                        className={getCollapsibleClasses(
+                            'mx-8 hidden max-w-md flex-1 md:flex'
+                        )}
                     >
                         <SearchBar />
                     </div>
@@ -75,16 +90,12 @@ export default function Header() {
                 </div>
 
                 {/* Mobile Search */}
-                <div
-                    className={`transition-all duration-300 md:hidden ${isCollapsed ? 'max-h-0 overflow-hidden opacity-0' : 'max-h-20 pb-4 opacity-100'}`}
-                >
+                <div className={getCollapsibleClasses('pb-4 md:hidden', '20')}>
                     <SearchBar />
                 </div>
 
                 {/* Media Type Filter */}
-                <div
-                    className={`transition-all duration-300 ${isCollapsed ? 'max-h-0 overflow-hidden opacity-0' : 'max-h-40 pb-4 opacity-100'}`}
-                >
+                <div className={getCollapsibleClasses('pb-4', '40')}>
                     <MediaTypeFilter />
                 </div>
             </div>
