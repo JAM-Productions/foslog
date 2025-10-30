@@ -12,7 +12,7 @@ const cors = (response: NextResponse) => {
     }
     response.headers.set(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS'
+        'GET, POST, PUT, DELETE, OPTIONS, PATCH'
     );
     response.headers.set(
         'Access-Control-Allow-Headers',
