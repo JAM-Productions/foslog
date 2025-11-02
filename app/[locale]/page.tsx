@@ -108,6 +108,8 @@ export default function HomePage() {
         </div>
     );
 
+    const currentYear = new Date().getFullYear();
+
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Welcome Section */}
@@ -171,13 +173,14 @@ export default function HomePage() {
                     </div>
                     <p className="text-2xl font-bold">
                         {
-                            sortedMedia.filter((m) => m.year && m.year >= 2023)
-                                .length
+                            sortedMedia.filter(
+                                (m) => m.year && m.year >= currentYear
+                            ).length
                         }
                     </p>
                     <p className="text-muted-foreground text-xs">
                         {tStats('fromDateOnwards', {
-                            date: 2023, //TODO: Change to dynamic year, maybe last year or last 2 years
+                            date: currentYear,
                         })}
                     </p>
                 </div>
