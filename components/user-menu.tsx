@@ -8,6 +8,7 @@ import { signOut } from '@/lib/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import UserMenuSkeleton from './user-menu-skeleton';
 
 const UserMenu = () => {
     const tCTA = useTranslations('CTA');
@@ -15,7 +16,7 @@ const UserMenu = () => {
     const menuUserRef = useRef<HTMLDivElement>(null);
     const menuNotUserRef = useRef<HTMLDivElement>(null);
 
-    const { user, isAuthenticated } = useAuth();
+    const { user, isAuthenticated, isLoading } = useAuth();
     const [isNotUserOpen, setIsNotUserOpen] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
 
@@ -27,6 +28,10 @@ const UserMenu = () => {
     const handleNavigate = (path: string) => {
         router.push(path);
     };
+
+    if (isLoading) {
+        return <UserMenuSkeleton />;
+    }
 
     if (!isAuthenticated || !user) {
         return (
