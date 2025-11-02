@@ -30,7 +30,7 @@ export default function Loading() {
                     {Array.from({ length: 12 }).map((_, i) => (
                         <div
                             key={i}
-                            className="bg-card h-64 animate-pulse rounded-lg"
+                            className="h-64 animate-pulse rounded-lg bg-card"
                         ></div>
                     ))}
                 </div>
