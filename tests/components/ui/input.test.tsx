@@ -14,7 +14,8 @@ describe('Input', () => {
             'bg-background',
             'h-10',
             'px-3',
-            'py-2'
+            'py-2',
+            'text-base'
         );
         expect(input).toHaveAttribute('type', 'text');
     });
