@@ -108,7 +108,7 @@ export default function HomePage() {
         </div>
     );
 
-    const currentYear = new Date().getFullYear();
+    const currentYear = useMemo(() => new Date().getFullYear(), []);
 
     return (
         <div className="container mx-auto px-4 py-8">
