@@ -4,7 +4,10 @@ import Script from 'next/script';
 
 export function ThemeScript() {
     return (
-        <Script id="theme-switcher" strategy="beforeInteractive">
+        <Script
+            id="theme-switcher"
+            strategy="beforeInteractive"
+        >
             {`
                 (() => {
                     try {
