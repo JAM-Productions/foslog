@@ -128,28 +128,36 @@ describe('Header', () => {
 
     it('toggles header collapse state when button is clicked', async () => {
         const user = userEvent.setup();
-        render(<Header />);
+        const { useScrollDirection } = await import('@/hooks/useScrollDirection');
+        
+        // Mock auto-collapsed state (simulating scroll down)
+        vi.mocked(useScrollDirection).mockReturnValue(true);
+        
+        const { rerender } = render(<Header />);
 
-        const toggleButton = screen.getByRole('button', {
-            name: /collapse header/i,
-        });
-
-        // Initially not collapsed - shows ChevronUp
-        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
-
-        // Click to collapse
-        await user.click(toggleButton);
-
-        // Now collapsed - shows ChevronDown
+        // When auto-collapsed, shows ChevronDown and Expand button
         expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
         expect(
             screen.getByRole('button', { name: /expand header/i })
         ).toBeInTheDocument();
 
-        // Click again to expand
+        // Click to manually expand (override auto-collapse)
+        const toggleButton = screen.getByRole('button', {
+            name: /expand header/i,
+        });
         await user.click(toggleButton);
 
-        // Back to expanded - shows ChevronUp
+        // Should force expand despite auto-collapse - shows ChevronUp
+        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /collapse header/i })
+        ).toBeInTheDocument();
+
+        // Mock scrolling back to top (auto-collapse = false)
+        vi.mocked(useScrollDirection).mockReturnValue(false);
+        rerender(<Header />);
+
+        // Should remain expanded and show ChevronUp
         expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
     });
 

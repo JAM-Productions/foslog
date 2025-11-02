@@ -7,15 +7,22 @@ import UserMenu from '@/components/user-menu';
 import SearchBar from '@/components/search-bar';
 import LanguageSelector from '@/components/language-selector';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function Header() {
     const autoCollapsed = useScrollDirection();
-    const [manuallyCollapsed, setManuallyCollapsed] = useState(false);
+    const [manuallyExpanded, setManuallyExpanded] = useState(false);
 
-    // Header is collapsed if either auto-collapsed from scrolling or manually toggled
-    const isCollapsed = autoCollapsed || manuallyCollapsed;
+    // Header is collapsed if auto-collapsed AND not manually expanded
+    const isCollapsed = autoCollapsed && !manuallyExpanded;
+
+    // Reset manual override when user scrolls to top
+    useEffect(() => {
+        if (!autoCollapsed) {
+            setManuallyExpanded(false);
+        }
+    }, [autoCollapsed]);
 
     // Helper function for collapsible element classes
     // Uses explicit Tailwind class names to avoid purging issues in production
@@ -73,7 +80,7 @@ export default function Header() {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() =>
-                                setManuallyCollapsed(!manuallyCollapsed)
+                                setManuallyExpanded(!manuallyExpanded)
                             }
                             className="hover:bg-accent rounded-md p-2 transition-colors"
                             aria-label={
