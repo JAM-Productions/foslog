@@ -1,12 +1,12 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-const UserMenuSkeleton = () => {
-    return (
-        <div className="flex items-center gap-2">
-            <Skeleton className="h-6 w-6 rounded-full" />
-            <Skeleton className="hidden h-4 w-20 sm:inline" />
-        </div>
-    );
-};
-
-export default UserMenuSkeleton;
+export function UserMenuSkeleton() {
+  return (
+    <div className="flex items-center space-x-4">
+      <Skeleton className="h-8 w-8 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[100px]" />
+      </div>
+    </div>
+  );
+}
