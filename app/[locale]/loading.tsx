@@ -9,9 +9,9 @@ export default function Loading() {
 
             {/* Stats Cards Skeleton */}
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="bg-card h-24 animate-pulse rounded-lg border p-4"></div>
-                <div className="bg-card h-24 animate-pulse rounded-lg border p-4"></div>
-                <div className="bg-card h-24 animate-pulse rounded-lg border p-4"></div>
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="bg-card h-24 animate-pulse rounded-lg border p-4"></div>
+                ))}
             </div>
 
             {/* Media Grid Skeleton */}
