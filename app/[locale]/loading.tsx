@@ -3,8 +3,8 @@ export default function Loading() {
         <div className="container mx-auto px-4 py-8">
             {/* Welcome Section Skeleton */}
             <div className="mb-12">
-                <div className="mb-2 h-8 w-1/2 animate-pulse rounded bg-muted"></div>
-                <div className="h-4 w-1/3 animate-pulse rounded bg-muted"></div>
+                <div className="bg-muted mb-2 h-8 w-1/2 animate-pulse rounded"></div>
+                <div className="bg-muted h-4 w-1/3 animate-pulse rounded"></div>
             </div>
 
             {/* Stats Cards Skeleton */}
@@ -18,10 +18,10 @@ export default function Loading() {
             <div className="mb-8">
                 {/* Section Header Skeleton */}
                 <div className="mb-6 flex items-center gap-3">
-                    <div className="h-12 w-12 animate-pulse rounded-lg bg-muted"></div>
+                    <div className="bg-muted h-12 w-12 animate-pulse rounded-lg"></div>
                     <div>
-                        <div className="mb-2 h-6 w-48 animate-pulse rounded bg-muted"></div>
-                        <div className="h-4 w-64 animate-pulse rounded bg-muted"></div>
+                        <div className="bg-muted mb-2 h-6 w-48 animate-pulse rounded"></div>
+                        <div className="bg-muted h-4 w-64 animate-pulse rounded"></div>
                     </div>
                 </div>
 
