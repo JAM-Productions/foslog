@@ -1,7 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MediaClient } from '@/app/[locale]/media/[id]/media-client';
-import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 
 // Mock the sub-components
 vi.mock('@/components/media-details', () => ({
