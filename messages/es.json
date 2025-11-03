@@ -117,5 +117,8 @@
         "yourReview": "Tu Reseña",
         "submitReview": "Enviar Reseña",
         "shareThoughts": "Comparte tus pensamientos sobre este medio..."
+    },
+    "BackButton": {
+        "back": "Volver"
     }
 }

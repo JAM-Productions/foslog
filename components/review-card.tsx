@@ -20,6 +20,7 @@ export function ReviewCard({ review }: { review: Review }) {
                     width={40}
                     height={40}
                     className="h-10 w-10 rounded-full"
+                    unoptimized
                 />
                 <div className="ml-4">
                     <p className="font-bold">{user.name}</p>

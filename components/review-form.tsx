@@ -7,18 +7,12 @@ export function ReviewForm() {
 
     return (
         <form className="space-y-6">
-            <div>
-                <label
-                    htmlFor="rating-input"
-                    className="text-foreground mb-2 block text-sm font-semibold"
-                >
+            <fieldset>
+                <legend className="text-foreground mb-2 block text-sm font-semibold">
                     {t('yourRating')}
-                </label>
-                <RatingInput
-                    id="rating-input"
-                    size="lg"
-                />
-            </div>
+                </legend>
+                <RatingInput size="lg" />
+            </fieldset>
             <div>
                 <label
                     htmlFor="comment"

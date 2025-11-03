@@ -40,7 +40,7 @@ describe('ReviewCard', () => {
 describe('ReviewForm', () => {
   it('renders a review form', () => {
     render(<ReviewForm />);
-    expect(screen.getByLabelText('yourRating')).toBeInTheDocument();
+    expect(screen.getByText('yourRating')).toBeInTheDocument();
     expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'submitReview' })).toBeInTheDocument();
   });

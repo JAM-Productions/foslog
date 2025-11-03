@@ -3,6 +3,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { BackButton } from '@/components/ui/back-button';
 import { ReactNode } from 'react';
 
+vi.mock('next-intl', () => ({
+    useTranslations: () => (key: string) => key,
+}));
+
 interface MockLinkProps {
     children: ReactNode;
     href: string;

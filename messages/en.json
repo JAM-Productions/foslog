@@ -117,5 +117,8 @@
         "yourReview": "Your Review",
         "submitReview": "Submit Review",
         "shareThoughts": "Share your thoughts about this media..."
+    },
+    "BackButton": {
+        "back": "Back"
     }
 }
