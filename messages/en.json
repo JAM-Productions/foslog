@@ -97,6 +97,12 @@
             "passwordsDoNotMatch": "Passwords do not match"
         }
     },
+    "AddReviewModal": {
+        "addReviewModalTitle": "Add New Review",
+        "addReviewModalDescription": "Share your thoughts on a new media item",
+        "selectMediaType": "Select Media Type",
+        "inputMediaTitle": "Enter Media Title"
+    },
     "CTA": {
         "addReviewsTitle": "Want to add your own reviews?",
         "addReviewsDescription": "Start building your personal media collection and share your thoughts",
@@ -106,6 +112,7 @@
         "signOut": "Sign Out",
         "google": "Google",
         "github": "GitHub",
-        "settings": "Settings"
+        "settings": "Settings",
+        "next": "Next"
     }
 }

@@ -97,6 +97,12 @@
             "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
         }
     },
+    "AddReviewModal": {
+        "addReviewModalTitle": "Afegeix Nova Ressenya",
+        "addReviewModalDescription": "Comparteix els teus pensaments sobre un nou element de mitjans",
+        "selectMediaType": "Selecciona Tipus de Mitjà",
+        "inputMediaTitle": "Introdueix el Títol del Mitjà"
+    },
     "CTA": {
         "addReviewsTitle": "Vols afegir les teves pròpies ressenyes?",
         "addReviewsDescription": "Comença a construir la teva col·lecció personal de mitjans i comparteix els teus pensaments",
@@ -106,6 +112,7 @@
         "signOut": "Tancar Sessió",
         "google": "Google",
         "github": "GitHub",
-        "settings": "Configuració"
+        "settings": "Configuració",
+        "next": "Següent"
     }
 }

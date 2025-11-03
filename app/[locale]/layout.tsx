@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeScript } from '@/components/theme-script';
 import { AuthProvider } from '@/lib/auth-provider';
 import Header from '@/components/header';
+import Modals from '@/components/modals';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -89,6 +90,7 @@ export default async function LocaleLayout({
                         <AuthProvider>
                             <Header />
                             <main className="flex-1">{children}</main>
+                            <Modals />
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>

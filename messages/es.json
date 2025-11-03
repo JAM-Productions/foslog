@@ -97,6 +97,12 @@
             "passwordsDoNotMatch": "Las contraseñas no coinciden"
         }
     },
+    "AddReviewModal": {
+        "addReviewModalTitle": "Agregar Nueva Reseña",
+        "addReviewModalDescription": "Construye tu colección personal de medios y comparte tus pensamientos",
+        "selectMediaType": "Selecciona el Medio",
+        "inputMediaTitle": "Introduce el Título del Medio"
+    },
     "CTA": {
         "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
         "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
@@ -106,6 +112,7 @@
         "signOut": "Cerrar Sesión",
         "google": "Google",
         "github": "GitHub",
-        "settings": "Configuración"
+        "settings": "Configuración",
+        "next": "Siguiente"
     }
 }
