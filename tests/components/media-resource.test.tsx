@@ -4,7 +4,11 @@ import { ReviewForm } from '@/components/review-form';
 import { ReviewList } from '@/components/review-list';
 import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next-intl', () => ({
+    useTranslations: () => (key: string) => key,
+}));
 
 describe('MediaDetails', () => {
   it('renders media details correctly', () => {
@@ -36,8 +40,8 @@ describe('ReviewCard', () => {
 describe('ReviewForm', () => {
   it('renders a review form', () => {
     render(<ReviewForm />);
-    expect(screen.getByLabelText('Rating')).toBeInTheDocument();
-    expect(screen.getByLabelText('Comment')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+    expect(screen.getByLabelText('yourRating')).toBeInTheDocument();
+    expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'submitReview' })).toBeInTheDocument();
   });
 });

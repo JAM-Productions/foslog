@@ -1,7 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { RatingInput } from '@/components/ui/rating';
+import { useTranslations } from 'next-intl';
 
 export function ReviewForm() {
+    const t = useTranslations('MediaPage');
+
     return (
         <form className="space-y-6">
             <div>
@@ -9,7 +12,7 @@ export function ReviewForm() {
                     id="rating-label"
                     className="text-foreground mb-2 block text-sm font-semibold"
                 >
-                    Your Rating
+                    {t('yourRating')}
                 </label>
                 <RatingInput
                     aria-labelledby="rating-label"
@@ -21,11 +24,11 @@ export function ReviewForm() {
                     htmlFor="comment"
                     className="text-foreground mb-2 block text-sm font-semibold"
                 >
-                    Your Review
+                    {t('yourReview')}
                 </label>
                 <textarea
                     id="comment"
-                    placeholder="Share your thoughts about this media..."
+                    placeholder={t('shareThoughts')}
                     rows={4}
                     className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 />
@@ -34,7 +37,7 @@ export function ReviewForm() {
                 type="submit"
                 className="w-full sm:w-auto"
             >
-                Submit Review
+                {t('submitReview')}
             </Button>
         </form>
     );

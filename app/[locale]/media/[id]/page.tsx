@@ -7,11 +7,12 @@ import { ReviewList } from '@/components/review-list';
 import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 import { BackButton } from '@/components/ui/back-button';
 
-export default function MediaPage({
-    params,
-}: {
-    params: Promise<{ id: string }>;
-}) {
+import { useTranslations } from 'next-intl';
+
+// ... (imports)
+
+export default function MediaPage({ params }: { params: { id: string } }) {
+    const t = useTranslations('MediaPage');
     const { id } = use(params);
     const media = mockMediaItems.find((item) => item.id === id);
     const reviews = mockReviews.filter((review) => review.mediaId === id);
@@ -24,11 +25,8 @@ export default function MediaPage({
                 </div>
                 <div className="py-12 text-center">
                     <h1 className="text-foreground text-2xl font-bold">
-                        Media not found
+                        {t('mediaNotFound')}
                     </h1>
-                    <p className="text-muted-foreground mt-2">
-                        The requested media item could not be found.
-                    </p>
                 </div>
             </div>
         );
@@ -51,7 +49,7 @@ export default function MediaPage({
                 <div className="mb-12">
                     <div className="mb-6 flex items-center justify-between">
                         <h2 className="text-foreground text-3xl font-bold">
-                            Reviews
+                            {t('reviews')}
                             <span className="text-muted-foreground ml-3 text-lg font-normal">
                                 ({reviews.length})
                             </span>
@@ -62,7 +60,7 @@ export default function MediaPage({
                     ) : (
                         <div className="bg-card border-border rounded-lg border py-8 text-center">
                             <p className="text-muted-foreground">
-                                No reviews yet. Be the first to review!
+                                {t('noReviews')}
                             </p>
                         </div>
                     )}
@@ -71,7 +69,7 @@ export default function MediaPage({
                 {/* Review Form Section */}
                 <div className="mb-12">
                     <h2 className="text-foreground mb-6 text-3xl font-bold">
-                        Leave a Review
+                        {t('leaveReview')}
                     </h2>
                     <div className="bg-card border-border rounded-lg border p-6">
                         <ReviewForm />

@@ -107,5 +107,15 @@
         "google": "Google",
         "github": "GitHub",
         "settings": "Settings"
+    },
+    "MediaPage": {
+        "reviews": "Reviews",
+        "leaveReview": "Leave a review",
+        "mediaNotFound": "Media not found",
+        "noReviews": "No reviews yet. Be the first to review!",
+        "yourRating": "Your Rating",
+        "yourReview": "Your Review",
+        "submitReview": "Submit Review",
+        "shareThoughts": "Share your thoughts about this media..."
     }
 }

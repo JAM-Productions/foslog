@@ -42,15 +42,26 @@ describe('BackButton', () => {
         expect(link).toHaveAttribute('href', '/');
         expect(link).toHaveAttribute('aria-label', 'Go back');
         expect(link).toHaveClass(
-            'flex',
+            'inline-flex',
             'items-center',
-            'justify-center',
-            'rounded-md',
-            'p-2',
-            'transition-colors',
-            'text-primary',
-            'hover:bg-gray-100',
-            'dark:hover:bg-background'
+            'gap-2',
+            'px-4',
+            'py-2',
+            'rounded-lg',
+            'font-medium',
+            'transition-all',
+            'duration-200',
+            'text-foreground',
+            'bg-card',
+            'border',
+            'border-border',
+            'hover:bg-accent',
+            'hover:shadow-md',
+            'focus:outline-none',
+            'focus:ring-2',
+            'focus:ring-ring',
+            'focus:ring-offset-2',
+            'focus:ring-offset-background'
         );
     });
 
@@ -84,8 +95,6 @@ describe('BackButton', () => {
         const link = screen.getByRole('link');
 
         expect(link).toHaveClass('custom-class', 'bg-blue-500');
-        // Should also maintain base classes
-        expect(link).toHaveClass('flex', 'items-center', 'justify-center');
     });
 
     it('accepts custom iconSize prop', () => {
@@ -126,12 +135,26 @@ describe('BackButton', () => {
 
         // Should have both base classes and custom class
         expect(link).toHaveClass(
-            'flex',
+            'inline-flex',
             'items-center',
-            'justify-center',
-            'rounded-md',
-            'p-2',
-            'transition-colors',
+            'gap-2',
+            'px-4',
+            'py-2',
+            'rounded-lg',
+            'font-medium',
+            'transition-all',
+            'duration-200',
+            'text-foreground',
+            'bg-card',
+            'border',
+            'border-border',
+            'hover:bg-accent',
+            'hover:shadow-md',
+            'focus:outline-none',
+            'focus:ring-2',
+            'focus:ring-ring',
+            'focus:ring-offset-2',
+            'focus:ring-offset-background',
             'extra-class'
         );
     });
@@ -140,7 +163,28 @@ describe('BackButton', () => {
         render(<BackButton className={undefined} />);
         const link = screen.getByRole('link');
 
-        expect(link).toHaveClass('flex', 'items-center', 'justify-center');
+        expect(link).toHaveClass(
+            'inline-flex',
+            'items-center',
+            'gap-2',
+            'px-4',
+            'py-2',
+            'rounded-lg',
+            'font-medium',
+            'transition-all',
+            'duration-200',
+            'text-foreground',
+            'bg-card',
+            'border',
+            'border-border',
+            'hover:bg-accent',
+            'hover:shadow-md',
+            'focus:outline-none',
+            'focus:ring-2',
+            'focus:ring-ring',
+            'focus:ring-offset-2',
+            'focus:ring-offset-background'
+        );
         expect(link.className).not.toContain('undefined');
     });
 

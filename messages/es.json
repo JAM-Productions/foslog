@@ -107,5 +107,15 @@
         "google": "Google",
         "github": "GitHub",
         "settings": "Configuración"
+    },
+    "MediaPage": {
+        "reviews": "Reseñas",
+        "leaveReview": "Dejar una reseña",
+        "mediaNotFound": "Medio no encontrado",
+        "noReviews": "Aún no hay reseñas. ¡Sé el primero en opinar!",
+        "yourRating": "Tu Valoración",
+        "yourReview": "Tu Reseña",
+        "submitReview": "Enviar Reseña",
+        "shareThoughts": "Comparte tus pensamientos sobre este medio..."
     }
 }

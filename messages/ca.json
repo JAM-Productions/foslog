@@ -107,5 +107,15 @@
         "google": "Google",
         "github": "GitHub",
         "settings": "Configuració"
+    },
+    "MediaPage": {
+        "reviews": "Ressenyes",
+        "leaveReview": "Deixar una ressenya",
+        "mediaNotFound": "Contingut no trobat",
+        "noReviews": "Encara no hi ha ressenyes. Sigues el primer a opinar!",
+        "yourRating": "La teva Valoració",
+        "yourReview": "La teva Ressenya",
+        "submitReview": "Enviar Ressenya",
+        "shareThoughts": "Comparteix els teus pensaments sobre aquest contingut..."
     }
 }
