@@ -9,13 +9,13 @@ export function ReviewForm() {
         <form className="space-y-6">
             <div>
                 <label
-                    id="rating-label"
+                    htmlFor="rating-input"
                     className="text-foreground mb-2 block text-sm font-semibold"
                 >
                     {t('yourRating')}
                 </label>
                 <RatingInput
-                    aria-labelledby="rating-label"
+                    id="rating-input"
                     size="lg"
                 />
             </div>
