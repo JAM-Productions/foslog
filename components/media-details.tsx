@@ -1,10 +1,13 @@
 import { Card } from '@/components/ui/card';
 import { RatingDisplay } from '@/components/ui/rating';
 import { MediaItem } from '@/lib/store';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 export function MediaDetails({ media }: { media: MediaItem }) {
     const imageUrl = media.poster || media.cover;
+    const tMP = useTranslations('MediaPage');
+    const tMT = useTranslations('MediaTypes');
 
     return (
         <Card className="p-4 sm:p-6 lg:p-8">
@@ -31,7 +34,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                         </h1>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                             <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-3 py-1 text-xs font-medium sm:text-sm">
-                                {media.type}
+                                {tMT(media.type)}
                             </span>
                         </div>
                     </div>
@@ -47,7 +50,9 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                         <div className="bg-border block h-8 w-px"></div>
                         <span className="text-muted-foreground text-base">
                             {media.totalReviews}{' '}
-                            {media.totalReviews === 1 ? 'review' : 'reviews'}
+                            {media.totalReviews === 1
+                                ? tMP('review')
+                                : tMP('reviews')}
                         </span>
                     </div>
 
