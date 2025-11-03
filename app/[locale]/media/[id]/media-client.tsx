@@ -18,12 +18,12 @@ export function MediaClient({ id }: MediaClientProps) {
 
     if (!media) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="mb-8 flex items-center gap-4">
+            <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
+                <div className="mb-6 flex items-center gap-4 sm:mb-8">
                     <BackButton />
                 </div>
-                <div className="py-12 text-center">
-                    <h1 className="text-foreground text-2xl font-bold">
+                <div className="py-8 text-center sm:py-12">
+                    <h1 className="text-foreground text-xl font-bold sm:text-2xl">
                         {t('mediaNotFound')}
                     </h1>
                 </div>
@@ -33,23 +33,23 @@ export function MediaClient({ id }: MediaClientProps) {
 
     return (
         <div className="bg-background min-h-screen">
-            <div className="container mx-auto max-w-7xl px-4 py-6">
+            <div className="container mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:py-8">
                 {/* Header with Back Button */}
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6 lg:mb-8">
                     <BackButton />
                 </div>
 
                 {/* Media Details Section */}
-                <div className="mb-12">
+                <div className="mb-8 sm:mb-12 lg:mb-16">
                     <MediaDetails media={media} />
                 </div>
 
                 {/* Reviews Section */}
-                <div className="mb-12">
-                    <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-foreground text-3xl font-bold">
+                <div className="mb-8 sm:mb-12 lg:mb-16">
+                    <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+                        <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
                             {t('reviews')}
-                            <span className="text-muted-foreground ml-3 text-lg font-normal">
+                            <span className="text-muted-foreground ml-2 text-base font-normal sm:ml-3 sm:text-lg">
                                 ({reviews.length})
                             </span>
                         </h2>
@@ -57,8 +57,8 @@ export function MediaClient({ id }: MediaClientProps) {
                     {reviews.length > 0 ? (
                         <ReviewList reviews={reviews} />
                     ) : (
-                        <div className="bg-card border-border rounded-lg border py-8 text-center">
-                            <p className="text-muted-foreground">
+                        <div className="bg-card border-border rounded-lg border py-6 text-center sm:py-8">
+                            <p className="text-muted-foreground text-sm sm:text-base">
                                 {t('noReviews')}
                             </p>
                         </div>
@@ -66,11 +66,11 @@ export function MediaClient({ id }: MediaClientProps) {
                 </div>
 
                 {/* Review Form Section */}
-                <div className="mb-12">
-                    <h2 className="text-foreground mb-6 text-3xl font-bold">
+                <div className="mb-8 sm:mb-12 lg:mb-16">
+                    <h2 className="text-foreground mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">
                         {t('leaveReview')}
                     </h2>
-                    <div className="bg-card border-border rounded-lg border p-6">
+                    <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
                         <ReviewForm />
                     </div>
                 </div>

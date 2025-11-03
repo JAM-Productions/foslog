@@ -12,8 +12,8 @@ export function ReviewCard({ review }: { review: Review }) {
     }
 
     return (
-        <Card className="p-4">
-            <div className="flex items-center">
+        <Card className="p-4 sm:p-6">
+            <div className="flex flex-row items-center gap-3 sm:gap-4">
                 <Image
                     src={user.image!}
                     alt={user.name}
@@ -22,12 +22,14 @@ export function ReviewCard({ review }: { review: Review }) {
                     className="h-10 w-10 rounded-full"
                     unoptimized
                 />
-                <div className="ml-4">
-                    <p className="font-bold">{user.name}</p>
+                <div className="flex-1">
+                    <p className="text-base font-bold">{user.name}</p>
                     <RatingDisplay rating={review.rating} />
                 </div>
             </div>
-            <p className="mt-4">{review.review}</p>
+            <p className="mt-3 text-base leading-relaxed sm:mt-4">
+                {review.review}
+            </p>
         </Card>
     );
 }
