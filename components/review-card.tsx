@@ -1,8 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { RatingDisplay } from '@/components/ui/rating';
 import { mockUsers } from '@/lib/mock-data';
+import { Review } from '@/lib/store';
+import Image from 'next/image';
 
-export function ReviewCard({ review }: { review: any }) {
+export function ReviewCard({ review }: { review: Review }) {
     const user = mockUsers.find((user) => user.id === review.userId);
 
     if (!user) {
@@ -10,29 +12,21 @@ export function ReviewCard({ review }: { review: any }) {
     }
 
     return (
-        <Card className="p-6 transition-shadow duration-200 hover:shadow-md">
-            <div className="flex items-start gap-4">
-                <img
-                    src={user.image}
+        <Card className="p-4">
+            <div className="flex items-center">
+                <Image
+                    src={user.image!}
                     alt={user.name}
-                    className="border-border h-12 w-12 flex-shrink-0 rounded-full border-2"
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 rounded-full"
                 />
-                <div className="min-w-0 flex-1">
-                    <div className="mb-2 flex items-center justify-between">
-                        <p className="text-foreground font-semibold">
-                            {user.name}
-                        </p>
-                        <RatingDisplay
-                            rating={review.rating}
-                            size="sm"
-                            showValue={false}
-                        />
-                    </div>
-                    <p className="text-card-foreground leading-relaxed">
-                        {review.review}
-                    </p>
+                <div className="ml-4">
+                    <p className="font-bold">{user.name}</p>
+                    <RatingDisplay rating={review.rating} />
                 </div>
             </div>
+            <p className="mt-4">{review.review}</p>
         </Card>
     );
 }

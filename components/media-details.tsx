@@ -1,28 +1,23 @@
 import { Card } from '@/components/ui/card';
 import { RatingDisplay } from '@/components/ui/rating';
+import { MediaItem } from '@/lib/store';
+import Image from 'next/image';
 
-export function MediaDetails({ media }: { media: any }) {
+export function MediaDetails({ media }: { media: MediaItem }) {
     const imageUrl = media.poster || media.cover;
 
     return (
-        <Card className="overflow-hidden shadow-lg">
-            <div className="grid grid-cols-1 gap-8 p-6 lg:grid-cols-3 lg:p-8">
-                {/* Image Section */}
-                <div className="flex items-start justify-center lg:col-span-1">
-                    {imageUrl ? (
-                        <div className="relative w-full max-w-sm">
-                            <img
-                                src={imageUrl}
-                                alt={media.title}
-                                className="h-auto w-full rounded-lg object-cover shadow-md"
-                            />
-                        </div>
-                    ) : (
-                        <div className="bg-muted flex aspect-[2/3] w-full max-w-sm items-center justify-center rounded-lg">
-                            <span className="text-muted-foreground">
-                                No image
-                            </span>
-                        </div>
+        <Card className="p-4">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div className="flex items-start justify-center md:col-span-1">
+                    {imageUrl && (
+                        <Image
+                            src={imageUrl}
+                            alt={media.title}
+                            width={500}
+                            height={750}
+                            className="h-auto max-h-96 max-w-full rounded-lg object-contain"
+                        />
                     )}
                 </div>
 
