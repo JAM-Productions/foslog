@@ -4,6 +4,7 @@ import ThemeToggle from '@/components/theme-toggle';
 import UserMenu from '@/components/user-menu';
 import SearchBar from '@/components/search-bar';
 import LanguageSelector from '@/components/language-selector';
+import Link from 'next/link';
 
 export default function Header() {
     return (
@@ -11,7 +12,10 @@ export default function Header() {
             <div className="container mx-auto px-4">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <div className="flex items-center gap-2">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 cursor-pointer"
+                    >
                         <div className="flex h-8 w-8 items-center justify-center">
                             <Image
                                 src="/favicon.svg"
@@ -24,7 +28,7 @@ export default function Header() {
                         <span className="text-xl font-bold tracking-tight">
                             Foslog
                         </span>
-                    </div>
+                    </Link>
 
                     {/* Search */}
                     <div className="mx-8 hidden max-w-md flex-1 md:flex">
