@@ -75,7 +75,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
     return (
         <Card
-            className={`group cursor-pointer transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
+            className={`group transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
         >
             <div className="p-0">
                 {/* Image */}

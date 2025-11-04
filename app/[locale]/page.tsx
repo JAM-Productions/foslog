@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 import MediaCard from '@/components/media-card';
@@ -252,10 +253,12 @@ export default function HomePage() {
                 ) : (
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                         {sortedMedia.map((media) => (
-                            <MediaCard
+                            <Link
                                 key={media.id}
-                                media={media}
-                            />
+                                href={`/media/${media.id}`}
+                            >
+                                <MediaCard media={media} />
+                            </Link>
                         ))}
                     </div>
                 )}
