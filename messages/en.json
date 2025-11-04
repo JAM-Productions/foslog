@@ -97,9 +97,9 @@
             "passwordsDoNotMatch": "Passwords do not match"
         }
     },
-    "AddReviewModal": {
-        "addReviewModalTitle": "Add New Review",
-        "addReviewModalDescription": "Share your thoughts on a new media item",
+    "ReviewModal": {
+        "reviewModalTitle": "Add New Review",
+        "reviewModalDescription": "Share your thoughts on a new media item",
         "selectMediaType": "Select Media Type",
         "inputMediaTitle": "Enter Media Title"
     },

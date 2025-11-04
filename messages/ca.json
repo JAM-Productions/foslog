@@ -97,9 +97,9 @@
             "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
         }
     },
-    "AddReviewModal": {
-        "addReviewModalTitle": "Afegeix Nova Ressenya",
-        "addReviewModalDescription": "Comparteix els teus pensaments sobre un nou element de mitjans",
+    "ReviewModal": {
+        "reviewModalTitle": "Afegeix Nova Ressenya",
+        "reviewModalDescription": "Comparteix els teus pensaments sobre un nou element de mitjans",
         "selectMediaType": "Selecciona Tipus de Mitjà",
         "inputMediaTitle": "Introdueix el Títol del Mitjà"
     },

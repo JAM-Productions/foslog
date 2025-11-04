@@ -21,7 +21,7 @@ export default function HomePage() {
         setReviews,
         selectedMediaType,
         searchQuery,
-        setIsAddReviewModalOpen,
+        setIsReviewModalOpen,
     } = useAppStore();
     const { user } = useAuth();
 
@@ -270,7 +270,7 @@ export default function HomePage() {
                     <p className="text-muted-foreground mb-4">
                         {tCTA('addReviewsDescription')}
                     </p>
-                    <Button onClick={() => setIsAddReviewModalOpen(true)}>
+                    <Button onClick={() => setIsReviewModalOpen(true)}>
                         {tCTA('addNewReview')}
                     </Button>
                 </div>

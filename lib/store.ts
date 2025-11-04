@@ -65,9 +65,9 @@ interface AppState {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
 
-    // Add Review Modal
-    isAddReviewModalOpen: boolean;
-    setIsAddReviewModalOpen: (isOpen: boolean) => void;
+    // Review Modal
+    isReviewModalOpen: boolean;
+    setIsReviewModalOpen: (isOpen: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -118,10 +118,10 @@ export const useAppStore = create<AppState>()(
             searchQuery: '',
             setSearchQuery: (searchQuery) => set({ searchQuery }),
 
-            // Add Review Modal
-            isAddReviewModalOpen: false,
-            setIsAddReviewModalOpen: (isAddReviewModalOpen) =>
-                set({ isAddReviewModalOpen }),
+            // Review Modal
+            isReviewModalOpen: false,
+            setIsReviewModalOpen: (isReviewModalOpen) =>
+                set({ isReviewModalOpen }),
         }),
         {
             name: 'foslog-storage',

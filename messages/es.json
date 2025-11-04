@@ -97,9 +97,9 @@
             "passwordsDoNotMatch": "Las contraseñas no coinciden"
         }
     },
-    "AddReviewModal": {
-        "addReviewModalTitle": "Agregar Nueva Reseña",
-        "addReviewModalDescription": "Construye tu colección personal de medios y comparte tus pensamientos",
+    "ReviewModal": {
+        "reviewModalTitle": "Agregar Nueva Reseña",
+        "reviewModalDescription": "Construye tu colección personal de medios y comparte tus pensamientos",
         "selectMediaType": "Selecciona el Medio",
         "inputMediaTitle": "Introduce el Título del Medio"
     },

@@ -5,12 +5,14 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeScript } from '@/components/theme-script';
 import { AuthProvider } from '@/lib/auth-provider';
 import Header from '@/components/header';
-import Modals from '@/components/modals';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
+import { lazy } from 'react';
+
+const ReviewModal = lazy(() => import('../../components/review-modal'));
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
@@ -90,7 +92,7 @@ export default async function LocaleLayout({
                         <AuthProvider>
                             <Header />
                             <main className="flex-1">{children}</main>
-                            <Modals />
+                            <ReviewModal />
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
