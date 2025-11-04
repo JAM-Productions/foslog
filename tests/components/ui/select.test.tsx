@@ -130,7 +130,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const selectedOption = screen.getByText('Option 2');
+        const selectedOption = screen.getAllByText('Option 2')[1];
         expect(selectedOption).toHaveClass('bg-accent');
     });
 
@@ -246,8 +246,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen
-            .getByRole('button')
+        const dropdown = selectButton
             .closest('div')
             ?.querySelector('[class*="absolute"]');
         expect(dropdown).toHaveClass(
@@ -271,8 +270,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen
-            .getByRole('button')
+        const dropdown = selectButton
             .closest('div')
             ?.querySelector('[class*="absolute"]');
         expect(dropdown).toHaveClass('max-h-60', 'overflow-y-auto');
