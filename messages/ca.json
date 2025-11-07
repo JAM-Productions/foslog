@@ -99,7 +99,8 @@
     },
     "ReviewModal": {
         "reviewModalTitle": "Afegeix Nova Ressenya",
-        "reviewModalDescription": "Comparteix els teus pensaments sobre un nou element de mitjans",
+        "reviewModalDescription": "Selecciona el mitjà que vols ressenyar i introdueix el seu títol.",
+        "reviewModalDescription2": "Comparteix la teva valoració i pensaments sobre el mitjà.",
         "selectMediaType": "Selecciona Tipus de Mitjà",
         "inputMediaTitle": "Introdueix el Títol del Mitjà"
     },

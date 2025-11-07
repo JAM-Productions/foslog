@@ -99,7 +99,8 @@
     },
     "ReviewModal": {
         "reviewModalTitle": "Agregar Nueva Reseña",
-        "reviewModalDescription": "Construye tu colección personal de medios y comparte tus pensamientos",
+        "reviewModalDescription": "Selecciona el medio que deseas reseñar e ingresa su título.",
+        "reviewModalDescription2": "Comparte tu valoración y pensamientos sobre el medio.",
         "selectMediaType": "Selecciona el Medio",
         "inputMediaTitle": "Introduce el Título del Medio"
     },

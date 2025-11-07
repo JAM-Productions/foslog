@@ -1,15 +1,37 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
     images: {
-        domains: [
-            'image.tmdb.org',
-            'pics.filmaffinity.com',
-            'cdn.cloudflare.steamstatic.com',
-            'images-na.ssl-images-amazon.com',
-            'upload.wikimedia.org',
-            'api.dicebear.com'
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'image.tmdb.org',
+            },
+            {
+                protocol: 'https',
+                hostname: 'pics.filmaffinity.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.cloudflare.steamstatic.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'images-na.ssl-images-amazon.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'upload.wikimedia.org',
+            },
+            {
+                protocol: 'https',
+                hostname: 'api.dicebear.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'm.media-amazon.com',
+            },
         ],
     },
 };

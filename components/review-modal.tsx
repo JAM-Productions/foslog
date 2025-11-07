@@ -2,20 +2,32 @@
 
 import { useAppStore } from '@/lib/store';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { SearchInput, Suggestions } from './ui/input';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from './ui/select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getMediaByTitle } from '@/lib/api';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { X } from 'lucide-react';
+import { RatingInput } from './ui/rating';
+import Image from 'next/image';
 
 export default function ReviewModal() {
     const tCTA = useTranslations('CTA');
     const tReviewModal = useTranslations('ReviewModal');
     const tMediaTypes = useTranslations('MediaTypes');
+    const tMediaPage = useTranslations('MediaPage');
+    const tBackButton = useTranslations('BackButton');
 
     const { isReviewModalOpen, setIsReviewModalOpen } = useAppStore();
 
+    const [modalStep, setModalStep] = useState<number>(1);
+
     const [selectedMediaType, setSelectedMediaType] = useState<string>('');
     const [mediaTitle, setMediaTitle] = useState<string>('');
+
+    const [searchResults, setSearchResults] = useState<Suggestions[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
@@ -25,48 +37,159 @@ export default function ReviewModal() {
         { value: 'music', label: tMediaTypes('music'), disabled: true },
     ];
 
+    const isNextButtonDisabled = (): boolean => {
+        return !searchResults.some((result) =>
+            result.title.includes(mediaTitle.trim())
+        );
+    };
+
+    const getMediaImage = (): string => {
+        const media = searchResults.find((result) =>
+            result.title.includes(mediaTitle.trim())
+        );
+        return media ? media.image : '';
+    };
+
+    useEffect(() => {
+        if (isReviewModalOpen && selectedMediaType) {
+            setSearchResults([]);
+            const getSearchInputData = setTimeout(async () => {
+                setIsLoading(true);
+                const data = await getMediaByTitle(
+                    selectedMediaType,
+                    mediaTitle.trim()
+                );
+                setSearchResults(data);
+                setIsLoading(false);
+            }, 300);
+
+            return () => clearTimeout(getSearchInputData);
+        }
+    }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
+
+    useEffect(() => {
+        if (!isReviewModalOpen) {
+            setModalStep(1);
+            setMediaTitle('');
+            setSelectedMediaType('');
+            setSearchResults([]);
+            setIsLoading(false);
+        }
+    }, [isReviewModalOpen]);
+
+    useBodyScrollLock(isReviewModalOpen);
+
     if (isReviewModalOpen) {
         return (
-            <div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5"
-                onClick={() => setIsReviewModalOpen(false)}
-            >
-                <div
-                    className="bg-muted flex w-full max-w-4xl flex-col items-center justify-center gap-10 rounded-lg border p-5"
-                    onClick={(e) => e.stopPropagation()}
-                >
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
+                <div className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-center gap-8 p-5 sm:h-auto sm:rounded-lg sm:border">
                     <div className="w-full space-y-2 text-center">
-                        <h2 className="text-2xl font-bold">
-                            {tReviewModal('reviewModalTitle')}
-                        </h2>
+                        <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
+                            <Button
+                                className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setIsReviewModalOpen(false)}
+                            >
+                                <X className="h-5 w-5" />
+                            </Button>
+                            <h2 className="text-2xl font-bold">
+                                {tReviewModal('reviewModalTitle')}
+                            </h2>
+                        </div>
                         <p className="text-muted-foreground text-center">
-                            {tReviewModal('reviewModalDescription')}
+                            {modalStep === 1
+                                ? tReviewModal('reviewModalDescription')
+                                : tReviewModal('reviewModalDescription2')}
                         </p>
                     </div>
-                    <div className="flex w-full flex-col gap-4 sm:flex-row">
-                        <div className="">
+                    {modalStep === 1 && (
+                        <div className="flex w-full flex-col gap-4 sm:flex-row">
                             <Select
                                 options={options}
                                 value={selectedMediaType}
                                 onChange={setSelectedMediaType}
                                 placeholder={tReviewModal('selectMediaType')}
                             />
+                            <div className="flex-8">
+                                <SearchInput
+                                    disabled={!selectedMediaType}
+                                    placeholder={tReviewModal(
+                                        'inputMediaTitle'
+                                    )}
+                                    value={mediaTitle}
+                                    onChange={(e) =>
+                                        setMediaTitle(e.target.value)
+                                    }
+                                    suggestions={searchResults}
+                                    loading={isLoading}
+                                    onSelect={(suggestion) =>
+                                        setMediaTitle(suggestion.title)
+                                    }
+                                />
+                            </div>
                         </div>
-                        <div className="flex-8">
-                            <Input
-                                disabled={!selectedMediaType}
-                                placeholder={tReviewModal('inputMediaTitle')}
-                                value={mediaTitle}
-                                onChange={(e) => setMediaTitle(e.target.value)}
+                    )}
+                    {modalStep === 2 && (
+                        <div className="flex w-full flex-col items-center gap-6 sm:flex-row sm:items-start">
+                            <Image
+                                src={getMediaImage()}
+                                alt={mediaTitle}
+                                width={200}
+                                height={300}
+                                className="rounded-md object-cover"
                             />
+                            <form className="w-full space-y-4 sm:space-y-6">
+                                <fieldset>
+                                    <legend className="text-foreground mb-2 block text-sm font-semibold">
+                                        {tMediaPage('yourRating')}
+                                    </legend>
+                                    <RatingInput size="lg" />
+                                </fieldset>
+                                <div>
+                                    <label
+                                        htmlFor="comment"
+                                        className="text-foreground mb-2 block text-sm font-semibold"
+                                    >
+                                        {tMediaPage('yourReview')}
+                                    </label>
+                                    <textarea
+                                        id="comment"
+                                        placeholder={tMediaPage(
+                                            'shareThoughts'
+                                        )}
+                                        rows={4}
+                                        className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    />
+                                </div>
+                            </form>
                         </div>
+                    )}
+                    <div className="flex gap-4">
+                        {modalStep === 1 && (
+                            <Button
+                                disabled={isNextButtonDisabled()}
+                                className="cursor-pointer"
+                                onClick={() => setModalStep(2)}
+                            >
+                                {tCTA('next')}
+                            </Button>
+                        )}
+                        {modalStep === 2 && (
+                            <>
+                                <Button
+                                    className="cursor-pointer"
+                                    variant="ghost"
+                                    onClick={() => setModalStep(1)}
+                                >
+                                    {tBackButton('back')}
+                                </Button>
+                                <Button className="cursor-pointer">
+                                    {tMediaPage('submitReview')}
+                                </Button>
+                            </>
+                        )}
                     </div>
-                    <Button
-                        disabled={!selectedMediaType || !mediaTitle}
-                        className="cursor-pointer"
-                    >
-                        {tCTA('next')}
-                    </Button>
                 </div>
             </div>
         );
