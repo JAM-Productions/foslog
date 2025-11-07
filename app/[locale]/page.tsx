@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import { mockMediaItems, mockReviews } from '@/lib/mock-data';
 import MediaCard from '@/components/media-card';
@@ -108,6 +109,8 @@ export default function HomePage() {
         </div>
     );
 
+    const currentYear = useMemo(() => new Date().getFullYear(), []);
+
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Welcome Section */}
@@ -171,13 +174,14 @@ export default function HomePage() {
                     </div>
                     <p className="text-2xl font-bold">
                         {
-                            sortedMedia.filter((m) => m.year && m.year >= 2023)
-                                .length
+                            sortedMedia.filter(
+                                (m) => m.year && m.year >= currentYear
+                            ).length
                         }
                     </p>
                     <p className="text-muted-foreground text-xs">
                         {tStats('fromDateOnwards', {
-                            date: 2023, //TODO: Change to dynamic year, maybe last year or last 2 years
+                            date: currentYear,
                         })}
                     </p>
                 </div>
@@ -248,10 +252,12 @@ export default function HomePage() {
                 ) : (
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                         {sortedMedia.map((media) => (
-                            <MediaCard
+                            <Link
                                 key={media.id}
-                                media={media}
-                            />
+                                href={`/media/${media.id}`}
+                            >
+                                <MediaCard media={media} />
+                            </Link>
                         ))}
                     </div>
                 )}

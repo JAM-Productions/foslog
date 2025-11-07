@@ -9,6 +9,7 @@ import LanguageSelector from '@/components/language-selector';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Header() {
     const autoCollapsed = useScrollDirection();
@@ -52,7 +53,10 @@ export default function Header() {
             <div className="container mx-auto px-4">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <div className="flex items-center gap-2">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2"
+                    >
                         <div className="flex h-8 w-8 items-center justify-center">
                             <Image
                                 src="/favicon.svg"
@@ -65,7 +69,7 @@ export default function Header() {
                         <span className="text-xl font-bold tracking-tight">
                             Foslog
                         </span>
-                    </div>
+                    </Link>
 
                     {/* Search */}
                     <div

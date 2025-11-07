@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Star } from 'lucide-react';
 
 interface RatingInputProps {
+    id?: string;
+    'aria-labelledby'?: string;
     value?: number;
     onChange?: (rating: number) => void;
     readonly?: boolean;
@@ -13,6 +15,8 @@ interface RatingInputProps {
 }
 
 export function RatingInput({
+    id,
+    'aria-labelledby': ariaLabelledby,
     value = 0,
     onChange,
     readonly = false,
@@ -51,6 +55,8 @@ export function RatingInput({
 
     return (
         <div
+            id={id}
+            aria-labelledby={ariaLabelledby}
             className={`flex items-center gap-1${className ? ` ${className}` : ''}`}
         >
             <div

@@ -63,7 +63,7 @@ model Session {
 }
 
 model Verification {
-  id         String   @id @unique @default(cuid())
+  id         String   @unique @default(cuid())
   identifier String
   token      String?
   expiresAt  DateTime

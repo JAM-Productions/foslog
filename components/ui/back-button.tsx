@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface BackButtonProps {
     href?: string;
@@ -15,8 +18,9 @@ export function BackButton({
     iconSize = 20,
     'aria-label': ariaLabel = 'Go back',
 }: BackButtonProps) {
+    const t = useTranslations('BackButton');
     const baseClasses =
-        'flex items-center justify-center rounded-md p-2 transition-colors text-primary hover:bg-gray-100 dark:hover:bg-background';
+        'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 text-foreground bg-card border border-border hover:bg-accent hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background';
 
     return (
         <Link
@@ -26,6 +30,7 @@ export function BackButton({
             aria-label={ariaLabel}
         >
             <ArrowLeft style={{ width: iconSize, height: iconSize }} />
+            <span>{t('back')}</span>
         </Link>
     );
 }
