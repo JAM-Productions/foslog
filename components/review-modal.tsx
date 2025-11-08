@@ -131,19 +131,16 @@ export default function ReviewModal() {
                 stars: reviewStars,
                 text: reviewText,
             };
-            const responseReview = await fetch(
-                `${window.location.origin}/api/review`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        review,
-                        mediaId: data.media.id,
-                    }),
-                }
-            );
+            const responseReview = await fetch('/api/review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    review,
+                    mediaId: data.media.id,
+                }),
+            });
             if (responseReview.ok) {
                 //TODO: Should redirect to media page
                 setIsLoadingSubmit(false);
