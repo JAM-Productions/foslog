@@ -57,6 +57,7 @@ export default function ReviewModal() {
 
         if (isReviewModalOpen && selectedMediaType) {
             setSearchResults([]);
+            setSelectedMedia(null);
             const getSearchInputData = setTimeout(async () => {
                 setIsLoading(true);
                 const response = await fetch(
@@ -64,7 +65,7 @@ export default function ReviewModal() {
                 );
                 const data = await response.json();
                 setSearchResults(data);
-                if (isMediaTitleInData(data)) {
+                if (mediaTitle.trim() && isMediaTitleInData(data)) {
                     setSelectedMedia(getMediaInData(data));
                 } else {
                     setSelectedMedia(null);
