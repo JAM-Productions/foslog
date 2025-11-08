@@ -84,89 +84,93 @@ export default function ReviewModal() {
     if (isReviewModalOpen) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
-                <div className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-center gap-8 p-5 sm:h-auto sm:rounded-lg sm:border">
-                    <div className="w-full space-y-2 text-center">
-                        <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
-                            <Button
-                                className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => closeModal()}
-                            >
-                                <X className="h-5 w-5" />
-                            </Button>
-                            <h2 className="text-2xl font-bold">
-                                {tReviewModal('reviewModalTitle')}
-                            </h2>
-                        </div>
-                        <p className="text-muted-foreground text-center">
-                            {modalStep === 1
-                                ? tReviewModal('reviewModalDescription')
-                                : tReviewModal('reviewModalDescription2')}
-                        </p>
-                    </div>
-                    {modalStep === 1 && (
-                        <div className="flex w-full flex-col gap-4 sm:flex-row">
-                            <Select
-                                options={options}
-                                value={selectedMediaType}
-                                onChange={setSelectedMediaType}
-                                placeholder={tReviewModal('selectMediaType')}
-                            />
-                            <div className="flex-8">
-                                <SearchInput
-                                    disabled={!selectedMediaType}
-                                    placeholder={tReviewModal(
-                                        'inputMediaTitle'
-                                    )}
-                                    value={mediaTitle}
-                                    onChange={(e) =>
-                                        setMediaTitle(e.target.value)
-                                    }
-                                    suggestions={searchResults}
-                                    loading={isLoading}
-                                    onSelect={(suggestion) =>
-                                        setMediaTitle(suggestion.title)
-                                    }
-                                />
+                <div className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border">
+                    <div className="flex w-full flex-col items-center gap-8">
+                        <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
+                            <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
+                                <Button
+                                    className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => closeModal()}
+                                >
+                                    <X className="h-5 w-5" />
+                                </Button>
+                                <h2 className="text-2xl font-bold">
+                                    {tReviewModal('reviewModalTitle')}
+                                </h2>
                             </div>
+                            <p className="text-muted-foreground text-center">
+                                {modalStep === 1
+                                    ? tReviewModal('reviewModalDescription')
+                                    : tReviewModal('reviewModalDescription2')}
+                            </p>
                         </div>
-                    )}
-                    {modalStep === 2 && (
-                        <div className="flex w-full flex-col items-center gap-6 sm:flex-row sm:items-start">
-                            <Image
-                                src={getMediaImage()}
-                                alt={mediaTitle}
-                                width={200}
-                                height={300}
-                                className="rounded-md object-cover"
-                            />
-                            <form className="w-full space-y-4 sm:space-y-6">
-                                <fieldset>
-                                    <legend className="text-foreground mb-2 block text-sm font-semibold">
-                                        {tMediaPage('yourRating')}
-                                    </legend>
-                                    <RatingInput size="lg" />
-                                </fieldset>
-                                <div>
-                                    <label
-                                        htmlFor="comment"
-                                        className="text-foreground mb-2 block text-sm font-semibold"
-                                    >
-                                        {tMediaPage('yourReview')}
-                                    </label>
-                                    <textarea
-                                        id="comment"
-                                        placeholder={tMediaPage(
-                                            'shareThoughts'
+                        {modalStep === 1 && (
+                            <div className="flex w-full flex-col gap-4 sm:flex-row">
+                                <Select
+                                    options={options}
+                                    value={selectedMediaType}
+                                    onChange={setSelectedMediaType}
+                                    placeholder={tReviewModal(
+                                        'selectMediaType'
+                                    )}
+                                />
+                                <div className="flex-8">
+                                    <SearchInput
+                                        disabled={!selectedMediaType}
+                                        placeholder={tReviewModal(
+                                            'inputMediaTitle'
                                         )}
-                                        rows={4}
-                                        className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={mediaTitle}
+                                        onChange={(e) =>
+                                            setMediaTitle(e.target.value)
+                                        }
+                                        suggestions={searchResults}
+                                        loading={isLoading}
+                                        onSelect={(suggestion) =>
+                                            setMediaTitle(suggestion.title)
+                                        }
                                     />
                                 </div>
-                            </form>
-                        </div>
-                    )}
+                            </div>
+                        )}
+                        {modalStep === 2 && (
+                            <div className="flex w-full flex-col items-center gap-6 sm:flex-row">
+                                <Image
+                                    src={getMediaImage()}
+                                    alt={mediaTitle}
+                                    width={200}
+                                    height={300}
+                                    className="rounded-md object-cover"
+                                />
+                                <form className="w-full space-y-4 sm:space-y-6">
+                                    <fieldset>
+                                        <legend className="text-foreground mb-2 block text-sm font-semibold">
+                                            {tMediaPage('yourRating')}
+                                        </legend>
+                                        <RatingInput size="lg" />
+                                    </fieldset>
+                                    <div>
+                                        <label
+                                            htmlFor="comment"
+                                            className="text-foreground mb-2 block text-sm font-semibold"
+                                        >
+                                            {tMediaPage('yourReview')}
+                                        </label>
+                                        <textarea
+                                            id="comment"
+                                            placeholder={tMediaPage(
+                                                'shareThoughts'
+                                            )}
+                                            rows={4}
+                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                        )}
+                    </div>
                     <div className="flex gap-4">
                         {modalStep === 1 && (
                             <Button
