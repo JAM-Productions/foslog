@@ -2,15 +2,14 @@
 
 import { useAppStore } from '@/lib/store';
 import { Button } from './ui/button';
-import { SearchInput, Suggestions } from './ui/input';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from './ui/select';
 import { useEffect, useState } from 'react';
-import { getMediaByTitle } from '@/lib/api';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { X } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
+import { SearchInput, Suggestions } from './ui/search-input';
 
 export default function ReviewModal() {
     const tCTA = useTranslations('CTA');
@@ -37,6 +36,23 @@ export default function ReviewModal() {
         { value: 'music', label: tMediaTypes('music'), disabled: true },
     ];
 
+    useEffect(() => {
+        if (isReviewModalOpen && selectedMediaType) {
+            setSearchResults([]);
+            const getSearchInputData = setTimeout(async () => {
+                setIsLoading(true);
+                const response = await fetch(
+                    `${window.location.origin}/api/search?mediatype=${encodeURIComponent(selectedMediaType)}&mediatitle=${encodeURIComponent(mediaTitle.trim())}`
+                );
+                const data = await response.json();
+                setSearchResults(data);
+                setIsLoading(false);
+            }, 300);
+
+            return () => clearTimeout(getSearchInputData);
+        }
+    }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
+
     const isNextButtonDisabled = (): boolean => {
         return !searchResults.some((result) =>
             result.title.includes(mediaTitle.trim())
@@ -50,32 +66,18 @@ export default function ReviewModal() {
         return media ? media.image : '';
     };
 
-    useEffect(() => {
-        if (isReviewModalOpen && selectedMediaType) {
-            setSearchResults([]);
-            const getSearchInputData = setTimeout(async () => {
-                setIsLoading(true);
-                const data = await getMediaByTitle(
-                    selectedMediaType,
-                    mediaTitle.trim()
-                );
-                setSearchResults(data);
-                setIsLoading(false);
-            }, 300);
+    const clearModalState = () => {
+        setModalStep(1);
+        setMediaTitle('');
+        setSelectedMediaType('');
+        setSearchResults([]);
+        setIsLoading(false);
+    };
 
-            return () => clearTimeout(getSearchInputData);
-        }
-    }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
-
-    useEffect(() => {
-        if (!isReviewModalOpen) {
-            setModalStep(1);
-            setMediaTitle('');
-            setSelectedMediaType('');
-            setSearchResults([]);
-            setIsLoading(false);
-        }
-    }, [isReviewModalOpen]);
+    const closeModal = () => {
+        clearModalState();
+        setIsReviewModalOpen(false);
+    };
 
     useBodyScrollLock(isReviewModalOpen);
 
@@ -89,7 +91,7 @@ export default function ReviewModal() {
                                 className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => setIsReviewModalOpen(false)}
+                                onClick={() => closeModal()}
                             >
                                 <X className="h-5 w-5" />
                             </Button>
