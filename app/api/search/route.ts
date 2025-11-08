@@ -14,12 +14,12 @@ export async function GET(req: Request) {
     const mediatitle = searchParams.get('mediatitle');
 
     if (!mediatype) {
-        console.error('Missing mediatype parameter');
+        console.log('[GET MEDIA] No mediatype provided');
         return NextResponse.json([]);
     }
 
     if (!mediatitle) {
-        console.error('Missing mediatitle parameter');
+        console.log('[GET MEDIA] No mediatitle provided');
         return NextResponse.json([]);
     }
 
@@ -43,13 +43,15 @@ export async function GET(req: Request) {
                             item.poster_path,
                         description: item.overview,
                     })) || [];
+                console.log('[GET MEDIA] Data:', formattedResult);
                 return NextResponse.json(formattedResult);
 
             default:
+                console.log('[GET MEDIA] Data:', []);
                 return NextResponse.json([]);
         }
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('[GET MEDIA ERROR] Error fetching data:', error);
         return NextResponse.json([]);
     }
 }

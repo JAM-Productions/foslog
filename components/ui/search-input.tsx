@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { MediaType } from '@prisma/client';
+import { LoaderCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export interface Suggestion {
     title: string;
@@ -33,6 +35,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         },
         ref
     ) => {
+        const tSearchInput = useTranslations('SearchInput');
+
         const searchInputRef = React.useRef<HTMLDivElement>(null);
         const [isOpen, setIsOpen] = React.useState(false);
 
@@ -92,9 +96,9 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                             <div className="p-1">
                                 {loading ? (
                                     <div className="flex items-center justify-center p-3">
-                                        <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
-                                        <span className="text-muted-foreground ml-2 text-sm">
-                                            Loading...
+                                        <LoaderCircle className="text-primary animate-spin" />
+                                        <span className="text-muted-foreground ml-2">
+                                            {tSearchInput('loading')}
                                         </span>
                                     </div>
                                 ) : suggestions.length > 0 ? (
@@ -108,8 +112,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                         </p>
                                     ))
                                 ) : (
-                                    <div className="text-muted-foreground p-3 text-center text-sm">
-                                        No suggestions
+                                    <div className="text-muted-foreground p-3 text-center">
+                                        {tSearchInput('noSuggestions')}
                                     </div>
                                 )}
                             </div>

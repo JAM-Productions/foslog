@@ -128,5 +128,9 @@
     },
     "BackButton": {
         "back": "Volver"
+    },
+    "SearchInput": {
+        "loading": "Cargando",
+        "noSuggestions": "Sin sugerencias"
     }
 }

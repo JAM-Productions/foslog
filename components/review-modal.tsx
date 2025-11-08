@@ -4,12 +4,17 @@ import { useAppStore } from '@/lib/store';
 import { Button } from './ui/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from './ui/select';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { X } from 'lucide-react';
+import { X, LoaderCircle } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from './ui/search-input';
+
+interface Review {
+    stars: number;
+    text: string;
+}
 
 export default function ReviewModal() {
     const tCTA = useTranslations('CTA');
@@ -27,10 +32,13 @@ export default function ReviewModal() {
 
     const [mediaTitle, setMediaTitle] = useState<string>('');
     const [searchResults, setSearchResults] = useState<Suggestion[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoadingSearchResults, setIsLoadingSearchResults] =
+        useState<boolean>(false);
 
     const [reviewStars, setReviewStars] = useState<number>(0);
     const [reviewText, setReviewText] = useState<string>('');
+
+    const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
 
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
@@ -58,29 +66,32 @@ export default function ReviewModal() {
             return foundMedia || null;
         };
 
-        if (isReviewModalOpen && selectedMediaType) {
+        if (isReviewModalOpen && selectedMediaType && mediaTitle.trim()) {
             setSearchResults([]);
             setSelectedMedia(null);
             const getSearchInputData = setTimeout(async () => {
-                setIsLoading(true);
+                setIsLoadingSearchResults(true);
                 const response = await fetch(
-                    `${window.location.origin}/api/search?mediatype=${encodeURIComponent(selectedMediaType)}&mediatitle=${encodeURIComponent(mediaTitle.trim())}`
+                    `/api/search?mediatype=${encodeURIComponent(selectedMediaType)}&mediatitle=${encodeURIComponent(mediaTitle.trim())}`
                 );
                 const data = await response.json();
                 setSearchResults(data);
-                if (mediaTitle.trim() && isMediaTitleInData(data)) {
+                if (isMediaTitleInData(data)) {
                     setSelectedMedia(getMediaInData(data));
                 } else {
                     setSelectedMedia(null);
                 }
-                setIsLoading(false);
+                setIsLoadingSearchResults(false);
             }, 300);
 
             return () => clearTimeout(getSearchInputData);
+        } else {
+            setSearchResults([]);
+            setSelectedMedia(null);
         }
     }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
 
-    const clearModalState = () => {
+    const clearModalState = useCallback(() => {
         setModalStep(1);
         setMediaTitle('');
         setSelectedMediaType('');
@@ -88,23 +99,58 @@ export default function ReviewModal() {
         setSearchResults([]);
         setReviewStars(0);
         setReviewText('');
-        setIsLoading(false);
-    };
+        setIsLoadingSearchResults(false);
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         clearModalState();
         setIsReviewModalOpen(false);
-    };
+    }, [clearModalState, setIsReviewModalOpen]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         setModalStep(1);
         setReviewStars(0);
         setReviewText('');
-    };
+    }, []);
 
-    const submitReview = () => {
-        // Submit review logic here
-        console.log('Review Submitted');
+    const submitReview = async () => {
+        setIsLoadingSubmit(true);
+        const responseMedia = await fetch('/api/media', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                selectedMedia,
+            }),
+        });
+
+        if (responseMedia.ok) {
+            const data = await responseMedia.json();
+            const review: Review = {
+                stars: reviewStars,
+                text: reviewText,
+            };
+            const responseReview = await fetch(
+                `${window.location.origin}/api/review`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        review,
+                        mediaId: data.media.id,
+                    }),
+                }
+            );
+            if (responseReview.ok) {
+                //TODO: Should redirect to media page
+                setIsLoadingSubmit(false);
+                closeModal();
+            }
+        }
+        setIsLoadingSubmit(false);
     };
 
     if (isReviewModalOpen) {
@@ -115,6 +161,7 @@ export default function ReviewModal() {
                         <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
                             <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
                                 <Button
+                                    disabled={isLoadingSubmit}
                                     className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
                                     variant="ghost"
                                     size="sm"
@@ -153,7 +200,7 @@ export default function ReviewModal() {
                                             setMediaTitle(e.target.value)
                                         }
                                         suggestions={searchResults}
-                                        loading={isLoading}
+                                        loading={isLoadingSearchResults}
                                         onSelect={(suggestion) => {
                                             setMediaTitle(suggestion.title);
                                             setSelectedMedia(suggestion);
@@ -219,23 +266,34 @@ export default function ReviewModal() {
                         {modalStep === 2 && (
                             <>
                                 <Button
+                                    disabled={isLoadingSubmit}
                                     className="cursor-pointer"
                                     variant="ghost"
                                     onClick={() => handleBack()}
                                 >
                                     {tBackButton('back')}
                                 </Button>
-                                <Button
-                                    disabled={
-                                        !selectedMedia ||
-                                        reviewStars < 1 ||
-                                        !reviewText.trim()
-                                    }
-                                    onClick={() => submitReview()}
-                                    className="cursor-pointer"
-                                >
-                                    {tMediaPage('submitReview')}
-                                </Button>
+                                <div className="relative flex flex-row items-center justify-center">
+                                    <Button
+                                        disabled={
+                                            !selectedMedia ||
+                                            reviewStars < 1 ||
+                                            !reviewText.trim() ||
+                                            isLoadingSubmit
+                                        }
+                                        onClick={() => submitReview()}
+                                        className={`cursor-pointer ${
+                                            isLoadingSubmit
+                                                ? 'text-transparent'
+                                                : ''
+                                        }`}
+                                    >
+                                        {tMediaPage('submitReview')}
+                                    </Button>
+                                    {isLoadingSubmit && (
+                                        <LoaderCircle className="text-primary absolute animate-spin" />
+                                    )}
+                                </div>
                             </>
                         )}
                     </div>

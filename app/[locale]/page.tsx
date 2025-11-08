@@ -273,7 +273,10 @@ export default function HomePage() {
                     <p className="text-muted-foreground mb-4">
                         {tCTA('addReviewsDescription')}
                     </p>
-                    <Button onClick={() => setIsReviewModalOpen(true)}>
+                    <Button
+                        onClick={() => setIsReviewModalOpen(true)}
+                        disabled={!user}
+                    >
                         {tCTA('addNewReview')}
                     </Button>
                 </div>
