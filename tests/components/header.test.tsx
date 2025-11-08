@@ -128,36 +128,33 @@ describe('Header', () => {
 
     it('toggles header collapse state when button is clicked', async () => {
         const user = userEvent.setup();
-        const { useScrollDirection } = await import('@/hooks/useScrollDirection');
-        
-        // Mock auto-collapsed state (simulating scroll down)
-        vi.mocked(useScrollDirection).mockReturnValue(true);
-        
-        const { rerender } = render(<Header />);
+        render(<Header />);
 
-        // When auto-collapsed, shows ChevronDown and Expand button
-        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /expand header/i })
-        ).toBeInTheDocument();
-
-        // Click to manually expand (override auto-collapse)
-        const toggleButton = screen.getByRole('button', {
-            name: /expand header/i,
-        });
-        await user.click(toggleButton);
-
-        // Should force expand despite auto-collapse - shows ChevronUp
+        // Initially expanded - shows ChevronUp
         expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
         expect(
             screen.getByRole('button', { name: /collapse header/i })
         ).toBeInTheDocument();
 
-        // Mock scrolling back to top (auto-collapse = false)
-        vi.mocked(useScrollDirection).mockReturnValue(false);
-        rerender(<Header />);
+        // Click to collapse
+        const toggleButton = screen.getByRole('button', {
+            name: /collapse header/i,
+        });
+        await user.click(toggleButton);
 
-        // Should remain expanded and show ChevronUp
+        // Now collapsed - shows ChevronDown
+        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /expand header/i })
+        ).toBeInTheDocument();
+
+        // Click again to expand
+        const expandButton = screen.getByRole('button', {
+            name: /expand header/i,
+        });
+        await user.click(expandButton);
+
+        // Back to expanded - shows ChevronUp
         expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
     });
 
