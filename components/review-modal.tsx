@@ -9,7 +9,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { X } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
-import { SearchInput, Suggestions } from './ui/search-input';
+import { SearchInput, Suggestion } from './ui/search-input';
 
 export default function ReviewModal() {
     const tCTA = useTranslations('CTA');
@@ -23,9 +23,10 @@ export default function ReviewModal() {
     const [modalStep, setModalStep] = useState<number>(1);
 
     const [selectedMediaType, setSelectedMediaType] = useState<string>('');
-    const [mediaTitle, setMediaTitle] = useState<string>('');
+    const [selectedMedia, setSelectedMedia] = useState<Suggestion | null>(null);
 
-    const [searchResults, setSearchResults] = useState<Suggestions[]>([]);
+    const [mediaTitle, setMediaTitle] = useState<string>('');
+    const [searchResults, setSearchResults] = useState<Suggestion[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const options: SelectOption[] = [
@@ -37,6 +38,21 @@ export default function ReviewModal() {
     ];
 
     useEffect(() => {
+        const isMediaTitleInData = (searchResults: Suggestion[]): boolean => {
+            return searchResults.some(
+                (result: Suggestion) => result.title === mediaTitle.trim()
+            );
+        };
+
+        const getMediaInData = (
+            searchResults: Suggestion[]
+        ): Suggestion | null => {
+            const foundMedia = searchResults.find(
+                (result: Suggestion) => result.title === mediaTitle.trim()
+            );
+            return foundMedia || null;
+        };
+
         if (isReviewModalOpen && selectedMediaType) {
             setSearchResults([]);
             const getSearchInputData = setTimeout(async () => {
@@ -46,6 +62,11 @@ export default function ReviewModal() {
                 );
                 const data = await response.json();
                 setSearchResults(data);
+                if (isMediaTitleInData(data)) {
+                    setSelectedMedia(getMediaInData(data));
+                } else {
+                    setSelectedMedia(null);
+                }
                 setIsLoading(false);
             }, 300);
 
@@ -53,23 +74,11 @@ export default function ReviewModal() {
         }
     }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
 
-    const isNextButtonDisabled = (): boolean => {
-        return !searchResults.some((result) =>
-            result.title.includes(mediaTitle.trim())
-        );
-    };
-
-    const getMediaImage = (): string => {
-        const media = searchResults.find((result) =>
-            result.title.includes(mediaTitle.trim())
-        );
-        return media ? media.image : '';
-    };
-
     const clearModalState = () => {
         setModalStep(1);
         setMediaTitle('');
         setSelectedMediaType('');
+        setSelectedMedia(null);
         setSearchResults([]);
         setIsLoading(false);
     };
@@ -128,9 +137,10 @@ export default function ReviewModal() {
                                         }
                                         suggestions={searchResults}
                                         loading={isLoading}
-                                        onSelect={(suggestion) =>
-                                            setMediaTitle(suggestion.title)
-                                        }
+                                        onSelect={(suggestion) => {
+                                            setMediaTitle(suggestion.title);
+                                            setSelectedMedia(suggestion);
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -138,8 +148,8 @@ export default function ReviewModal() {
                         {modalStep === 2 && (
                             <div className="flex w-full flex-col items-center gap-6 sm:flex-row">
                                 <Image
-                                    src={getMediaImage()}
-                                    alt={mediaTitle}
+                                    src={selectedMedia?.poster || ''}
+                                    alt={selectedMedia?.title || ''}
                                     width={200}
                                     height={300}
                                     className="rounded-md object-cover"
@@ -174,7 +184,7 @@ export default function ReviewModal() {
                     <div className="flex gap-4">
                         {modalStep === 1 && (
                             <Button
-                                disabled={isNextButtonDisabled()}
+                                disabled={!selectedMedia}
                                 className="cursor-pointer"
                                 onClick={() => setModalStep(2)}
                             >

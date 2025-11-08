@@ -1,8 +1,11 @@
+import { MediaType } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
-interface OMDBData {
-    Title: string;
-    Poster: string;
+interface TMDBData {
+    title: string;
+    poster_path: string;
+    release_date: string;
+    overview: string;
 }
 
 export async function GET(req: Request) {
@@ -25,27 +28,20 @@ export async function GET(req: Request) {
 
         switch (mediatype) {
             case 'film':
-                apiUrl = `http://www.omdbapi.com/?type=movie&s=${encodeURIComponent(mediatitle)}&apikey=${process.env.OMDB_API_KEY}`;
+                apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(mediatitle)}`;
                 const res = await fetch(apiUrl);
-
-                if (!res.ok) {
-                    console.error(
-                        `OMDB API error: ${res.status} ${res.statusText}`
-                    );
-                    return NextResponse.json([]);
-                }
 
                 const data = await res.json();
 
-                if (data.Error) {
-                    console.error('OMDB API returned error:', data.Error);
-                    return NextResponse.json([]);
-                }
-
                 const formattedResult =
-                    data.Search?.map((item: OMDBData) => ({
-                        title: item.Title,
-                        image: item.Poster,
+                    data.results?.map((item: TMDBData) => ({
+                        title: item.title,
+                        type: MediaType.FILM,
+                        year: parseInt(item.release_date.split('-')[0]),
+                        poster:
+                            'https://image.tmdb.org/t/p/w500' +
+                            item.poster_path,
+                        description: item.overview,
                     })) || [];
                 return NextResponse.json(formattedResult);
 

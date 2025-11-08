@@ -1,18 +1,22 @@
 import * as React from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { MediaType } from '@prisma/client';
 
-export interface Suggestions {
+export interface Suggestion {
     title: string;
-    image: string;
+    type: MediaType;
+    year: number;
+    poster: string;
+    description: string;
 }
 
 export interface SearchInputProps
     extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onSelect'> {
     variant?: 'default' | 'outline' | 'filled';
     inputSize?: 'default' | 'sm' | 'lg';
-    suggestions?: Suggestions[];
+    suggestions?: Suggestion[];
     loading?: boolean;
-    onSelect: (suggestion: Suggestions) => void;
+    onSelect: (suggestion: Suggestion) => void;
 }
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
@@ -39,7 +43,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             onFocus?.(e);
         };
 
-        const handleSelect = (suggestion: Suggestions) => {
+        const handleSelect = (suggestion: Suggestion) => {
             onSelect?.(suggestion);
             setIsOpen(false);
         };
