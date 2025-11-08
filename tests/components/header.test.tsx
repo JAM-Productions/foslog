@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import Header from '@/components/header';
 
 // Mock all the sub-components
@@ -21,6 +22,26 @@ vi.mock('@/components/search-bar', () => ({
 
 vi.mock('@/components/language-selector', () => ({
     default: () => <div data-testid="language-selector">Language Selector</div>,
+}));
+
+// Mock lucide-react icons
+vi.mock('lucide-react', () => ({
+    ChevronDown: ({ className }: { className?: string }) => (
+        <span
+            data-testid="chevron-down"
+            className={className}
+        >
+            ▼
+        </span>
+    ),
+    ChevronUp: ({ className }: { className?: string }) => (
+        <span
+            data-testid="chevron-up"
+            className={className}
+        >
+            ▲
+        </span>
+    ),
 }));
 
 // Mock Next.js Image component
@@ -60,7 +81,9 @@ describe('Header', () => {
             'z-40',
             'w-full',
             'border-b',
-            'backdrop-blur'
+            'backdrop-blur',
+            'transition-all',
+            'duration-300'
         );
     });
 
@@ -88,6 +111,48 @@ describe('Header', () => {
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
 
+    it('renders collapse/expand toggle button', () => {
+        render(<Header />);
+
+        const toggleButton = screen.getByRole('button', {
+            name: /collapse header/i,
+        });
+        expect(toggleButton).toBeInTheDocument();
+        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+    });
+
+    it('toggles header collapse state when button is clicked', async () => {
+        const user = userEvent.setup();
+        render(<Header />);
+
+        // Initially expanded - shows ChevronUp
+        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /collapse header/i })
+        ).toBeInTheDocument();
+
+        // Click to collapse
+        const toggleButton = screen.getByRole('button', {
+            name: /collapse header/i,
+        });
+        await user.click(toggleButton);
+
+        // Now collapsed - shows ChevronDown
+        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /expand header/i })
+        ).toBeInTheDocument();
+
+        // Click again to expand
+        const expandButton = screen.getByRole('button', {
+            name: /expand header/i,
+        });
+        await user.click(expandButton);
+
+        // Back to expanded - shows ChevronUp
+        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+    });
+
     it('has responsive search bar layout', () => {
         render(<Header />);
 
@@ -99,11 +164,17 @@ describe('Header', () => {
             'hidden',
             'max-w-md',
             'flex-1',
+            'transition-all',
+            'duration-300',
             'md:flex'
         );
 
         // Mobile search bar (visible only on mobile)
-        expect(searchBars[1].parentElement).toHaveClass('pb-4', 'md:hidden');
+        expect(searchBars[1].parentElement).toHaveClass(
+            'transition-all',
+            'duration-300',
+            'md:hidden'
+        );
     });
 
     it('has proper layout structure', () => {
@@ -148,7 +219,10 @@ describe('Header', () => {
         // Media type filter section
         const mediaFilterSection =
             screen.getByTestId('media-type-filter').parentElement;
-        expect(mediaFilterSection).toHaveClass('pb-4');
+        expect(mediaFilterSection).toHaveClass(
+            'transition-all',
+            'duration-300'
+        );
     });
 
     it('has correct image sizing classes', () => {
@@ -164,7 +238,7 @@ describe('Header', () => {
         const header = screen.getByRole('banner');
         const children = Array.from(header.querySelectorAll('[data-testid]'));
 
-        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), and media filter
+        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), media filter, and toggle button with chevron icon
         expect(children.length).toBeGreaterThanOrEqual(5);
 
         // Verify specific components exist
