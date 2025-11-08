@@ -275,7 +275,7 @@ export default function HomePage() {
                     </p>
                     <Button
                         onClick={() => setIsReviewModalOpen(true)}
-                        disabled={!user}
+                        /* disabled={!user} */
                     >
                         {tCTA('addNewReview')}
                     </Button>
