@@ -3,11 +3,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import Header from '@/components/header';
 
-// Mock the scroll direction hook
-vi.mock('@/hooks/useScrollDirection', () => ({
-    useScrollDirection: vi.fn(() => false),
-}));
-
 // Mock all the sub-components
 vi.mock('@/components/media-type-filter', () => ({
     default: () => <div data-testid="media-type-filter">Media Type Filter</div>,
