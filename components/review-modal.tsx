@@ -37,6 +37,8 @@ export default function ReviewModal() {
         { value: 'music', label: tMediaTypes('music'), disabled: true },
     ];
 
+    useBodyScrollLock(isReviewModalOpen);
+
     useEffect(() => {
         const isMediaTitleInData = (searchResults: Suggestion[]): boolean => {
             return searchResults.some(
@@ -87,8 +89,6 @@ export default function ReviewModal() {
         clearModalState();
         setIsReviewModalOpen(false);
     };
-
-    useBodyScrollLock(isReviewModalOpen);
 
     if (isReviewModalOpen) {
         return (
