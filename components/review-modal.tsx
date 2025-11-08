@@ -29,6 +29,9 @@ export default function ReviewModal() {
     const [searchResults, setSearchResults] = useState<Suggestion[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const [reviewStars, setReviewStars] = useState<number>(0);
+    const [reviewText, setReviewText] = useState<string>('');
+
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
         { value: 'serie', label: tMediaTypes('series'), disabled: true },
@@ -83,6 +86,8 @@ export default function ReviewModal() {
         setSelectedMediaType('');
         setSelectedMedia(null);
         setSearchResults([]);
+        setReviewStars(0);
+        setReviewText('');
         setIsLoading(false);
     };
 
@@ -91,11 +96,22 @@ export default function ReviewModal() {
         setIsReviewModalOpen(false);
     };
 
+    const handleBack = () => {
+        setModalStep(1);
+        setReviewStars(0);
+        setReviewText('');
+    };
+
+    const submitReview = () => {
+        // Submit review logic here
+        console.log('Review Submitted');
+    };
+
     if (isReviewModalOpen) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
                 <div className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border">
-                    <div className="flex w-full flex-col items-center gap-8">
+                    <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
                         <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
                             <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
                                 <Button
@@ -160,7 +176,11 @@ export default function ReviewModal() {
                                         <legend className="text-foreground mb-2 block text-sm font-semibold">
                                             {tMediaPage('yourRating')}
                                         </legend>
-                                        <RatingInput size="lg" />
+                                        <RatingInput
+                                            size="lg"
+                                            onChange={setReviewStars}
+                                            value={reviewStars}
+                                        />
                                     </fieldset>
                                     <div>
                                         <label
@@ -176,6 +196,10 @@ export default function ReviewModal() {
                                             )}
                                             rows={4}
                                             className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                            value={reviewText}
+                                            onChange={(e) =>
+                                                setReviewText(e.target.value)
+                                            }
                                         />
                                     </div>
                                 </form>
@@ -197,11 +221,19 @@ export default function ReviewModal() {
                                 <Button
                                     className="cursor-pointer"
                                     variant="ghost"
-                                    onClick={() => setModalStep(1)}
+                                    onClick={() => handleBack()}
                                 >
                                     {tBackButton('back')}
                                 </Button>
-                                <Button className="cursor-pointer">
+                                <Button
+                                    disabled={
+                                        !selectedMedia ||
+                                        reviewStars < 1 ||
+                                        !reviewText.trim()
+                                    }
+                                    onClick={() => submitReview()}
+                                    className="cursor-pointer"
+                                >
                                     {tMediaPage('submitReview')}
                                 </Button>
                             </>
