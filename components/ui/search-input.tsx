@@ -13,11 +13,19 @@ export interface Suggestion {
 }
 
 export interface SearchInputProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onSelect'> {
+    extends Omit<
+        React.InputHTMLAttributes<HTMLInputElement>,
+        'onSelect' | 'value' | 'onChange'
+    > {
     variant?: 'default' | 'outline' | 'filled';
     inputSize?: 'default' | 'sm' | 'lg';
-    suggestions?: Suggestion[];
-    loading?: boolean;
+    apiUrl: string;
+    apiParams?: Record<string, string>;
+    debounceMs?: number;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSearchResults?: (results: Suggestion[]) => void;
+    onAutoSelect?: (suggestion: Suggestion | null) => void;
     onSelect: (suggestion: Suggestion) => void;
 }
 
@@ -27,8 +35,13 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             className,
             variant = 'default',
             inputSize = 'default',
-            suggestions = [],
-            loading = false,
+            apiUrl,
+            apiParams = {},
+            debounceMs = 300,
+            value,
+            onChange,
+            onSearchResults,
+            onAutoSelect,
             onFocus,
             onSelect,
             ...props
@@ -39,8 +52,60 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
         const searchInputRef = React.useRef<HTMLDivElement>(null);
         const [isOpen, setIsOpen] = React.useState(false);
+        const [suggestions, setSuggestions] = React.useState<Suggestion[]>([]);
+        const [loading, setLoading] = React.useState<boolean>(false);
 
         useClickOutside(searchInputRef, isOpen, setIsOpen);
+
+        React.useEffect(() => {
+            const isMediaTitleInData = (
+                searchResults: Suggestion[]
+            ): boolean => {
+                return searchResults.some(
+                    (result: Suggestion) => result.title === value?.trim()
+                );
+            };
+
+            const getMediaInData = (
+                searchResults: Suggestion[]
+            ): Suggestion | null => {
+                const foundMedia = searchResults.find(
+                    (result: Suggestion) => result.title === value?.trim()
+                );
+                return foundMedia || null;
+            };
+
+            if (value?.trim()) {
+                setSuggestions([]);
+                onAutoSelect?.(null);
+                const getSearchInputData = setTimeout(async () => {
+                    setLoading(true);
+
+                    const url = new URL(apiUrl, window.location.origin);
+                    Object.entries(apiParams).forEach(([key, val]) => {
+                        url.searchParams.append(key, val);
+                    });
+
+                    const response = await fetch(url.toString());
+                    const data = await response.json();
+                    setSuggestions(data);
+                    onSearchResults?.(data);
+                    if (isMediaTitleInData(data)) {
+                        onAutoSelect?.(getMediaInData(data));
+                    } else {
+                        onAutoSelect?.(null);
+                    }
+                    setLoading(false);
+                }, debounceMs);
+
+                return () => clearTimeout(getSearchInputData);
+            } else {
+                setSuggestions([]);
+                onSearchResults?.([]);
+                onAutoSelect?.(null);
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [apiUrl, JSON.stringify(apiParams), value]);
 
         const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
             setIsOpen(true);
@@ -83,15 +148,15 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                         .filter(Boolean)
                         .join(' ')}
                     ref={ref}
+                    value={value}
+                    onChange={onChange}
                     onFocus={handleFocus}
                     {...props}
                 />
                 {isOpen &&
                     (loading ||
                         suggestions.length > 0 ||
-                        (!loading &&
-                            suggestions.length === 0 &&
-                            props.value)) && (
+                        (!loading && suggestions.length === 0 && value)) && (
                         <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
                             <div className="p-1">
                                 {loading ? (

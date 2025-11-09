@@ -4,7 +4,7 @@ import { useAppStore } from '@/lib/store';
 import { Button } from './ui/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from './ui/select';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { X, LoaderCircle } from 'lucide-react';
 import { RatingInput } from './ui/rating';
@@ -31,9 +31,6 @@ export default function ReviewModal() {
     const [selectedMedia, setSelectedMedia] = useState<Suggestion | null>(null);
 
     const [mediaTitle, setMediaTitle] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<Suggestion[]>([]);
-    const [isLoadingSearchResults, setIsLoadingSearchResults] =
-        useState<boolean>(false);
 
     const [reviewStars, setReviewStars] = useState<number>(0);
     const [reviewText, setReviewText] = useState<string>('');
@@ -50,56 +47,13 @@ export default function ReviewModal() {
 
     useBodyScrollLock(isReviewModalOpen);
 
-    useEffect(() => {
-        const isMediaTitleInData = (searchResults: Suggestion[]): boolean => {
-            return searchResults.some(
-                (result: Suggestion) => result.title === mediaTitle.trim()
-            );
-        };
-
-        const getMediaInData = (
-            searchResults: Suggestion[]
-        ): Suggestion | null => {
-            const foundMedia = searchResults.find(
-                (result: Suggestion) => result.title === mediaTitle.trim()
-            );
-            return foundMedia || null;
-        };
-
-        if (isReviewModalOpen && selectedMediaType && mediaTitle.trim()) {
-            setSearchResults([]);
-            setSelectedMedia(null);
-            const getSearchInputData = setTimeout(async () => {
-                setIsLoadingSearchResults(true);
-                const response = await fetch(
-                    `/api/search?mediatype=${encodeURIComponent(selectedMediaType)}&mediatitle=${encodeURIComponent(mediaTitle.trim())}`
-                );
-                const data = await response.json();
-                setSearchResults(data);
-                if (isMediaTitleInData(data)) {
-                    setSelectedMedia(getMediaInData(data));
-                } else {
-                    setSelectedMedia(null);
-                }
-                setIsLoadingSearchResults(false);
-            }, 300);
-
-            return () => clearTimeout(getSearchInputData);
-        } else {
-            setSearchResults([]);
-            setSelectedMedia(null);
-        }
-    }, [isReviewModalOpen, selectedMediaType, mediaTitle]);
-
     const clearModalState = useCallback(() => {
         setModalStep(1);
         setMediaTitle('');
         setSelectedMediaType('');
         setSelectedMedia(null);
-        setSearchResults([]);
         setReviewStars(0);
         setReviewText('');
-        setIsLoadingSearchResults(false);
     }, []);
 
     const closeModal = useCallback(() => {
@@ -176,36 +130,43 @@ export default function ReviewModal() {
                                     : tReviewModal('reviewModalDescription2')}
                             </p>
                         </div>
-                        {modalStep === 1 && (
-                            <div className="flex w-full flex-col gap-4 sm:flex-row">
-                                <Select
-                                    options={options}
-                                    value={selectedMediaType}
-                                    onChange={setSelectedMediaType}
+
+                        <div
+                            className={`flex w-full flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
+                        >
+                            <Select
+                                options={options}
+                                value={selectedMediaType}
+                                onChange={setSelectedMediaType}
+                                placeholder={tReviewModal('selectMediaType')}
+                            />
+                            <div className="flex-8">
+                                <SearchInput
+                                    disabled={!selectedMediaType}
                                     placeholder={tReviewModal(
-                                        'selectMediaType'
+                                        'inputMediaTitle'
                                     )}
+                                    apiUrl="/api/search"
+                                    apiParams={{
+                                        mediatype: selectedMediaType,
+                                        mediatitle: mediaTitle.trim(),
+                                    }}
+                                    debounceMs={400}
+                                    value={mediaTitle}
+                                    onChange={(e) =>
+                                        setMediaTitle(e.target.value)
+                                    }
+                                    onAutoSelect={(suggestion) => {
+                                        setSelectedMedia(suggestion);
+                                    }}
+                                    onSelect={(suggestion) => {
+                                        setMediaTitle(suggestion.title);
+                                        setSelectedMedia(suggestion);
+                                    }}
                                 />
-                                <div className="flex-8">
-                                    <SearchInput
-                                        disabled={!selectedMediaType}
-                                        placeholder={tReviewModal(
-                                            'inputMediaTitle'
-                                        )}
-                                        value={mediaTitle}
-                                        onChange={(e) =>
-                                            setMediaTitle(e.target.value)
-                                        }
-                                        suggestions={searchResults}
-                                        loading={isLoadingSearchResults}
-                                        onSelect={(suggestion) => {
-                                            setMediaTitle(suggestion.title);
-                                            setSelectedMedia(suggestion);
-                                        }}
-                                    />
-                                </div>
                             </div>
-                        )}
+                        </div>
+
                         {modalStep === 2 && (
                             <div className="flex w-full flex-col items-center gap-6 sm:flex-row">
                                 <Image
