@@ -96,7 +96,7 @@ export default function ReviewModal() {
                 }),
             });
             if (responseReview.ok) {
-                //TODO: Should redirect to media page
+                //TODO: Should redirect to media page.
                 setIsLoadingSubmit(false);
                 closeModal();
             }
