@@ -67,8 +67,6 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        console.log('Created new review item:', reviewItem);
-
         return NextResponse.json(
             {
                 message: 'Review created successfully',
