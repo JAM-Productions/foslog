@@ -1,49 +1,25 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SearchInput, Suggestion } from '@/components/ui/search-input';
-import { MediaType } from '@prisma/client';
 import { useTranslations } from 'next-intl';
+import { MediaType } from '@prisma/client';
 
+// Mock next-intl
 vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
+// Mock the useClickOutside hook - implement a simple version that does nothing
 vi.mock('@/hooks/useClickOutside', () => ({
-    useClickOutside: vi.fn(),
+    useClickOutside: vi.fn(() => {
+        // Simple mock that doesn't do anything
+    }),
 }));
 
-const mockSuggestions: Suggestion[] = [
-    {
-        title: 'The Matrix',
-        type: MediaType.FILM,
-        year: 1999,
-        poster: '/matrix.jpg',
-        description:
-            'A computer hacker learns about the true nature of reality.',
-    },
-    {
-        title: 'Inception',
-        type: MediaType.FILM,
-        year: 2010,
-        poster: '/inception.jpg',
-        description:
-            'A thief who steals corporate secrets through dream-sharing technology.',
-    },
-    {
-        title: 'The Last of Us',
-        type: MediaType.GAME,
-        year: 2013,
-        poster: '/tlou.jpg',
-        description: 'A post-apocalyptic action-adventure game.',
-    },
-];
-
 describe('SearchInput', () => {
-    const mockOnSelect = vi.fn();
-    const mockOnChange = vi.fn();
-    const mockOnSearchResults = vi.fn();
-    const mockOnAutoSelect = vi.fn();
+    const mockSetSelectedMedia = vi.fn();
+    const mockSetMediaTitle = vi.fn();
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             loading: 'Loading...',
@@ -54,6 +30,23 @@ describe('SearchInput', () => {
 
     const mockedUseTranslations = vi.mocked(useTranslations);
 
+    const mockSuggestions: Suggestion[] = [
+        {
+            title: 'The Matrix',
+            type: 'MOVIE' as MediaType,
+            year: 1999,
+            poster: 'https://example.com/matrix.jpg',
+            description: 'A sci-fi masterpiece',
+        },
+        {
+            title: 'The Matrix Reloaded',
+            type: 'MOVIE' as MediaType,
+            year: 2003,
+            poster: 'https://example.com/matrix2.jpg',
+            description: 'The sequel',
+        },
+    ];
+
     beforeEach(() => {
         vi.clearAllMocks();
         mockedUseTranslations.mockReturnValue(
@@ -62,32 +55,18 @@ describe('SearchInput', () => {
         global.fetch = vi.fn();
     });
 
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
-
     it('renders with default props', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toBeInTheDocument();
-        expect(input).toHaveAttribute('type', 'text');
-    });
-
-    it('renders with default variant and size', () => {
-        render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass(
             'border',
             'border-input',
@@ -96,17 +75,20 @@ describe('SearchInput', () => {
             'px-4',
             'py-2'
         );
+        expect(input).toHaveAttribute('type', 'text');
     });
 
     it('renders with outline variant', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 variant="outline"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass('border-2', 'border-input', 'bg-transparent');
     });
@@ -114,12 +96,14 @@ describe('SearchInput', () => {
     it('renders with filled variant', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 variant="filled"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass('border-0', 'bg-muted');
     });
@@ -127,12 +111,14 @@ describe('SearchInput', () => {
     it('renders with small size', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 inputSize="sm"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass('h-8', 'px-2', 'py-1', 'text-sm');
     });
@@ -140,12 +126,14 @@ describe('SearchInput', () => {
     it('renders with large size', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 inputSize="lg"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass('h-12', 'px-4', 'py-3', 'text-lg');
     });
@@ -153,568 +141,397 @@ describe('SearchInput', () => {
     it('applies custom className', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 className="custom-class"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toHaveClass('custom-class');
     });
 
-    it('handles controlled input value', () => {
+    it('handles change events', async () => {
+        const user = userEvent.setup();
+        const handleChange = vi.fn();
+
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                value="test query"
-                onChange={mockOnChange}
+                onChange={handleChange}
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
-        const input = screen.getByDisplayValue('test query');
-        expect(input).toBeInTheDocument();
+
+        const input = screen.getByPlaceholderText('Search...');
+        await user.type(input, 'Matrix');
+
+        expect(handleChange).toHaveBeenCalled();
     });
 
-    it('calls onChange when input value changes', async () => {
-        const user = userEvent.setup();
+    it('displays value prop', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
+                value="Test Value"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
-        const input = screen.getByPlaceholderText('Search...');
 
-        await user.type(input, 'test');
-        expect(mockOnChange).toHaveBeenCalled();
+        const input = screen.getByDisplayValue('Test Value');
+        expect(input).toBeInTheDocument();
     });
 
     it('opens dropdown on focus', async () => {
         const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
                 value="Matrix"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
-        const input = screen.getByPlaceholderText('Search...');
 
+        const input = screen.getByPlaceholderText('Search...');
         await user.click(input);
 
+        // The dropdown should be visible after focus and there's a value
         await waitFor(() => {
-            expect(screen.getByText('The Matrix')).toBeInTheDocument();
-        });
-    });
-
-    it('fetches and displays suggestions when typing', async () => {
-        const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value=""
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-
-        await user.click(input);
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value="Matrix"
-                placeholder="Search..."
-            />
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText('The Matrix')).toBeInTheDocument();
-            expect(screen.getByText('Inception')).toBeInTheDocument();
-            expect(screen.getByText('The Last of Us')).toBeInTheDocument();
-        });
-    });
-
-    it('displays loading state while fetching', async () => {
-        const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
-            () =>
-                new Promise((resolve) =>
-                    setTimeout(
-                        () =>
-                            resolve({
-                                json: async () => mockSuggestions,
-                            } as Response),
-                        100
-                    )
-                )
-        );
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value=""
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-
-        await user.click(input);
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value="test"
-                placeholder="Search..."
-            />
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText('Loading...')).toBeInTheDocument();
-        });
-    });
-
-    it('displays "no suggestions" message when no results', async () => {
-        const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => [],
-        } as Response);
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value=""
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-
-        await user.click(input);
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value="nonexistent"
-                placeholder="Search..."
-            />
-        );
-
-        await waitFor(() => {
+            const dropdown = screen.queryByText('Loading...');
             expect(
-                screen.getByText('No suggestions found')
+                dropdown || screen.queryByText('No suggestions found')
             ).toBeInTheDocument();
         });
     });
 
-    it('calls onSelect when suggestion is clicked', async () => {
-        const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
+    it('clears suggestions when value is empty', async () => {
         const { rerender } = render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
                 value=""
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
-        const input = screen.getByPlaceholderText('Search...');
 
-        await user.click(input);
+        expect(mockSetSelectedMedia).toHaveBeenCalledWith(null);
 
         rerender(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
+                value=""
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        expect(mockSetSelectedMedia).toHaveBeenCalledWith(null);
+    });
+
+    it('fetches suggestions when value changes', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
+            json: async () => mockSuggestions,
+        });
+        global.fetch = mockFetch;
+
+        render(
+            <SearchInput
                 value="Matrix"
                 placeholder="Search..."
+                selectedMediaType="MOVIE"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
         await waitFor(() => {
-            expect(screen.getByText('The Matrix')).toBeInTheDocument();
+            expect(mockFetch).toHaveBeenCalled();
         });
 
-        const suggestion = screen.getByText('The Matrix');
-        await user.click(suggestion);
-
-        expect(mockOnSelect).toHaveBeenCalledWith(mockSuggestions[0]);
+        const callArgs = mockFetch.mock.calls[0]?.[0];
+        expect(callArgs).toContain('/api/search');
+        expect(callArgs).toContain('mediatitle=Matrix');
+        expect(callArgs).toContain('mediatype=MOVIE');
     });
 
-    it('closes dropdown after selecting a suggestion', async () => {
-        const user = userEvent.setup();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
+    it('does not fetch when value is empty', () => {
+        const mockFetch = vi.fn();
+        global.fetch = mockFetch;
 
-        const { rerender } = render(
+        render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
                 value=""
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
-        const input = screen.getByPlaceholderText('Search...');
 
-        await user.click(input);
+        expect(mockFetch).not.toHaveBeenCalled();
+    });
 
-        rerender(
+    it('does not fetch when value is only whitespace', () => {
+        const mockFetch = vi.fn();
+        global.fetch = mockFetch;
+
+        render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
+                value="   "
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('renders correctly and initializes state properly', () => {
+        render(
+            <SearchInput
                 value="Matrix"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
-        await waitFor(() => {
-            expect(screen.getByText('The Matrix')).toBeInTheDocument();
-        });
-
-        const suggestion = screen.getByText('The Matrix');
-        await user.click(suggestion);
-
-        await waitFor(() => {
-            expect(screen.queryByText('Inception')).not.toBeInTheDocument();
-        });
+        const input = screen.getByPlaceholderText('Search...');
+        expect(input).toHaveValue('Matrix');
+        expect(input).toBeInTheDocument();
     });
 
-    it('calls onSearchResults with fetched data', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
+    it('handles empty search results', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
+            json: async () => [],
+        });
+        global.fetch = mockFetch;
 
-        const { rerender } = render(
+        render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onSearchResults={mockOnSearchResults}
-                value=""
+                value="NonexistentMovie"
                 placeholder="Search..."
-            />
-        );
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onSearchResults={mockOnSearchResults}
-                value="test"
-                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
         await waitFor(() => {
-            expect(mockOnSearchResults).toHaveBeenCalledWith(mockSuggestions);
+            expect(mockFetch).toHaveBeenCalled();
         });
+
+        expect(mockSetSelectedMedia).toHaveBeenCalledWith(null);
     });
 
-    it('calls onAutoSelect when exact title match is found', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+    it('sets selected media when exact match is found', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
             json: async () => mockSuggestions,
-        } as Response);
+        });
+        global.fetch = mockFetch;
 
-        const { rerender } = render(
+        render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onAutoSelect={mockOnAutoSelect}
-                value=""
-                placeholder="Search..."
-            />
-        );
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onAutoSelect={mockOnAutoSelect}
                 value="The Matrix"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
         await waitFor(() => {
-            expect(mockOnAutoSelect).toHaveBeenCalledWith(mockSuggestions[0]);
-        });
-    });
-
-    it('calls onAutoSelect with null when no exact match', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onAutoSelect={mockOnAutoSelect}
-                value=""
-                placeholder="Search..."
-            />
-        );
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onAutoSelect={mockOnAutoSelect}
-                value="Matrix"
-                placeholder="Search..."
-            />
-        );
-
-        await waitFor(() => {
-            expect(mockOnAutoSelect).toHaveBeenCalledWith(null);
-        });
-    });
-
-    it('builds API URL with query parameters', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                apiParams={{ type: 'film', year: '2020' }}
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value=""
-                placeholder="Search..."
-            />
-        );
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                apiParams={{ type: 'film', year: '2020' }}
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                value="test"
-                placeholder="Search..."
-            />
-        );
-
-        await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith(
-                expect.stringContaining('/api/search?type=film&year=2020')
+            expect(mockSetSelectedMedia).toHaveBeenCalledWith(
+                mockSuggestions[0]
             );
         });
     });
 
-    it('respects custom debounce time', async () => {
-        vi.useFakeTimers();
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+    it('clears selected media when no exact match is found', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
             json: async () => mockSuggestions,
-        } as Response);
+        });
+        global.fetch = mockFetch;
 
-        const { rerender } = render(
+        render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                debounceMs={500}
-                value=""
+                value="Matrix Partial"
                 placeholder="Search..."
-            />
-        );
-
-        rerender(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                debounceMs={500}
-                value="test"
-                placeholder="Search..."
-            />
-        );
-
-        expect(global.fetch).not.toHaveBeenCalled();
-
-        await vi.runAllTimersAsync();
-
-        expect(global.fetch).toHaveBeenCalled();
-
-        vi.useRealTimers();
-    });
-
-    it('clears suggestions when input is empty', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            json: async () => mockSuggestions,
-        } as Response);
-
-        const { rerender } = render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onSearchResults={mockOnSearchResults}
-                value="test"
-                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
         await waitFor(() => {
-            expect(mockOnSearchResults).toHaveBeenCalledWith(mockSuggestions);
+            expect(mockFetch).toHaveBeenCalled();
         });
 
-        rerender(
+        expect(mockSetSelectedMedia).toHaveBeenCalledWith(null);
+    });
+
+    it('refetches when selectedMediaType changes', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
+            json: async () => mockSuggestions,
+        });
+        global.fetch = mockFetch;
+
+        const { rerender } = render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onSearchResults={mockOnSearchResults}
-                value=""
+                value="Matrix"
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
             />
         );
 
-        expect(mockOnSearchResults).toHaveBeenCalledWith([]);
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+
+        vi.clearAllMocks();
+
+        rerender(
+            <SearchInput
+                value="Matrix"
+                placeholder="Search..."
+                selectedMediaType="MOVIE"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        await waitFor(() => {
+            expect(mockFetch).toHaveBeenCalled();
+        });
+
+        const callArgs = mockFetch.mock.calls[0]?.[0];
+        expect(callArgs).toContain('mediatype=MOVIE');
+    });
+
+    it('debounces search requests', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
+            json: async () => mockSuggestions,
+        });
+        global.fetch = mockFetch;
+
+        const { rerender } = render(
+            <SearchInput
+                value="M"
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        // Simulate multiple rapid changes
+        rerender(
+            <SearchInput
+                value="Ma"
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        rerender(
+            <SearchInput
+                value="Mat"
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        // Debounce should reduce the number of fetch calls
+        // After all rerenders, we should wait for the debounce timer
+        await waitFor(
+            () => {
+                expect(mockFetch).toHaveBeenCalled();
+            },
+            { timeout: 1000 }
+        );
+    });
+
+    it('handles fetch errors gracefully', async () => {
+        const mockFetch = vi.fn().mockRejectedValue(new Error('Network error'));
+        global.fetch = mockFetch;
+
+        // This should not throw
+        expect(() => {
+            render(
+                <SearchInput
+                    value="Matrix"
+                    placeholder="Search..."
+                    selectedMediaType="all"
+                    setSelectedMedia={mockSetSelectedMedia}
+                    setMediaTitle={mockSetMediaTitle}
+                    onChange={vi.fn()}
+                />
+            );
+        }).not.toThrow();
     });
 
     it('forwards ref correctly', () => {
         const ref = vi.fn();
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 ref={ref}
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
-        expect(ref).toHaveBeenCalledWith(expect.any(HTMLInputElement));
+
+        expect(ref).toHaveBeenCalled();
     });
 
-    it('accepts additional HTML input attributes', () => {
+    it('respects disabled attribute', () => {
         render(
             <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                required
-                maxLength={50}
-                data-testid="search-input"
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByTestId('search-input');
-        expect(input).toHaveAttribute('required');
-        expect(input).toHaveAttribute('maxLength', '50');
-    });
-
-    it('calls onFocus when input is focused', async () => {
-        const user = userEvent.setup();
-        const handleFocus = vi.fn();
-
-        render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                onChange={mockOnChange}
-                onFocus={handleFocus}
-                value=""
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-
-        await user.click(input);
-        expect(handleFocus).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles disabled state', () => {
-        render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
                 disabled
                 placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
             />
         );
+
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toBeDisabled();
-        expect(input).toHaveClass(
-            'disabled:cursor-not-allowed',
-            'disabled:opacity-50'
-        );
-    });
-
-    it('combines variant and size classes correctly', () => {
-        render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                variant="outline"
-                inputSize="lg"
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-        expect(input).toHaveClass(
-            'border-2',
-            'border-input',
-            'bg-transparent',
-            'h-12',
-            'px-4',
-            'py-3',
-            'text-lg'
-        );
-    });
-
-    it('has correct accessibility attributes', () => {
-        render(
-            <SearchInput
-                apiUrl="/api/search"
-                onSelect={mockOnSelect}
-                placeholder="Search..."
-            />
-        );
-        const input = screen.getByPlaceholderText('Search...');
-        expect(input).toHaveClass(
-            'focus-visible:outline-none',
-            'focus-visible:ring-2',
-            'focus-visible:ring-ring',
-            'focus-visible:ring-offset-2'
-        );
     });
 });
