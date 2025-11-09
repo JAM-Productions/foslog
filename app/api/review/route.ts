@@ -42,22 +42,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const existingReview = await prisma.review.findUnique({
-            where: {
-                mediaId_userId: {
-                    mediaId: mediaId,
-                    userId: session.user.id,
-                },
-            },
-        });
-
-        if (existingReview) {
-            return NextResponse.json(
-                { error: 'You have already reviewed this media item' },
-                { status: 409 }
-            );
-        }
-
         const reviewItem = await prisma.review.create({
             data: {
                 rating: review.stars,

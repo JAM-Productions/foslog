@@ -104,7 +104,6 @@ model Review {
   media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([mediaId, userId])
   @@map("reviews")
 }
 
