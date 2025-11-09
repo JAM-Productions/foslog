@@ -19,32 +19,24 @@ export interface SearchInputProps
     > {
     variant?: 'default' | 'outline' | 'filled';
     inputSize?: 'default' | 'sm' | 'lg';
-    apiUrl: string;
-    apiParams?: Record<string, string>;
-    debounceMs?: number;
+    selectedMediaType: string;
+    setSelectedMedia: (media: Suggestion | null) => void;
+    setMediaTitle: (title: string) => void;
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onSearchResults?: (results: Suggestion[]) => void;
-    onAutoSelect?: (suggestion: Suggestion | null) => void;
-    onSelect: (suggestion: Suggestion) => void;
 }
 
-//TODO: Improve abstraction if the component is needed from another view
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     (
         {
             className,
             variant = 'default',
             inputSize = 'default',
-            apiUrl,
-            apiParams = {},
-            debounceMs = 300,
+            setSelectedMedia,
+            setMediaTitle,
+            selectedMediaType,
             value,
             onChange,
-            onSearchResults,
-            onAutoSelect,
-            onFocus,
-            onSelect,
             ...props
         },
         ref
@@ -78,43 +70,39 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
             if (value?.trim()) {
                 setSuggestions([]);
-                onAutoSelect?.(null);
+                setSelectedMedia(null);
                 const getSearchInputData = setTimeout(async () => {
                     setLoading(true);
 
-                    const url = new URL(apiUrl, window.location.origin);
-                    Object.entries(apiParams).forEach(([key, val]) => {
+                    const url = new URL('/api/search', window.location.origin);
+                    Object.entries({
+                        mediatype: selectedMediaType,
+                        mediatitle: value.trim(),
+                    }).forEach(([key, val]) => {
                         url.searchParams.append(key, val);
                     });
 
                     const response = await fetch(url.toString());
                     const data = await response.json();
                     setSuggestions(data);
-                    onSearchResults?.(data);
                     if (isMediaTitleInData(data)) {
-                        onAutoSelect?.(getMediaInData(data));
+                        setSelectedMedia(getMediaInData(data));
                     } else {
-                        onAutoSelect?.(null);
+                        setSelectedMedia(null);
                     }
                     setLoading(false);
-                }, debounceMs);
+                }, 400);
 
                 return () => clearTimeout(getSearchInputData);
             } else {
                 setSuggestions([]);
-                onSearchResults?.([]);
-                onAutoSelect?.(null);
+                setSelectedMedia(null);
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [apiUrl, JSON.stringify(apiParams), value]);
-
-        const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-            setIsOpen(true);
-            onFocus?.(e);
-        };
+        }, [value, setSelectedMedia, selectedMediaType]);
 
         const handleSelect = (suggestion: Suggestion) => {
-            onSelect?.(suggestion);
+            setMediaTitle(suggestion.title);
+            setSelectedMedia(suggestion);
             setIsOpen(false);
         };
 
@@ -151,7 +139,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                     ref={ref}
                     value={value}
                     onChange={onChange}
-                    onFocus={handleFocus}
+                    onFocus={() => setIsOpen(true)}
                     {...props}
                 />
                 {isOpen &&

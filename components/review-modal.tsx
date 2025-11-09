@@ -146,23 +146,13 @@ export default function ReviewModal() {
                                     placeholder={tReviewModal(
                                         'inputMediaTitle'
                                     )}
-                                    apiUrl="/api/search"
-                                    apiParams={{
-                                        mediatype: selectedMediaType,
-                                        mediatitle: mediaTitle.trim(),
-                                    }}
-                                    debounceMs={400}
+                                    selectedMediaType={selectedMediaType}
+                                    setSelectedMedia={setSelectedMedia}
+                                    setMediaTitle={setMediaTitle}
                                     value={mediaTitle}
                                     onChange={(e) =>
                                         setMediaTitle(e.target.value)
                                     }
-                                    onAutoSelect={(suggestion) => {
-                                        setSelectedMedia(suggestion);
-                                    }}
-                                    onSelect={(suggestion) => {
-                                        setMediaTitle(suggestion.title);
-                                        setSelectedMedia(suggestion);
-                                    }}
                                 />
                             </div>
                         </div>
