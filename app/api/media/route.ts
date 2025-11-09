@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session) {
+            return NextResponse.json(
+                { error: 'Unauthorized. Please log in to create a media.' },
+                { status: 401 }
+            );
+        }
+
         const { selectedMedia } = await request.json();
 
         if (!selectedMedia) {
