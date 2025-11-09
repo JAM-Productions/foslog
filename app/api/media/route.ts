@@ -22,8 +22,11 @@ export async function POST(request: NextRequest) {
 
         if (existingMedia) {
             return NextResponse.json(
-                { error: 'You have already added this media item' },
-                { status: 409 }
+                {
+                    message: 'Media already exists',
+                    media: existingMedia,
+                },
+                { status: 200 }
             );
         }
 
