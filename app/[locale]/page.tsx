@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth-provider';
-/* import { useRouter } from 'next/navigation'; */
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
     const t = useTranslations('HomePage');
@@ -17,7 +17,7 @@ export default function HomePage() {
     const tStats = useTranslations('Stats');
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
-    /* const router = useRouter(); */
+    const router = useRouter();
     const {
         mediaItems,
         setMediaItems,
@@ -277,9 +277,9 @@ export default function HomePage() {
                     </p>
                     <Button
                         onClick={() =>
-                            /* !user
+                            !user
                                 ? router.push('/login')
-                                :  */ setIsReviewModalOpen(true)
+                                : setIsReviewModalOpen(true)
                         }
                     >
                         {tCTA('addNewReview')}
