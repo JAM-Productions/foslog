@@ -20,32 +20,29 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        let mediaItem;
-
         if (existingMedia) {
-            mediaItem = existingMedia;
-            console.log('Media already exists in database:', mediaItem);
-        } else {
-            mediaItem = await prisma.mediaItem.create({
-                data: {
-                    title: selectedMedia.title,
-                    type: selectedMedia.type,
-                    year: selectedMedia.year,
-                    poster: selectedMedia.poster,
-                    description: selectedMedia.description,
-                },
-            });
-            console.log('Created new media item:', mediaItem);
+            return NextResponse.json(
+                { error: 'You have already added this media item' },
+                { status: 409 }
+            );
         }
+
+        const mediaItem = await prisma.mediaItem.create({
+            data: {
+                title: selectedMedia.title,
+                type: selectedMedia.type,
+                year: selectedMedia.year,
+                poster: selectedMedia.poster,
+                description: selectedMedia.description,
+            },
+        });
 
         return NextResponse.json(
             {
-                message: existingMedia
-                    ? 'Media already exists'
-                    : 'Media created successfully',
+                message: 'Media created successfully',
                 media: mediaItem,
             },
-            { status: existingMedia ? 200 : 201 }
+            { status: 201 }
         );
     } catch (error) {
         console.error('Error in POST /api/media:', error);

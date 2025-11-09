@@ -43,11 +43,10 @@ export async function GET(req: Request) {
                             item.poster_path,
                         description: item.overview,
                     })) || [];
-                console.log('[GET MEDIA] Data:', formattedResult);
+
                 return NextResponse.json(formattedResult);
 
             default:
-                console.log('[GET MEDIA] Data:', []);
                 return NextResponse.json([]);
         }
     } catch (error) {
