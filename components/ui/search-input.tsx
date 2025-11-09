@@ -29,6 +29,7 @@ export interface SearchInputProps
     onSelect: (suggestion: Suggestion) => void;
 }
 
+//TODO: Improve abstraction if the component is needed from another view
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     (
         {
