@@ -14,7 +14,7 @@ export interface SelectOption {
 interface SelectProps {
     options: SelectOption[];
     value?: string;
-    placeholder?: string;
+    placeholder: string;
     disabled?: boolean;
     className?: string;
     onChange?: (value: string) => void;
@@ -23,7 +23,7 @@ interface SelectProps {
 const Select = ({
     options,
     value,
-    placeholder = 'Selecciona una opción',
+    placeholder,
     disabled = false,
     className = '',
     onChange,

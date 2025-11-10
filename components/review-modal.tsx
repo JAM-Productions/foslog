@@ -68,18 +68,23 @@ export default function ReviewModal() {
     }, []);
 
     const submitReview = async () => {
-        setIsLoadingSubmit(true);
-        const responseMedia = await fetch('/api/media', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selectedMedia,
-            }),
-        });
+        try {
+            setIsLoadingSubmit(true);
+            const responseMedia = await fetch('/api/media', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    selectedMedia,
+                }),
+            });
 
-        if (responseMedia.ok) {
+            if (!responseMedia.ok) {
+                console.error('Failed to create media');
+                return;
+            }
+
             const data = await responseMedia.json();
             const review: Review = {
                 stars: reviewStars,
@@ -95,19 +100,27 @@ export default function ReviewModal() {
                     mediaId: data.media.id,
                 }),
             });
+
             if (responseReview.ok) {
-                //TODO: Should redirect to media page.
-                setIsLoadingSubmit(false);
                 closeModal();
+            } else {
+                console.error('Failed to create review');
             }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+        } finally {
+            setIsLoadingSubmit(false);
         }
-        setIsLoadingSubmit(false);
     };
 
     if (isReviewModalOpen) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
-                <div className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border">
+                <div
+                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                >
                     <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
                         <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
                             <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
@@ -117,10 +130,14 @@ export default function ReviewModal() {
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => closeModal()}
+                                    aria-label="Close modal"
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
-                                <h2 className="text-2xl font-bold">
+                                <h2
+                                    id="modal-title"
+                                    className="text-2xl font-bold"
+                                >
                                     {tReviewModal('reviewModalTitle')}
                                 </h2>
                             </div>
@@ -159,13 +176,19 @@ export default function ReviewModal() {
 
                         {modalStep === 2 && (
                             <div className="flex w-full flex-col items-center gap-6 sm:flex-row">
-                                <Image
-                                    src={selectedMedia?.poster || ''}
-                                    alt={selectedMedia?.title || ''}
-                                    width={200}
-                                    height={300}
-                                    className="rounded-md object-cover"
-                                />
+                                {selectedMedia?.poster ? (
+                                    <Image
+                                        src={selectedMedia.poster}
+                                        alt={selectedMedia.title}
+                                        width={200}
+                                        height={300}
+                                        className="rounded-md object-cover"
+                                    />
+                                ) : (
+                                    <div className="bg-background flex h-[300px] w-[200px] items-center justify-center rounded-md text-center text-sm">
+                                        {tReviewModal('noImageAvailable')}
+                                    </div>
+                                )}
                                 <form className="w-full space-y-4 sm:space-y-6">
                                     <fieldset>
                                         <legend className="text-foreground mb-2 block text-sm font-semibold">

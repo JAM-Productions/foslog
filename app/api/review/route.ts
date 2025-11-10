@@ -24,6 +24,27 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        if (!review.stars || review.stars < 1 || review.stars > 5) {
+            return NextResponse.json(
+                { error: 'Rating must be between 1 and 5' },
+                { status: 400 }
+            );
+        }
+
+        if (!review.text || review.text.trim().length === 0) {
+            return NextResponse.json(
+                { error: 'Review text is required' },
+                { status: 400 }
+            );
+        }
+
+        if (review.text.length > 5000) {
+            return NextResponse.json(
+                { error: 'Review text is too long' },
+                { status: 400 }
+            );
+        }
+
         if (!mediaId) {
             return NextResponse.json(
                 { error: 'Media ID is required' },

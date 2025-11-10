@@ -24,6 +24,28 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        if (
+            !selectedMedia.title ||
+            !selectedMedia.type ||
+            !selectedMedia.year
+        ) {
+            return NextResponse.json(
+                { error: 'Media object must contain title, type, and year' },
+                { status: 400 }
+            );
+        }
+
+        if (
+            typeof selectedMedia.year !== 'number' ||
+            selectedMedia.year < 1800 ||
+            selectedMedia.year > new Date().getFullYear() + 5
+        ) {
+            return NextResponse.json(
+                { error: 'Invalid year' },
+                { status: 400 }
+            );
+        }
+
         const existingMedia = await prisma.mediaItem.findFirst({
             where: {
                 title: selectedMedia.title,

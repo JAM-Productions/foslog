@@ -72,25 +72,34 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                 setSuggestions([]);
                 setSelectedMedia(null);
                 const getSearchInputData = setTimeout(async () => {
-                    setLoading(true);
+                    try {
+                        setLoading(true);
+                        const url = new URL(
+                            '/api/search',
+                            window.location.origin
+                        );
+                        Object.entries({
+                            mediatype: selectedMediaType,
+                            mediatitle: value.trim(),
+                        }).forEach(([key, val]) => {
+                            url.searchParams.append(key, val);
+                        });
 
-                    const url = new URL('/api/search', window.location.origin);
-                    Object.entries({
-                        mediatype: selectedMediaType,
-                        mediatitle: value.trim(),
-                    }).forEach(([key, val]) => {
-                        url.searchParams.append(key, val);
-                    });
-
-                    const response = await fetch(url.toString());
-                    const data = await response.json();
-                    setSuggestions(data);
-                    if (isMediaTitleInData(data)) {
-                        setSelectedMedia(getMediaInData(data));
-                    } else {
+                        const response = await fetch(url.toString());
+                        const data = await response.json();
+                        setSuggestions(data);
+                        if (isMediaTitleInData(data)) {
+                            setSelectedMedia(getMediaInData(data));
+                        } else {
+                            setSelectedMedia(null);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching suggestions:', error);
+                        setSuggestions([]);
                         setSelectedMedia(null);
+                    } finally {
+                        setLoading(false);
                     }
-                    setLoading(false);
                 }, 400);
 
                 return () => clearTimeout(getSearchInputData);
@@ -145,7 +154,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                 {isOpen &&
                     (loading ||
                         suggestions.length > 0 ||
-                        (!loading && suggestions.length === 0 && value)) && (
+                        (suggestions.length === 0 && value)) && (
                         <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
                             <div className="p-1">
                                 {loading ? (

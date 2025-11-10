@@ -102,7 +102,8 @@
         "reviewModalDescription": "Select the media you want to review and enter its title.",
         "reviewModalDescription2": "Share your rating and thoughts about the media.",
         "selectMediaType": "Select Media Type",
-        "inputMediaTitle": "Enter Media Title"
+        "inputMediaTitle": "Enter Media Title",
+        "noImageAvailable": "No image available"
     },
     "CTA": {
         "addReviewsTitle": "Want to add your own reviews?",

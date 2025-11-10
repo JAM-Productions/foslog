@@ -102,7 +102,8 @@
         "reviewModalDescription": "Selecciona el medio que deseas reseñar e ingresa su título.",
         "reviewModalDescription2": "Comparte tu valoración y pensamientos sobre el medio.",
         "selectMediaType": "Selecciona el Medio",
-        "inputMediaTitle": "Introduce el Título del Medio"
+        "inputMediaTitle": "Introduce el Título del Medio",
+        "noImageAvailable": "No hay imagen disponible"
     },
     "CTA": {
         "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",

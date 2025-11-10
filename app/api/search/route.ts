@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 
 interface TMDBData {
     title: string;
-    poster_path: string;
-    release_date: string;
-    overview: string;
+    poster_path: string | null;
+    release_date: string | null;
+    overview: string | null;
 }
 
 export async function GET(req: Request) {
@@ -28,8 +28,20 @@ export async function GET(req: Request) {
 
         switch (mediatype) {
             case 'film':
-                apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(mediatitle)}`;
-                const res = await fetch(apiUrl);
+                apiUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(mediatitle)}`;
+                const res = await fetch(apiUrl, {
+                    headers: {
+                        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+                    },
+                });
+
+                if (!res.ok) {
+                    console.error(
+                        '[GET MEDIA ERROR] TMDB API error:',
+                        res.status
+                    );
+                    return NextResponse.json([]);
+                }
 
                 const data = await res.json();
 
@@ -37,11 +49,14 @@ export async function GET(req: Request) {
                     data.results?.map((item: TMDBData) => ({
                         title: item.title,
                         type: MediaType.FILM,
-                        year: parseInt(item.release_date.split('-')[0]),
-                        poster:
-                            'https://image.tmdb.org/t/p/w500' +
-                            item.poster_path,
-                        description: item.overview,
+                        year: item.release_date
+                            ? parseInt(item.release_date.split('-')[0])
+                            : null,
+                        poster: item.poster_path
+                            ? 'https://image.tmdb.org/t/p/w500' +
+                              item.poster_path
+                            : null,
+                        description: item.overview || '',
                     })) || [];
 
                 return NextResponse.json(formattedResult);
