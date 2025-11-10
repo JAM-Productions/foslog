@@ -6,10 +6,11 @@ import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from './ui/select';
 import { useState, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { X, LoaderCircle } from 'lucide-react';
+import { X } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from './ui/search-input';
+import SubmitButton from './submit-button';
 
 interface Review {
     stars: number;
@@ -124,6 +125,21 @@ export default function ReviewModal() {
                     <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
                         <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
                             <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
+                                {modalStep === 2 && (
+                                    <div className="absolute top-4 left-4 sm:top-0 sm:left-0">
+                                        <SubmitButton
+                                            isDisabled={
+                                                !selectedMedia ||
+                                                reviewStars < 1 ||
+                                                !reviewText.trim()
+                                            }
+                                            isLoading={isLoadingSubmit}
+                                            onClick={submitReview}
+                                            size="sm"
+                                            variant="ghost"
+                                        />
+                                    </div>
+                                )}
                                 <Button
                                     disabled={isLoadingSubmit}
                                     className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
@@ -244,27 +260,15 @@ export default function ReviewModal() {
                                 >
                                     {tBackButton('back')}
                                 </Button>
-                                <div className="relative flex flex-row items-center justify-center">
-                                    <Button
-                                        disabled={
-                                            !selectedMedia ||
-                                            reviewStars < 1 ||
-                                            !reviewText.trim() ||
-                                            isLoadingSubmit
-                                        }
-                                        onClick={() => submitReview()}
-                                        className={`cursor-pointer ${
-                                            isLoadingSubmit
-                                                ? 'text-transparent'
-                                                : ''
-                                        }`}
-                                    >
-                                        {tMediaPage('submitReview')}
-                                    </Button>
-                                    {isLoadingSubmit && (
-                                        <LoaderCircle className="text-primary absolute animate-spin" />
-                                    )}
-                                </div>
+                                <SubmitButton
+                                    isDisabled={
+                                        !selectedMedia ||
+                                        reviewStars < 1 ||
+                                        !reviewText.trim()
+                                    }
+                                    isLoading={isLoadingSubmit}
+                                    onClick={submitReview}
+                                />
                             </>
                         )}
                     </div>
