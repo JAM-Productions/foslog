@@ -128,10 +128,13 @@
         "shareThoughts": "Comparteix els teus pensaments sobre aquest contingut..."
     },
     "BackButton": {
-        "back": "Tornar"
+        "back": "Enrere"
     },
     "SearchInput": {
         "loading": "Carregant",
         "noSuggestions": "Sense suggeriments"
+    },
+    "Select": {
+        "selectPlaceholder": "Selecciona una opció"
     }
 }

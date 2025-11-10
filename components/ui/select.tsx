@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { useTranslations } from 'next-intl';
 
 export interface SelectOption {
     value: string;
@@ -14,7 +15,7 @@ export interface SelectOption {
 interface SelectProps {
     options: SelectOption[];
     value?: string;
-    placeholder: string;
+    placeholder?: string;
     disabled?: boolean;
     className?: string;
     onChange?: (value: string) => void;
@@ -28,6 +29,8 @@ const Select = ({
     className = '',
     onChange,
 }: SelectProps) => {
+    const tSelect = useTranslations('Select');
+    const defaultPlaceholder = placeholder || tSelect('selectPlaceholder');
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +57,7 @@ const Select = ({
                 className="flex w-full cursor-pointer items-center justify-between gap-2"
             >
                 <span className="flex-1 text-left">
-                    {selectedOption ? selectedOption.label : placeholder}
+                    {selectedOption ? selectedOption.label : defaultPlaceholder}
                 </span>
                 <ChevronDown
                     className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}

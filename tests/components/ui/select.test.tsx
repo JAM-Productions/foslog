@@ -7,6 +7,15 @@ vi.mock('@/hooks/useClickOutside', () => ({
     useClickOutside: vi.fn(),
 }));
 
+vi.mock('next-intl', () => ({
+    useTranslations: vi.fn(() => (key: string) => {
+        const translations: Record<string, string> = {
+            selectPlaceholder: 'Selecciona una opción',
+        };
+        return translations[key] || key;
+    }),
+}));
+
 const mockOptions: SelectOption[] = [
     { value: 'option1', label: 'Option 1' },
     { value: 'option2', label: 'Option 2' },

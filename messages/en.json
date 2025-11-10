@@ -133,5 +133,8 @@
     "SearchInput": {
         "loading": "Loading",
         "noSuggestions": "No suggestions"
+    },
+    "Select": {
+        "selectPlaceholder": "Select an option"
     }
 }

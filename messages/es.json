@@ -128,10 +128,13 @@
         "shareThoughts": "Comparte tus pensamientos sobre este medio..."
     },
     "BackButton": {
-        "back": "Volver"
+        "back": "Atrás"
     },
     "SearchInput": {
         "loading": "Cargando",
         "noSuggestions": "Sin sugerencias"
+    },
+    "Select": {
+        "selectPlaceholder": "Selecciona una opción"
     }
 }
