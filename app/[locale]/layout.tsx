@@ -10,7 +10,7 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 
 const ReviewModal = lazy(() => import('../../components/review-modal'));
 
@@ -92,7 +92,9 @@ export default async function LocaleLayout({
                         <AuthProvider>
                             <Header />
                             <main className="flex-1">{children}</main>
-                            <ReviewModal />
+                            <Suspense fallback={null}>
+                                <ReviewModal />
+                            </Suspense>
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
