@@ -224,11 +224,11 @@ export default function ReviewModal() {
                             </div>
                         )}
                     </div>
-                    <div className="flex gap-4">
+                    <div className="mt-4 flex w-full flex-col gap-4 sm:mt-0 sm:w-auto sm:flex-row">
                         {modalStep === 1 && (
                             <Button
                                 disabled={!selectedMedia}
-                                className="cursor-pointer"
+                                className="h-12 w-full cursor-pointer text-lg sm:w-auto sm:text-base"
                                 onClick={() => setModalStep(2)}
                             >
                                 {tCTA('next')}
@@ -238,18 +238,18 @@ export default function ReviewModal() {
                             <>
                                 <Button
                                     disabled={isLoadingSubmit}
-                                    className="cursor-pointer"
+                                    className="h-12 w-full cursor-pointer text-lg sm:w-auto sm:text-base"
                                     variant="ghost"
                                     onClick={() => handleBack()}
                                 >
                                     {tBackButton('back')}
                                 </Button>
-                                <div className="relative flex flex-row items-center justify-center">
+                                <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
                                     <Button
                                         disabled={
                                             !selectedMedia ||
                                             reviewStars < 1 ||
-                                            !reviewText.trim() ||
+                                            !reviewText?.trim() ||
                                             isLoadingSubmit
                                         }
                                         onClick={() => submitReview()}
@@ -257,7 +257,7 @@ export default function ReviewModal() {
                                             isLoadingSubmit
                                                 ? 'text-transparent'
                                                 : ''
-                                        }`}
+                                        } h-12 w-full text-lg sm:w-auto sm:text-base`}
                                     >
                                         {tMediaPage('submitReview')}
                                     </Button>
