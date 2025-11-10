@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { ApiError } from '@/lib/errors';
+import { ApiError, AuthenticationError, NotFoundError, ValidationError } from '@/lib/errors';
 
 export async function POST(request: NextRequest) {
     try {
@@ -10,29 +10,29 @@ export async function POST(request: NextRequest) {
         });
 
         if (!session) {
-            throw new ApiError(401, 'Unauthorized. Please log in to create a review.');
+            throw new AuthenticationError('Unauthorized. Please log in to create a review.');
         }
 
         const { review, mediaId } = await request.json();
 
         if (!review) {
-            throw new ApiError(400, 'Review object is required');
+            throw new ValidationError('Review object is required');
         }
 
         if (!review.stars || review.stars < 1 || review.stars > 5) {
-            throw new ApiError(400, 'Rating must be between 1 and 5');
+            throw new ValidationError('Rating must be between 1 and 5');
         }
 
         if (!review.text || review.text.trim().length === 0) {
-            throw new ApiError(400, 'Review text is required');
+            throw new ValidationError('Review text is required');
         }
 
         if (review.text.length > 5000) {
-            throw new ApiError(400, 'Review text is too long');
+            throw new ValidationError('Review text is too long');
         }
 
         if (!mediaId) {
-            throw new ApiError(400, 'Media ID is required');
+            throw new ValidationError('Media ID is required');
         }
 
         const mediaItem = await prisma.mediaItem.findUnique({
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!mediaItem) {
-            throw new ApiError(404, 'Media item not found');
+            throw new NotFoundError('Media item not found');
         }
 
         const reviewItem = await prisma.review.create({

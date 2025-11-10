@@ -1,5 +1,6 @@
 import { MediaType } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { ApiError, NotFoundError, ValidationError } from '@/lib/errors';
 
 interface TMDBData {
     title: string;
@@ -8,22 +9,19 @@ interface TMDBData {
     overview: string | null;
 }
 
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const mediatype = searchParams.get('mediatype');
-    const mediatitle = searchParams.get('mediatitle');
-
-    if (!mediatype) {
-        console.log('[GET MEDIA] No mediatype provided');
-        return NextResponse.json([]);
-    }
-
-    if (!mediatitle) {
-        console.log('[GET MEDIA] No mediatitle provided');
-        return NextResponse.json([]);
-    }
-
+export async function GET(req: NextRequest) {
     try {
+        const mediatype = req.nextUrl.searchParams.get('mediatype');
+        const mediatitle = req.nextUrl.searchParams.get('mediatitle');
+
+        if (!mediatype) {
+            throw new ValidationError('Mediatype is required');
+        }
+
+        if (!mediatitle) {
+            throw new ValidationError('Mediatitle is required');
+        }
+
         let apiUrl = '';
 
         switch (mediatype) {
@@ -36,11 +34,7 @@ export async function GET(req: Request) {
                 });
 
                 if (!res.ok) {
-                    console.error(
-                        '[GET MEDIA ERROR] TMDB API error:',
-                        res.status
-                    );
-                    return NextResponse.json([]);
+                    throw new NotFoundError('Could not fetch data from TMDB API');
                 }
 
                 const data = await res.json();
@@ -65,7 +59,16 @@ export async function GET(req: Request) {
                 return NextResponse.json([]);
         }
     } catch (error) {
+        if (error instanceof ApiError) {
+            return NextResponse.json(
+                { error: error.message },
+                { status: error.statusCode }
+            );
+        }
         console.error('[GET MEDIA ERROR] Error fetching data:', error);
-        return NextResponse.json([]);
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }
