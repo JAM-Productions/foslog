@@ -9,7 +9,7 @@ interface SubmitButtonProps {
     isDisabled: boolean;
     isLoading: boolean;
     onClick: () => void;
-    size?: 'sm' | 'lg' | 'default' | 'icon' | null | undefined;
+    size?: 'sm' | 'lg' | 'default' | 'icon' | undefined;
     variant?:
         | 'default'
         | 'destructive'
@@ -17,7 +17,6 @@ interface SubmitButtonProps {
         | 'secondary'
         | 'ghost'
         | 'link'
-        | null
         | undefined;
 }
 
