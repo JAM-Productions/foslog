@@ -24,7 +24,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         };
 
         const sizes = {
-            default: 'h-10 px-3 py-2',
+            default: 'h-10 px-4 py-2',
             sm: 'h-8 px-2 py-1 text-sm',
             lg: 'h-12 px-4 py-3 text-lg',
         };

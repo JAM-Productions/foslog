@@ -97,6 +97,14 @@
             "passwordsDoNotMatch": "Las contraseñas no coinciden"
         }
     },
+    "ReviewModal": {
+        "reviewModalTitle": "Agregar Nueva Reseña",
+        "reviewModalDescription": "Selecciona el medio que deseas reseñar e ingresa su título.",
+        "reviewModalDescription2": "Comparte tu valoración y pensamientos sobre el medio.",
+        "selectMediaType": "Selecciona el Medio",
+        "inputMediaTitle": "Introduce el Título del Medio",
+        "noImageAvailable": "No hay imagen disponible"
+    },
     "CTA": {
         "addReviewsTitle": "¿Quieres agregar tus propias reseñas?",
         "addReviewsDescription": "Comienza a construir tu colección personal de medios y comparte tus pensamientos",
@@ -106,6 +114,7 @@
         "signOut": "Cerrar Sesión",
         "google": "Google",
         "github": "GitHub",
+        "next": "Siguiente",
         "settings": "Configuración"
     },
     "MediaPage": {
@@ -119,6 +128,13 @@
         "shareThoughts": "Comparte tus pensamientos sobre este medio..."
     },
     "BackButton": {
-        "back": "Volver"
+        "back": "Atrás"
+    },
+    "SearchInput": {
+        "loading": "Cargando",
+        "noSuggestions": "Sin sugerencias"
+    },
+    "Select": {
+        "selectPlaceholder": "Selecciona una opción"
     }
 }

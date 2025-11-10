@@ -97,6 +97,14 @@
             "passwordsDoNotMatch": "Passwords do not match"
         }
     },
+    "ReviewModal": {
+        "reviewModalTitle": "Add New Review",
+        "reviewModalDescription": "Select the media you want to review and enter its title.",
+        "reviewModalDescription2": "Share your rating and thoughts about the media.",
+        "selectMediaType": "Select Media Type",
+        "inputMediaTitle": "Enter Media Title",
+        "noImageAvailable": "No image available"
+    },
     "CTA": {
         "addReviewsTitle": "Want to add your own reviews?",
         "addReviewsDescription": "Start building your personal media collection and share your thoughts",
@@ -106,6 +114,7 @@
         "signOut": "Sign Out",
         "google": "Google",
         "github": "GitHub",
+        "next": "Next",
         "settings": "Settings"
     },
     "MediaPage": {
@@ -120,5 +129,12 @@
     },
     "BackButton": {
         "back": "Back"
+    },
+    "SearchInput": {
+        "loading": "Loading",
+        "noSuggestions": "No suggestions"
+    },
+    "Select": {
+        "selectPlaceholder": "Select an option"
     }
 }

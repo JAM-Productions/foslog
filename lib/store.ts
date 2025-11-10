@@ -64,6 +64,10 @@ interface AppState {
     setSelectedMediaType: (type: MediaType | 'all') => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
+
+    // Review Modal
+    isReviewModalOpen: boolean;
+    setIsReviewModalOpen: (isOpen: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -113,6 +117,11 @@ export const useAppStore = create<AppState>()(
                 set({ selectedMediaType }),
             searchQuery: '',
             setSearchQuery: (searchQuery) => set({ searchQuery }),
+
+            // Review Modal
+            isReviewModalOpen: false,
+            setIsReviewModalOpen: (isReviewModalOpen) =>
+                set({ isReviewModalOpen }),
         }),
         {
             name: 'foslog-storage',
