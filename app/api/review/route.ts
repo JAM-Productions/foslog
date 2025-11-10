@@ -63,14 +63,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const reviews = await prisma.review.findMany({
-            where: { mediaId: mediaId },
-        });
-
-        const totalReviews = reviews.length + 1;
-        const totalRating =
-            reviews.reduce((acc, r) => acc + r.rating, 0) + review.stars;
-        const averageRating = totalRating / totalReviews;
+        const totalReviews = mediaItem.totalReviews + 1;
+        const averageRating =
+            (mediaItem.averageRating * mediaItem.totalReviews +
+                review.stars) /
+            totalReviews;
 
         const [reviewItem] = await prisma.$transaction([
             prisma.review.create({
