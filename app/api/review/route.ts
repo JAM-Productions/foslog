@@ -52,40 +52,40 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const mediaItem = await prisma.mediaItem.findUnique({
-            where: { id: mediaId },
-        });
+        const reviewItem = await prisma.$transaction(async (tx) => {
+            const mediaItem = await tx.mediaItem.findUnique({
+                where: { id: mediaId },
+            });
 
-        if (!mediaItem) {
-            return NextResponse.json(
-                { error: 'Media item not found' },
-                { status: 404 }
-            );
-        }
+            if (!mediaItem) {
+                throw new Error('Media item not found');
+            }
 
-        const totalReviews = mediaItem.totalReviews + 1;
-        const averageRating =
-            (mediaItem.averageRating * mediaItem.totalReviews +
-                review.stars) /
-            totalReviews;
+            const totalReviews = mediaItem.totalReviews + 1;
+            const averageRating =
+                (mediaItem.averageRating * mediaItem.totalReviews +
+                    review.stars) /
+                totalReviews;
 
-        const [reviewItem] = await prisma.$transaction([
-            prisma.review.create({
+            const newReview = await tx.review.create({
                 data: {
                     rating: review.stars,
                     review: review.text,
                     mediaId: mediaId,
                     userId: session.user.id,
                 },
-            }),
-            prisma.mediaItem.update({
+            });
+
+            await tx.mediaItem.update({
                 where: { id: mediaId },
                 data: {
                     totalReviews: totalReviews,
                     averageRating: averageRating,
                 },
-            }),
-        ]);
+            });
+
+            return newReview;
+        });
 
         return NextResponse.json(
             {
@@ -94,7 +94,13 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error) {
+    } catch (error: any) {
+        if (error.message === 'Media item not found') {
+            return NextResponse.json(
+                { error: 'Media item not found' },
+                { status: 404 }
+            );
+        }
         console.error('Error in POST /api/review:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
