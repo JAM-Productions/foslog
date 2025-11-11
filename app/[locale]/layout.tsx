@@ -10,9 +10,9 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
-import { lazy } from 'react';
+import dynamic from 'next/dynamic';
 
-const ReviewModal = lazy(() => import('../../components/review-modal'));
+const ReviewModal = dynamic(() => import('../../components/review-modal'));
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
