@@ -16,12 +16,13 @@ export interface ApiErrorResponse {
     error: string;
     code: string;
     timestamp: string;
+    details?: unknown;
 }
 
 export function createApiError(
     type: ApiErrorType,
     message?: string,
-    details?: any
+    details?: unknown
 ): NextResponse<ApiErrorResponse> {
     const errorMap = {
         [ApiErrorType.UNAUTHORIZED]: {
@@ -71,7 +72,7 @@ export function createApiError(
     };
 
     if (details) {
-        (errorResponse as any).details = details;
+        errorResponse.details = details;
     }
 
     return NextResponse.json(errorResponse, { status });
@@ -95,7 +96,7 @@ export const conflict = (message?: string) =>
 export const internalServerError = (message?: string) =>
     createApiError(ApiErrorType.INTERNAL_SERVER_ERROR, message);
 
-export const validationError = (message?: string, details?: any) =>
+export const validationError = (message?: string, details?: unknown) =>
     createApiError(ApiErrorType.VALIDATION_ERROR, message, details);
 
 export const invalidInput = (message?: string) =>
