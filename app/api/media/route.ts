@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
         });
 
         if (!session) {
-            return unauthorized('Unauthorized. Please log in to create a media.');
+            return unauthorized(
+                'Unauthorized. Please log in to create a media.'
+            );
         }
 
         const { selectedMedia } = await request.json();
@@ -28,7 +30,9 @@ export async function POST(request: NextRequest) {
             !selectedMedia.type ||
             !selectedMedia.year
         ) {
-            return validationError('Media object must contain title, type, and year');
+            return validationError(
+                'Media object must contain title, type, and year'
+            );
         }
 
         if (

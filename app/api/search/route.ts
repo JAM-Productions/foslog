@@ -1,10 +1,6 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import {
-    badGateway,
-    internalServerError,
-    validationError,
-} from '@/lib/errors';
+import { badGateway, internalServerError, validationError } from '@/lib/errors';
 
 interface TMDBData {
     title: string;

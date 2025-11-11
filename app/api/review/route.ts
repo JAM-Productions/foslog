@@ -15,7 +15,9 @@ export async function POST(request: NextRequest) {
         });
 
         if (!session) {
-            return unauthorized('Unauthorized. Please log in to create a review.');
+            return unauthorized(
+                'Unauthorized. Please log in to create a review.'
+            );
         }
 
         const { review, mediaId } = await request.json();
