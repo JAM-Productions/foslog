@@ -1,6 +1,6 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { ApiError, NotFoundError, ValidationError } from '@/lib/errors';
+import { ApiError, ValidationError } from '@/lib/errors';
 
 interface TMDBData {
     title: string;
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
                 });
 
                 if (!res.ok) {
-                    throw new NotFoundError('Could not fetch data from TMDB API');
+                    throw new ApiError(502, 'Could not fetch data from TMDB API');
                 }
 
                 const data = await res.json();
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json(formattedResult);
 
             default:
-                return NextResponse.json([]);
+                throw new ValidationError(`Invalid media type: ${mediatype}`);
         }
     } catch (error) {
         if (error instanceof ApiError) {
