@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error: any) {
-        if (error.message === 'Media item not found') {
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Media item not found') {
             return NextResponse.json(
                 { error: 'Media item not found' },
                 { status: 404 }
