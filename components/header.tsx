@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function Header() {
     // Manual toggle only - no auto-collapse on scroll
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     // Helper function for collapsible element classes
     // Uses explicit Tailwind class names to avoid purging issues in production

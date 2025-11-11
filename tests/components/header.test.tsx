@@ -115,42 +115,42 @@ describe('Header', () => {
         render(<Header />);
 
         const toggleButton = screen.getByRole('button', {
-            name: /collapse header/i,
+            name: /expand header/i,
         });
         expect(toggleButton).toBeInTheDocument();
-        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
     });
 
     it('toggles header collapse state when button is clicked', async () => {
         const user = userEvent.setup();
         render(<Header />);
 
-        // Initially expanded - shows ChevronUp
-        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /collapse header/i })
-        ).toBeInTheDocument();
-
-        // Click to collapse
-        const toggleButton = screen.getByRole('button', {
-            name: /collapse header/i,
-        });
-        await user.click(toggleButton);
-
-        // Now collapsed - shows ChevronDown
+        // Initially collapsed - shows ChevronDown
         expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
         expect(
             screen.getByRole('button', { name: /expand header/i })
         ).toBeInTheDocument();
 
-        // Click again to expand
-        const expandButton = screen.getByRole('button', {
+        // Click to expand
+        const toggleButton = screen.getByRole('button', {
             name: /expand header/i,
         });
-        await user.click(expandButton);
+        await user.click(toggleButton);
 
-        // Back to expanded - shows ChevronUp
+        // Now expanded - shows ChevronUp
         expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /collapse header/i })
+        ).toBeInTheDocument();
+
+        // Click again to collapse
+        const collapseButton = screen.getByRole('button', {
+            name: /collapse header/i,
+        });
+        await user.click(collapseButton);
+
+        // Back to collapsed - shows ChevronDown
+        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
     });
 
     it('has responsive search bar layout', () => {
