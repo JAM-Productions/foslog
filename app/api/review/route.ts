@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { ApiError, AuthenticationError, NotFoundError, ValidationError } from '@/lib/errors';
+import {
+    internalServerError,
+    notFound,
+    unauthorized,
+    validationError,
+} from '@/lib/errors';
 
 export async function POST(request: NextRequest) {
     try {
@@ -10,29 +15,29 @@ export async function POST(request: NextRequest) {
         });
 
         if (!session) {
-            throw new AuthenticationError('Unauthorized. Please log in to create a review.');
+            return unauthorized('Unauthorized. Please log in to create a review.');
         }
 
         const { review, mediaId } = await request.json();
 
         if (!review) {
-            throw new ValidationError('Review object is required');
+            return validationError('Review object is required');
         }
 
         if (!review.stars || review.stars < 1 || review.stars > 5) {
-            throw new ValidationError('Rating must be between 1 and 5');
+            return validationError('Rating must be between 1 and 5');
         }
 
         if (!review.text || review.text.trim().length === 0) {
-            throw new ValidationError('Review text is required');
+            return validationError('Review text is required');
         }
 
         if (review.text.length > 5000) {
-            throw new ValidationError('Review text is too long');
+            return validationError('Review text is too long');
         }
 
         if (!mediaId) {
-            throw new ValidationError('Media ID is required');
+            return validationError('Media ID is required');
         }
 
         const mediaItem = await prisma.mediaItem.findUnique({
@@ -40,7 +45,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!mediaItem) {
-            throw new NotFoundError('Media item not found');
+            return notFound('Media item not found');
         }
 
         const reviewItem = await prisma.review.create({
@@ -60,17 +65,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        if (error instanceof ApiError) {
-            return NextResponse.json(
-                { error: error.message },
-                { status: error.statusCode }
-            );
-        }
-
         console.error('Error in POST /api/review:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        return internalServerError();
     }
 }

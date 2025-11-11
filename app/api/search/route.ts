@@ -1,6 +1,10 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { ApiError, ValidationError } from '@/lib/errors';
+import {
+    badGateway,
+    internalServerError,
+    validationError,
+} from '@/lib/errors';
 
 interface TMDBData {
     title: string;
@@ -15,18 +19,20 @@ export async function GET(req: NextRequest) {
         const mediatitle = req.nextUrl.searchParams.get('mediatitle');
 
         if (!mediatype) {
-            throw new ValidationError('Mediatype is required');
+            return validationError('Mediatype is required');
         }
 
         if (!mediatitle) {
-            throw new ValidationError('Mediatitle is required');
+            return validationError('Mediatitle is required');
         }
 
         let apiUrl = '';
 
         switch (mediatype) {
             case 'film':
-                apiUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(mediatitle)}`;
+                apiUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+                    mediatitle
+                )}`;
                 const res = await fetch(apiUrl, {
                     headers: {
                         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -34,7 +40,7 @@ export async function GET(req: NextRequest) {
                 });
 
                 if (!res.ok) {
-                    throw new ApiError(502, 'Could not fetch data from TMDB API');
+                    return badGateway('Could not fetch data from TMDB API');
                 }
 
                 const data = await res.json();
@@ -56,19 +62,10 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json(formattedResult);
 
             default:
-                throw new ValidationError(`Invalid media type: ${mediatype}`);
+                return validationError(`Invalid media type: ${mediatype}`);
         }
     } catch (error) {
-        if (error instanceof ApiError) {
-            return NextResponse.json(
-                { error: error.message },
-                { status: error.statusCode }
-            );
-        }
         console.error('[GET MEDIA ERROR] Error fetching data:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        return internalServerError();
     }
 }
