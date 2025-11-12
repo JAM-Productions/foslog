@@ -1,7 +1,7 @@
 import { ReviewCard } from '@/components/review-card';
-import { Review } from '@/lib/store';
+import { SafeReview } from '@/lib/types';
 
-export function ReviewList({ reviews }: { reviews: Review[] }) {
+export function ReviewList({ reviews }: { reviews: SafeReview[] }) {
     return (
         <div className="space-y-6">
             {reviews.map((review, index) => (

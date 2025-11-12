@@ -1,15 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { RatingDisplay } from '@/components/ui/rating';
-import { Review, User } from '@/lib/store';
+import { SafeReview } from '@/lib/types';
 import Image from 'next/image';
 
-export function ReviewCard({
-    review,
-}: {
-    review: Review & {
-        user: User;
-    };
-}) {
+export function ReviewCard({ review }: { review: SafeReview }) {
     const { user } = review;
 
     return (
