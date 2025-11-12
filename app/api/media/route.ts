@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+import {
+    internalServerError,
+    unauthorized,
+    validationError,
+} from '@/lib/errors';
 
 export async function POST(request: NextRequest) {
     try {
@@ -9,19 +14,15 @@ export async function POST(request: NextRequest) {
         });
 
         if (!session) {
-            return NextResponse.json(
-                { error: 'Unauthorized. Please log in to create a media.' },
-                { status: 401 }
+            return unauthorized(
+                'Unauthorized. Please log in to create a media.'
             );
         }
 
         const { selectedMedia } = await request.json();
 
         if (!selectedMedia) {
-            return NextResponse.json(
-                { error: 'Media object is required' },
-                { status: 400 }
-            );
+            return validationError('Media object is required');
         }
 
         if (
@@ -29,9 +30,8 @@ export async function POST(request: NextRequest) {
             !selectedMedia.type ||
             !selectedMedia.year
         ) {
-            return NextResponse.json(
-                { error: 'Media object must contain title, type, and year' },
-                { status: 400 }
+            return validationError(
+                'Media object must contain title, type, and year'
             );
         }
 
@@ -40,10 +40,7 @@ export async function POST(request: NextRequest) {
             selectedMedia.year < 1800 ||
             selectedMedia.year > new Date().getFullYear() + 5
         ) {
-            return NextResponse.json(
-                { error: 'Invalid year' },
-                { status: 400 }
-            );
+            return validationError('Invalid year');
         }
 
         const existingMedia = await prisma.mediaItem.findFirst({
@@ -83,9 +80,6 @@ export async function POST(request: NextRequest) {
         );
     } catch (error) {
         console.error('Error in POST /api/media:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        return internalServerError();
     }
 }

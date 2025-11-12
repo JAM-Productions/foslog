@@ -1,5 +1,6 @@
 import { MediaType } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { badGateway, internalServerError, validationError } from '@/lib/errors';
 
 interface TMDBData {
     title: string;
@@ -8,27 +9,26 @@ interface TMDBData {
     overview: string | null;
 }
 
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const mediatype = searchParams.get('mediatype');
-    const mediatitle = searchParams.get('mediatitle');
-
-    if (!mediatype) {
-        console.log('[GET MEDIA] No mediatype provided');
-        return NextResponse.json([]);
-    }
-
-    if (!mediatitle) {
-        console.log('[GET MEDIA] No mediatitle provided');
-        return NextResponse.json([]);
-    }
-
+export async function GET(req: NextRequest) {
     try {
+        const mediatype = req.nextUrl.searchParams.get('mediatype');
+        const mediatitle = req.nextUrl.searchParams.get('mediatitle');
+
+        if (!mediatype) {
+            return validationError('Mediatype is required');
+        }
+
+        if (!mediatitle) {
+            return validationError('Mediatitle is required');
+        }
+
         let apiUrl = '';
 
         switch (mediatype) {
             case 'film':
-                apiUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(mediatitle)}`;
+                apiUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+                    mediatitle
+                )}`;
                 const res = await fetch(apiUrl, {
                     headers: {
                         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
@@ -36,11 +36,7 @@ export async function GET(req: Request) {
                 });
 
                 if (!res.ok) {
-                    console.error(
-                        '[GET MEDIA ERROR] TMDB API error:',
-                        res.status
-                    );
-                    return NextResponse.json([]);
+                    return badGateway('Could not fetch data from TMDB API');
                 }
 
                 const data = await res.json();
@@ -62,10 +58,10 @@ export async function GET(req: Request) {
                 return NextResponse.json(formattedResult);
 
             default:
-                return NextResponse.json([]);
+                return validationError(`Invalid media type: ${mediatype}`);
         }
     } catch (error) {
         console.error('[GET MEDIA ERROR] Error fetching data:', error);
-        return NextResponse.json([]);
+        return internalServerError();
     }
 }
