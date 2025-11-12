@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MediaClient } from '@/app/[locale]/media/[id]/media-client';
+import { MediaItem, Review, User } from '@/lib/store';
 
 // Mock the sub-components
 vi.mock('@/components/media-details', () => ({
@@ -25,51 +26,45 @@ vi.mock('@/components/ui/back-button', () => ({
     BackButton: () => <div data-testid="back-button">Back Button</div>,
 }));
 
-vi.mock('@/lib/mock-data', () => ({
-    mockMediaItems: [
-        {
-            id: '1',
-            title: 'Test Movie',
-            type: 'movie',
-            description: 'A test movie',
-            rating: 8.5,
-            year: 2023,
-            coverImage: '/test-image.jpg',
-        },
-        {
-            id: '2',
-            title: 'Test Series',
-            type: 'series',
-            description: 'A test series',
-            rating: 9.0,
-            year: 2022,
-            coverImage: '/test-image-2.jpg',
-        },
-    ],
-    mockReviews: [
+const mockMediaItem: MediaItem & { reviews: (Review & { user: User })[] } = {
+    id: '1',
+    title: 'Test Movie',
+    type: 'FILM',
+    description: 'A test movie',
+    averageRating: 8.5,
+    totalReviews: 2,
+    year: 2023,
+    reviews: [
         {
             id: '1',
             mediaId: '1',
-            author: 'John Doe',
+            userId: '1',
             rating: 8,
-            text: 'Great movie!',
+            review: 'Great movie!',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            user: {
+                id: '1',
+                name: 'John Doe',
+                email: 'john@doe.com',
+            },
         },
         {
             id: '2',
             mediaId: '1',
-            author: 'Jane Smith',
+            userId: '2',
             rating: 9,
-            text: 'Amazing!',
-        },
-        {
-            id: '3',
-            mediaId: '2',
-            author: 'Bob Johnson',
-            rating: 9,
-            text: 'Excellent series!',
+            review: 'Amazing!',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            user: {
+                id: '2',
+                name: 'Jane Smith',
+                email: 'jane@smith.com',
+            },
         },
     ],
-}));
+};
 
 vi.mock('next-intl', () => ({
     useTranslations: () => (key: string) => {
@@ -93,47 +88,40 @@ describe('MediaClient', () => {
     });
 
     it('renders media details when media is found', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByTestId('media-details')).toBeInTheDocument();
         expect(screen.getByText(/Test Movie/)).toBeInTheDocument();
     });
 
     it('renders back button', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByTestId('back-button')).toBeInTheDocument();
     });
 
     it('renders review list when reviews exist', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByTestId('review-list')).toBeInTheDocument();
         expect(screen.getByText(/2 reviews/)).toBeInTheDocument();
     });
 
     it('renders review form', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByTestId('review-form')).toBeInTheDocument();
     });
 
     it('displays review count in header', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByText(/Reviews/)).toBeInTheDocument();
         expect(screen.getByText(/\(2\)/)).toBeInTheDocument();
     });
 
-    it('renders media not found when media does not exist', () => {
-        render(<MediaClient id="999" />);
-
-        expect(screen.getByText('Media not found')).toBeInTheDocument();
-        expect(screen.getByTestId('back-button')).toBeInTheDocument();
-    });
-
     it('renders all section headings', () => {
-        render(<MediaClient id="1" />);
+        render(<MediaClient mediaItem={mockMediaItem} />);
 
         expect(screen.getByText('Reviews')).toBeInTheDocument();
         expect(screen.getByText('Leave a Review')).toBeInTheDocument();

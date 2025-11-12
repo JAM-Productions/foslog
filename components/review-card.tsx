@@ -1,15 +1,16 @@
 import { Card } from '@/components/ui/card';
 import { RatingDisplay } from '@/components/ui/rating';
-import { mockUsers } from '@/lib/mock-data';
-import { Review } from '@/lib/store';
+import { Review, User } from '@/lib/store';
 import Image from 'next/image';
 
-export function ReviewCard({ review }: { review: Review }) {
-    const user = mockUsers.find((user) => user.id === review.userId);
-
-    if (!user) {
-        return null;
-    }
+export function ReviewCard({
+    review,
+}: {
+    review: Review & {
+        user: User;
+    };
+}) {
+    const { user } = review;
 
     return (
         <Card className="p-4 sm:p-6">
