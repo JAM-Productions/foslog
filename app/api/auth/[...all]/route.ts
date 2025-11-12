@@ -6,7 +6,8 @@ const handler = toNextJsHandler(auth);
 
 const getCorsHeaders = (request: NextRequest) => {
     const headers: Record<string, string> = {
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Methods':
+            'GET, POST, PUT, DELETE, OPTIONS, PATCH',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
     const origin = request.headers.get('Origin');
