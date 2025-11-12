@@ -4,11 +4,23 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const handler = toNextJsHandler(auth);
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin':
-        'http://localhost:3000, https://foslog.vercel.app',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+const getCorsHeaders = (request: NextRequest) => {
+    const headers: Record<string, string> = {
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+    const origin = request.headers.get('Origin');
+    const allowedOrigins = [
+        'http://localhost:3000',
+        'https://foslog.vercel.app',
+    ];
+    if (process.env.VERCEL_URL) {
+        allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
+    }
+    if (origin && allowedOrigins.includes(origin)) {
+        headers['Access-Control-Allow-Origin'] = origin;
+    }
+    return headers;
 };
 
 async function addCorsHeaders(
@@ -16,6 +28,7 @@ async function addCorsHeaders(
     handler: (req: NextRequest | Request) => Promise<Response | NextResponse>
 ) {
     const response = await handler(request);
+    const corsHeaders = getCorsHeaders(request);
     Object.entries(corsHeaders).forEach(([key, value]) => {
         response.headers.set(key, value);
     });
@@ -39,9 +52,10 @@ export async function POST(request: NextRequest) {
     return addCorsHeaders(request, handler.POST);
 }
 
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+    const headers = getCorsHeaders(request);
     return new NextResponse(null, {
         status: 200,
-        headers: corsHeaders,
+        headers,
     });
 }
