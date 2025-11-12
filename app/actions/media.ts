@@ -49,23 +49,19 @@ export const getMediaById = async (
 
             const safeReviews = reviews.map((review) => {
                 const { user, ...restOfReview } = review;
-                const {
-                    createdAt: userCreatedAt,
-                    updatedAt: userUpdatedAt,
-                    emailVerified,
-                    name,
-                    ...restOfUser
-                } = user;
+
+                const safeUser: User = {
+                    id: user.id,
+                    name: user.name ?? 'Unknown User',
+                    email: user.email,
+                    image: user.image ?? undefined,
+                    bio: user.bio ?? undefined,
+                    joinedAt: user.createdAt,
+                };
 
                 return {
                     ...restOfReview,
-                    user: {
-                        ...restOfUser,
-                        name: name ?? 'Unknown User',
-                        image: user.image ?? undefined,
-                        bio: user.bio ?? undefined,
-                        joinedAt: userCreatedAt,
-                    } as User,
+                    user: safeUser,
                 };
             });
 
