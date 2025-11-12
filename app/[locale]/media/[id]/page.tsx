@@ -1,4 +1,5 @@
-import { MediaClient } from '@/app/[locale]/media/[id]/media-client';
+import { getMediaById } from '@/app/actions/media';
+import { MediaClient } from './media-client';
 
 export default async function MediaPage({
     params,
@@ -6,6 +7,11 @@ export default async function MediaPage({
     params: Promise<{ id: string }>;
 }) {
     const resolvedParams = await params;
+    const mediaItem = await getMediaById(resolvedParams.id);
 
-    return <MediaClient id={resolvedParams.id} />;
+    if (!mediaItem) {
+        return <div>Media not found</div>;
+    }
+
+    return <MediaClient mediaItem={mediaItem} />;
 }

@@ -5,31 +5,15 @@ import { ReviewForm } from '@/components/review-form';
 import { ReviewList } from '@/components/review-list';
 import { BackButton } from '@/components/ui/back-button';
 import { useTranslations } from 'next-intl';
-import { mockMediaItems, mockReviews } from '@/lib/mock-data';
+import { SafeMediaItemWithReviews } from '@/lib/types';
 
 interface MediaClientProps {
-    id: string;
+    mediaItem: SafeMediaItemWithReviews;
 }
 
-export function MediaClient({ id }: MediaClientProps) {
+export function MediaClient({ mediaItem }: MediaClientProps) {
     const t = useTranslations('MediaPage');
-    const media = mockMediaItems.find((item) => item.id === id);
-    const reviews = mockReviews.filter((review) => review.mediaId === id);
-
-    if (!media) {
-        return (
-            <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
-                <div className="mb-6 flex items-center gap-4 sm:mb-8">
-                    <BackButton />
-                </div>
-                <div className="py-8 text-center sm:py-12">
-                    <h1 className="text-foreground text-xl font-bold sm:text-2xl">
-                        {t('mediaNotFound')}
-                    </h1>
-                </div>
-            </div>
-        );
-    }
+    const { reviews, ...media } = mediaItem;
 
     return (
         <div className="bg-background min-h-screen">
