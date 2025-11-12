@@ -4,9 +4,10 @@ import { MediaClient } from './media-client';
 export default async function MediaPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    const mediaItem = await getMediaById(params.id);
+    const resolvedParams = await params;
+    const mediaItem = await getMediaById(resolvedParams.id);
 
     if (!mediaItem) {
         return <div>Media not found</div>;
