@@ -10,7 +10,7 @@ const mockMediaItems: MediaItem[] = [
     {
         id: '1',
         title: 'Test Movie',
-        type: 'FILM',
+        type: 'film',
         description: 'A test movie',
         averageRating: 8.5,
         totalReviews: 2,
