@@ -5,14 +5,10 @@ import { ReviewForm } from '@/components/review-form';
 import { ReviewList } from '@/components/review-list';
 import { BackButton } from '@/components/ui/back-button';
 import { useTranslations } from 'next-intl';
-import { MediaItem, Review, User } from '@/lib/store';
+import { SafeMediaItemWithReviews } from '@/lib/types';
 
 interface MediaClientProps {
-    mediaItem: MediaItem & {
-        reviews: (Review & {
-            user: User;
-        })[];
-    };
+    mediaItem: SafeMediaItemWithReviews;
 }
 
 export function MediaClient({ mediaItem }: MediaClientProps) {

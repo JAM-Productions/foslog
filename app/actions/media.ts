@@ -2,8 +2,9 @@
 
 import { prisma } from '@/lib/prisma';
 import { MediaType } from '@/lib/store';
+import { SafeMediaItem, SafeMediaItemWithReviews } from '@/lib/types';
 
-export const getMedias = async () => {
+export const getMedias = async (): Promise<SafeMediaItem[]> => {
     try {
         const mediaItems = await prisma.mediaItem.findMany();
         return mediaItems.map((item) => ({
@@ -16,7 +17,9 @@ export const getMedias = async () => {
     }
 };
 
-export const getMediaById = async (id: string) => {
+export const getMediaById = async (
+    id: string
+): Promise<SafeMediaItemWithReviews | null> => {
     try {
         const mediaItem = await prisma.mediaItem.findUnique({
             where: { id },

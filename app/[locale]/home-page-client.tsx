@@ -9,12 +9,12 @@ import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth-provider';
 import { useRouter } from 'next/navigation';
-import { MediaItem } from '@/lib/store';
+import { SafeMediaItem } from '@/lib/types';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
 }: {
-    mediaItems: MediaItem[];
+    mediaItems: SafeMediaItem[];
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
