@@ -2,7 +2,11 @@
 
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
-import { SafeMediaItem, SafeMediaItemWithReviews } from '@/lib/types';
+import {
+    SafeMediaItem,
+    SafeMediaItemWithReviews,
+    SafeReview,
+} from '@/lib/types';
 
 export const getMedias = async (): Promise<SafeMediaItem[]> => {
     try {
@@ -47,7 +51,7 @@ export const getMediaById = async (
         if (mediaItem) {
             const { reviews, ...restOfMediaItem } = mediaItem;
 
-            const safeReviews = reviews.map((review) => {
+            const safeReviews: SafeReview[] = reviews.map((review) => {
                 const { user, ...restOfReview } = review;
 
                 const safeUser: User = {
@@ -60,7 +64,13 @@ export const getMediaById = async (
                 };
 
                 return {
-                    ...restOfReview,
+                    id: restOfReview.id,
+                    mediaId: restOfReview.mediaId,
+                    userId: restOfReview.userId,
+                    rating: restOfReview.rating,
+                    review: restOfReview.review ?? undefined,
+                    createdAt: restOfReview.createdAt,
+                    updatedAt: restOfReview.updatedAt,
                     user: safeUser,
                 };
             });
