@@ -59,6 +59,7 @@ export default function ReviewModal() {
         setSelectedMedia(null);
         setReviewStars(0);
         setReviewText('');
+        setError(null);
     }, []);
 
     const closeModal = useCallback(() => {
@@ -67,6 +68,7 @@ export default function ReviewModal() {
     }, [clearModalState, setIsReviewModalOpen]);
 
     const handleBack = useCallback(() => {
+        setError(null);
         setModalStep(1);
         setReviewStars(0);
         setReviewText('');
