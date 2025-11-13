@@ -65,10 +65,12 @@ export async function POST(request: NextRequest) {
                     review.stars) /
                 (mediaItem.totalReviews + 1);
 
+            const roundedAverage = Number(newAverageRating.toFixed(1));
+
             await tx.mediaItem.update({
                 where: { id: mediaId },
                 data: {
-                    averageRating: newAverageRating,
+                    averageRating: roundedAverage,
                     totalReviews: { increment: 1 },
                 },
             });
