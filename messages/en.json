@@ -119,6 +119,7 @@
     },
     "MediaPage": {
         "reviews": "Reviews",
+        "review": "Review",
         "leaveReview": "Leave a review",
         "mediaNotFound": "Media not found",
         "noReviews": "No reviews yet. Be the first to review!",

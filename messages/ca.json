@@ -119,6 +119,7 @@
     },
     "MediaPage": {
         "reviews": "Ressenyes",
+        "review": "Ressenya",
         "leaveReview": "Deixar una ressenya",
         "mediaNotFound": "Contingut no trobat",
         "noReviews": "Encara no hi ha ressenyes. Sigues el primer a opinar!",
