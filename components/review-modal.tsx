@@ -40,6 +40,8 @@ export default function ReviewModal() {
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
 
+    const [error, setError] = useState<string | null>(null);
+
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
         { value: 'serie', label: tMediaTypes('series'), disabled: true },
@@ -73,6 +75,7 @@ export default function ReviewModal() {
     const submitReview = async () => {
         try {
             setIsLoadingSubmit(true);
+            setError(null);
             const responseMedia = await fetch('/api/media', {
                 method: 'POST',
                 headers: {
@@ -84,7 +87,8 @@ export default function ReviewModal() {
             });
 
             if (!responseMedia.ok) {
-                console.error('Failed to create media');
+                const errorData = await responseMedia.json();
+                setError(errorData.error);
                 return;
             }
 
@@ -108,10 +112,15 @@ export default function ReviewModal() {
                 router.push(`/media/${data.media.id}`);
                 closeModal();
             } else {
-                console.error('Failed to create review');
+                const errorData = await responseReview.json();
+                setError(errorData.error);
             }
         } catch (error) {
-            console.error('Error submitting review:', error);
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'An unexpected error occurred'
+            );
         } finally {
             setIsLoadingSubmit(false);
         }
@@ -121,7 +130,7 @@ export default function ReviewModal() {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
                 <div
-                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
+                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                 >
@@ -228,49 +237,57 @@ export default function ReviewModal() {
                             </div>
                         )}
                     </div>
-                    <div className="flex gap-4">
-                        {modalStep === 1 && (
-                            <Button
-                                disabled={!selectedMedia}
-                                className="cursor-pointer"
-                                onClick={() => setModalStep(2)}
-                            >
-                                {tCTA('next')}
-                            </Button>
+
+                    <div className="flex flex-col items-center justify-center">
+                        {error && (
+                            <div className="my-4 rounded-md bg-red-50 p-3 text-center text-sm text-red-700">
+                                {error}
+                            </div>
                         )}
-                        {modalStep === 2 && (
-                            <>
+                        <div className="flex gap-4">
+                            {modalStep === 1 && (
                                 <Button
-                                    disabled={isLoadingSubmit}
+                                    disabled={!selectedMedia}
                                     className="cursor-pointer"
-                                    variant="ghost"
-                                    onClick={() => handleBack()}
+                                    onClick={() => setModalStep(2)}
                                 >
-                                    {tBackButton('back')}
+                                    {tCTA('next')}
                                 </Button>
-                                <div className="relative flex flex-row items-center justify-center">
+                            )}
+                            {modalStep === 2 && (
+                                <>
                                     <Button
-                                        disabled={
-                                            !selectedMedia ||
-                                            reviewStars < 1 ||
-                                            !reviewText.trim() ||
-                                            isLoadingSubmit
-                                        }
-                                        onClick={() => submitReview()}
-                                        className={`cursor-pointer ${
-                                            isLoadingSubmit
-                                                ? 'text-transparent'
-                                                : ''
-                                        }`}
+                                        disabled={isLoadingSubmit}
+                                        className="cursor-pointer"
+                                        variant="ghost"
+                                        onClick={() => handleBack()}
                                     >
-                                        {tMediaPage('submitReview')}
+                                        {tBackButton('back')}
                                     </Button>
-                                    {isLoadingSubmit && (
-                                        <LoaderCircle className="text-primary absolute animate-spin" />
-                                    )}
-                                </div>
-                            </>
-                        )}
+                                    <div className="relative flex flex-row items-center justify-center">
+                                        <Button
+                                            disabled={
+                                                !selectedMedia ||
+                                                reviewStars < 1 ||
+                                                !reviewText.trim() ||
+                                                isLoadingSubmit
+                                            }
+                                            onClick={() => submitReview()}
+                                            className={`cursor-pointer ${
+                                                isLoadingSubmit
+                                                    ? 'text-transparent'
+                                                    : ''
+                                            }`}
+                                        >
+                                            {tMediaPage('submitReview')}
+                                        </Button>
+                                        {isLoadingSubmit && (
+                                            <LoaderCircle className="text-primary absolute animate-spin" />
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
