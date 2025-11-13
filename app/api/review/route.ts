@@ -42,32 +42,54 @@ export async function POST(request: NextRequest) {
             return validationError('Media ID is required');
         }
 
-        const mediaItem = await prisma.mediaItem.findUnique({
-            where: { id: mediaId },
-        });
+        const result = await prisma.$transaction(async (tx) => {
+            const mediaItem = await tx.mediaItem.findUnique({
+                where: { id: mediaId },
+            });
 
-        if (!mediaItem) {
-            return notFound('Media item not found');
-        }
+            if (!mediaItem) {
+                throw new Error('MEDIA_NOT_FOUND');
+            }
 
-        const reviewItem = await prisma.review.create({
-            data: {
-                rating: review.stars,
-                review: review.text,
-                mediaId: mediaId,
-                userId: session.user.id,
-            },
+            const reviewItem = await tx.review.create({
+                data: {
+                    rating: review.stars,
+                    review: review.text,
+                    mediaId: mediaId,
+                    userId: session.user.id,
+                },
+            });
+
+            const newAverageRating =
+                (mediaItem.averageRating * mediaItem.totalReviews +
+                    review.stars) /
+                (mediaItem.totalReviews + 1);
+
+            await tx.mediaItem.update({
+                where: { id: mediaId },
+                data: {
+                    averageRating: newAverageRating,
+                    totalReviews: { increment: 1 },
+                },
+            });
+
+            return reviewItem;
         });
 
         return NextResponse.json(
             {
                 message: 'Review created successfully',
-                media: reviewItem,
+                media: result,
             },
             { status: 201 }
         );
     } catch (error) {
         console.error('Error in POST /api/review:', error);
+
+        if (error instanceof Error && error.message === 'MEDIA_NOT_FOUND') {
+            return notFound('Media item not found');
+        }
+
         return internalServerError();
     }
 }
