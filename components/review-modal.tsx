@@ -240,33 +240,33 @@ export default function ReviewModal() {
                         )}
                     </div>
 
-                    <div className="flex flex-col items-center justify-center">
+                    <div className="flex w-full flex-col items-center justify-center">
                         {error && (
-                            <div className="my-4 rounded-md bg-red-50 p-3 text-center text-sm text-red-700">
+                            <div className="my-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
                                 {error}
                             </div>
                         )}
-                        <div className="flex gap-4">
+                        <div className="flex w-full gap-4 sm:w-auto">
                             {modalStep === 1 && (
                                 <Button
                                     disabled={!selectedMedia}
-                                    className="cursor-pointer"
+                                    className="mt-8 w-full cursor-pointer sm:w-auto"
                                     onClick={() => setModalStep(2)}
                                 >
                                     {tCTA('next')}
                                 </Button>
                             )}
                             {modalStep === 2 && (
-                                <>
+                                <div className="flex w-full gap-4">
                                     <Button
                                         disabled={isLoadingSubmit}
-                                        className="cursor-pointer"
+                                        className="w-full cursor-pointer"
                                         variant="ghost"
                                         onClick={() => handleBack()}
                                     >
                                         {tBackButton('back')}
                                     </Button>
-                                    <div className="relative flex flex-row items-center justify-center">
+                                    <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
                                         <Button
                                             disabled={
                                                 !selectedMedia ||
@@ -275,7 +275,7 @@ export default function ReviewModal() {
                                                 isLoadingSubmit
                                             }
                                             onClick={() => submitReview()}
-                                            className={`cursor-pointer ${
+                                            className={`w-full cursor-pointer ${
                                                 isLoadingSubmit
                                                     ? 'text-transparent'
                                                     : ''
@@ -287,7 +287,7 @@ export default function ReviewModal() {
                                             <LoaderCircle className="text-primary absolute animate-spin" />
                                         )}
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
                     </div>
