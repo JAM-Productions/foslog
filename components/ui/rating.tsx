@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, StarHalf } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 interface RatingInputProps {
     id?: string;
@@ -120,47 +120,13 @@ export function RatingDisplay({
     showValue?: boolean;
     className?: string;
 }) {
-    const sizeClasses = {
-        sm: 'w-4 h-4',
-        md: 'w-5 h-5',
-        lg: 'w-6 h-6',
-    };
-
-    const stars = Array.from({ length: 5 }, (_, i) => {
-        const filled = i < Math.floor(rating);
-        const halfFilled = i === Math.floor(rating) && rating % 1 >= 0.5;
-
-        return (
-            <div
-                key={i}
-                className={`relative ${className ? className : ''}`}
-            >
-                <Star
-                    className={`text-muted-foreground ${sizeClasses[size]}`}
-                />
-                {filled && (
-                    <Star
-                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${sizeClasses[size]}`}
-                    />
-                )}
-                {halfFilled && (
-                    <StarHalf
-                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${sizeClasses[size]}`}
-                    />
-                )}
-            </div>
-        );
-    });
-
     return (
-        <div className="flex items-center gap-0.5">
-            {stars}
-
-            {showValue && (
-                <span className="text-muted-foreground ml-2 text-base">
-                    {rating > 0 ? `${rating}/5` : 'No rating'}
-                </span>
-            )}
-        </div>
+        <RatingInput
+            value={rating}
+            readonly
+            size={size}
+            showValue={showValue}
+            className={className}
+        />
     );
 }
