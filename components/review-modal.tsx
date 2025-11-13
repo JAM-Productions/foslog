@@ -10,6 +10,7 @@ import { X, LoaderCircle } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from './ui/search-input';
+import { useRouter } from 'next/navigation';
 
 interface Review {
     stars: number;
@@ -17,6 +18,8 @@ interface Review {
 }
 
 export default function ReviewModal() {
+    const router = useRouter();
+
     const tCTA = useTranslations('CTA');
     const tReviewModal = useTranslations('ReviewModal');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -102,6 +105,7 @@ export default function ReviewModal() {
             });
 
             if (responseReview.ok) {
+                router.push(`/media/${data.media.id}`);
                 closeModal();
             } else {
                 console.error('Failed to create review');
