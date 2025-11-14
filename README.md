@@ -1,14 +1,14 @@
-# About
+# Foslog
 
 **Foslog** is a web app to write and read reviews for **films, series, video games, books, and music** all in one place.
 
 ---
 
-## Motivation
+## Why Foslog?
 
 Unlike apps like _Letterboxd_ or _Goodreads_ that are limited to just one kind of media — films, series, video games, books, or music. **Foslog** breaks that barrier by bringing them all together in a single place. Our goal is to make it easier to share your thoughts and explore recommendations across different forms of entertainment, without needing to switch between multiple apps.
 
-## Benefits
+Some key benefits of using Foslog:
 
 - Discover **new hobbies and works** thanks to the variety of reviews gathered in one platform.
 
