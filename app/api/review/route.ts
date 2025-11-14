@@ -60,18 +60,17 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            const newAverageRating =
-                (mediaItem.averageRating * mediaItem.totalReviews +
-                    review.stars) /
-                (mediaItem.totalReviews + 1);
-
-            const roundedAverage = Number(newAverageRating.toFixed(1));
+            const { _avg, _count } = await tx.review.aggregate({
+                where: { mediaId },
+                _avg: { rating: true },
+                _count: true,
+            });
 
             await tx.mediaItem.update({
                 where: { id: mediaId },
                 data: {
-                    averageRating: roundedAverage,
-                    totalReviews: { increment: 1 },
+                    averageRating: Number(_avg.rating?.toFixed(1)) || 0,
+                    totalReviews: _count,
                 },
             });
 
