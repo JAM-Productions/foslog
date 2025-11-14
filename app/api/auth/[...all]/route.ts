@@ -16,14 +16,12 @@ const getCorsHeaders = (request: NextRequest) => {
         'http://localhost:3000',
         'https://foslog.vercel.app',
     ];
-    if (process.env.VERCEL_URL) {
-        allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
-    }
+
     if (origin) {
-        if (
+        const isAllowed =
             allowedOrigins.includes(origin) ||
-            /https:\/\/foslog-.*\.vercel\.app/.test(origin)
-        ) {
+            /https:\/\/foslog-.*\.vercel\.app/.test(origin);
+        if (isAllowed) {
             headers['Access-Control-Allow-Origin'] = origin;
         }
     }
