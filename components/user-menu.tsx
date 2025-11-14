@@ -9,6 +9,7 @@ import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import UserMenuSkeleton from './user-menu-skeleton';
+import Image from 'next/image';
 
 const UserMenu = () => {
     const tCTA = useTranslations('CTA');
@@ -103,14 +104,14 @@ const UserMenu = () => {
                 className="flex items-center gap-2"
             >
                 {user.image ? (
-                    <>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src={user.image}
-                            alt={user.name}
-                            className="h-6 w-6 rounded-full"
-                        />
-                    </>
+                    <Image
+                        src={user.image}
+                        alt={user.name}
+                        width={40}
+                        height={40}
+                        className="h-6 w-6 rounded-full"
+                        unoptimized
+                    />
                 ) : (
                     <User className="h-4 w-4" />
                 )}

@@ -1,7 +1,5 @@
 {
     "HomePage": {
-        "welcomeBack": "Welcome back, {name}! 👋",
-        "discover": "Discover and review your next favorite {mediaType}",
         "media": "media"
     },
     "MediaTypes": {
@@ -126,7 +124,8 @@
         "yourRating": "Your Rating",
         "yourReview": "Your Review",
         "submitReview": "Submit Review",
-        "shareThoughts": "Share your thoughts about this media..."
+        "shareThoughts": "Share your thoughts about this media...",
+        "overview": "Overview"
     },
     "BackButton": {
         "back": "Back"

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, StarHalf } from 'lucide-react';
 
 interface RatingInputProps {
     id?: string;
@@ -66,6 +66,10 @@ export function RatingInput({
                 {Array.from({ length: 5 }, (_, i) => {
                     const starValue = i + 1;
                     const isFilled = starValue <= currentRating;
+                    const isHalfFilled =
+                        readonly &&
+                        i === Math.floor(currentRating) &&
+                        currentRating % 1 >= 0.5;
 
                     return (
                         <button
@@ -75,33 +79,49 @@ export function RatingInput({
                             onMouseEnter={() => handleStarHover(starValue)}
                             disabled={readonly}
                             className={[
-                                'focus:ring-ring rounded transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none',
+                                'rounded transition-colors focus:outline-none',
                                 !readonly &&
-                                    'transform transition-transform hover:scale-110',
+                                    'transform cursor-pointer transition-transform hover:scale-110',
                                 readonly && 'cursor-default',
                             ]
                                 .filter(Boolean)
                                 .join(' ')}
                         >
-                            <Star
-                                className={[
-                                    sizeClasses[size],
-                                    'transition-colors',
-                                    isFilled
-                                        ? 'fill-amber-400 text-amber-400'
-                                        : 'text-muted-foreground hover:text-amber-400',
-                                    !readonly && 'hover:text-amber-400',
-                                ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                            />
+                            <div className="relative">
+                                <Star
+                                    className={[
+                                        sizeClasses[size],
+                                        'text-muted-foreground transition-colors',
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                />
+                                {isFilled && (
+                                    <Star
+                                        className={[
+                                            sizeClasses[size],
+                                            'absolute top-0 left-0 fill-amber-400 text-amber-400',
+                                        ].join(' ')}
+                                    />
+                                )}
+                                {isHalfFilled && (
+                                    <StarHalf
+                                        className={[
+                                            sizeClasses[size],
+                                            'absolute top-0 left-0 fill-amber-400 text-amber-400',
+                                        ].join(' ')}
+                                    />
+                                )}
+                            </div>
                         </button>
                     );
                 })}
             </div>
 
             {showValue && (
-                <span className="text-muted-foreground ml-2 text-sm">
+                <span
+                    className={`text-muted-foreground ml-2 ${size === 'sm' ? 'text-sm' : 'text-base'}`}
+                >
                     {currentRating > 0 ? `${currentRating}/5` : 'No rating'}
                 </span>
             )}

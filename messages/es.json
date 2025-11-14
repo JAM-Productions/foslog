@@ -1,7 +1,5 @@
 {
     "HomePage": {
-        "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
-        "discover": "Descubre y reseña tu próximo {mediaType} favorito",
         "media": "contenido"
     },
     "MediaTypes": {
@@ -126,7 +124,8 @@
         "yourRating": "Tu Valoración",
         "yourReview": "Tu Reseña",
         "submitReview": "Enviar Reseña",
-        "shareThoughts": "Comparte tus pensamientos sobre este medio..."
+        "shareThoughts": "Comparte tus pensamientos sobre este medio...",
+        "overview": "Resumen"
     },
     "BackButton": {
         "back": "Atrás"

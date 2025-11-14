@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+import { LOCALES } from '@/lib/constants';
 import {
     internalServerError,
     notFound,
@@ -76,6 +78,15 @@ export async function POST(request: NextRequest) {
 
             return reviewItem;
         });
+
+        // Get current locale from the referer header
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+
+        // Revalidate only the current locale's pages
+        revalidatePath(`/${locale}`, 'page');
+        revalidatePath(`/${locale}/media/${mediaId}`, 'page');
 
         return NextResponse.json(
             {

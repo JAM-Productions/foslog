@@ -10,7 +10,7 @@ import { X, LoaderCircle } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from './ui/search-input';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 
 interface Review {
     stars: number;
@@ -111,8 +111,9 @@ export default function ReviewModal() {
             });
 
             if (responseReview.ok) {
-                router.push(`/media/${data.media.id}`);
                 closeModal();
+                // Navigate to the media page - it will automatically revalidate
+                router.push(`/media/${data.media.id}`);
             } else {
                 const errorData = await responseReview.json();
                 setError(errorData.error);

@@ -31,16 +31,15 @@ export default function HomePageClient({
     } = useAppStore();
     const { user } = useAuth();
 
-    // Initialize with server data
+    // Always sync with server data to ensure fresh data after navigation
     useEffect(() => {
-        if (mediaItems.length === 0) {
-            setMediaItems(initialMediaItems);
-        }
-    }, [mediaItems.length, setMediaItems, initialMediaItems]);
+        setMediaItems(initialMediaItems);
+    }, [setMediaItems, initialMediaItems]);
 
     // Filter and search media items
     const filteredMedia = useMemo(() => {
-        let filtered = mediaItems;
+        // Use initialMediaItems if mediaItems is empty (first render)
+        let filtered = mediaItems.length > 0 ? mediaItems : initialMediaItems;
 
         // Filter by media type
         if (selectedMediaType !== 'all') {
@@ -64,7 +63,7 @@ export default function HomePageClient({
         }
 
         return filtered;
-    }, [mediaItems, selectedMediaType, searchQuery]);
+    }, [mediaItems, initialMediaItems, selectedMediaType, searchQuery]);
 
     // Sort options
     const sortedMedia = useMemo(() => {
@@ -118,22 +117,6 @@ export default function HomePageClient({
 
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Welcome Section */}
-            {user && (
-                <div className="mb-12">
-                    <h1 className="mb-2 text-3xl font-bold tracking-tight">
-                        {t('welcomeBack', { name: user.name })}
-                    </h1>
-                    <p className="text-muted-foreground">
-                        {t('discover', {
-                            mediaType:
-                                selectedMediaType === 'all'
-                                    ? t('media')
-                                    : tMediaTypes(selectedMediaType),
-                        })}
-                    </p>
-                </div>
-            )}
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="bg-card rounded-lg border p-4">
