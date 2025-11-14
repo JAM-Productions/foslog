@@ -9,6 +9,7 @@ const getCorsHeaders = (request: NextRequest) => {
         'Access-Control-Allow-Methods':
             'GET, POST, PUT, DELETE, OPTIONS, PATCH',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
     };
     const origin = request.headers.get('Origin');
     const allowedOrigins = [
@@ -18,8 +19,13 @@ const getCorsHeaders = (request: NextRequest) => {
     if (process.env.VERCEL_URL) {
         allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
     }
-    if (origin && allowedOrigins.includes(origin)) {
-        headers['Access-Control-Allow-Origin'] = origin;
+    if (origin) {
+        if (
+            allowedOrigins.includes(origin) ||
+            /https:\/\/foslog-.*\.vercel\.app/.test(origin)
+        ) {
+            headers['Access-Control-Allow-Origin'] = origin;
+        }
     }
     return headers;
 };
