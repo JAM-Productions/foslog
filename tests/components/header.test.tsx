@@ -120,42 +120,42 @@ describe('Header', () => {
         render(<Header />);
 
         const toggleButtons = screen.getAllByRole('button', {
-            name: /collapse filter/i,
+            name: /expand filter/i,
         });
         expect(toggleButtons).toHaveLength(2);
-        expect(screen.getAllByTestId('chevron-up')[0]).toBeInTheDocument();
+        expect(screen.getAllByTestId('chevron-down')[0]).toBeInTheDocument();
     });
 
     it('toggles header collapse state when button is clicked', async () => {
         const user = userEvent.setup();
         render(<Header />);
 
-        // Initially expanded - shows ChevronUp
-        expect(screen.getAllByTestId('chevron-up')).toHaveLength(2);
-        expect(
-            screen.getAllByRole('button', { name: /collapse filter/i })
-        ).toHaveLength(2);
-
-        // Click to collapse
-        const toggleButtons = screen.getAllByRole('button', {
-            name: /collapse filter/i,
-        });
-        await user.click(toggleButtons[0]);
-
-        // Now collapsed - shows ChevronDown
+        // Initially collapsed - shows ChevronDown
         expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
         expect(
             screen.getAllByRole('button', { name: /expand filter/i })
         ).toHaveLength(2);
 
-        // Click again to expand
-        const expandButtons = screen.getAllByRole('button', {
+        // Click to expand
+        const toggleButtons = screen.getAllByRole('button', {
             name: /expand filter/i,
         });
-        await user.click(expandButtons[0]);
+        await user.click(toggleButtons[0]);
 
-        // Back to expanded - shows ChevronUp
+        // Now expanded - shows ChevronUp
         expect(screen.getAllByTestId('chevron-up')).toHaveLength(2);
+        expect(
+            screen.getAllByRole('button', { name: /collapse filter/i })
+        ).toHaveLength(2);
+
+        // Click again to collapse
+        const collapseButtons = screen.getAllByRole('button', {
+            name: /collapse filter/i,
+        });
+        await user.click(collapseButtons[0]);
+
+        // Back to collapsed - shows ChevronDown
+        expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
     });
 
     it('has responsive search bar layout', () => {
