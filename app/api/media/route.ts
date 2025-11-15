@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+import { LOCALES } from '@/lib/constants';
 import {
     internalServerError,
     unauthorized,
@@ -70,6 +72,12 @@ export async function POST(request: NextRequest) {
                 description: selectedMedia.description,
             },
         });
+
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+
+        revalidatePath(`/${locale}`, 'page');
 
         return NextResponse.json(
             {
