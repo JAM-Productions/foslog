@@ -1,7 +1,5 @@
 {
     "HomePage": {
-        "welcomeBack": "Welcome back, {name}! 👋",
-        "discover": "Discover and review your next favorite {mediaType}",
         "media": "media"
     },
     "MediaTypes": {
@@ -119,13 +117,15 @@
     },
     "MediaPage": {
         "reviews": "Reviews",
+        "review": "Review",
         "leaveReview": "Leave a review",
         "mediaNotFound": "Media not found",
         "noReviews": "No reviews yet. Be the first to review!",
         "yourRating": "Your Rating",
         "yourReview": "Your Review",
         "submitReview": "Submit Review",
-        "shareThoughts": "Share your thoughts about this media..."
+        "shareThoughts": "Share your thoughts about this media...",
+        "overview": "Overview"
     },
     "BackButton": {
         "back": "Back"

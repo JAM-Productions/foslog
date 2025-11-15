@@ -1,18 +1,12 @@
 export default function Loading() {
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Welcome Section Skeleton */}
-            <div className="mb-12">
-                <div className="bg-muted mb-2 h-8 w-1/2 animate-pulse rounded"></div>
-                <div className="bg-muted h-4 w-1/3 animate-pulse rounded"></div>
-            </div>
-
             {/* Stats Cards Skeleton */}
             <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
                 {Array.from({ length: 3 }).map((_, i) => (
                     <div
                         key={i}
-                        className="bg-card h-24 animate-pulse rounded-lg border p-4"
+                        className="bg-card h-28 animate-pulse rounded-lg border p-4"
                     ></div>
                 ))}
             </div>
@@ -33,7 +27,7 @@ export default function Loading() {
                     {Array.from({ length: 12 }).map((_, i) => (
                         <div
                             key={i}
-                            className="bg-card h-64 animate-pulse rounded-lg"
+                            className="bg-card h-96 animate-pulse rounded-lg"
                         ></div>
                     ))}
                 </div>

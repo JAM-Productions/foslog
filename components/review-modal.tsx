@@ -10,6 +10,7 @@ import { X, LoaderCircle } from 'lucide-react';
 import { RatingInput } from './ui/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from './ui/search-input';
+import { useRouter } from '@/i18n/navigation';
 
 interface Review {
     stars: number;
@@ -17,6 +18,8 @@ interface Review {
 }
 
 export default function ReviewModal() {
+    const router = useRouter();
+
     const tCTA = useTranslations('CTA');
     const tReviewModal = useTranslations('ReviewModal');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -37,6 +40,8 @@ export default function ReviewModal() {
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
 
+    const [error, setError] = useState<string | null>(null);
+
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
         { value: 'serie', label: tMediaTypes('series'), disabled: true },
@@ -54,6 +59,7 @@ export default function ReviewModal() {
         setSelectedMedia(null);
         setReviewStars(0);
         setReviewText('');
+        setError(null);
     }, []);
 
     const closeModal = useCallback(() => {
@@ -62,6 +68,7 @@ export default function ReviewModal() {
     }, [clearModalState, setIsReviewModalOpen]);
 
     const handleBack = useCallback(() => {
+        setError(null);
         setModalStep(1);
         setReviewStars(0);
         setReviewText('');
@@ -70,6 +77,7 @@ export default function ReviewModal() {
     const submitReview = async () => {
         try {
             setIsLoadingSubmit(true);
+            setError(null);
             const responseMedia = await fetch('/api/media', {
                 method: 'POST',
                 headers: {
@@ -81,7 +89,8 @@ export default function ReviewModal() {
             });
 
             if (!responseMedia.ok) {
-                console.error('Failed to create media');
+                const errorData = await responseMedia.json();
+                setError(errorData.error);
                 return;
             }
 
@@ -103,11 +112,18 @@ export default function ReviewModal() {
 
             if (responseReview.ok) {
                 closeModal();
+                // Navigate to the media page - it will automatically revalidate
+                router.push(`/media/${data.media.id}`);
             } else {
-                console.error('Failed to create review');
+                const errorData = await responseReview.json();
+                setError(errorData.error);
             }
         } catch (error) {
-            console.error('Error submitting review:', error);
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'An unexpected error occurred'
+            );
         } finally {
             setIsLoadingSubmit(false);
         }
@@ -117,7 +133,7 @@ export default function ReviewModal() {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
                 <div
-                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between gap-8 p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
+                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                 >
@@ -224,49 +240,57 @@ export default function ReviewModal() {
                             </div>
                         )}
                     </div>
-                    <div className="flex gap-4">
-                        {modalStep === 1 && (
-                            <Button
-                                disabled={!selectedMedia}
-                                className="cursor-pointer"
-                                onClick={() => setModalStep(2)}
-                            >
-                                {tCTA('next')}
-                            </Button>
+
+                    <div className="flex w-full flex-col items-center justify-center">
+                        {error && (
+                            <div className="my-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
+                                {error}
+                            </div>
                         )}
-                        {modalStep === 2 && (
-                            <>
+                        <div className="flex w-full gap-4 sm:w-auto">
+                            {modalStep === 1 && (
                                 <Button
-                                    disabled={isLoadingSubmit}
-                                    className="cursor-pointer"
-                                    variant="ghost"
-                                    onClick={() => handleBack()}
+                                    disabled={!selectedMedia}
+                                    className="mt-8 w-full cursor-pointer sm:w-auto"
+                                    onClick={() => setModalStep(2)}
                                 >
-                                    {tBackButton('back')}
+                                    {tCTA('next')}
                                 </Button>
-                                <div className="relative flex flex-row items-center justify-center">
+                            )}
+                            {modalStep === 2 && (
+                                <div className="flex w-full gap-4">
                                     <Button
-                                        disabled={
-                                            !selectedMedia ||
-                                            reviewStars < 1 ||
-                                            !reviewText.trim() ||
-                                            isLoadingSubmit
-                                        }
-                                        onClick={() => submitReview()}
-                                        className={`cursor-pointer ${
-                                            isLoadingSubmit
-                                                ? 'text-transparent'
-                                                : ''
-                                        }`}
+                                        disabled={isLoadingSubmit}
+                                        className="w-full cursor-pointer"
+                                        variant="ghost"
+                                        onClick={() => handleBack()}
                                     >
-                                        {tMediaPage('submitReview')}
+                                        {tBackButton('back')}
                                     </Button>
-                                    {isLoadingSubmit && (
-                                        <LoaderCircle className="text-primary absolute animate-spin" />
-                                    )}
+                                    <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
+                                        <Button
+                                            disabled={
+                                                !selectedMedia ||
+                                                reviewStars < 1 ||
+                                                !reviewText.trim() ||
+                                                isLoadingSubmit
+                                            }
+                                            onClick={() => submitReview()}
+                                            className={`w-full cursor-pointer ${
+                                                isLoadingSubmit
+                                                    ? 'text-transparent'
+                                                    : ''
+                                            }`}
+                                        >
+                                            {tMediaPage('submitReview')}
+                                        </Button>
+                                        {isLoadingSubmit && (
+                                            <LoaderCircle className="text-primary absolute animate-spin" />
+                                        )}
+                                    </div>
                                 </div>
-                            </>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

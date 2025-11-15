@@ -1,7 +1,5 @@
 {
     "HomePage": {
-        "welcomeBack": "¡Bienvenido de vuelta, {name}! 👋",
-        "discover": "Descubre y reseña tu próximo {mediaType} favorito",
         "media": "contenido"
     },
     "MediaTypes": {
@@ -119,13 +117,15 @@
     },
     "MediaPage": {
         "reviews": "Reseñas",
+        "review": "Reseña",
         "leaveReview": "Dejar una reseña",
         "mediaNotFound": "Medio no encontrado",
         "noReviews": "Aún no hay reseñas. ¡Sé el primero en opinar!",
         "yourRating": "Tu Valoración",
         "yourReview": "Tu Reseña",
         "submitReview": "Enviar Reseña",
-        "shareThoughts": "Comparte tus pensamientos sobre este medio..."
+        "shareThoughts": "Comparte tus pensamientos sobre este medio...",
+        "overview": "Resumen"
     },
     "BackButton": {
         "back": "Atrás"

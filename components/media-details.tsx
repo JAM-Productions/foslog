@@ -59,7 +59,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                     {/* Description */}
                     <div>
                         <h2 className="text-foreground mb-2 text-lg font-semibold sm:mb-3 sm:text-xl">
-                            Overview
+                            {tMP('overview')}
                         </h2>
                         <p className="text-card-foreground text-sm leading-relaxed sm:text-base">
                             {media.description}

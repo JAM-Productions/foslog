@@ -1,7 +1,5 @@
 {
     "HomePage": {
-        "welcomeBack": "Benvingut de nou, {name}! 👋",
-        "discover": "Descobreix i ressenya el teu proper {mediaType} favorit",
         "media": "contingut"
     },
     "MediaTypes": {
@@ -119,13 +117,15 @@
     },
     "MediaPage": {
         "reviews": "Ressenyes",
+        "review": "Ressenya",
         "leaveReview": "Deixar una ressenya",
         "mediaNotFound": "Contingut no trobat",
         "noReviews": "Encara no hi ha ressenyes. Sigues el primer a opinar!",
         "yourRating": "La teva Valoració",
         "yourReview": "La teva Ressenya",
         "submitReview": "Enviar Ressenya",
-        "shareThoughts": "Comparteix els teus pensaments sobre aquest contingut..."
+        "shareThoughts": "Comparteix els teus pensaments sobre aquest contingut...",
+        "overview": "Resum"
     },
     "BackButton": {
         "back": "Enrere"
