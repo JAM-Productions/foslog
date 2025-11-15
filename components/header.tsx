@@ -10,13 +10,34 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 
 export default function Header() {
     const pathname = usePathname();
     // Check if we're on the home route (with or without locale)
-    const isHomePage = pathname === '/' || /^\/[a-z]{2}(\/)?$/.test(pathname);
+    const isHomePage =
+        pathname === '/' ||
+        routing.locales.some(
+            (locale) => pathname === `/${locale}` || pathname === `/${locale}/`
+        );
 
-    const [isFilterExpanded, setIsFilterExpanded] = useState(true);
+    const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+
+    const FilterToggleButton = () => (
+        <button
+            type="button"
+            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+            className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
+            aria-label={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
+            title={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
+        >
+            {isFilterExpanded ? (
+                <ChevronUp className="h-5 w-5" />
+            ) : (
+                <ChevronDown className="h-5 w-5" />
+            )}
+        </button>
+    );
 
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
@@ -45,28 +66,7 @@ export default function Header() {
                     {isHomePage && (
                         <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:gap-2">
                             <SearchBar />
-                            <button
-                                onClick={() =>
-                                    setIsFilterExpanded(!isFilterExpanded)
-                                }
-                                className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
-                                aria-label={
-                                    isFilterExpanded
-                                        ? 'Collapse filter'
-                                        : 'Expand filter'
-                                }
-                                title={
-                                    isFilterExpanded
-                                        ? 'Collapse filter'
-                                        : 'Expand filter'
-                                }
-                            >
-                                {isFilterExpanded ? (
-                                    <ChevronUp className="h-5 w-5" />
-                                ) : (
-                                    <ChevronDown className="h-5 w-5" />
-                                )}
-                            </button>
+                            <FilterToggleButton />
                         </div>
                     )}
 
@@ -82,28 +82,7 @@ export default function Header() {
                 {isHomePage && (
                     <div className="flex max-h-20 gap-2 pb-4 opacity-100 transition-all duration-300 lg:hidden">
                         <SearchBar />
-                        <button
-                            onClick={() =>
-                                setIsFilterExpanded(!isFilterExpanded)
-                            }
-                            className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
-                            aria-label={
-                                isFilterExpanded
-                                    ? 'Collapse filter'
-                                    : 'Expand filter'
-                            }
-                            title={
-                                isFilterExpanded
-                                    ? 'Collapse filter'
-                                    : 'Expand filter'
-                            }
-                        >
-                            {isFilterExpanded ? (
-                                <ChevronUp className="h-5 w-5" />
-                            ) : (
-                                <ChevronDown className="h-5 w-5" />
-                            )}
-                        </button>
+                        <FilterToggleButton />
                     </div>
                 )}
 
