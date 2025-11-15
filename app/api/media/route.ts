@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
                 year: selectedMedia.year,
                 poster: selectedMedia.poster,
                 description: selectedMedia.description,
+                genre: selectedMedia.genre,
             },
         });
 

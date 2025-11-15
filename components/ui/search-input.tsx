@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 export interface Suggestion {
     title: string;
     type: MediaType;
-    year: number;
-    poster: string;
-    description: string;
+    year: number | null;
+    poster: string | null;
+    description: string | null;
+    genre: number[];
 }
 
 export interface SearchInputProps

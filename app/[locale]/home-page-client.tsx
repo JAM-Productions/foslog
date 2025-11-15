@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth-provider';
 import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
+import { getMediaGenreLabel } from '@/utils/mediaUtils';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
@@ -18,6 +19,7 @@ export default function HomePageClient({
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
+    const tGenres = useTranslations('MediaGenres');
     const tStats = useTranslations('Stats');
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
@@ -51,19 +53,32 @@ export default function HomePageClient({
         // Filter by search query
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(
-                (item) =>
+            filtered = filtered.filter((item) => {
+                const matchesGenre = item.genre.some((id) =>
+                    getMediaGenreLabel(item.type, id, tGenres)
+                        .toLowerCase()
+                        .includes(query)
+                );
+
+                return (
                     item.title.toLowerCase().includes(query) ||
                     item.description.toLowerCase().includes(query) ||
-                    item.genre.some((g) => g.toLowerCase().includes(query)) ||
+                    matchesGenre ||
                     item.director?.toLowerCase().includes(query) ||
                     item.author?.toLowerCase().includes(query) ||
                     item.artist?.toLowerCase().includes(query)
-            );
+                );
+            });
         }
 
         return filtered;
-    }, [mediaItems, initialMediaItems, selectedMediaType, searchQuery]);
+    }, [
+        mediaItems,
+        initialMediaItems,
+        selectedMediaType,
+        searchQuery,
+        tGenres,
+    ]);
 
     // Sort options
     const sortedMedia = useMemo(() => {
@@ -252,25 +267,23 @@ export default function HomePageClient({
             </div>
 
             {/* Add CTA for more content */}
-            {sortedMedia.length > 0 && (
-                <div className="border-t py-8 text-center">
-                    <h3 className="mb-2 text-lg font-semibold">
-                        {tCTA('addReviewsTitle')}
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                        {tCTA('addReviewsDescription')}
-                    </p>
-                    <Button
-                        onClick={() =>
-                            !user
-                                ? router.push('/login')
-                                : setIsReviewModalOpen(true)
-                        }
-                    >
-                        {tCTA('addNewReview')}
-                    </Button>
-                </div>
-            )}
+            <div className="border-t py-8 text-center">
+                <h3 className="mb-2 text-lg font-semibold">
+                    {tCTA('addReviewsTitle')}
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                    {tCTA('addReviewsDescription')}
+                </p>
+                <Button
+                    onClick={() =>
+                        !user
+                            ? router.push('/login')
+                            : setIsReviewModalOpen(true)
+                    }
+                >
+                    {tCTA('addNewReview')}
+                </Button>
+            </div>
         </div>
     );
 }
