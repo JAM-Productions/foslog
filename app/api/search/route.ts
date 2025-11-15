@@ -53,8 +53,8 @@ export async function GET(req: NextRequest) {
                             ? 'https://image.tmdb.org/t/p/w500' +
                               item.poster_path
                             : null,
-                        description: item.overview,
-                        genre: item.genre_ids,
+                        description: item.overview || '',
+                        genre: item.genre_ids || [],
                     })) || [];
 
                 return NextResponse.json(formattedResult);

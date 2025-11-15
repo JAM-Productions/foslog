@@ -9,7 +9,7 @@ export interface Suggestion {
     type: MediaType;
     year: number | null;
     poster: string | null;
-    description: string | null;
+    description: string;
     genre: number[];
 }
 
