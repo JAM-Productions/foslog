@@ -79,13 +79,10 @@ export async function POST(request: NextRequest) {
             return reviewItem;
         });
 
-        // Get current locale from the referer header
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
 
-        // Revalidate only the current locale's pages
-        revalidatePath(`/${locale}`, 'page');
         revalidatePath(`/${locale}/media/${mediaId}`, 'page');
 
         return NextResponse.json(

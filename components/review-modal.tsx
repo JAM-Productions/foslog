@@ -112,7 +112,6 @@ export default function ReviewModal() {
 
             if (responseReview.ok) {
                 closeModal();
-                // Navigate to the media page - it will automatically revalidate
                 router.push(`/media/${data.media.id}`);
             } else {
                 const errorData = await responseReview.json();
