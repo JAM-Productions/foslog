@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { RatingDisplay } from '@/components/ui/rating';
+import { RatingDisplay } from '@/components/ui/input/rating';
 import { SafeReview } from '@/lib/types';
 import { User } from 'lucide-react';
 import Image from 'next/image';

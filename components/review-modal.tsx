@@ -3,13 +3,13 @@
 import { useAppStore } from '@/lib/store';
 import { Button } from './ui/button';
 import { useTranslations } from 'next-intl';
-import Select, { SelectOption } from './ui/select';
+import Select, { SelectOption } from './ui/input/select';
 import { useState, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { X, LoaderCircle } from 'lucide-react';
-import { RatingInput } from './ui/rating';
+import { RatingInput } from './ui/input/rating';
 import Image from 'next/image';
-import { SearchInput, Suggestion } from './ui/search-input';
+import { SearchInput, Suggestion } from './ui/input/search-input';
 import { useRouter } from '@/i18n/navigation';
 
 interface Review {
