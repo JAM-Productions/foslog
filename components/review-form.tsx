@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { RatingInput } from '@/components/ui/rating';
+import { RatingInput } from '@/components/ui/input/rating';
 import { useTranslations } from 'next-intl';
 
 export function ReviewForm() {

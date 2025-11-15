@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { RatingDisplay } from '@/components/ui/rating';
+import { RatingDisplay } from '@/components/ui/input/rating';
 import { MediaItem } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
