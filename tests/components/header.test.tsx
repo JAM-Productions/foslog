@@ -24,6 +24,11 @@ vi.mock('@/components/language-selector', () => ({
     default: () => <div data-testid="language-selector">Language Selector</div>,
 }));
 
+// Mock Next.js navigation
+vi.mock('next/navigation', () => ({
+    usePathname: () => '/',
+}));
+
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
     ChevronDown: ({ className }: { className?: string }) => (
@@ -114,11 +119,11 @@ describe('Header', () => {
     it('renders collapse/expand toggle button', () => {
         render(<Header />);
 
-        const toggleButton = screen.getByRole('button', {
-            name: /expand header/i,
+        const toggleButtons = screen.getAllByRole('button', {
+            name: /expand filter/i,
         });
-        expect(toggleButton).toBeInTheDocument();
-        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+        expect(toggleButtons).toHaveLength(2);
+        expect(screen.getAllByTestId('chevron-down')[0]).toBeInTheDocument();
     });
 
     it('toggles header collapse state when button is clicked', async () => {
@@ -126,31 +131,31 @@ describe('Header', () => {
         render(<Header />);
 
         // Initially collapsed - shows ChevronDown
-        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+        expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
         expect(
-            screen.getByRole('button', { name: /expand header/i })
-        ).toBeInTheDocument();
+            screen.getAllByRole('button', { name: /expand filter/i })
+        ).toHaveLength(2);
 
         // Click to expand
-        const toggleButton = screen.getByRole('button', {
-            name: /expand header/i,
+        const toggleButtons = screen.getAllByRole('button', {
+            name: /expand filter/i,
         });
-        await user.click(toggleButton);
+        await user.click(toggleButtons[0]);
 
         // Now expanded - shows ChevronUp
-        expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
+        expect(screen.getAllByTestId('chevron-up')).toHaveLength(2);
         expect(
-            screen.getByRole('button', { name: /collapse header/i })
-        ).toBeInTheDocument();
+            screen.getAllByRole('button', { name: /collapse filter/i })
+        ).toHaveLength(2);
 
         // Click again to collapse
-        const collapseButton = screen.getByRole('button', {
-            name: /collapse header/i,
+        const collapseButtons = screen.getAllByRole('button', {
+            name: /collapse filter/i,
         });
-        await user.click(collapseButton);
+        await user.click(collapseButtons[0]);
 
         // Back to collapsed - shows ChevronDown
-        expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+        expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
     });
 
     it('has responsive search bar layout', () => {
@@ -162,18 +167,22 @@ describe('Header', () => {
         expect(searchBars[0].parentElement).toHaveClass(
             'mx-8',
             'hidden',
-            'max-w-md',
+            'max-w-lg',
             'flex-1',
-            'transition-all',
-            'duration-300',
-            'md:flex'
+            'lg:flex',
+            'lg:gap-2'
         );
 
         // Mobile search bar (visible only on mobile)
         expect(searchBars[1].parentElement).toHaveClass(
+            'flex',
+            'max-h-20',
+            'gap-2',
+            'pb-4',
+            'opacity-100',
             'transition-all',
             'duration-300',
-            'md:hidden'
+            'lg:hidden'
         );
     });
 
