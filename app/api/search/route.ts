@@ -7,6 +7,7 @@ interface TMDBData {
     poster_path: string | null;
     release_date: string | null;
     overview: string | null;
+    genre_ids: number[];
 }
 
 export async function GET(req: NextRequest) {
@@ -53,6 +54,7 @@ export async function GET(req: NextRequest) {
                               item.poster_path
                             : null,
                         description: item.overview || '',
+                        genre: item.genre_ids || [],
                     })) || [];
 
                 return NextResponse.json(formattedResult);
