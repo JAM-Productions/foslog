@@ -38,6 +38,6 @@ export const getMediaGenreLabel = (
             return getMovieGenreById(genreId, tGenres);
         // Future media types can be handled here
         default:
-            return tGenres('unknown');
+            return genreId ? genreId.toString() : '';
     }
 };
