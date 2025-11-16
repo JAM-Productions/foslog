@@ -15,6 +15,28 @@
         "book": "llibre",
         "musicSingle": "música"
     },
+    "MediaGenres": {
+        "action": "Acció",
+        "adventure": "Aventura",
+        "animation": "Animació",
+        "comedy": "Comèdia",
+        "crime": "Crim",
+        "documentary": "Documental",
+        "drama": "Drama",
+        "family": "Família",
+        "fantasy": "Fantasia",
+        "history": "Història",
+        "horror": "Terror",
+        "music": "Música",
+        "mystery": "Misteri",
+        "romance": "Romance",
+        "sciFi": "Ciència Ficció",
+        "tvMovie": "Pel·lícula de TV",
+        "thriller": "Suspens",
+        "war": "Bèl·lica",
+        "western": "Western",
+        "unknown": "Desconegut"
+    },
     "Stats": {
         "topRated": "Millor Valorat",
         "totalItems": "Total d'Elements",

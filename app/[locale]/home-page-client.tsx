@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import MediaCard from '@/components/media-card';
@@ -18,25 +18,15 @@ export default function HomePageClient({
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
+    const tGenres = useTranslations('MediaGenres');
     const tStats = useTranslations('Stats');
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const {
-        mediaItems,
-        setMediaItems,
-        selectedMediaType,
-        searchQuery,
-        setIsReviewModalOpen,
-    } = useAppStore();
+    const { mediaItems, selectedMediaType, searchQuery, setIsReviewModalOpen } =
+        useAppStore();
     const { user } = useAuth();
 
-    // Always sync with server data to ensure fresh data after navigation
-    useEffect(() => {
-        setMediaItems(initialMediaItems);
-    }, [setMediaItems, initialMediaItems]);
-
-    // Filter and search media items
     const filteredMedia = useMemo(() => {
         // Use initialMediaItems if mediaItems is empty (first render)
         let filtered = mediaItems.length > 0 ? mediaItems : initialMediaItems;
@@ -48,14 +38,15 @@ export default function HomePageClient({
             );
         }
 
-        // Filter by search query
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(
                 (item) =>
                     item.title.toLowerCase().includes(query) ||
                     item.description.toLowerCase().includes(query) ||
-                    item.genre.some((g) => g.toLowerCase().includes(query)) ||
+                    item.genre.some((g) =>
+                        tGenres(g).toLowerCase().includes(query)
+                    ) ||
                     item.director?.toLowerCase().includes(query) ||
                     item.author?.toLowerCase().includes(query) ||
                     item.artist?.toLowerCase().includes(query)
@@ -63,12 +54,16 @@ export default function HomePageClient({
         }
 
         return filtered;
-    }, [mediaItems, initialMediaItems, selectedMediaType, searchQuery]);
+    }, [
+        mediaItems,
+        initialMediaItems,
+        selectedMediaType,
+        searchQuery,
+        tGenres,
+    ]);
 
-    // Sort options
     const sortedMedia = useMemo(() => {
         return [...filteredMedia].sort((a, b) => {
-            // Default sort by average rating (highest first), then by total reviews
             if (a.averageRating !== b.averageRating) {
                 return b.averageRating - a.averageRating;
             }
@@ -252,25 +247,23 @@ export default function HomePageClient({
             </div>
 
             {/* Add CTA for more content */}
-            {sortedMedia.length > 0 && (
-                <div className="border-t py-8 text-center">
-                    <h3 className="mb-2 text-lg font-semibold">
-                        {tCTA('addReviewsTitle')}
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                        {tCTA('addReviewsDescription')}
-                    </p>
-                    <Button
-                        onClick={() =>
-                            !user
-                                ? router.push('/login')
-                                : setIsReviewModalOpen(true)
-                        }
-                    >
-                        {tCTA('addNewReview')}
-                    </Button>
-                </div>
-            )}
+            <div className="border-t py-8 text-center">
+                <h3 className="mb-2 text-lg font-semibold">
+                    {tCTA('addReviewsTitle')}
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                    {tCTA('addReviewsDescription')}
+                </p>
+                <Button
+                    onClick={() =>
+                        !user
+                            ? router.push('/login')
+                            : setIsReviewModalOpen(true)
+                    }
+                >
+                    {tCTA('addNewReview')}
+                </Button>
+            </div>
         </div>
     );
 }
