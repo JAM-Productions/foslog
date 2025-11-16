@@ -1,14 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
-import {
-    Book,
-    Clapperboard,
-    Gamepad2,
-    Music,
-    Search,
-    Tv,
-} from 'lucide-react';
+import { Book, Clapperboard, Gamepad2, Music, Search, Tv } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const MediaTypeFilter = () => {
@@ -39,7 +32,7 @@ const MediaTypeFilter = () => {
                         .filter(Boolean)
                         .join(' ')}
                 >
-                    <type.Icon className="sm:mr-1.5 h-4 w-4" />
+                    <type.Icon className="h-4 w-4 sm:mr-1.5" />
                     {type.label}
                 </button>
             ))}
