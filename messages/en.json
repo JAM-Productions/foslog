@@ -15,6 +15,28 @@
         "book": "book",
         "musicSingle": "music"
     },
+    "MediaGenres": {
+        "action": "Action",
+        "adventure": "Adventure",
+        "animation": "Animation",
+        "comedy": "Comedy",
+        "crime": "Crime",
+        "documentary": "Documentary",
+        "drama": "Drama",
+        "family": "Family",
+        "fantasy": "Fantasy",
+        "history": "History",
+        "horror": "Horror",
+        "music": "Music",
+        "mystery": "Mystery",
+        "romance": "Romance",
+        "sciFi": "Science Fiction",
+        "tvMovie": "TV Movie",
+        "thriller": "Thriller",
+        "war": "War",
+        "western": "Western",
+        "unknown": "Unknown"
+    },
     "Stats": {
         "topRated": "Top Rated",
         "totalItems": "Total Items",

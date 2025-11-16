@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SearchInput, Suggestion } from '@/components/ui/search-input';
+import { SearchInput, Suggestion } from '@/components/ui/input/search-input';
 import { useTranslations } from 'next-intl';
 import { MediaType } from '@prisma/client';
 

@@ -80,7 +80,6 @@ model MediaItem {
   director      String?
   author        String?
   artist        String?
-  genre         String[]
   poster        String?
   cover         String?
   description   String
@@ -88,6 +87,7 @@ model MediaItem {
   totalReviews  Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  genre         String[]
   reviews       Review[]
 
   @@map("media_items")

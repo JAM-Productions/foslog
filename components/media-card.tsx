@@ -3,6 +3,7 @@
 import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { MediaItem } from '@/lib/store';
+import { useTranslations } from 'next-intl';
 
 interface MediaCardProps {
     media: MediaItem;
@@ -70,6 +71,8 @@ const StarRating = ({
 };
 
 export default function MediaCard({ media, className }: MediaCardProps) {
+    const tGenres = useTranslations('MediaGenres');
+
     const imageUrl = media.poster || media.cover;
     const creatorLabel = getCreatorLabel(media);
 
@@ -140,7 +143,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                     key={genre}
                                     className="bg-secondary text-secondary-foreground rounded px-1.5 py-0.5 text-xs"
                                 >
-                                    {genre}
+                                    {tGenres(genre)}
                                 </span>
                             ))}
                             {media.genre.length > 2 && (
