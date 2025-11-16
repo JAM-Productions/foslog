@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth-provider';
 
 interface ReviewFormProps {
     mediaId: string;
@@ -18,12 +19,16 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
     const [text, setText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { user } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        if (!user) {
+            router.push('/login');
+            return;
+        }
         setIsSubmitting(true);
-
         try {
             const response = await fetch('/api/review', {
                 method: 'POST',
@@ -99,7 +104,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     {error}
                 </p>
             )}
-            <div className="relative flex w-full flex-row sm:w-auto">
+            <div className="relative flex w-full flex-row items-center sm:w-auto">
                 <Button
                     type="submit"
                     className={`w-full cursor-pointer sm:w-auto ${
@@ -110,7 +115,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     {t('submitReview')}
                 </Button>
                 {isSubmitting && (
-                    <LoaderCircle className="text-primary absolute animate-spin" />
+                    <LoaderCircle className="text-primary absolute left-1/2 -translate-x-1/2 animate-spin sm:left-[3.5rem] sm:-translate-x-1/12" />
                 )}
             </div>
         </form>
