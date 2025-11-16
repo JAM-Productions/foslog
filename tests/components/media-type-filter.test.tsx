@@ -59,12 +59,12 @@ describe('MediaTypeFilter', () => {
     });
 
     const mediaTypes = [
-        { value: 'all', label: 'All', icon: '🔍' },
-        { value: 'film', label: 'Films', icon: '🎬' },
-        { value: 'series', label: 'Series', icon: '📺' },
-        { value: 'game', label: 'Games', icon: '🎮' },
-        { value: 'book', label: 'Books', icon: '📚' },
-        { value: 'music', label: 'Music', icon: '🎵' },
+        { value: 'all', label: 'All' },
+        { value: 'film', label: 'Films' },
+        { value: 'series', label: 'Series' },
+        { value: 'game', label: 'Games' },
+        { value: 'book', label: 'Books' },
+        { value: 'music', label: 'Music' },
     ];
 
     it('renders all media type buttons', () => {
@@ -86,7 +86,8 @@ describe('MediaTypeFilter', () => {
             const button = screen.getByRole('button', {
                 name: new RegExp(type.label, 'i'),
             });
-            expect(button).toHaveTextContent(type.icon);
+            const svgElement = button.querySelector('svg');
+            expect(svgElement).toBeInTheDocument();
         });
     });
 
@@ -161,8 +162,8 @@ describe('MediaTypeFilter', () => {
         const button = screen.getByRole('button', { name: /films/i });
         expect(button).toHaveClass('flex-col', 'sm:flex-row');
 
-        const iconSpan = button.querySelector('span');
-        expect(iconSpan).toHaveClass('sm:mr-1.5');
+        const icon = button.querySelector('svg');
+        expect(icon).toHaveClass('sm:mr-1.5');
     });
 
     it('has proper styling classes', () => {
