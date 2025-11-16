@@ -24,7 +24,7 @@ export default function Loading() {
                     <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
                         <div className="bg-muted h-8 w-48 animate-pulse rounded"></div>
                     </div>
-                    <div className="bg-card animate-pulse border-border h-24 rounded-lg border py-6 text-center sm:py-8"></div>
+                    <div className="bg-card border-border h-24 animate-pulse rounded-lg border py-6 text-center sm:py-8"></div>
                 </div>
 
                 {/* Review Form Section Skeleton */}
