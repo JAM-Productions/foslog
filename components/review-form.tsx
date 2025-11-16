@@ -90,7 +90,11 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     disabled={isSubmitting}
                 />
             </div>
-            {error && <p className="text-destructive text-sm">{error}</p>}
+            {error && (
+                <p className="text-destructive text-sm" role="alert" aria-live="polite">
+                    {error}
+                </p>
+            )}
             <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
                 <Button
                     type="submit"
