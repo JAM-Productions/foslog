@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
-import { RatingInput, RatingDisplay } from '@/components/ui/rating';
+import { RatingInput, RatingDisplay } from '@/components/ui/input/rating';
 
 describe('RatingInput', () => {
     it('renders with default props', () => {
