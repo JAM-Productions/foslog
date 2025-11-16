@@ -10,7 +10,7 @@ export interface Suggestion {
     year: number | null;
     poster: string | null;
     description: string;
-    genre: number[];
+    genre: string[];
 }
 
 export interface SearchInputProps

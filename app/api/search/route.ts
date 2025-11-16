@@ -1,6 +1,7 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
+import { getMovieGenreByIdTMDB } from '@/utils/mediaUtils';
 
 interface TMDBData {
     title: string;
@@ -35,13 +36,10 @@ export async function GET(req: NextRequest) {
                         Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
                     },
                 });
-
                 if (!res.ok) {
                     return badGateway('Could not fetch data from TMDB API');
                 }
-
                 const data = await res.json();
-
                 const formattedResult =
                     data.results?.map((item: TMDBData) => ({
                         title: item.title,
@@ -54,11 +52,12 @@ export async function GET(req: NextRequest) {
                               item.poster_path
                             : null,
                         description: item.overview || '',
-                        genre: item.genre_ids || [],
+                        genre:
+                            item.genre_ids?.map((id: number) =>
+                                getMovieGenreByIdTMDB(id)
+                            ) || [],
                     })) || [];
-
                 return NextResponse.json(formattedResult);
-
             default:
                 return validationError(`Invalid media type: ${mediatype}`);
         }

@@ -2,40 +2,39 @@ import { MediaItem } from '@/lib/store';
 
 // Utility function to map movie genre IDs to localized genre names
 // ref: https://developer.themoviedb.org/reference/genre-movie-list
-const getMovieGenreById = (id: number, t: (key: string) => string): string => {
+export const getMovieGenreByIdTMDB = (id: number): string => {
     const genreMap: { [key: number]: string } = {
-        28: t('action'),
-        12: t('adventure'),
-        16: t('animation'),
-        35: t('comedy'),
-        80: t('crime'),
-        99: t('documentary'),
-        18: t('drama'),
-        10751: t('family'),
-        14: t('fantasy'),
-        36: t('history'),
-        27: t('horror'),
-        10402: t('music'),
-        9648: t('mystery'),
-        10749: t('romance'),
-        878: t('sciFi'),
-        10770: t('tvMovie'),
-        53: t('thriller'),
-        10752: t('war'),
-        37: t('western'),
+        28: 'action',
+        12: 'adventure',
+        16: 'animation',
+        35: 'comedy',
+        80: 'crime',
+        99: 'documentary',
+        18: 'drama',
+        10751: 'family',
+        14: 'fantasy',
+        36: 'history',
+        27: 'horror',
+        10402: 'music',
+        9648: 'mystery',
+        10749: 'romance',
+        878: 'sciFi',
+        10770: 'tvMovie',
+        53: 'thriller',
+        10752: 'war',
+        37: 'western',
     };
-    return genreMap[id] || t('unknown');
+    return genreMap[id] || 'unknown';
 };
 
 // General utility function to get genre label based on media type
 export const getMediaGenreLabel = (
     type: MediaItem['type'],
-    genreId: number,
-    tGenres: (key: string) => string
+    genreId: number
 ): string => {
     switch (type) {
         case 'film':
-            return getMovieGenreById(genreId, tGenres);
+            return getMovieGenreByIdTMDB(genreId);
         // Future media types can be handled here
         default:
             return genreId ? genreId.toString() : '';

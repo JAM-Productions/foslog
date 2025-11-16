@@ -11,7 +11,7 @@ export interface MediaItem {
     director?: string;
     author?: string;
     artist?: string;
-    genre: number[];
+    genre: string[];
     poster?: string;
     cover?: string;
     description: string;

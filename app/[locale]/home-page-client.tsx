@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import MediaCard from '@/components/media-card';
@@ -10,7 +10,6 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth-provider';
 import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
-import { getMediaGenreLabel } from '@/utils/mediaUtils';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
@@ -24,21 +23,10 @@ export default function HomePageClient({
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const {
-        mediaItems,
-        setMediaItems,
-        selectedMediaType,
-        searchQuery,
-        setIsReviewModalOpen,
-    } = useAppStore();
+    const { mediaItems, selectedMediaType, searchQuery, setIsReviewModalOpen } =
+        useAppStore();
     const { user } = useAuth();
 
-    // Always sync with server data to ensure fresh data after navigation
-    useEffect(() => {
-        setMediaItems(initialMediaItems);
-    }, [setMediaItems, initialMediaItems]);
-
-    // Filter and search media items
     const filteredMedia = useMemo(() => {
         // Use initialMediaItems if mediaItems is empty (first render)
         let filtered = mediaItems.length > 0 ? mediaItems : initialMediaItems;
@@ -50,25 +38,19 @@ export default function HomePageClient({
             );
         }
 
-        // Filter by search query
         if (searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
-            filtered = filtered.filter((item) => {
-                const matchesGenre = item.genre.some((id) =>
-                    getMediaGenreLabel(item.type, id, tGenres)
-                        .toLowerCase()
-                        .includes(query)
-                );
-
-                return (
+            filtered = filtered.filter(
+                (item) =>
                     item.title.toLowerCase().includes(query) ||
                     item.description.toLowerCase().includes(query) ||
-                    matchesGenre ||
+                    item.genre.some((g) =>
+                        tGenres(g).toLowerCase().includes(query)
+                    ) ||
                     item.director?.toLowerCase().includes(query) ||
                     item.author?.toLowerCase().includes(query) ||
                     item.artist?.toLowerCase().includes(query)
-                );
-            });
+            );
         }
 
         return filtered;
@@ -80,10 +62,8 @@ export default function HomePageClient({
         tGenres,
     ]);
 
-    // Sort options
     const sortedMedia = useMemo(() => {
         return [...filteredMedia].sort((a, b) => {
-            // Default sort by average rating (highest first), then by total reviews
             if (a.averageRating !== b.averageRating) {
                 return b.averageRating - a.averageRating;
             }

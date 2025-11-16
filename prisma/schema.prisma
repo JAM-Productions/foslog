@@ -87,7 +87,7 @@ model MediaItem {
   totalReviews  Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  genre         Int[]
+  genre         String[]
   reviews       Review[]
 
   @@map("media_items")
