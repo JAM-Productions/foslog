@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
 import { Ubuntu_Mono } from 'next/font/google';
 import '../globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { ThemeScript } from '@/components/theme-script';
-import { AuthProvider } from '@/lib/auth-provider';
-import Header from '@/components/header';
+import { ThemeProvider } from '@/components/theme/theme-provider';
+import { ThemeScript } from '@/components/theme/theme-script';
+import { AuthProvider } from '@/lib/auth/auth-provider';
+import Header from '@/components/header/header';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
-import DynamicModalWrapper from '@/components/dynamic-modal-wrapper';
+import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
