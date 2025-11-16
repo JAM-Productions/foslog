@@ -121,7 +121,7 @@ describe('MediaTypeFilter', () => {
         );
 
         const allButton = screen.getByRole('button', { name: /all/i });
-        expect(allButton).toHaveClass('text-muted-foreground');
+        expect(allButton).toHaveClass('text-primary');
     });
 
     it('calls setSelectedMediaType when a button is clicked', async () => {
