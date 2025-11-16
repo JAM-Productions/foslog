@@ -158,5 +158,15 @@
     },
     "Select": {
         "selectPlaceholder": "Select an option"
+    },
+    "MediaCard": {
+        "director": "Dir.",
+        "by": "by",
+        "more": "+{count}",
+        "film": "Film",
+        "series": "Series",
+        "game": "Game",
+        "book": "Book",
+        "music": "Music"
     }
 }
