@@ -48,6 +48,12 @@ vi.mock('next/navigation', () => ({
     }),
 }));
 
+vi.mock('@/lib/auth-provider', () => ({
+    useAuth: () => ({
+        user: mockUser,
+    }),
+}));
+
 describe('MediaDetails', () => {
     it('renders media details correctly', () => {
         const media = mockMediaItems[0];
