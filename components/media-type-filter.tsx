@@ -1,6 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
+import { Book, Clapperboard, Gamepad2, Music, Search, Tv } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const MediaTypeFilter = () => {
@@ -8,12 +9,12 @@ const MediaTypeFilter = () => {
     const { selectedMediaType, setSelectedMediaType } = useAppStore();
 
     const mediaTypes = [
-        { value: 'all', label: t('all'), icon: '🔍' },
-        { value: 'film', label: t('films'), icon: '🎬' },
-        { value: 'series', label: t('series'), icon: '📺' },
-        { value: 'game', label: t('games'), icon: '🎮' },
-        { value: 'book', label: t('books'), icon: '📚' },
-        { value: 'music', label: t('music'), icon: '🎵' },
+        { value: 'all', label: t('all'), Icon: Search },
+        { value: 'film', label: t('films'), Icon: Clapperboard },
+        { value: 'series', label: t('series'), Icon: Tv },
+        { value: 'game', label: t('games'), Icon: Gamepad2 },
+        { value: 'book', label: t('books'), Icon: Book },
+        { value: 'music', label: t('music'), Icon: Music },
     ] as const;
 
     return (
@@ -23,15 +24,15 @@ const MediaTypeFilter = () => {
                     key={type.value}
                     onClick={() => setSelectedMediaType(type.value)}
                     className={[
-                        'flex flex-col items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
+                        'flex cursor-pointer flex-col items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
                         selectedMediaType === type.value
                             ? 'bg-background text-foreground shadow-sm'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
+                            : 'text-primary hover:text-foreground hover:bg-background/50',
                     ]
                         .filter(Boolean)
                         .join(' ')}
                 >
-                    <span className="sm:mr-1.5">{type.icon}</span>
+                    <type.Icon className="h-4 w-4 sm:mr-1.5" />
                     {type.label}
                 </button>
             ))}
