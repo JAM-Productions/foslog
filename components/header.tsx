@@ -9,33 +9,35 @@ import LanguageSelector from '@/components/language-selector';
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 
 export default function Header() {
-    // Manual toggle only - no auto-collapse on scroll
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const pathname = usePathname();
+    // Check if we're on the home route (with or without locale)
+    const isHomePage =
+        pathname === '/' ||
+        routing.locales.some(
+            (locale) => pathname === `/${locale}` || pathname === `/${locale}/`
+        );
 
-    // Helper function for collapsible element classes
-    // Uses explicit Tailwind class names to avoid purging issues in production
-    const getCollapsibleClasses = (
-        baseClasses: string,
-        collapsedHeight: '0' | '20' | '40' = '0'
-    ) => {
-        let collapsed = '';
-        let expanded = '';
+    const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
-        if (collapsedHeight === '0') {
-            collapsed = 'max-h-0 overflow-hidden opacity-0';
-            expanded = 'opacity-100';
-        } else if (collapsedHeight === '20') {
-            collapsed = 'max-h-0 overflow-hidden opacity-0';
-            expanded = 'max-h-20 pb-4 opacity-100';
-        } else if (collapsedHeight === '40') {
-            collapsed = 'max-h-0 overflow-hidden opacity-0';
-            expanded = 'max-h-40 pb-4 opacity-100';
-        }
-
-        return `${baseClasses} transition-all duration-300 ${isCollapsed ? collapsed : expanded}`;
-    };
+    const FilterToggleButton = () => (
+        <button
+            type="button"
+            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+            className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
+            aria-label={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
+            title={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
+        >
+            {isFilterExpanded ? (
+                <ChevronUp className="h-5 w-5" />
+            ) : (
+                <ChevronDown className="h-5 w-5" />
+            )}
+        </button>
+    );
 
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
@@ -60,52 +62,42 @@ export default function Header() {
                         </span>
                     </Link>
 
-                    {/* Search */}
-                    <div
-                        className={getCollapsibleClasses(
-                            'mx-8 hidden max-w-md flex-1 md:flex'
-                        )}
-                    >
-                        <SearchBar />
-                    </div>
+                    {/* Search - Always visible on desktop when on home page */}
+                    {isHomePage && (
+                        <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:gap-2">
+                            <SearchBar />
+                            <FilterToggleButton />
+                        </div>
+                    )}
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setIsCollapsed(!isCollapsed)}
-                            className="hover:bg-accent rounded-md p-2 transition-colors"
-                            aria-label={
-                                isCollapsed
-                                    ? 'Expand header'
-                                    : 'Collapse header'
-                            }
-                            title={
-                                isCollapsed
-                                    ? 'Expand header'
-                                    : 'Collapse header'
-                            }
-                        >
-                            {isCollapsed ? (
-                                <ChevronDown className="h-5 w-5" />
-                            ) : (
-                                <ChevronUp className="h-5 w-5" />
-                            )}
-                        </button>
                         <LanguageSelector />
                         <ThemeToggle />
                         <UserMenu />
                     </div>
                 </div>
 
-                {/* Mobile Search */}
-                <div className={getCollapsibleClasses('md:hidden', '20')}>
-                    <SearchBar />
-                </div>
+                {/* Mobile Search - Always visible when on home page */}
+                {isHomePage && (
+                    <div className="flex max-h-20 gap-2 pb-4 opacity-100 transition-all duration-300 lg:hidden">
+                        <SearchBar />
+                        <FilterToggleButton />
+                    </div>
+                )}
 
-                {/* Media Type Filter */}
-                <div className={getCollapsibleClasses('', '40')}>
-                    <MediaTypeFilter />
-                </div>
+                {/* Media Type Filter - Collapsible only when on home page */}
+                {isHomePage && (
+                    <div
+                        className={`transition-all duration-300 ${
+                            isFilterExpanded
+                                ? 'max-h-40 pb-4 opacity-100'
+                                : 'max-h-0 overflow-hidden opacity-0'
+                        }`}
+                    >
+                        <MediaTypeFilter />
+                    </div>
+                )}
             </div>
         </header>
     );

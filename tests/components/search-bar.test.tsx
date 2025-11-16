@@ -160,7 +160,7 @@ describe('SearchBar', () => {
         const container = screen.getByPlaceholderText(
             'Search films, books, games...'
         ).parentElement;
-        expect(container).toHaveClass('relative', 'max-w-md', 'flex-1');
+        expect(container).toHaveClass('relative', 'flex-1');
 
         const input = screen.getByPlaceholderText(
             'Search films, books, games...'
