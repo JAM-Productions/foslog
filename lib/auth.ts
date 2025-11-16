@@ -2,25 +2,6 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from './prisma';
 
-const getBaseUrl = () => {
-    if (process.env.BETTER_AUTH_URL) {
-        return process.env.BETTER_AUTH_URL;
-    }
-    if (process.env.VERCEL_ENV === 'production') {
-        return 'https://foslog.vercel.app';
-    }
-    if (process.env.VERCEL_URL) {
-        return `https://${process.env.VERCEL_URL}`;
-    }
-    return 'http://localhost:3000';
-};
-
-const trustedOrigins = ['http://localhost:3000', 'https://foslog.vercel.app'];
-
-if (process.env.VERCEL_URL) {
-    trustedOrigins.push(`https://${process.env.VERCEL_URL}`);
-}
-
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: 'postgresql',
@@ -44,8 +25,15 @@ export const auth = betterAuth({
         updateAge: 60 * 60 * 24, // 1 day
     },
     secret: process.env.BETTER_AUTH_SECRET!,
-    baseURL: getBaseUrl(),
-    trustedOrigins,
+    baseURL: process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000',
+    trustedOrigins: [
+        'http://localhost:3000',
+        ...(process.env.VERCEL_URL
+            ? [`https://${process.env.VERCEL_URL}`]
+            : []),
+    ],
     advanced: {
         database: {
             generateId: () => {
