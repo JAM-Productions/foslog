@@ -9,11 +9,11 @@
         "games": "Jocs",
         "books": "Llibres",
         "music": "Música",
-        "film": "pel·lícula",
-        "serie": "sèrie",
-        "game": "joc",
-        "book": "llibre",
-        "musicSingle": "música"
+        "film": "Pel·lícula",
+        "serie": "Sèrie",
+        "game": "Joc",
+        "book": "Llibre",
+        "musicSingle": "Música"
     },
     "MediaGenres": {
         "action": "Acció",
@@ -158,5 +158,10 @@
     },
     "Select": {
         "selectPlaceholder": "Selecciona una opció"
+    },
+    "MediaCard": {
+        "director": "Dir.",
+        "by": "de",
+        "more": "+{count}"
     }
 }

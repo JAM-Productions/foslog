@@ -9,11 +9,11 @@
         "games": "Games",
         "books": "Books",
         "music": "Music",
-        "film": "film",
-        "serie": "series",
-        "game": "game",
-        "book": "book",
-        "musicSingle": "music"
+        "film": "Film",
+        "serie": "Series",
+        "game": "Game",
+        "book": "Book",
+        "musicSingle": "Music"
     },
     "MediaGenres": {
         "action": "Action",
@@ -158,5 +158,10 @@
     },
     "Select": {
         "selectPlaceholder": "Select an option"
+    },
+    "MediaCard": {
+        "director": "Dir.",
+        "by": "by",
+        "more": "+{count}"
     }
 }

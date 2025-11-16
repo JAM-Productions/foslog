@@ -28,13 +28,6 @@ const getMediaIcon = (type: MediaItem['type']) => {
     }
 };
 
-const getCreatorLabel = (media: MediaItem) => {
-    if (media.director) return `Dir. ${media.director}`;
-    if (media.author) return `by ${media.author}`;
-    if (media.artist) return media.artist;
-    return '';
-};
-
 const StarRating = ({
     rating,
     size = 'sm',
@@ -72,7 +65,16 @@ const StarRating = ({
 };
 
 export default function MediaCard({ media, className }: MediaCardProps) {
+    const t = useTranslations('MediaCard');
     const tGenres = useTranslations('MediaGenres');
+    const tMediaTypes = useTranslations('MediaTypes');
+
+    const getCreatorLabel = (media: MediaItem) => {
+        if (media.director) return `${t('director')} ${media.director}`;
+        if (media.author) return `${t('by')} ${media.author}`;
+        if (media.artist) return media.artist;
+        return '';
+    };
 
     const imageUrl = media.poster || media.cover;
     const creatorLabel = getCreatorLabel(media);
@@ -101,8 +103,9 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                     {/* Type Badge */}
                     <div className="bg-background/90 absolute top-2 left-2 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
                         <span className="mr-1">{getMediaIcon(media.type)}</span>
-                        {media.type.charAt(0).toUpperCase() +
-                            media.type.slice(1)}
+                        {tMediaTypes(
+                            media.type === 'music' ? 'musicSingle' : media.type
+                        )}
                     </div>
 
                     {/* Year Badge */}
@@ -147,7 +150,9 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                             ))}
                             {media.genre.length > 2 && (
                                 <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs">
-                                    +{media.genre.length - 2}
+                                    {t('more', {
+                                        count: media.genre.length - 2,
+                                    })}
                                 </span>
                             )}
                         </div>
