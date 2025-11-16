@@ -5,6 +5,7 @@ import { RatingInput } from '@/components/ui/input/rating';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LoaderCircle } from 'lucide-react';
 
 interface ReviewFormProps {
     mediaId: string;
@@ -90,15 +91,20 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 />
             </div>
             {error && <p className="text-destructive text-sm">{error}</p>}
-            <Button
-                type="submit"
-                className="w-full sm:w-auto"
-                disabled={isSubmitting || rating === 0 || !text.trim()}
-            >
-                {isSubmitting
-                    ? t('submitting') || 'Submitting...'
-                    : t('submitReview')}
-            </Button>
+            <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
+                <Button
+                    type="submit"
+                    className={`w-full cursor-pointer sm:w-auto ${
+                        isSubmitting ? 'text-transparent' : ''
+                    }`}
+                    disabled={isSubmitting || rating === 0 || !text.trim()}
+                >
+                    {t('submitReview')}
+                </Button>
+                {isSubmitting && (
+                    <LoaderCircle className="text-primary absolute animate-spin" />
+                )}
+            </div>
         </form>
     );
 }
