@@ -91,11 +91,15 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 />
             </div>
             {error && (
-                <p className="text-destructive text-sm" role="alert" aria-live="polite">
+                <p
+                    className="text-destructive text-sm"
+                    role="alert"
+                    aria-live="polite"
+                >
                     {error}
                 </p>
             )}
-            <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
+            <div className="relative flex w-full flex-row sm:w-auto">
                 <Button
                     type="submit"
                     className={`w-full cursor-pointer sm:w-auto ${
