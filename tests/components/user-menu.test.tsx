@@ -2,19 +2,19 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UserMenu from '@/components/user-menu';
-import { useAuth } from '@/lib/auth-provider';
-import { signOut } from '@/lib/auth-client';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { signOut } from '@/lib/auth/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import type { User, Session } from '@/lib/auth-client';
+import type { User, Session } from '@/lib/auth/auth-client';
 
 // Mock dependencies
-vi.mock('@/lib/auth-provider', () => ({
+vi.mock('@/lib/auth/auth-provider', () => ({
     useAuth: vi.fn(),
 }));
 
-vi.mock('@/lib/auth-client', () => ({
+vi.mock('@/lib/auth/auth-client', () => ({
     signOut: vi.fn(),
 }));
 

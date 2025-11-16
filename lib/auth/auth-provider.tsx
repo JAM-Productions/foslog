@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useSession, type Session, type User } from '@/lib/auth-client';
+import { useSession, type Session, type User } from '@/lib/auth/auth-client';
 
 interface AuthContextType {
     session: Session | null;

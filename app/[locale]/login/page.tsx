@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
-import { signIn } from '@/lib/auth-client';
+import { signIn } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
 
 interface ValidationErrors {

@@ -3,7 +3,7 @@ import { Ubuntu_Mono } from 'next/font/google';
 import '../globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeScript } from '@/components/theme-script';
-import { AuthProvider } from '@/lib/auth-provider';
+import { AuthProvider } from '@/lib/auth/auth-provider';
 import Header from '@/components/header';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';

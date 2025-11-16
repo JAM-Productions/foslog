@@ -3,8 +3,8 @@
 import { useRef, useState } from 'react';
 import { User, LogOut, Settings, CircleUser } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/lib/auth-provider';
-import { signOut } from '@/lib/auth-client';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { signOut } from '@/lib/auth/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
