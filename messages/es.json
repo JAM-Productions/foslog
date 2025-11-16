@@ -9,11 +9,11 @@
         "games": "Juegos",
         "books": "Libros",
         "music": "Música",
-        "film": "película",
-        "serie": "serie",
-        "game": "juego",
-        "book": "libro",
-        "musicSingle": "música"
+        "film": "Película",
+        "serie": "Serie",
+        "game": "Juego",
+        "book": "Libro",
+        "musicSingle": "Música"
     },
     "MediaGenres": {
         "action": "Acción",
@@ -162,11 +162,6 @@
     "MediaCard": {
         "director": "Dir.",
         "by": "de",
-        "more": "+{count}",
-        "film": "Película",
-        "series": "Serie",
-        "game": "Juego",
-        "book": "Libro",
-        "music": "Música"
+        "more": "+{count}"
     }
 }

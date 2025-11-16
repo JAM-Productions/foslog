@@ -66,6 +66,7 @@ const StarRating = ({
 export default function MediaCard({ media, className }: MediaCardProps) {
     const t = useTranslations('MediaCard');
     const tGenres = useTranslations('MediaGenres');
+    const tMediaTypes = useTranslations('MediaTypes');
 
     const getCreatorLabel = (media: MediaItem) => {
         if (media.director) return `${t('director')} ${media.director}`;
@@ -103,7 +104,9 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                     {/* Type Badge */}
                     <div className="bg-background/90 absolute top-2 left-2 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
                         <span className="mr-1">{getMediaIcon(media.type)}</span>
-                        {t(media.type)}
+                        {tMediaTypes(
+                            media.type === 'music' ? 'musicSingle' : media.type
+                        )}
                     </div>
 
                     {/* Year Badge */}
