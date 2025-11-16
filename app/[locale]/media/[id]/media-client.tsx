@@ -1,9 +1,9 @@
 'use client';
 
-import { MediaDetails } from '@/components/media-details';
-import { ReviewForm } from '@/components/review-form';
-import { ReviewList } from '@/components/review-list';
-import { BackButton } from '@/components/ui/back-button';
+import { MediaDetails } from '@/components/media/media-details';
+import { ReviewForm } from '@/components/review/review-form';
+import { ReviewList } from '@/components/review/review-list';
+import { BackButton } from '@/components/button/back-button';
 import { useTranslations } from 'next-intl';
 import { SafeMediaItemWithReviews } from '@/lib/types';
 

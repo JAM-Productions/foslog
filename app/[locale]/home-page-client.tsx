@@ -3,8 +3,8 @@
 import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
-import MediaCard from '@/components/media-card';
-import { Button } from '@/components/ui/button';
+import MediaCard from '@/components/media/media-card';
+import { Button } from '@/components/button/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';

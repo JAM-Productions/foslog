@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { BackButton } from '@/components/ui/back-button';
+import { Button } from '@/components/button/button';
+import { BackButton } from '@/components/button/back-button';
 import { Github } from 'lucide-react';
 import Image from 'next/image';
-import { Input } from '@/components/ui/input/input';
+import { Input } from '@/components/input/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
