@@ -1,6 +1,7 @@
 'use client';
 
 import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { MediaItem } from '@/lib/store';
 import { useTranslations } from 'next-intl';
@@ -84,15 +85,13 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                 {/* Image */}
                 <div className="bg-muted relative aspect-[2/3] overflow-hidden rounded-t-lg">
                     {imageUrl ? (
-                        <>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={imageUrl}
-                                alt={media.title}
-                                className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                                loading="lazy"
-                            />
-                        </>
+                        <Image
+                            src={imageUrl}
+                            alt={media.title}
+                            className="object-cover transition-transform group-hover:scale-105"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
                     ) : (
                         <div className="text-muted-foreground flex h-full w-full items-center justify-center text-4xl">
                             {getMediaIcon(media.type)}
