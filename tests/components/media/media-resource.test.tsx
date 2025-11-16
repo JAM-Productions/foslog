@@ -44,6 +44,18 @@ vi.mock('next-intl', () => ({
     useTranslations: () => (key: string) => key,
 }));
 
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        refresh: vi.fn(),
+    }),
+}));
+
+vi.mock('@/lib/auth-provider', () => ({
+    useAuth: () => ({
+        user: mockUser,
+    }),
+}));
+
 describe('MediaDetails', () => {
     it('renders media details correctly', () => {
         const media = mockMediaItems[0];

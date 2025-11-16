@@ -55,7 +55,7 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                         {t('leaveReview')}
                     </h2>
                     <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
-                        <ReviewForm />
+                        <ReviewForm mediaId={mediaItem.id} />
                     </div>
                 </div>
             </div>
