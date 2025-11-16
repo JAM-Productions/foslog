@@ -50,7 +50,7 @@ vi.mock('next/navigation', () => ({
     }),
 }));
 
-vi.mock('@/lib/auth-provider', () => ({
+vi.mock('@/lib/auth/auth-provider', () => ({
     useAuth: () => ({
         user: mockUser,
     }),
@@ -85,7 +85,7 @@ describe('ReviewCard', () => {
 
 describe('ReviewForm', () => {
   it('renders a review form', () => {
-    render(<ReviewForm />);
+    render(<ReviewForm mediaId="1" />);
     expect(screen.getByText('yourRating')).toBeInTheDocument();
     expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'submitReview' })).toBeInTheDocument();
