@@ -200,7 +200,7 @@ export default function ReviewModal() {
                                         className="rounded-md object-cover"
                                     />
                                 ) : (
-                                    <div className="bg-background flex h-[300px] w-[200px] items-center justify-center rounded-md text-center text-sm">
+                                    <div className="bg-background flex h-[300px] w-[200px] min-w-[200px] items-center justify-center rounded-md text-center text-sm">
                                         {tReviewModal('noImageAvailable')}
                                     </div>
                                 )}
@@ -227,8 +227,7 @@ export default function ReviewModal() {
                                             placeholder={tMediaPage(
                                                 'shareThoughts'
                                             )}
-                                            rows={4}
-                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-24 w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:h-48"
                                             value={reviewText}
                                             onChange={(e) =>
                                                 setReviewText(e.target.value)
@@ -241,8 +240,8 @@ export default function ReviewModal() {
                     </div>
 
                     <div className="flex w-full flex-col items-center justify-center">
-                        {error && (
-                            <div className="my-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
+                        {error && modalStep === 2 && (
+                            <div className="mb-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:mt-8 sm:w-auto">
                                 {error}
                             </div>
                         )}
@@ -257,7 +256,9 @@ export default function ReviewModal() {
                                 </Button>
                             )}
                             {modalStep === 2 && (
-                                <div className="flex w-full gap-4">
+                                <div
+                                    className={`flex w-full gap-4 ${error ? '' : 'sm:mt-8'}`}
+                                >
                                     <Button
                                         disabled={isLoadingSubmit}
                                         className="w-full cursor-pointer"
