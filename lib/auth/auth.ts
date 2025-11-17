@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@/lib/prisma';
+import { FOSLOG_URL } from '@/lib/constants';
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -30,6 +31,7 @@ export const auth = betterAuth({
         : 'http://localhost:3000',
     trustedOrigins: [
         'http://localhost:3000',
+        FOSLOG_URL,
         ...(process.env.VERCEL_URL
             ? [`https://${process.env.VERCEL_URL}`]
             : []),
