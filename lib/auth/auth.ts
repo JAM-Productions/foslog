@@ -26,9 +26,12 @@ export const auth = betterAuth({
         updateAge: 60 * 60 * 24, // 1 day
     },
     secret: process.env.BETTER_AUTH_SECRET!,
-    baseURL: process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'http://localhost:3000',
+    baseURL:
+        process.env.VERCEL_ENV === 'production'
+            ? FOSLOG_URL
+            : process.env.VERCEL_URL
+              ? `https://${process.env.VERCEL_URL}`
+              : 'http://localhost:3000',
     trustedOrigins: [
         'http://localhost:3000',
         FOSLOG_URL,
