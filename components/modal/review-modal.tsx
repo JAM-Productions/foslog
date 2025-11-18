@@ -132,39 +132,41 @@ export default function ReviewModal() {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
                 <div
-                    className="bg-muted flex h-screen w-full max-w-4xl flex-col items-center justify-between p-5 sm:h-auto sm:justify-center sm:rounded-lg sm:border"
+                    className="bg-muted flex h-screen w-full max-w-4xl flex-col p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-lg sm:border"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                 >
-                    <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
-                        <div className="mt-10 w-full space-y-2 text-center sm:mt-0">
-                            <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
-                                <Button
-                                    disabled={isLoadingSubmit}
-                                    className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => closeModal()}
-                                    aria-label="Close modal"
-                                >
-                                    <X className="h-5 w-5" />
-                                </Button>
-                                <h2
-                                    id="modal-title"
-                                    className="text-2xl font-bold"
-                                >
-                                    {tReviewModal('reviewModalTitle')}
-                                </h2>
-                            </div>
-                            <p className="text-muted-foreground text-center">
-                                {modalStep === 1
-                                    ? tReviewModal('reviewModalDescription')
-                                    : tReviewModal('reviewModalDescription2')}
-                            </p>
+                    <div className="mt-10 w-full shrink-0 space-y-2 pb-2 text-center sm:mt-0 sm:pb-0">
+                        <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
+                            <Button
+                                disabled={isLoadingSubmit}
+                                className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => closeModal()}
+                                aria-label="Close modal"
+                            >
+                                <X className="h-5 w-5" />
+                            </Button>
+                            <h2
+                                id="modal-title"
+                                className="text-2xl font-bold"
+                            >
+                                {tReviewModal('reviewModalTitle')}
+                            </h2>
                         </div>
+                        <p className="text-muted-foreground text-center">
+                            {modalStep === 1
+                                ? tReviewModal('reviewModalDescription')
+                                : tReviewModal('reviewModalDescription2')}
+                        </p>
+                    </div>
 
+                    <div
+                        className={`flex min-h-0 flex-1 flex-col items-center gap-4 px-1 py-4 sm:gap-8 sm:py-8 ${modalStep === 2 ? 'overflow-y-auto' : 'overflow-visible'}`}
+                    >
                         <div
-                            className={`flex w-full flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
+                            className={`flex w-full shrink-0 flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
                         >
                             <Select
                                 options={options}
@@ -197,10 +199,10 @@ export default function ReviewModal() {
                                         alt={selectedMedia.title}
                                         width={200}
                                         height={300}
-                                        className="rounded-md object-cover"
+                                        className="h-[300px] w-[200px] min-w-[200px] rounded-md object-cover"
                                     />
                                 ) : (
-                                    <div className="bg-background flex h-[300px] w-[200px] items-center justify-center rounded-md text-center text-sm">
+                                    <div className="bg-background flex h-[300px] w-[200px] min-w-[200px] items-center justify-center rounded-md text-center text-sm">
                                         {tReviewModal('noImageAvailable')}
                                     </div>
                                 )}
@@ -227,8 +229,7 @@ export default function ReviewModal() {
                                             placeholder={tMediaPage(
                                                 'shareThoughts'
                                             )}
-                                            rows={4}
-                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-24 w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:h-48"
                                             value={reviewText}
                                             onChange={(e) =>
                                                 setReviewText(e.target.value)
@@ -240,9 +241,9 @@ export default function ReviewModal() {
                         )}
                     </div>
 
-                    <div className="flex w-full flex-col items-center justify-center">
-                        {error && (
-                            <div className="my-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
+                    <div className="flex w-full shrink-0 flex-col items-center justify-center pt-4 sm:pt-0">
+                        {error && modalStep === 2 && (
+                            <div className="mb-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
                                 {error}
                             </div>
                         )}
@@ -250,7 +251,7 @@ export default function ReviewModal() {
                             {modalStep === 1 && (
                                 <Button
                                     disabled={!selectedMedia}
-                                    className="mt-8 w-full cursor-pointer sm:w-auto"
+                                    className="w-full cursor-pointer sm:w-auto"
                                     onClick={() => setModalStep(2)}
                                 >
                                     {tCTA('next')}
