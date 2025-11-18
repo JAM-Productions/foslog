@@ -8,11 +8,24 @@ import {
     SafeReview,
 } from '@/lib/types';
 
-export const getMedias = async (): Promise<SafeMediaItem[]> => {
+export const getMedias = async (
+    page: number = 1,
+    pageSize: number = 12
+): Promise<{ items: SafeMediaItem[]; total: number }> => {
     try {
-        const mediaItems = await prisma.mediaItem.findMany();
+        const skip = (page - 1) * pageSize;
+
+        const [mediaItems, total] = await prisma.$transaction([
+            prisma.mediaItem.findMany({
+                skip,
+                take: pageSize,
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+            }),
+            prisma.mediaItem.count(),
+        ]);
+
         // Explicitly map to SafeMediaItem to avoid extra properties from Prisma model
-        return mediaItems.map((item) => ({
+        const items = mediaItems.map((item) => ({
             id: item.id,
             title: item.title,
             type: item.type.toLowerCase() as MediaType,
@@ -27,6 +40,8 @@ export const getMedias = async (): Promise<SafeMediaItem[]> => {
             averageRating: item.averageRating,
             totalReviews: item.totalReviews,
         }));
+
+        return { items, total };
     } catch (error) {
         console.error('Error fetching media items:', error);
         throw new Error('Could not fetch media items.');

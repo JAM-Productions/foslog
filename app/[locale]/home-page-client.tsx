@@ -10,11 +10,18 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
+import Pagination from '@/components/pagination/pagination';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
+    total,
+    currentPage,
+    pageSize,
 }: {
     mediaItems: SafeMediaItem[];
+    total: number;
+    currentPage: number;
+    pageSize: number;
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -109,6 +116,10 @@ export default function HomePageClient({
     );
 
     const currentYear = useMemo(() => new Date().getFullYear(), []);
+    const totalPages = useMemo(
+        () => Math.ceil(total / pageSize),
+        [total, pageSize]
+    );
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -243,6 +254,14 @@ export default function HomePageClient({
                             </Link>
                         ))}
                     </div>
+                )}
+
+                {/* Pagination */}
+                {sortedMedia.length > 0 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                    />
                 )}
             </div>
 
