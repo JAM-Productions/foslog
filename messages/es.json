@@ -1,6 +1,6 @@
 {
     "HomePage": {
-        "media": "contenido"
+        "media": "Contenidos"
     },
     "MediaTypes": {
         "all": "Todos los Medios",
@@ -13,7 +13,7 @@
         "serie": "Serie",
         "game": "Juego",
         "book": "Libro",
-        "musicSingle": "Música"
+        "musicSingle": "Canción"
     },
     "MediaGenres": {
         "action": "Acción",
