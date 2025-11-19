@@ -55,7 +55,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                 </div>
             </Card>
             {imageUrl && (
-                <div className="relative order-1 mt-2 aspect-[2/3] w-64 flex-shrink-0 md:order-2 md:mt-0 md:w-72 lg:w-80">
+                <div className="relative order-1 mt-2 aspect-[2/3] w-64 flex-shrink-0 md:order-2 md:mt-0 md:w-72">
                     <Image
                         src={imageUrl}
                         alt={media.title}
