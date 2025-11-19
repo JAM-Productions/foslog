@@ -191,7 +191,9 @@ export default function HomePageClient({
                                   mediaType:
                                       selectedMediaType === 'all'
                                           ? t('media')
-                                          : tMediaTypes(selectedMediaType),
+                                          : getTypeDisplayName(
+                                                selectedMediaType
+                                            ),
                               })
                     }
                     icon={searchQuery ? TrendingUp : Star}
@@ -211,14 +213,18 @@ export default function HomePageClient({
                                       mediaType:
                                           selectedMediaType === 'all'
                                               ? t('media')
-                                              : tMediaTypes(selectedMediaType),
+                                              : getTypeDisplayName(
+                                                    selectedMediaType
+                                                ),
                                       query: searchQuery,
                                   })
                                 : tSearch('noMediaAvailable', {
                                       mediaType:
                                           selectedMediaType === 'all'
                                               ? t('media')
-                                              : tMediaTypes(selectedMediaType),
+                                              : getTypeDisplayName(
+                                                    selectedMediaType
+                                                ),
                                   })}
                         </p>
                         {searchQuery && (
