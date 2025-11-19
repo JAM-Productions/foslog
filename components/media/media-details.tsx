@@ -12,7 +12,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
     return (
         <div className="flex flex-col items-center gap-7 md:grid md:grid-cols-[1fr_auto] md:items-start">
             {imageUrl && (
-                <div className="relative mt-2 aspect-[2/3] w-64 flex-shrink-0 md:order-2 md:mt-0 md:w-72">
+                <div className="relative mt-2 aspect-[2/3] w-72 flex-shrink-0 md:order-2 md:mt-0">
                     <Image
                         src={imageUrl}
                         alt={media.title}
