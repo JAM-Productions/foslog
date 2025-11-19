@@ -11,7 +11,17 @@ export function MediaDetails({ media }: { media: MediaItem }) {
 
     return (
         <div className="flex flex-col items-center gap-7 md:grid md:grid-cols-[1fr_auto] md:items-start">
-            <Card className="order-2 w-full self-stretch p-4 sm:p-6 md:order-1 lg:p-8">
+            {imageUrl && (
+                <div className="relative mt-2 aspect-[2/3] w-64 flex-shrink-0 md:order-2 md:mt-0 md:w-72">
+                    <Image
+                        src={imageUrl}
+                        alt={media.title}
+                        fill
+                        className="rounded-lg object-cover shadow-lg"
+                    />
+                </div>
+            )}
+            <Card className="w-full self-stretch p-4 sm:p-6 md:order-1 lg:p-8">
                 {/* Details Section */}
                 <div className="flex flex-col gap-4 sm:gap-6">
                     {/* Title and Type */}
@@ -54,16 +64,6 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                     </div>
                 </div>
             </Card>
-            {imageUrl && (
-                <div className="relative order-1 mt-2 aspect-[2/3] w-64 flex-shrink-0 md:order-2 md:mt-0 md:w-72">
-                    <Image
-                        src={imageUrl}
-                        alt={media.title}
-                        fill
-                        className="rounded-lg object-cover shadow-lg"
-                    />
-                </div>
-            )}
         </div>
     );
 }
