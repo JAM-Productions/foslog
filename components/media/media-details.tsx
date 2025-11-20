@@ -10,23 +10,20 @@ export function MediaDetails({ media }: { media: MediaItem }) {
     const tMT = useTranslations('MediaTypes');
 
     return (
-        <Card className="p-4 sm:p-6 lg:p-8">
-            <div className="flex flex-col gap-6 sm:gap-8 md:flex-row">
-                {/* Image Section */}
-                <div className="flex shrink-0 items-start justify-center md:w-64 lg:w-80">
-                    {imageUrl && (
-                        <Image
-                            src={imageUrl}
-                            alt={media.title}
-                            width={500}
-                            height={750}
-                            className="h-auto max-h-80 max-w-full rounded-lg object-contain shadow-lg sm:max-h-96"
-                        />
-                    )}
+        <div className="flex flex-col items-center gap-7 md:grid md:grid-cols-[1fr_auto] md:items-start">
+            {imageUrl && (
+                <div className="relative mt-2 aspect-[2/3] w-72 flex-shrink-0 md:order-2 md:mt-0">
+                    <Image
+                        src={imageUrl}
+                        alt={media.title}
+                        fill
+                        className="rounded-lg object-cover shadow-lg"
+                    />
                 </div>
-
+            )}
+            <Card className="w-full self-stretch p-4 sm:p-6 md:order-1 lg:p-8">
                 {/* Details Section */}
-                <div className="flex flex-1 flex-col gap-4 sm:gap-6">
+                <div className="flex flex-col gap-4 sm:gap-6">
                     {/* Title and Type */}
                     <div className="flex flex-row gap-4 sm:gap-6">
                         <h1 className="text-foreground text-3xl leading-tight font-bold lg:text-4xl">
@@ -66,7 +63,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                         </p>
                     </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+        </div>
     );
 }
