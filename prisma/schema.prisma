@@ -80,6 +80,7 @@ model MediaItem {
   director      String?
   author        String?
   artist        String?
+  platform      String?
   poster        String?
   cover         String?
   description   String
@@ -113,6 +114,7 @@ enum MediaType {
   GAME
   BOOK
   MUSIC
+  PODCAST
 
   @@map("media_type")
 }

@@ -48,6 +48,7 @@ export default function ReviewModal() {
         { value: 'game', label: tMediaTypes('games'), disabled: true },
         { value: 'book', label: tMediaTypes('books'), disabled: true },
         { value: 'music', label: tMediaTypes('music'), disabled: true },
+        { value: 'podcast', label: tMediaTypes('podcasts'), disabled: false },
     ];
 
     useBodyScrollLock(isReviewModalOpen);

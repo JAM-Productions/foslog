@@ -13,7 +13,9 @@
         "serie": "Serie",
         "game": "Juego",
         "book": "Libro",
-        "musicSingle": "Canción"
+        "musicSingle": "Música",
+        "podcast": "Podcast",
+        "podcasts": "Podcasts"
     },
     "MediaGenres": {
         "action": "Acción",
