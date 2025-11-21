@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import Footer from '@/components/footer/footer';
-import pkg from '@/../package.json';
+import pkg from '../../../package.json';
 
 // Mock the next/link component
 vi.mock('next/link', () => ({
