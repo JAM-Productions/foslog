@@ -84,7 +84,7 @@ export default async function LocaleLayout({
                 />
             </head>
             <body
-                className={`${font.className} bg-background min-h-screen antialiased flex flex-col`}
+                className={`${font.className} bg-background flex min-h-screen flex-col antialiased`}
             >
                 <NextIntlClientProvider>
                     <ThemeProvider>
