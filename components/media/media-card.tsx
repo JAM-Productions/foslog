@@ -1,6 +1,17 @@
 'use client';
 
-import { Star, StarHalf, Eye, Calendar } from 'lucide-react';
+import {
+    Star,
+    StarHalf,
+    Eye,
+    Calendar,
+    Clapperboard,
+    Tv,
+    Gamepad2,
+    Book,
+    Music,
+    StickyNote,
+} from 'lucide-react';
 import Image from 'next/image';
 import { Card } from '@/components/card';
 import { MediaItem } from '@/lib/store';
@@ -14,17 +25,17 @@ interface MediaCardProps {
 const getMediaIcon = (type: MediaItem['type']) => {
     switch (type) {
         case 'film':
-            return '🎬';
+            return Clapperboard;
         case 'series':
-            return '📺';
+            return Tv;
         case 'game':
-            return '🎮';
+            return Gamepad2;
         case 'book':
-            return '📚';
+            return Book;
         case 'music':
-            return '🎵';
+            return Music;
         default:
-            return '📄';
+            return StickyNote;
     }
 };
 
@@ -95,14 +106,20 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                     ) : (
-                        <div className="text-muted-foreground flex h-full w-full items-center justify-center text-4xl">
-                            {getMediaIcon(media.type)}
+                        <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+                            {(() => {
+                                const Icon = getMediaIcon(media.type);
+                                return <Icon className="h-16 w-16" />;
+                            })()}
                         </div>
                     )}
 
                     {/* Type Badge */}
-                    <div className="bg-background/90 absolute top-2 left-2 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
-                        <span className="mr-1">{getMediaIcon(media.type)}</span>
+                    <div className="bg-background/90 absolute top-2 left-2 flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
+                        {(() => {
+                            const Icon = getMediaIcon(media.type);
+                            return <Icon className="h-3 w-3" />;
+                        })()}
                         {tMediaTypes(
                             media.type === 'music' ? 'musicSingle' : media.type
                         )}

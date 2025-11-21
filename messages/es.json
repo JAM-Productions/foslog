@@ -147,7 +147,8 @@
         "yourReview": "Tu Reseña",
         "submitReview": "Enviar Reseña",
         "shareThoughts": "Comparte tus pensamientos sobre este medio...",
-        "overview": "Resumen"
+        "overview": "Resumen",
+        "releaseDate": "Fecha de Lanzamiento: {date}"
     },
     "BackButton": {
         "back": "Atrás"
