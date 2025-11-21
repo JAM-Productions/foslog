@@ -148,7 +148,7 @@
         "submitReview": "Submit Review",
         "shareThoughts": "Share your thoughts about this media...",
         "overview": "Overview",
-        "releaseDate": "Release Date: {date}"
+        "releaseDate": "Release year: {date}"
     },
     "BackButton": {
         "back": "Back"
