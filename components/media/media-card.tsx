@@ -90,6 +90,8 @@ export default function MediaCard({ media, className }: MediaCardProps) {
     const imageUrl = media.poster || media.cover;
     const creatorLabel = getCreatorLabel(media);
 
+    const Icon = getMediaIcon(media.type);
+
     return (
         <Card
             className={`group transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
@@ -107,19 +109,13 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                         />
                     ) : (
                         <div className="text-muted-foreground flex h-full w-full items-center justify-center">
-                            {(() => {
-                                const Icon = getMediaIcon(media.type);
-                                return <Icon className="h-16 w-16" />;
-                            })()}
+                            <Icon className="h-16 w-16" />
                         </div>
                     )}
 
                     {/* Type Badge */}
                     <div className="bg-background/90 absolute top-2 left-2 flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
-                        {(() => {
-                            const Icon = getMediaIcon(media.type);
-                            return <Icon className="h-3 w-3" />;
-                        })()}
+                        <Icon className="h-3 w-3" />
                         {tMediaTypes(
                             media.type === 'music' ? 'musicSingle' : media.type
                         )}
