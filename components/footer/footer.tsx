@@ -27,6 +27,7 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:underline"
+                    aria-label={`View version ${pkg.version} release notes (opens in new tab)`}
                 >
                     v{pkg.version}
                 </a>
