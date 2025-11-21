@@ -4,6 +4,7 @@ import '../globals.css';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { ThemeScript } from '@/components/theme/theme-script';
 import { AuthProvider } from '@/lib/auth/auth-provider';
+import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
@@ -83,13 +84,14 @@ export default async function LocaleLayout({
                 />
             </head>
             <body
-                className={`${font.className} bg-background min-h-screen antialiased`}
+                className={`${font.className} bg-background min-h-screen antialiased flex flex-col`}
             >
                 <NextIntlClientProvider>
                     <ThemeProvider>
                         <AuthProvider>
                             <Header />
                             <main className="flex-1">{children}</main>
+                            <Footer />
                             <DynamicModalWrapper />
                         </AuthProvider>
                     </ThemeProvider>
