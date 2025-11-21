@@ -90,7 +90,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
     const imageUrl = media.poster || media.cover;
     const creatorLabel = getCreatorLabel(media);
 
-    const Icon = getMediaIcon(media.type);
+    const MediaIcon = getMediaIcon(media.type);
 
     return (
         <Card
@@ -109,13 +109,13 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                         />
                     ) : (
                         <div className="text-muted-foreground flex h-full w-full items-center justify-center">
-                            <Icon className="h-16 w-16" />
+                            <MediaIcon className="h-16 w-16" />
                         </div>
                     )}
 
                     {/* Type Badge */}
                     <div className="bg-background/90 absolute top-2 left-2 flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm">
-                        <Icon className="h-3 w-3" />
+                        <MediaIcon className="h-3 w-3" />
                         {tMediaTypes(
                             media.type === 'music' ? 'musicSingle' : media.type
                         )}
