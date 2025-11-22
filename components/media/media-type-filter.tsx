@@ -1,7 +1,15 @@
 'use client';
 
 import { useAppStore } from '@/lib/store';
-import { Book, Clapperboard, Gamepad2, Music, Search, Tv } from 'lucide-react';
+import {
+    Book,
+    Clapperboard,
+    Gamepad2,
+    Music,
+    Podcast,
+    Search,
+    Tv,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const MediaTypeFilter = () => {
@@ -15,6 +23,7 @@ const MediaTypeFilter = () => {
         { value: 'game', label: t('games'), Icon: Gamepad2 },
         { value: 'book', label: t('books'), Icon: Book },
         { value: 'music', label: t('music'), Icon: Music },
+        { value: 'podcast', label: t('podcasts'), Icon: Podcast },
     ] as const;
 
     return (

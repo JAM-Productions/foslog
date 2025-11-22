@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type MediaType = 'film' | 'series' | 'game' | 'book' | 'music';
+export type MediaType = 'film' | 'series' | 'game' | 'book' | 'music' | 'podcast';
 
 export interface MediaItem {
     id: string;
@@ -11,6 +11,7 @@ export interface MediaItem {
     director?: string;
     author?: string;
     artist?: string;
+    platform?: string;
     genre: string[];
     poster?: string;
     cover?: string;

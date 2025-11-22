@@ -84,6 +84,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
         if (media.director) return `${t('director')} ${media.director}`;
         if (media.author) return `${t('by')} ${media.author}`;
         if (media.artist) return media.artist;
+        if (media.platform) return media.platform;
         return '';
     };
 

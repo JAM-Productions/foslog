@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
                 title: selectedMedia.title,
                 type: selectedMedia.type,
                 year: selectedMedia.year,
+                platform: selectedMedia.platform,
                 poster: selectedMedia.poster,
                 description: selectedMedia.description,
                 genre: selectedMedia.genre,
