@@ -264,10 +264,15 @@ describe('MediaCard', () => {
                 ...mockMediaItem,
                 totalReviews: 1500,
             };
-            render(<MediaCard media={mediaWithManyReviews} />);
+            const { container } = render(
+                <MediaCard media={mediaWithManyReviews} />
+            );
 
-            // toLocaleString for 1500 will be "1,500" in en-US
-            expect(screen.getByText('1,500')).toBeInTheDocument();
+            // Check that the review count is rendered (formatting may vary by locale)
+            const reviewCountDiv = container.querySelector(
+                '.text-muted-foreground.flex.items-center.gap-1.text-xs'
+            );
+            expect(reviewCountDiv?.textContent).toMatch(/1[,\s]?500/);
         });
     });
 
