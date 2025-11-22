@@ -164,5 +164,8 @@
         "director": "Dir.",
         "by": "by",
         "more": "+{count}"
+    },
+    "ReviewPage": {
+        "reviewFor": "Review for"
     }
 }

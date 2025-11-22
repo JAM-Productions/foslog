@@ -164,5 +164,8 @@
         "director": "Dir.",
         "by": "de",
         "more": "+{count}"
+    },
+    "ReviewPage": {
+        "reviewFor": "Reseña para"
     }
 }
