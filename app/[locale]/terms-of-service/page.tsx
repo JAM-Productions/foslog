@@ -1,10 +1,11 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import ReactMarkdown from 'react-markdown';
 
-export default function TermsOfServicePage() {
-    const filePath = path.join(process.cwd(), '_legal', 'terms-of-service.md');
-    const markdown = fs.readFileSync(filePath, 'utf-8');
+export default async function TermsOfServicePage({ params: paramsPromise }: { params: Promise<{ locale: string }> }) {
+    const params = await paramsPromise;
+    const filePath = path.join(process.cwd(), '_legal', params.locale, 'terms-of-service.md');
+    const markdown = await fs.readFile(filePath, 'utf-8');
 
     return (
         <div className="container mx-auto py-8 prose dark:prose-invert">
