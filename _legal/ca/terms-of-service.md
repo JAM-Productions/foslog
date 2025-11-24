@@ -34,8 +34,8 @@ En cap cas serem responsables dels danys (inclosos, entre d'altres, els danys pe
 
 ### 8. Llei Aplicable
 
-Aquests Termes es regiran i interpretaran d'acord amb les lleis de [La Vostra Jurisdicció], sense tenir en compte les seves disposicions sobre conflictes de lleis.
+Aquests Termes es regiran i interpretaran d'acord amb les lleis de Catalunya, Espanya, sense tenir en compte les seves disposicions sobre conflictes de lleis.
 
 ### Contacteu-nos
 
-Si teniu alguna pregunta sobre aquests Termes, poseu-vos en contacte amb nosaltres a: [Correu Electrònic de Contacte]
+Si teniu alguna pregunta sobre aquests Termes, poseu-vos en contacte amb nosaltres a: contact@foslog.com

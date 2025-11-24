@@ -34,8 +34,8 @@ En ningún caso seremos responsables de los daños (incluidos, entre otros, los 
 
 ### 8. Ley Aplicable
 
-Estos Términos se regirán e interpretarán de acuerdo con las leyes de [Su Jurisdicción], sin tener en cuenta sus disposiciones sobre conflictos de leyes.
+Estos Términos se regirán e interpretarán de acuerdo con las leyes de California, sin tener en cuenta sus disposiciones sobre conflictos de leyes.
 
 ### Contáctenos
 
-Si tiene alguna pregunta sobre estos Términos, contáctenos en: [Correo Electrónico de Contacto]
+Si tiene alguna pregunta sobre estos Términos, contáctenos en: contact@foslog.com

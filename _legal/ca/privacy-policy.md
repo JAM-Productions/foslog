@@ -49,4 +49,4 @@ Utilitzem mesures de seguretat administratives, tècniques i físiques per ajuda
 
 ### Contacteu-nos
 
-Si teniu preguntes o comentaris sobre aquesta Política de Privadesa, poseu-vos en contacte amb nosaltres a: [Correu Electrònic de Contacte]
+Si teniu preguntes o comentaris sobre aquesta Política de Privadesa, poseu-vos en contacte amb nosaltres a: contact@foslog.com

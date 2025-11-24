@@ -8,7 +8,7 @@ export default async function TermsOfServicePage({ params: paramsPromise }: { pa
     const markdown = await fs.readFile(filePath, 'utf-8');
 
     return (
-        <div className="container mx-auto py-8 prose dark:prose-invert">
+        <div className="container mx-auto px-4 py-8 prose prose-lg dark:prose-invert max-w-4xl">
             <ReactMarkdown>{markdown}</ReactMarkdown>
         </div>
     );

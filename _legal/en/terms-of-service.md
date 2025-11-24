@@ -34,8 +34,8 @@ In no event shall we be liable for any damages (including, without limitation, d
 
 ### 8. Governing Law
 
-These Terms shall be governed and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
+These Terms shall be governed and construed in accordance with the laws of the jurisdiction in which the company is based, without regard to its conflict of law provisions.
 
 ### Contact Us
 
-If you have any questions about these Terms, please contact us at: [Contact Email]
+If you have any questions about these Terms, please contact us at: contact@foslog.com
