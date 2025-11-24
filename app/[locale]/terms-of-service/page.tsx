@@ -1,10 +1,14 @@
+import fs from 'fs';
+import path from 'path';
+import ReactMarkdown from 'react-markdown';
+
 export default function TermsOfServicePage() {
+    const filePath = path.join(process.cwd(), '_legal', 'terms-of-service.md');
+    const markdown = fs.readFileSync(filePath, 'utf-8');
+
     return (
-        <div className="container mx-auto py-8">
-            <h1 className="mb-4 text-3xl font-bold">Terms of Service</h1>
-            <p className="mb-4">
-                This is a placeholder for the Terms of Service.
-            </p>
+        <div className="container mx-auto py-8 prose dark:prose-invert">
+            <ReactMarkdown>{markdown}</ReactMarkdown>
         </div>
     );
 }
