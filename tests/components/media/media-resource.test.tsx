@@ -42,6 +42,7 @@ const mockReviews: (Review & { user: User })[] = [
 
 vi.mock('next-intl', () => ({
     useTranslations: () => (key: string) => key,
+    useLocale: () => 'en',
 }));
 
 vi.mock('next/navigation', () => ({
@@ -84,10 +85,12 @@ describe('ReviewCard', () => {
 });
 
 describe('ReviewForm', () => {
-  it('renders a review form', () => {
-    render(<ReviewForm mediaId="1" />);
-    expect(screen.getByText('yourRating')).toBeInTheDocument();
-    expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'submitReview' })).toBeInTheDocument();
-  });
+    it('renders a review form', () => {
+        render(<ReviewForm mediaId="1" />);
+        expect(screen.getByText('yourRating')).toBeInTheDocument();
+        expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'submitReview' })
+        ).toBeInTheDocument();
+    });
 });
