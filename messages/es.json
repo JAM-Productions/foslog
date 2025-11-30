@@ -166,6 +166,7 @@
         "more": "+{count}"
     },
     "ReviewPage": {
-        "reviewFor": "Reseña para"
+        "reviewFor": "Reseña para",
+        "review": "Reseña"
     }
 }

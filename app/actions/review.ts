@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { User } from '@/lib/store';
+import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
 
 export const getReviewById = async (
@@ -18,13 +18,7 @@ export const getReviewById = async (
                         image: true,
                     },
                 },
-                media: {
-                    select: {
-                        id: true,
-                        title: true,
-                        type: true,
-                    },
-                },
+                media: true,
             },
         });
 
@@ -53,7 +47,17 @@ export const getReviewById = async (
             media: {
                 id: review.media.id,
                 title: review.media.title,
-                type: review.media.type.toLowerCase(),
+                type: review.media.type.toLowerCase() as MediaType,
+                year: review.media.year ?? undefined,
+                director: review.media.director ?? undefined,
+                author: review.media.author ?? undefined,
+                artist: review.media.artist ?? undefined,
+                genre: review.media.genre,
+                poster: review.media.poster ?? undefined,
+                cover: review.media.cover ?? undefined,
+                description: review.media.description,
+                averageRating: review.media.averageRating,
+                totalReviews: review.media.totalReviews,
             },
         };
     } catch (error) {

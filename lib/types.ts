@@ -6,9 +6,5 @@ export type SafeMediaItemWithReviews = SafeMediaItem & {
     reviews: SafeReview[];
 };
 export type SafeReviewWithMedia = SafeReview & {
-    media: {
-        id: string;
-        title: string;
-        type: string;
-    };
+    media: SafeMediaItem;
 };

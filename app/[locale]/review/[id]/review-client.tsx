@@ -2,8 +2,9 @@
 
 import { BackButton } from '@/components/button/back-button';
 import { SafeReviewWithMedia } from '@/lib/types';
-import { ReviewCard } from '@/components/review/review-card';
 import { MediaContext } from '@/components/media/media-context';
+import { ReviewDetailCard } from '@/components/review/review-detail-card';
+import { useTranslations } from 'next-intl';
 
 export function ReviewClient({
     reviewItem,
@@ -11,6 +12,8 @@ export function ReviewClient({
     reviewItem: SafeReviewWithMedia;
 }) {
     const { media } = reviewItem;
+
+    const t = useTranslations('ReviewPage');
 
     return (
         <div className="bg-background min-h-screen">
@@ -23,8 +26,11 @@ export function ReviewClient({
                     <MediaContext media={media} />
                 </div>
 
-                <div className="mb-8 sm:mb-12 lg:mb-16">
-                    <ReviewCard review={reviewItem} />
+                <div className="mb-8 flex flex-col sm:mb-12 lg:mb-16">
+                    <span className="text-foreground mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">
+                        {t('review')}
+                    </span>
+                    <ReviewDetailCard review={reviewItem} />
                 </div>
             </div>
         </div>
