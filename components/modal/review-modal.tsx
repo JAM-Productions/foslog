@@ -270,7 +270,6 @@ export default function ReviewModal() {
                                             disabled={
                                                 !selectedMedia ||
                                                 reviewStars < 1 ||
-                                                !reviewText.trim() ||
                                                 isLoadingSubmit
                                             }
                                             onClick={() => submitReview()}

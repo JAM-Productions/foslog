@@ -32,11 +32,7 @@ export async function POST(request: NextRequest) {
             return validationError('Rating must be between 1 and 5');
         }
 
-        if (!review.text || review.text.trim().length === 0) {
-            return validationError('Review text is required');
-        }
-
-        if (review.text.length > 5000) {
+        if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');
         }
 
