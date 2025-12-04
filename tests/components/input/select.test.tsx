@@ -263,7 +263,7 @@ describe('Select', () => {
             'top-12',
             'right-0',
             'left-0',
-            'z-50'
+            'z-[60]'
         );
     });
 
