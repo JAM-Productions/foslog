@@ -11,14 +11,14 @@ export default async function PrivacyPolicyPage({ params: paramsPromise }: { par
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <ReactMarkdown
                     components={{
-                        a: ({ node, ...props }) => <a {...props} rel="noopener noreferrer" target={props.href?.startsWith('http') ? '_blank' : undefined} />
+                        a: ({ ...props }) => <a {...props} rel="noopener noreferrer" target={props.href?.startsWith('http') ? '_blank' : undefined} />
                     }}
                 >
                     {markdown}
                 </ReactMarkdown>
             </div>
         );
-    } catch (error) {
+    } catch {
         return (
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-2xl font-bold">Privacy Policy Not Found</h1>
