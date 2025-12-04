@@ -156,7 +156,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                     (loading ||
                         suggestions.length > 0 ||
                         (suggestions.length === 0 && value)) && (
-                        <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
+                        <div className="bg-background absolute top-12 right-0 left-0 z-[60] max-h-60 overflow-y-auto rounded-lg border shadow-lg">
                             <div className="p-1">
                                 {loading ? (
                                     <div className="flex items-center justify-center p-3">
