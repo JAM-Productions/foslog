@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { NextRequest } from 'next/server';
 import { ApiErrorType } from '@/lib/errors';
-import { revalidatePath } from 'next/cache';
 
 // Mock dependencies
 vi.mock('next/cache', () => ({
