@@ -219,10 +219,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen
-            .getByRole('button')
-            .closest('div')
-            ?.querySelector('[class*="absolute"]');
+        const dropdown = document.querySelector('[class*="fixed"]');
         expect(dropdown).toBeInTheDocument();
     });
 
@@ -255,16 +252,8 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = selectButton
-            .closest('div')
-            ?.querySelector('[class*="absolute"]');
-        expect(dropdown).toHaveClass(
-            'absolute',
-            'top-12',
-            'right-0',
-            'left-0',
-            'z-[60]'
-        );
+        const dropdown = document.querySelector('[class*="fixed"]');
+        expect(dropdown).toHaveClass('fixed', 'z-50');
     });
 
     it('has scrollable dropdown for long option lists', async () => {
@@ -279,9 +268,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = selectButton
-            .closest('div')
-            ?.querySelector('[class*="absolute"]');
+        const dropdown = document.querySelector('[class*="fixed"]');
         expect(dropdown).toHaveClass('max-h-60', 'overflow-y-auto');
     });
 });

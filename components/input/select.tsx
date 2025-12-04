@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useTranslations } from 'next-intl';
+import Portal from '@/components/portal';
 
 export interface SelectOption {
     value: string;
@@ -33,8 +34,20 @@ const Select = ({
     const defaultPlaceholder = placeholder || tSelect('selectPlaceholder');
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
 
     useClickOutside(selectRef, isOpen, setIsOpen);
+
+    useEffect(() => {
+        if (isOpen && selectRef.current) {
+            const rect = selectRef.current.getBoundingClientRect();
+            setDropdownPosition({
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+            });
+        }
+    }, [isOpen]);
 
     const selectedOption = options.find((option) => option.value === value);
 
@@ -65,10 +78,18 @@ const Select = ({
             </Button>
 
             {isOpen && !disabled && (
-                <div className="bg-background absolute top-12 right-0 left-0 z-[60] max-h-60 overflow-y-auto rounded-lg border shadow-lg">
-                    <div className="p-1">
-                        {options.map((option) => (
-                            <Button
+                <Portal>
+                    <div
+                        className="bg-background fixed z-50 max-h-60 w-full overflow-y-auto rounded-lg border shadow-lg"
+                        style={{
+                            top: `${dropdownPosition.top}px`,
+                            left: `${dropdownPosition.left}px`,
+                            width: `${dropdownPosition.width}px`,
+                        }}
+                    >
+                        <div className="p-1">
+                            {options.map((option) => (
+                                <Button
                                 key={option.value}
                                 variant="ghost"
                                 onClick={() => handleSelect(option.value)}
@@ -80,6 +101,7 @@ const Select = ({
                         ))}
                     </div>
                 </div>
+                </Portal>
             )}
         </div>
     );
