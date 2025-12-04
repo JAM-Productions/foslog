@@ -17,13 +17,16 @@ export interface MediaItem {
     description: string;
     averageRating: number;
     totalReviews: number;
+    totalLikes: number;
+    totalDislikes: number;
 }
 
 export interface Review {
     id: string;
     mediaId: string;
     userId: string;
-    rating: number;
+    rating?: number;
+    liked?: boolean;
     review?: string;
     createdAt: Date;
     updatedAt: Date;

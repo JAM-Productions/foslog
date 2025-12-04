@@ -10,6 +10,8 @@ import {
     Music,
     StickyNote,
     Tv,
+    ThumbsUp,
+    ThumbsDown,
 } from 'lucide-react';
 
 export function MediaDetails({ media }: { media: MediaItem }) {
@@ -71,20 +73,62 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                         </div>
 
                         {/* Rating */}
-                        <div className="flex flex-row items-start gap-3 rounded-lg py-3 sm:items-center sm:gap-4">
-                            <div className="flex items-center gap-2">
-                                <RatingDisplay
-                                    rating={media.averageRating}
-                                    size="lg"
-                                />
+                        <div className="flex flex-col gap-3 rounded-lg py-3 sm:gap-4">
+                            <div className="flex flex-row items-start gap-3 sm:items-center sm:gap-4">
+                                {media.averageRating > 0 && (
+                                    <>
+                                        <div className="flex items-center gap-2">
+                                            <RatingDisplay
+                                                rating={media.averageRating}
+                                                size="lg"
+                                            />
+                                        </div>
+                                        <div className="bg-border block h-8 w-px"></div>
+                                    </>
+                                )}
+                                <span className="text-muted-foreground text-base whitespace-nowrap">
+                                    {media.totalReviews}{' '}
+                                    {media.totalReviews === 1
+                                        ? tMP('review')
+                                        : tMP('reviews')}
+                                </span>
                             </div>
-                            <div className="bg-border block h-8 w-px"></div>
-                            <span className="text-muted-foreground text-base whitespace-nowrap">
-                                {media.totalReviews}{' '}
-                                {media.totalReviews === 1
-                                    ? tMP('review')
-                                    : tMP('reviews')}
-                            </span>
+                            {(media.totalLikes > 0 ||
+                                media.totalDislikes > 0) && (
+                                <div className="flex flex-row items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <ThumbsUp className="h-4 w-4 text-green-600" />
+                                        <span className="text-muted-foreground text-sm">
+                                            {media.totalLikes}{' '}
+                                            {tMP('likes')}
+                                        </span>
+                                    </div>
+                                    <div className="bg-border block h-4 w-px"></div>
+                                    <div className="flex items-center gap-2">
+                                        <ThumbsDown className="h-4 w-4 text-red-600" />
+                                        <span className="text-muted-foreground text-sm">
+                                            {media.totalDislikes}{' '}
+                                            {tMP('dislikes')}
+                                        </span>
+                                    </div>
+                                    {media.totalLikes + media.totalDislikes >
+                                        0 && (
+                                        <>
+                                            <div className="bg-border block h-4 w-px"></div>
+                                            <span className="text-muted-foreground text-sm">
+                                                {tMP('likePercentage', {
+                                                    percentage: Math.round(
+                                                        (media.totalLikes /
+                                                            (media.totalLikes +
+                                                                media.totalDislikes)) *
+                                                            100
+                                                    ),
+                                                })}
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Description */}
