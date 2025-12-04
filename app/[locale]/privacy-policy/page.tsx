@@ -5,11 +5,25 @@ import ReactMarkdown from 'react-markdown';
 export default async function PrivacyPolicyPage({ params: paramsPromise }: { params: Promise<{ locale: string }> }) {
     const params = await paramsPromise;
     const filePath = path.join(process.cwd(), '_legal', params.locale, 'privacy-policy.md');
-    const markdown = await fs.readFile(filePath, 'utf-8');
-
-    return (
-        <div className="container mx-auto px-4 py-8 prose prose-lg dark:prose-invert max-w-4xl">
-            <ReactMarkdown>{markdown}</ReactMarkdown>
-        </div>
-    );
+    try {
+        const markdown = await fs.readFile(filePath, 'utf-8');
+        return (
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <ReactMarkdown
+                    components={{
+                        a: ({ node, ...props }) => <a {...props} rel="noopener noreferrer" target={props.href?.startsWith('http') ? '_blank' : undefined} />
+                    }}
+                >
+                    {markdown}
+                </ReactMarkdown>
+            </div>
+        );
+    } catch (error) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-2xl font-bold">Privacy Policy Not Found</h1>
+                <p>The privacy policy for this language is not available.</p>
+            </div>
+        );
+    }
 }
