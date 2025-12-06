@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MediaContext } from '@/components/media/media-context';
-import { MediaItem } from '@/lib/store';
+import { SafeMediaItem } from '@/lib/types';
 import { useTranslations } from 'next-intl';
 
 // Mock next-intl
@@ -32,13 +32,50 @@ vi.mock('next/image', () => ({
     ),
 }));
 
+// Mock lucide-react
+vi.mock('lucide-react', () => ({
+    Book: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="book-icon"
+            className={className}
+        />
+    ),
+    Clapperboard: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="clapperboard-icon"
+            className={className}
+        />
+    ),
+    Gamepad2: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="gamepad2-icon"
+            className={className}
+        />
+    ),
+    Music: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="music-icon"
+            className={className}
+        />
+    ),
+    StickyNote: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="stickynote-icon"
+            className={className}
+        />
+    ),
+    Tv: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="tv-icon"
+            className={className}
+        />
+    ),
+}));
+
 describe('MediaContext', () => {
-    const mockTMP = vi.fn((key: string, params?: Record<string, unknown>) => {
+    const mockTRP = vi.fn((key: string) => {
         const translations: Record<string, string> = {
-            review: 'Review',
-            reviews: 'Reviews',
-            overview: 'Overview',
-            releaseDate: `Release year: ${params?.date}`,
+            reviewFor: 'Review for',
         };
         return translations[key] || key;
     });
@@ -54,137 +91,246 @@ describe('MediaContext', () => {
         return translations[key] || key;
     });
 
-    const mockTGenres = vi.fn((key: string) => {
-        const translations: Record<string, string> = {
-            action: 'Action',
-            adventure: 'Adventure',
-            drama: 'Drama',
-            sciFi: 'Science Fiction',
-            comedy: 'Comedy',
-            thriller: 'Thriller',
-        };
-        return translations[key] || key;
-    });
-
     const mockedUseTranslations = vi.mocked(useTranslations);
 
     beforeEach(() => {
         vi.clearAllMocks();
         mockedUseTranslations.mockImplementation((namespace?: string) => {
-            if (namespace === 'MediaPage') {
-                return mockTMP as unknown as ReturnType<typeof useTranslations>;
+            if (namespace === 'ReviewPage') {
+                return mockTRP as unknown as ReturnType<typeof useTranslations>;
             }
             if (namespace === 'MediaTypes') {
                 return mockTMT as unknown as ReturnType<typeof useTranslations>;
             }
-            if (namespace === 'MediaGenres') {
-                return mockTGenres as unknown as ReturnType<
-                    typeof useTranslations
-                >;
-            }
-            return mockTMP as unknown as ReturnType<typeof useTranslations>;
+            return mockTRP as unknown as ReturnType<typeof useTranslations>;
         });
     });
 
-    const mockMediaItem: MediaItem = {
+    const mockMediaWithPoster: SafeMediaItem = {
         id: '1',
         title: 'The Matrix',
         type: 'film',
         year: 1999,
+        director: 'The Wachowskis',
         genre: ['action', 'sciFi'],
-        poster: '/poster.jpg',
+        poster: 'https://example.com/matrix-poster.jpg',
         description:
-            'A computer hacker learns from mysterious rebels about the true nature of his reality.',
+            'A computer hacker learns about the true nature of reality.',
         averageRating: 4.5,
-        totalReviews: 10,
+        totalReviews: 100,
     };
 
-    it('renders media title', () => {
-        render(<MediaContext media={mockMediaItem} />);
+    const mockMediaWithoutPoster: SafeMediaItem = {
+        id: '2',
+        title: 'The Great Gatsby',
+        type: 'book',
+        year: 1925,
+        author: 'F. Scott Fitzgerald',
+        genre: ['drama', 'romance'],
+        description: 'A story of wealth, love, and tragedy.',
+        averageRating: 4.2,
+        totalReviews: 50,
+    };
+
+    it('renders media title correctly', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
         expect(screen.getByText('The Matrix')).toBeInTheDocument();
     });
 
-    it('renders media type', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(screen.getByText('Film')).toBeInTheDocument();
-    });
+    it('renders "Review for" label', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
 
-    it('renders media genres', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(screen.getByText('Action')).toBeInTheDocument();
-        expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-    });
-
-    it('renders media description', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(
-            screen.getByText(
-                'A computer hacker learns from mysterious rebels about the true nature of his reality.'
-            )
-        ).toBeInTheDocument();
-    });
-
-    it('renders average rating and total reviews', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(screen.getByText('10 Reviews')).toBeInTheDocument();
-    });
-
-    it('renders singular review text when totalReviews is 1', () => {
-        const mediaWithOneReview = { ...mockMediaItem, totalReviews: 1 };
-        render(<MediaContext media={mediaWithOneReview} />);
-        expect(screen.getByText('1 Review')).toBeInTheDocument();
-    });
-
-    it('renders release year when provided', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(screen.getByText('Release year: 1999')).toBeInTheDocument();
-    });
-
-    it('does not render release year when not provided', () => {
-        const mediaWithoutYear = { ...mockMediaItem, year: undefined };
-        render(<MediaContext media={mediaWithoutYear} />);
-        expect(screen.queryByText(/Release year/)).not.toBeInTheDocument();
+        expect(screen.getByText('Review for')).toBeInTheDocument();
     });
 
     it('renders poster image when provided', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        const image = screen.getByAltText('The Matrix');
-        expect(image).toBeInTheDocument();
-        expect(image).toHaveAttribute('src', '/poster.jpg');
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const poster = screen.getByAltText('The Matrix');
+        expect(poster).toBeInTheDocument();
+        expect(poster).toHaveAttribute(
+            'src',
+            'https://example.com/matrix-poster.jpg'
+        );
+        expect(poster).toHaveClass('object-cover');
     });
 
-    it('renders cover image when poster is not provided', () => {
-        const mediaWithCover = {
-            ...mockMediaItem,
-            poster: undefined,
-            cover: '/cover.jpg',
+    it('renders fallback icon when poster is not provided', () => {
+        render(<MediaContext media={mockMediaWithoutPoster} />);
+
+        const bookIcons = screen.getAllByTestId('book-icon');
+        expect(bookIcons[0]).toBeInTheDocument();
+        expect(bookIcons[0]).toHaveClass('h-16', 'w-16');
+    });
+
+    it('renders correct icon for film type', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const filmIcon = screen.getByTestId('clapperboard-icon');
+        expect(filmIcon).toBeInTheDocument();
+    });
+
+    it('renders correct icon for series type', () => {
+        const seriesMedia: SafeMediaItem = {
+            ...mockMediaWithoutPoster,
+            type: 'series',
         };
-        render(<MediaContext media={mediaWithCover} />);
-        const image = screen.getByAltText('The Matrix');
-        expect(image).toHaveAttribute('src', '/cover.jpg');
+
+        render(<MediaContext media={seriesMedia} />);
+
+        const seriesIcons = screen.getAllByTestId('tv-icon');
+        expect(seriesIcons[0]).toBeInTheDocument();
+        expect(seriesIcons[0]).toHaveClass('h-16', 'w-16');
     });
 
-    it('does not render image when neither poster nor cover is provided', () => {
-        const mediaWithoutImage = {
-            ...mockMediaItem,
-            poster: undefined,
-            cover: undefined,
+    it('renders correct icon for game type', () => {
+        const gameMedia: SafeMediaItem = {
+            ...mockMediaWithoutPoster,
+            type: 'game',
         };
-        render(<MediaContext media={mediaWithoutImage} />);
-        expect(screen.queryByAltText('The Matrix')).not.toBeInTheDocument();
+
+        render(<MediaContext media={gameMedia} />);
+
+        const gameIcons = screen.getAllByTestId('gamepad2-icon');
+        expect(gameIcons[0]).toBeInTheDocument();
+        expect(gameIcons[0]).toHaveClass('h-16', 'w-16');
     });
 
-    it('renders overview heading', () => {
-        render(<MediaContext media={mockMediaItem} />);
-        expect(screen.getByText('Overview')).toBeInTheDocument();
+    it('renders correct icon for book type', () => {
+        render(<MediaContext media={mockMediaWithoutPoster} />);
+
+        const bookIcons = screen.getAllByTestId('book-icon');
+        expect(bookIcons[0]).toBeInTheDocument();
+        expect(bookIcons[0]).toHaveClass('h-16', 'w-16');
     });
 
-    it('renders correct icon for different media types', () => {
-        const seriesMedia = { ...mockMediaItem, type: 'series' as const };
-        const { rerender } = render(<MediaContext media={mockMediaItem} />);
+    it('renders correct icon for music type', () => {
+        const musicMedia: SafeMediaItem = {
+            ...mockMediaWithoutPoster,
+            type: 'music',
+        };
+
+        render(<MediaContext media={musicMedia} />);
+
+        const musicIcons = screen.getAllByTestId('music-icon');
+        expect(musicIcons[0]).toBeInTheDocument();
+        expect(musicIcons[0]).toHaveClass('h-16', 'w-16');
+    });
+
+    it('displays translated media type', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
         expect(screen.getByText('Film')).toBeInTheDocument();
+    });
 
-        rerender(<MediaContext media={seriesMedia} />);
-        expect(screen.getByText('Series')).toBeInTheDocument();
+    it('applies correct aspect ratio to poster', () => {
+        const { container } = render(
+            <MediaContext media={mockMediaWithPoster} />
+        );
+
+        const posterContainer = container.querySelector('.aspect-\\[2\\/3\\]');
+        expect(posterContainer).toBeInTheDocument();
+    });
+
+    it('applies responsive width classes to poster', () => {
+        const { container } = render(
+            <MediaContext media={mockMediaWithPoster} />
+        );
+
+        const posterContainer = container.querySelector('.aspect-\\[2\\/3\\]');
+        expect(posterContainer).toHaveClass('w-32', 'sm:w-full');
+    });
+
+    it('applies correct border radius classes', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const poster = screen.getByAltText('The Matrix');
+        expect(poster).toHaveClass(
+            'rounded-l-lg',
+            'sm:rounded-t-lg',
+            'sm:rounded-b-none'
+        );
+    });
+
+    it('renders media type badge with icon and text', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const badge = screen.getByText('Film').closest('span');
+        expect(badge).toBeInTheDocument();
+        expect(badge).toHaveClass(
+            'bg-secondary',
+            'text-secondary-foreground',
+            'rounded'
+        );
+
+        const badgeIcon = screen
+            .getByText('Film')
+            .parentElement?.querySelector('svg');
+        expect(badgeIcon).toBeInTheDocument();
+    });
+
+    it('applies correct text styling to title', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const title = screen.getByText('The Matrix');
+        expect(title).toHaveClass(
+            'text-foreground',
+            'text-lg',
+            'leading-tight',
+            'font-semibold'
+        );
+    });
+
+    it('applies correct styling to "Review for" label', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const label = screen.getByText('Review for');
+        expect(label).toHaveClass(
+            'text-muted-foreground',
+            'text-xs',
+            'font-medium',
+            'tracking-wide',
+            'uppercase'
+        );
+    });
+
+    it('uses StickyNote icon as fallback for unknown media type', () => {
+        const unknownMedia: SafeMediaItem = {
+            ...mockMediaWithoutPoster,
+            type: 'unknown' as SafeMediaItem['type'],
+        };
+
+        render(<MediaContext media={unknownMedia} />);
+
+        const fallbackIcons = screen.getAllByTestId('stickynote-icon');
+        expect(fallbackIcons[0]).toBeInTheDocument();
+        expect(fallbackIcons[0]).toHaveClass('h-16', 'w-16');
+    });
+
+    it('renders responsive layout classes', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const title = screen.getByText('The Matrix');
+        const layout = title.closest('.flex.flex-col')?.parentElement;
+        expect(layout).toBeInTheDocument();
+    });
+
+    it('applies responsive padding to content section', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const contentSection = screen
+            .getByText('The Matrix')
+            .closest('.flex.flex-col');
+        expect(contentSection).toHaveClass('p-4', 'sm:p-5');
+    });
+
+    it('applies responsive gap classes to content section', () => {
+        render(<MediaContext media={mockMediaWithPoster} />);
+
+        const contentSection = screen
+            .getByText('The Matrix')
+            .closest('.flex.flex-col');
+        expect(contentSection).toHaveClass('gap-2', 'sm:gap-3');
     });
 });
