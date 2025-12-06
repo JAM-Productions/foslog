@@ -135,7 +135,10 @@
         "google": "Google",
         "github": "GitHub",
         "next": "Next",
-        "settings": "Settings"
+        "settings": "Settings",
+        "edit": "Edit",
+        "delete": "Delete",
+        "share": "Share"
     },
     "MediaPage": {
         "reviews": "Reviews",
@@ -167,6 +170,7 @@
     },
     "ReviewPage": {
         "reviewFor": "Review for",
-        "review": "Review"
+        "review": "Review",
+        "options": "Options"
     }
 }

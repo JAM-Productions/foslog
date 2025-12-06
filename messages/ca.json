@@ -135,7 +135,10 @@
         "google": "Google",
         "github": "GitHub",
         "next": "Següent",
-        "settings": "Configuració"
+        "settings": "Configuració",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "share": "Compartir"
     },
     "MediaPage": {
         "reviews": "Ressenyes",
@@ -167,6 +170,7 @@
     },
     "ReviewPage": {
         "reviewFor": "Ressenya per a",
-        "review": "Ressenya"
+        "review": "Ressenya",
+        "options": "Opcions"
     }
 }

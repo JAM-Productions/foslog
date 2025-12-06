@@ -1,7 +1,9 @@
+'use client';
+
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
-import { User } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 
@@ -11,17 +13,21 @@ export function ReviewDetailCard({ review }: { review: SafeReview }) {
 
     const formatDate = (date: Date | string) => {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return dateObj.toLocaleDateString(locale, {
+        return dateObj.toLocaleString(locale, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
         });
     };
 
+    const isEdited = review.updatedAt && review.updatedAt !== review.createdAt;
+
     return (
         <Card className="p-4 sm:p-6">
-            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-                <div className="flex flex-row items-center gap-3 sm:gap-4">
+            <div className="flex flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-3 sm:gap-4">
                     {user.image ? (
                         <Image
                             src={user.image}
@@ -41,14 +47,18 @@ export function ReviewDetailCard({ review }: { review: SafeReview }) {
                         <RatingDisplay rating={review.rating} />
                     </div>
                 </div>
-
-                <p className="text-muted-foreground text-sm sm:text-base">
-                    {formatDate(review.createdAt)}
-                </p>
             </div>
-            <p className="mt-3 text-base leading-relaxed sm:mt-4">
-                {review.review}
-            </p>
+            <div className="mt-3 flex flex-col gap-1 sm:mt-4">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 flex-shrink-0" />
+                    <p className="text-sm sm:text-base">
+                        {isEdited
+                            ? formatDate(review.updatedAt)
+                            : formatDate(review.createdAt)}
+                    </p>
+                </div>
+                <p className="text-base leading-relaxed">{review.review}</p>
+            </div>
         </Card>
     );
 }
