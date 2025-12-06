@@ -110,7 +110,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     className={`w-full cursor-pointer sm:w-auto ${
                         isSubmitting ? 'text-transparent' : ''
                     }`}
-                    disabled={isSubmitting || rating === 0 || !text.trim()}
+                    disabled={isSubmitting || rating === 0}
                 >
                     {t('submitReview')}
                 </Button>
