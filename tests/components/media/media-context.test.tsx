@@ -246,11 +246,7 @@ describe('MediaContext', () => {
         render(<MediaContext media={mockMediaWithPoster} />);
 
         const poster = screen.getByAltText('The Matrix');
-        expect(poster).toHaveClass(
-            'rounded-l-lg',
-            'sm:rounded-t-lg',
-            'sm:rounded-b-none'
-        );
+        expect(poster).toHaveClass('rounded-lg', 'object-cover');
     });
 
     it('renders media type badge with icon and text', () => {
