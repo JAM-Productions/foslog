@@ -51,7 +51,7 @@ export function MediaContext({ media }: MediaContextProps) {
                     <MediaIcon className="h-16 w-16" />
                 </div>
             )}
-            <Card>
+            <Card className="w-full">
                 <div className="flex flex-col gap-2 p-4 sm:gap-3 sm:p-5">
                     <div className="space-y-1">
                         <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase sm:text-sm">
