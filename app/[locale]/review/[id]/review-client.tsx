@@ -4,9 +4,8 @@ import { BackButton } from '@/components/button/back-button';
 import { SafeReviewWithMedia } from '@/lib/types';
 import { MediaContext } from '@/components/media/media-context';
 import { ReviewDetailCard } from '@/components/review/review-detail-card';
+import { ReviewOptions } from '@/components/review/review-options';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/button/button';
-import { Pencil, Share2, Trash } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 
 export function ReviewClient({
@@ -19,7 +18,6 @@ export function ReviewClient({
     const { user: currentUser } = useAuth();
 
     const t = useTranslations('ReviewPage');
-    const tCTA = useTranslations('CTA');
 
     const isOwner = currentUser?.id === reviewItem.userId;
 
@@ -48,34 +46,10 @@ export function ReviewClient({
                             {/* Actions below review on sm screens */}
                             <div className="lg:hidden">
                                 <div className="flex flex-col gap-4 sm:flex-row">
-                                    {isOwner && (
-                                        <>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="flex w-full items-center gap-1.5 sm:w-auto"
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                                <span>{tCTA('edit')}</span>
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="flex w-full items-center gap-1.5 sm:w-auto"
-                                            >
-                                                <Trash className="h-4 w-4" />
-                                                <span>{tCTA('delete')}</span>
-                                            </Button>
-                                        </>
-                                    )}
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="flex w-full items-center gap-1.5 sm:w-auto"
-                                    >
-                                        <Share2 className="h-4 w-4" />
-                                        <span>{tCTA('share')}</span>
-                                    </Button>
+                                    <ReviewOptions
+                                        isOwner={isOwner}
+                                        variant="mobile"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -84,37 +58,10 @@ export function ReviewClient({
                     {/* Right Column - Actions */}
                     <div className="hidden lg:col-span-2 lg:block">
                         <div className="flex flex-col gap-4 sm:gap-6">
-                            <span className="text-foreground text-2xl font-bold sm:text-3xl">
-                                {t('options')}
-                            </span>
-                            {isOwner && (
-                                <>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="flex w-full items-center gap-1.5"
-                                    >
-                                        <Pencil className="h-4 w-4" />
-                                        <span>{tCTA('edit')}</span>
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="flex w-full items-center gap-1.5"
-                                    >
-                                        <Trash className="h-4 w-4" />
-                                        <span>{tCTA('delete')}</span>
-                                    </Button>
-                                </>
-                            )}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex w-full items-center gap-1.5"
-                            >
-                                <Share2 className="h-4 w-4" />
-                                <span>{tCTA('share')}</span>
-                            </Button>
+                            <ReviewOptions
+                                isOwner={isOwner}
+                                variant="desktop"
+                            />
                         </div>
                     </div>
                 </div>
