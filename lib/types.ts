@@ -5,3 +5,6 @@ export type SafeReview = Review & { user: User };
 export type SafeMediaItemWithReviews = SafeMediaItem & {
     reviews: SafeReview[];
 };
+export type SafeReviewWithMedia = SafeReview & {
+    media: SafeMediaItem;
+};

@@ -1,16 +1,23 @@
+'use client';
+
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
 import { User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 export function ReviewCard({ review }: { review: SafeReview }) {
     const { user } = review;
+    const router = useRouter();
     const t = useTranslations('MediaPage');
 
     return (
-        <Card className="p-4 sm:p-6">
+        <Card
+            className="cursor-pointer p-4 transition-opacity duration-200 hover:opacity-80 sm:p-6"
+            onClick={() => router.push(`/review/${review.id}`)}
+        >
             <div className="flex flex-row items-center gap-3 sm:gap-4">
                 {user.image ? (
                     <Image
