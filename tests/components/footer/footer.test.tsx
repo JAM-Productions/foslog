@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Footer from '@/components/footer/footer';
 import pkg from '../../../package.json';
+import { NextIntlClientProvider } from 'next-intl';
 
 // Mock the next/link component
 vi.mock('next/link', () => ({
@@ -9,9 +10,20 @@ vi.mock('next/link', () => ({
     default: ({ href, children }) => <a href={href}>{children}</a>,
 }));
 
+const messages = {
+    Footer: {
+        privacyPolicy: 'Privacy Policy',
+        termsOfService: 'Terms of Service',
+    },
+};
+
 describe('Footer', () => {
     it('renders the footer with correct content', () => {
-        render(<Footer />);
+        render(
+            <NextIntlClientProvider locale="en" messages={messages}>
+                <Footer />
+            </NextIntlClientProvider>
+        );
 
         // Check for copyright
         const year = new Date().getFullYear();

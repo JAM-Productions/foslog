@@ -1,7 +1,10 @@
-import pkg from '../../package.json';
+'use client';
+import pkg from '@/../package.json';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 const Footer = () => {
+    const t = useTranslations('Footer');
     return (
         <footer className="bg-muted text-muted-foreground mt-auto py-6">
             <div className="container mx-auto flex flex-col items-center justify-between gap-4 text-sm md:flex-row md:gap-8">
@@ -12,14 +15,14 @@ const Footer = () => {
                         className="hover:underline"
                         prefetch={false}
                     >
-                        Privacy Policy
+                        {t('privacyPolicy')}
                     </Link>
                     <Link
                         href="/terms-of-service"
                         className="hover:underline"
                         prefetch={false}
                     >
-                        Terms of Service
+                        {t('termsOfService')}
                     </Link>
                 </div>
                 <a
