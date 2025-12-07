@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useLayoutEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useTranslations } from 'next-intl';
+import Portal from '@/components/portal';
 
 export interface SelectOption {
     value: string;
@@ -33,8 +34,20 @@ const Select = ({
     const defaultPlaceholder = placeholder || tSelect('selectPlaceholder');
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
 
     useClickOutside(selectRef, isOpen, setIsOpen);
+
+    useLayoutEffect(() => {
+        if (isOpen && selectRef.current) {
+            const rect = selectRef.current.getBoundingClientRect();
+            setPosition({
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+            });
+        }
+    }, [isOpen]);
 
     const selectedOption = options.find((option) => option.value === value);
 
@@ -65,21 +78,31 @@ const Select = ({
             </Button>
 
             {isOpen && !disabled && (
-                <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
-                    <div className="p-1">
-                        {options.map((option) => (
-                            <Button
-                                key={option.value}
-                                variant="ghost"
-                                onClick={() => handleSelect(option.value)}
-                                disabled={option.disabled}
-                                className={`w-full cursor-pointer ${option.value === value ? 'bg-accent' : ''}`}
-                            >
-                                {option.label}
-                            </Button>
-                        ))}
+                <Portal>
+                    <div
+                        data-testid="select-dropdown"
+                        className="bg-background absolute z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg"
+                        style={{
+                            top: `${position.top}px`,
+                            left: `${position.left}px`,
+                            width: `${position.width}px`,
+                        }}
+                    >
+                        <div className="p-1">
+                            {options.map((option) => (
+                                <Button
+                                    key={option.value}
+                                    variant="ghost"
+                                    onClick={() => handleSelect(option.value)}
+                                    disabled={option.disabled}
+                                    className={`w-full cursor-pointer ${option.value === value ? 'bg-accent' : ''}`}
+                                >
+                                    {option.label}
+                                </Button>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                </Portal>
             )}
         </div>
     );
