@@ -64,18 +64,13 @@ export const getMediaById = async (
             return null;
         }
 
-        const [reviews, totalReviews] = await prisma.$transaction([
-            prisma.review.findMany({
-                where: { mediaId: id },
-                include: { user: true },
-                skip,
-                take: pageSize,
-                orderBy: { createdAt: 'desc' },
-            }),
-            prisma.review.count({
-                where: { mediaId: id },
-            }),
-        ]);
+        const reviews = await prisma.review.findMany({
+            where: { mediaId: id },
+            include: { user: true },
+            skip,
+            take: pageSize,
+            orderBy: { createdAt: 'desc' },
+        });
 
         const safeReviews: SafeReview[] = reviews.map((review) => {
             const { user, ...restOfReview } = review;
@@ -101,7 +96,7 @@ export const getMediaById = async (
             };
         });
 
-        const totalPages = Math.ceil(totalReviews / pageSize);
+        const totalPages = Math.ceil(mediaItem.totalReviews / pageSize);
 
         return {
             id: mediaItem.id,
@@ -116,7 +111,7 @@ export const getMediaById = async (
             cover: mediaItem.cover ?? undefined,
             description: mediaItem.description,
             averageRating: mediaItem.averageRating,
-            totalReviews: totalReviews,
+            totalReviews: mediaItem.totalReviews,
             reviews: safeReviews,
             totalPages,
             currentPage: page,

@@ -10,7 +10,9 @@ export default async function MediaPage({
 }) {
     const resolvedParams = await params;
     const resolvedSearchParams = await searchParams;
-    const parsedPage = resolvedSearchParams.page ? parseInt(resolvedSearchParams.page, 10) : 1;
+    const parsedPage = resolvedSearchParams.page
+        ? parseInt(resolvedSearchParams.page, 10)
+        : 1;
     const page = Number.isNaN(parsedPage) ? 1 : Math.max(1, parsedPage);
     const mediaItem = await getMediaById(resolvedParams.id, page);
 

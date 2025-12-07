@@ -9,6 +9,20 @@ vi.mock('next/navigation', () => ({
     usePathname: vi.fn(),
 }));
 
+vi.mock('@/components/pagination/pagination', () => ({
+    default: ({
+        currentPage,
+        totalPages,
+    }: {
+        currentPage: number;
+        totalPages: number;
+    }) => (
+        <div data-testid="pagination">
+            Pagination - Page {currentPage} of {totalPages}
+        </div>
+    ),
+}));
+
 // Mock the sub-components
 vi.mock('@/components/media/media-details', () => ({
     MediaDetails: ({ media }: { media: any }) => (
