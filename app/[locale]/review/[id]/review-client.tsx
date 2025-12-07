@@ -49,6 +49,7 @@ export function ReviewClient({
                                     <ReviewOptions
                                         isOwner={isOwner}
                                         variant="mobile"
+                                        reviewId={reviewItem.id}
                                     />
                                 </div>
                             </div>
@@ -61,6 +62,7 @@ export function ReviewClient({
                             <ReviewOptions
                                 isOwner={isOwner}
                                 variant="desktop"
+                                reviewId={reviewItem.id}
                             />
                         </div>
                     </div>
