@@ -14,8 +14,7 @@ interface MediaClientProps {
 
 export function MediaClient({ mediaItem }: MediaClientProps) {
     const t = useTranslations('MediaPage');
-    const { reviews, totalPages, currentPage, totalReviews, ...media } =
-        mediaItem;
+    const { reviews, totalPages, currentPage, ...media } = mediaItem;
 
     return (
         <div className="bg-background min-h-screen">
@@ -36,7 +35,7 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                         <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
                             {t('reviews')}
                             <span className="text-muted-foreground ml-2 text-base font-normal sm:ml-3 sm:text-lg">
-                                ({totalReviews})
+                                ({media.totalReviews})
                             </span>
                         </h2>
                     </div>
