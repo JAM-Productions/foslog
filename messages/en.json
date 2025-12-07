@@ -171,7 +171,11 @@
     "ReviewPage": {
         "reviewFor": "Review for",
         "review": "Review",
-        "options": "Options"
+        "options": "Options",
+        "shareReview": "Check out this review!"
+    },
+    "Toast": {
+        "linkCopied": "Link copied to clipboard!"
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",
