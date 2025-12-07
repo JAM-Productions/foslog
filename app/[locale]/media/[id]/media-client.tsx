@@ -6,6 +6,7 @@ import { ReviewList } from '@/components/review/review-list';
 import { BackButton } from '@/components/button/back-button';
 import { useTranslations } from 'next-intl';
 import { SafeMediaItemWithReviews } from '@/lib/types';
+import Pagination from '@/components/pagination/pagination';
 
 interface MediaClientProps {
     mediaItem: SafeMediaItemWithReviews;
@@ -13,7 +14,7 @@ interface MediaClientProps {
 
 export function MediaClient({ mediaItem }: MediaClientProps) {
     const t = useTranslations('MediaPage');
-    const { reviews, ...media } = mediaItem;
+    const { reviews, totalPages, currentPage, ...media } = mediaItem;
 
     return (
         <div className="bg-background min-h-screen">
@@ -34,12 +35,18 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                         <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
                             {t('reviews')}
                             <span className="text-muted-foreground ml-2 text-base font-normal sm:ml-3 sm:text-lg">
-                                ({reviews.length})
+                                ({media.totalReviews})
                             </span>
                         </h2>
                     </div>
                     {reviews.length > 0 ? (
-                        <ReviewList reviews={reviews} />
+                        <>
+                            <ReviewList reviews={reviews} />
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                            />
+                        </>
                     ) : (
                         <div className="bg-card border-border rounded-lg border py-6 text-center sm:py-8">
                             <p className="text-muted-foreground text-sm sm:text-base">

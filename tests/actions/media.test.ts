@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getMedias } from '@/app/actions/media';
+import { getMedias, getMediaById } from '@/app/actions/media';
 import { prisma } from '@/lib/prisma';
 
 // Mock Prisma client
@@ -8,6 +8,10 @@ vi.mock('@/lib/prisma', () => ({
         mediaItem: {
             findMany: vi.fn(),
             count: vi.fn(),
+            findUnique: vi.fn(),
+        },
+        review: {
+            findMany: vi.fn(),
         },
         $transaction: vi.fn(),
     },
@@ -327,5 +331,69 @@ describe('getMedias Server Action', () => {
             expect(result.items[0].type).toBe('film');
             expect(result.items[1].type).toBe('series');
         });
+    });
+});
+
+describe('getMediaById Server Action', () => {
+    const mockMediaItem = {
+        id: '1',
+        title: 'Test Movie',
+        type: 'FILM',
+        totalReviews: 15,
+    };
+
+    const mockReviews = Array.from({ length: 5 }, (_, i) => ({
+        id: `review-${i}`,
+        rating: 4,
+        user: { id: `user-${i}`, name: `User ${i}` },
+    }));
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        (prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItem);
+        (prisma.review.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockReviews);
+    });
+
+    it('fetches reviews for the first page', async () => {
+        await getMediaById('1', 1, 5);
+        expect(prisma.review.findMany).toHaveBeenCalledWith({
+            where: { mediaId: '1' },
+            include: { user: true },
+            skip: 0,
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+        });
+    });
+
+    it('fetches reviews for a specific page', async () => {
+        await getMediaById('1', 3, 5);
+        expect(prisma.review.findMany).toHaveBeenCalledWith({
+            where: { mediaId: '1' },
+            include: { user: true },
+            skip: 10,
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+        });
+    });
+
+    it('calculates totalPages correctly', async () => {
+        const result = await getMediaById('1', 1, 5);
+        expect(result?.totalPages).toBe(3);
+    });
+
+    it('handles default page and pageSize', async () => {
+        await getMediaById('1');
+        expect(prisma.review.findMany).toHaveBeenCalledWith({
+            where: { mediaId: '1' },
+            include: { user: true },
+            skip: 0,
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+        });
+    });
+
+    it('returns the correct currentPage', async () => {
+        const result = await getMediaById('1', 2, 5);
+        expect(result?.currentPage).toBe(2);
     });
 });

@@ -49,66 +49,73 @@ export const getMedias = async (
 };
 
 export const getMediaById = async (
-    id: string
+    id: string,
+    page: number = 1,
+    pageSize: number = 5
 ): Promise<SafeMediaItemWithReviews | null> => {
     try {
+        const skip = (page - 1) * pageSize;
+
         const mediaItem = await prisma.mediaItem.findUnique({
             where: { id },
-            include: {
-                reviews: {
-                    include: {
-                        user: true,
-                    },
-                },
-            },
         });
 
-        if (mediaItem) {
-            const { reviews, ...restOfMediaItem } = mediaItem;
-
-            const safeReviews: SafeReview[] = reviews.map((review) => {
-                const { user, ...restOfReview } = review;
-
-                const safeUser: User = {
-                    id: user.id,
-                    name: user.name ?? 'Unknown User',
-                    email: user.email,
-                    image: user.image ?? undefined,
-                    bio: user.bio ?? undefined,
-                    joinedAt: user.createdAt,
-                };
-
-                return {
-                    id: restOfReview.id,
-                    mediaId: restOfReview.mediaId,
-                    userId: restOfReview.userId,
-                    rating: restOfReview.rating,
-                    review: restOfReview.review ?? undefined,
-                    createdAt: restOfReview.createdAt,
-                    updatedAt: restOfReview.updatedAt,
-                    user: safeUser,
-                };
-            });
-
-            return {
-                id: restOfMediaItem.id,
-                title: restOfMediaItem.title,
-                type: restOfMediaItem.type.toLowerCase() as MediaType,
-                year: restOfMediaItem.year ?? undefined,
-                director: restOfMediaItem.director ?? undefined,
-                author: restOfMediaItem.author ?? undefined,
-                artist: restOfMediaItem.artist ?? undefined,
-                genre: restOfMediaItem.genre,
-                poster: restOfMediaItem.poster ?? undefined,
-                cover: restOfMediaItem.cover ?? undefined,
-                description: restOfMediaItem.description,
-                averageRating: restOfMediaItem.averageRating,
-                totalReviews: restOfMediaItem.totalReviews,
-                reviews: safeReviews,
-            };
+        if (!mediaItem) {
+            return null;
         }
 
-        return null;
+        const reviews = await prisma.review.findMany({
+            where: { mediaId: id },
+            include: { user: true },
+            skip,
+            take: pageSize,
+            orderBy: { createdAt: 'desc' },
+        });
+
+        const safeReviews: SafeReview[] = reviews.map((review) => {
+            const { user, ...restOfReview } = review;
+
+            const safeUser: User = {
+                id: user.id,
+                name: user.name ?? 'Unknown User',
+                email: user.email,
+                image: user.image ?? undefined,
+                bio: user.bio ?? undefined,
+                joinedAt: user.createdAt,
+            };
+
+            return {
+                id: restOfReview.id,
+                mediaId: restOfReview.mediaId,
+                userId: restOfReview.userId,
+                rating: restOfReview.rating,
+                review: restOfReview.review ?? undefined,
+                createdAt: restOfReview.createdAt,
+                updatedAt: restOfReview.updatedAt,
+                user: safeUser,
+            };
+        });
+
+        const totalPages = Math.ceil(mediaItem.totalReviews / pageSize);
+
+        return {
+            id: mediaItem.id,
+            title: mediaItem.title,
+            type: mediaItem.type.toLowerCase() as MediaType,
+            year: mediaItem.year ?? undefined,
+            director: mediaItem.director ?? undefined,
+            author: mediaItem.author ?? undefined,
+            artist: mediaItem.artist ?? undefined,
+            genre: mediaItem.genre,
+            poster: mediaItem.poster ?? undefined,
+            cover: mediaItem.cover ?? undefined,
+            description: mediaItem.description,
+            averageRating: mediaItem.averageRating,
+            totalReviews: mediaItem.totalReviews,
+            reviews: safeReviews,
+            totalPages,
+            currentPage: page,
+        };
     } catch (error) {
         console.error(`Error fetching media item with id ${id}:`, error);
         throw new Error('Could not fetch media item.');
