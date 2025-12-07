@@ -17,13 +17,22 @@ export default async function LegalDocument({
                 <ReactMarkdown
                     components={{
                         h1: ({ ...props }) => (
-                            <h1 className="mb-4 text-4xl font-bold" {...props} />
+                            <h1
+                                className="mb-4 text-4xl font-bold"
+                                {...props}
+                            />
                         ),
                         h2: ({ ...props }) => (
-                            <h2 className="mb-3 mt-6 text-2xl font-semibold" {...props} />
+                            <h2
+                                className="mt-6 mb-3 text-2xl font-semibold"
+                                {...props}
+                            />
                         ),
                         p: ({ ...props }) => (
-                            <p className="mb-4 leading-relaxed" {...props} />
+                            <p
+                                className="mb-4 leading-relaxed"
+                                {...props}
+                            />
                         ),
                         a: ({ ...props }) => (
                             <a
@@ -38,10 +47,16 @@ export default async function LegalDocument({
                             />
                         ),
                         ul: ({ ...props }) => (
-                            <ul className="mb-4 ml-6 list-disc" {...props} />
+                            <ul
+                                className="mb-4 ml-6 list-disc"
+                                {...props}
+                            />
                         ),
                         li: ({ ...props }) => (
-                            <li className="mb-2" {...props} />
+                            <li
+                                className="mb-2"
+                                {...props}
+                            />
                         ),
                     }}
                 >

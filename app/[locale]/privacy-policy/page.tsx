@@ -6,5 +6,10 @@ export default async function PrivacyPolicyPage({
     params: Promise<{ locale: string }>;
 }) {
     const { locale } = await paramsPromise;
-    return <LegalDocument docName="privacy-policy.md" locale={locale} />;
+    return (
+        <LegalDocument
+            docName="privacy-policy.md"
+            locale={locale}
+        />
+    );
 }

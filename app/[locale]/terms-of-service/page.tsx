@@ -6,5 +6,10 @@ export default async function TermsOfServicePage({
     params: Promise<{ locale: string }>;
 }) {
     const { locale } = await paramsPromise;
-    return <LegalDocument docName="terms-of-service.md" locale={locale} />;
+    return (
+        <LegalDocument
+            docName="terms-of-service.md"
+            locale={locale}
+        />
+    );
 }
