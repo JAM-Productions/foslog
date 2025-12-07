@@ -38,4 +38,4 @@ Estos Términos se regirán e interpretarán de acuerdo con las leyes de Califor
 
 ### Contáctenos
 
-Si tiene alguna pregunta sobre estos Términos, contáctenos en: contact@foslog.com
+Si tiene alguna pregunta sobre estos Términos, contáctenos en: jamproductionsdev@gmail.com

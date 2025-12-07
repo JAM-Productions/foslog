@@ -38,4 +38,4 @@ These Terms shall be governed and construed in accordance with the laws of the j
 
 ### Contact Us
 
-If you have any questions about these Terms, please contact us at: contact@foslog.com
+If you have any questions about these Terms, please contact us at: jamproductionsdev@gmail.com

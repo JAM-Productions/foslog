@@ -49,4 +49,4 @@ We use administrative, technical, and physical security measures to help protect
 
 ### Contact Us
 
-If you have questions or comments about this Privacy Policy, please contact us at: contact@foslog.com
+If you have questions or comments about this Privacy Policy, please contact us at: jamproductionsdev@gmail.com
