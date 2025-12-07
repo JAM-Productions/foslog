@@ -162,7 +162,7 @@ export default function ReviewModal() {
                         </p>
                     </div>
 
-                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 overflow-y-auto px-1 py-4 sm:gap-8 sm:py-8">
+                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-1 py-4 sm:gap-8 sm:py-8">
                         <div
                             className={`flex w-full shrink-0 flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
                         >
@@ -190,7 +190,7 @@ export default function ReviewModal() {
                         </div>
 
                         {modalStep === 2 && (
-                            <div className="flex w-full flex-col items-center gap-6 sm:flex-row">
+                            <div className="flex w-full flex-col items-center gap-6 overflow-y-auto px-1 pb-1 sm:flex-row">
                                 {selectedMedia?.poster ? (
                                     <Image
                                         src={selectedMedia.poster}
