@@ -6,10 +6,13 @@ export default async function MediaPage({
     searchParams,
 }: {
     params: Promise<{ id: string }>;
-    searchParams: { page: string | undefined };
+    searchParams: Promise<{ page: string | undefined }>;
 }) {
     const resolvedParams = await params;
-    const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+    const resolvedSearchParams = await searchParams;
+    const page = resolvedSearchParams.page
+        ? parseInt(resolvedSearchParams.page, 10)
+        : 1;
     const mediaItem = await getMediaById(resolvedParams.id, page);
 
     if (!mediaItem) {
