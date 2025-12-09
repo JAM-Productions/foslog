@@ -39,7 +39,8 @@ export const getReviewById = async (
             id: review.id,
             mediaId: review.mediaId,
             userId: review.userId,
-            rating: review.rating,
+            rating: review.rating ?? undefined,
+            liked: review.liked ?? undefined,
             review: review.review ?? undefined,
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
@@ -58,6 +59,8 @@ export const getReviewById = async (
                 description: review.media.description,
                 averageRating: review.media.averageRating,
                 totalReviews: review.media.totalReviews,
+                totalLikes: review.media.totalLikes,
+                totalDislikes: review.media.totalDislikes,
             },
         };
     } catch (error) {

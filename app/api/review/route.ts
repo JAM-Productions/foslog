@@ -69,17 +69,14 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            // Aggregate ratings (only for reviews with ratings)
-            const { _avg, _count } = await tx.review.aggregate({
+            const { _avg } = await tx.review.aggregate({
                 where: {
                     mediaId,
                     rating: { not: null },
                 },
                 _avg: { rating: true },
-                _count: true,
             });
 
-            // Count likes and dislikes
             const [likesCount, dislikesCount, totalReviewsCount] =
                 await Promise.all([
                     tx.review.count({

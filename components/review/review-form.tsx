@@ -75,7 +75,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-sm">
                     {t('yourRating')}
                 </legend>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                     <RatingInput
                         size="lg"
                         value={rating}
@@ -86,11 +86,9 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             }
                         }}
                     />
-                    <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs sm:text-sm">
-                            {t('or')}
-                        </span>
-                    </div>
+                    <span className="text-muted-foreground text-sm font-medium uppercase">
+                        {t('or')}
+                    </span>
                     <div className="flex gap-2">
                         <Button
                             type="button"
@@ -103,7 +101,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             className="flex items-center gap-2"
                         >
                             <ThumbsUp className="h-4 w-4" />
-                            {t('like')}
+                            <span className="hidden sm:inline">{t('like')}</span>
                         </Button>
                         <Button
                             type="button"
@@ -116,7 +114,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             className="flex items-center gap-2"
                         >
                             <ThumbsDown className="h-4 w-4" />
-                            {t('dislike')}
+                            <span className="hidden sm:inline">{t('dislike')}</span>
                         </Button>
                     </div>
                 </div>
@@ -150,9 +148,8 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
             <div className="relative flex w-full flex-row items-center sm:w-auto">
                 <Button
                     type="submit"
-                    className={`w-full cursor-pointer sm:w-auto ${
-                        isSubmitting ? 'text-transparent' : ''
-                    }`}
+                    className={`w-full cursor-pointer sm:w-auto ${isSubmitting ? 'text-transparent' : ''
+                        }`}
                     disabled={isSubmitting || (rating === 0 && liked === null)}
                 >
                     {t('submitReview')}

@@ -38,4 +38,4 @@ Aquests Termes es regiran i interpretaran d'acord amb les lleis de Catalunya, Es
 
 ### Contacteu-nos
 
-Si teniu alguna pregunta sobre aquests Termes, poseu-vos en contacte amb nosaltres a: contact@foslog.com
+Si teniu alguna pregunta sobre aquests Termes, poseu-vos en contacte amb nosaltres a: jamproductionsdev@gmail.com

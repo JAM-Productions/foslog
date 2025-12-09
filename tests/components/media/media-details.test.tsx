@@ -93,10 +93,11 @@ describe('MediaDetails', () => {
         year: 1999,
         genre: ['action', 'sciFi'],
         poster: '/poster.jpg',
-        description:
-            'A computer hacker learns from mysterious rebels about the true nature of his reality.',
+        description: 'A computer hacker learns from mysterious rebels about the true nature of his reality.',
         averageRating: 4.5,
         totalReviews: 10,
+        totalLikes: 0,
+        totalDislikes: 0
     };
 
     it('renders the media title', () => {
@@ -312,9 +313,9 @@ describe('MediaDetails', () => {
         };
         render(<MediaDetails media={mediaWithZeroRating} />);
 
-        // Should still render the rating display with stars
-        const stars = screen.getAllByRole('button');
-        expect(stars.length).toBeGreaterThan(0);
+        // Should NOT render the rating display if rating is 0
+        const stars = screen.queryAllByRole('button');
+        expect(stars.length).toBe(0);
     });
 
     it('handles decimal ratings correctly', () => {

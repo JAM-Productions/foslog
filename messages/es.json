@@ -179,5 +179,9 @@
         "reviewFor": "Reseña para",
         "review": "Reseña",
         "options": "Opciones"
+    },
+    "Footer": {
+        "privacyPolicy": "Política de Privacidad",
+        "termsOfService": "Términos de Servicio"
     }
 }

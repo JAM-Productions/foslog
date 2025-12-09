@@ -1,7 +1,27 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MediaClient } from '@/app/[locale]/media/[id]/media-client';
-import { MediaItem, Review, User } from '@/lib/store';
+import { SafeMediaItemWithReviews } from '@/lib/types';
+
+// Mock Next.js navigation hooks
+vi.mock('next/navigation', () => ({
+    useRouter: vi.fn(),
+    usePathname: vi.fn(),
+}));
+
+vi.mock('@/components/pagination/pagination', () => ({
+    default: ({
+        currentPage,
+        totalPages,
+    }: {
+        currentPage: number;
+        totalPages: number;
+    }) => (
+        <div data-testid="pagination">
+            Pagination - Page {currentPage} of {totalPages}
+        </div>
+    ),
+}));
 
 // Mock the sub-components
 vi.mock('@/components/media/media-details', () => ({
@@ -26,7 +46,7 @@ vi.mock('@/components/button/back-button', () => ({
     BackButton: () => <div data-testid="back-button">Back Button</div>,
 }));
 
-const mockMediaItem: MediaItem & { reviews: (Review & { user: User })[] } = {
+const mockMediaItem: SafeMediaItemWithReviews = {
     id: '1',
     title: 'Test Movie',
     type: 'film',
@@ -37,6 +57,8 @@ const mockMediaItem: MediaItem & { reviews: (Review & { user: User })[] } = {
     totalLikes: 1,
     totalDislikes: 0,
     year: 2023,
+    totalPages: 1,
+    currentPage: 1,
     reviews: [
         {
             id: '1',

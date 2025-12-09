@@ -99,8 +99,7 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                                     <div className="flex items-center gap-2">
                                         <ThumbsUp className="h-4 w-4 text-green-600" />
                                         <span className="text-muted-foreground text-sm">
-                                            {media.totalLikes}{' '}
-                                            {tMP('likes')}
+                                            {media.totalLikes} {tMP('likes')}
                                         </span>
                                     </div>
                                     <div className="bg-border block h-4 w-px"></div>
