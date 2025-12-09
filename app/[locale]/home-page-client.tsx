@@ -47,7 +47,7 @@ export default function HomePageClient({
                 const { items, total } = await getMedias(currentPage, pageSize);
                 setMediaItems(items);
                 setTotal(total);
-            } catch (err) {
+            } catch (_err) {
                 setError(t('error'));
             } finally {
                 setLoading(false);
