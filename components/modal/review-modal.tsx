@@ -5,12 +5,12 @@ import { Button } from '@/components/button/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from '@/components/input/select';
 import { useState, useCallback } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { X, LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { RatingInput } from '@/components/input/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from '@/components/input/search-input';
 import { useRouter } from '@/i18n/navigation';
+import Modal from './modal';
 
 interface Review {
     stars?: number;
@@ -51,8 +51,6 @@ export default function ReviewModal() {
         { value: 'book', label: tMediaTypes('books'), disabled: true },
         { value: 'music', label: tMediaTypes('music'), disabled: true },
     ];
-
-    useBodyScrollLock(isReviewModalOpen);
 
     const clearModalState = useCallback(() => {
         setModalStep(1);
@@ -133,233 +131,190 @@ export default function ReviewModal() {
         }
     };
 
-    if (isReviewModalOpen) {
-        return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
-                <div
-                    className="bg-muted flex h-screen w-full max-w-4xl flex-col p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-lg sm:border"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
-                >
-                    <div className="mt-10 w-full shrink-0 space-y-2 pb-2 text-center sm:mt-0 sm:pb-0">
-                        <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
+    return (
+        <Modal
+            isOpen={isReviewModalOpen}
+            onClose={closeModal}
+            title={tReviewModal('reviewModalTitle')}
+            description={
+                modalStep === 1
+                    ? tReviewModal('reviewModalDescription')
+                    : tReviewModal('reviewModalDescription2')
+            }
+            footer={
+                <div className="flex w-full flex-col items-center justify-center pt-4 sm:pt-0">
+                    {error && modalStep === 2 && (
+                        <div className="mb-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
+                            {error}
+                        </div>
+                    )}
+                    <div className="flex w-full gap-4 sm:w-auto">
+                        {modalStep === 1 && (
                             <Button
-                                disabled={isLoadingSubmit}
-                                className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => closeModal()}
-                                aria-label="Close modal"
+                                disabled={!selectedMedia}
+                                className="w-full cursor-pointer sm:w-auto"
+                                onClick={() => setModalStep(2)}
                             >
-                                <X className="h-5 w-5" />
+                                {tCTA('next')}
                             </Button>
-                            <h2
-                                id="modal-title"
-                                className="text-2xl font-bold"
-                            >
-                                {tReviewModal('reviewModalTitle')}
-                            </h2>
-                        </div>
-                        <p className="text-muted-foreground text-center">
-                            {modalStep === 1
-                                ? tReviewModal('reviewModalDescription')
-                                : tReviewModal('reviewModalDescription2')}
-                        </p>
-                    </div>
-
-                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-1 py-4 sm:gap-8 sm:py-8">
-                        <div
-                            className={`flex w-full shrink-0 flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
-                        >
-                            <Select
-                                options={options}
-                                value={selectedMediaType}
-                                onChange={setSelectedMediaType}
-                                placeholder={tReviewModal('selectMediaType')}
-                            />
-                            <div className="flex-8">
-                                <SearchInput
-                                    disabled={!selectedMediaType}
-                                    placeholder={tReviewModal(
-                                        'inputMediaTitle'
-                                    )}
-                                    selectedMediaType={selectedMediaType}
-                                    setSelectedMedia={setSelectedMedia}
-                                    setMediaTitle={setMediaTitle}
-                                    value={mediaTitle}
-                                    onChange={(e) =>
-                                        setMediaTitle(e.target.value)
-                                    }
-                                />
-                            </div>
-                        </div>
-
+                        )}
                         {modalStep === 2 && (
-                            <div className="flex w-full flex-col items-center gap-6 overflow-y-auto px-1 pb-1 sm:flex-row">
-                                {selectedMedia?.poster ? (
-                                    <Image
-                                        src={selectedMedia.poster}
-                                        alt={selectedMedia.title}
-                                        width={200}
-                                        height={300}
-                                        className="h-[300px] w-[200px] min-w-[200px] rounded-md object-cover"
-                                    />
-                                ) : (
-                                    <div className="bg-background flex h-[300px] w-[200px] min-w-[200px] items-center justify-center rounded-md text-center text-sm">
-                                        {tReviewModal('noImageAvailable')}
-                                    </div>
-                                )}
-                                <form className="w-full space-y-4 sm:space-y-6">
-                                    <fieldset>
-                                        <legend className="text-foreground mb-2 block text-sm font-semibold">
-                                            {tMediaPage('yourRating')}
-                                        </legend>
-                                        <div className="flex flex-col gap-4">
-                                            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                                                <RatingInput
-                                                    size="lg"
-                                                    onChange={(newRating) => {
-                                                        setReviewStars(
-                                                            newRating
-                                                        );
-                                                        if (newRating > 0) {
-                                                            setReviewLiked(
-                                                                null
-                                                            );
-                                                        }
-                                                    }}
-                                                    value={reviewStars}
-                                                />
-                                                <span className="text-muted-foreground text-sm font-medium uppercase">
-                                                    {tMediaPage('or')}
-                                                </span>
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        type="button"
-                                                        variant={
-                                                            reviewLiked === true
-                                                                ? 'default'
-                                                                : 'outline'
-                                                        }
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            setReviewLiked(
-                                                                true
-                                                            );
-                                                            setReviewStars(0);
-                                                        }}
-                                                        className="flex items-center gap-2"
-                                                    >
-                                                        <ThumbsUp className="h-4 w-4" />
-                                                        <span className="hidden sm:inline">
-                                                            {tMediaPage('like')}
-                                                        </span>
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        variant={
-                                                            reviewLiked ===
-                                                            false
-                                                                ? 'default'
-                                                                : 'outline'
-                                                        }
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            setReviewLiked(
-                                                                false
-                                                            );
-                                                            setReviewStars(0);
-                                                        }}
-                                                        className="flex items-center gap-2"
-                                                    >
-                                                        <ThumbsDown className="h-4 w-4" />
-                                                        <span className="hidden sm:inline">
-                                                            {tMediaPage(
-                                                                'dislike'
-                                                            )}
-                                                        </span>
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <div>
-                                        <label
-                                            htmlFor="comment"
-                                            className="text-foreground mb-2 block text-sm font-semibold"
-                                        >
-                                            {tMediaPage('yourReview')}
-                                        </label>
-                                        <textarea
-                                            id="comment"
-                                            placeholder={tMediaPage(
-                                                'shareThoughts'
-                                            )}
-                                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-24 w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:h-48"
-                                            value={reviewText}
-                                            onChange={(e) =>
-                                                setReviewText(e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                </form>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex w-full shrink-0 flex-col items-center justify-center pt-4 sm:pt-0">
-                        {error && modalStep === 2 && (
-                            <div className="mb-4 w-full rounded-md bg-red-50 p-3 text-center text-sm text-red-700 sm:w-auto">
-                                {error}
-                            </div>
-                        )}
-                        <div className="flex w-full gap-4 sm:w-auto">
-                            {modalStep === 1 && (
+                            <div className="flex w-full gap-4">
                                 <Button
-                                    disabled={!selectedMedia}
-                                    className="w-full cursor-pointer sm:w-auto"
-                                    onClick={() => setModalStep(2)}
+                                    disabled={isLoadingSubmit}
+                                    className="w-full cursor-pointer"
+                                    variant="ghost"
+                                    onClick={() => handleBack()}
                                 >
-                                    {tCTA('next')}
+                                    {tBackButton('back')}
                                 </Button>
-                            )}
-                            {modalStep === 2 && (
-                                <div className="flex w-full gap-4">
+                                <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
                                     <Button
-                                        disabled={isLoadingSubmit}
-                                        className="w-full cursor-pointer"
-                                        variant="ghost"
-                                        onClick={() => handleBack()}
+                                        disabled={
+                                            !selectedMedia ||
+                                            (reviewStars < 1 &&
+                                                reviewLiked === null) ||
+                                            isLoadingSubmit
+                                        }
+                                        onClick={() => submitReview()}
+                                        className={`w-full cursor-pointer ${
+                                            isLoadingSubmit
+                                                ? 'text-transparent'
+                                                : ''
+                                        }`}
                                     >
-                                        {tBackButton('back')}
+                                        {tMediaPage('submitReview')}
                                     </Button>
-                                    <div className="relative flex w-full flex-row items-center justify-center sm:w-auto">
-                                        <Button
-                                            disabled={
-                                                !selectedMedia ||
-                                                (reviewStars < 1 &&
-                                                    reviewLiked === null) ||
-                                                isLoadingSubmit
-                                            }
-                                            onClick={() => submitReview()}
-                                            className={`w-full cursor-pointer ${
-                                                isLoadingSubmit
-                                                    ? 'text-transparent'
-                                                    : ''
-                                            }`}
-                                        >
-                                            {tMediaPage('submitReview')}
-                                        </Button>
-                                        {isLoadingSubmit && (
-                                            <LoaderCircle className="text-primary absolute animate-spin" />
-                                        )}
-                                    </div>
+                                    {isLoadingSubmit && (
+                                        <LoaderCircle className="text-primary absolute animate-spin" />
+                                    )}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
+            }
+        >
+            <div
+                className={`flex w-full shrink-0 flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
+            >
+                <Select
+                    options={options}
+                    value={selectedMediaType}
+                    onChange={setSelectedMediaType}
+                    placeholder={tReviewModal('selectMediaType')}
+                />
+                <div className="flex-8">
+                    <SearchInput
+                        disabled={!selectedMediaType}
+                        placeholder={tReviewModal('inputMediaTitle')}
+                        selectedMediaType={selectedMediaType}
+                        setSelectedMedia={setSelectedMedia}
+                        setMediaTitle={setMediaTitle}
+                        value={mediaTitle}
+                        onChange={(e) => setMediaTitle(e.target.value)}
+                    />
+                </div>
             </div>
-        );
-    }
+
+            {modalStep === 2 && (
+                <div className="flex w-full flex-col items-center gap-6 overflow-y-auto px-1 pb-1 sm:flex-row">
+                    {selectedMedia?.poster ? (
+                        <Image
+                            src={selectedMedia.poster}
+                            alt={selectedMedia.title}
+                            width={200}
+                            height={300}
+                            className="h-[300px] w-[200px] min-w-[200px] rounded-md object-cover"
+                        />
+                    ) : (
+                        <div className="bg-background flex h-[300px] w-[200px] min-w-[200px] items-center justify-center rounded-md text-center text-sm">
+                            {tReviewModal('noImageAvailable')}
+                        </div>
+                    )}
+                    <form className="w-full space-y-4 sm:space-y-6">
+                        <fieldset>
+                            <legend className="text-foreground mb-2 block text-sm font-semibold">
+                                {tMediaPage('yourRating')}
+                            </legend>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                                    <RatingInput
+                                        size="lg"
+                                        onChange={(newRating) => {
+                                            setReviewStars(newRating);
+                                            if (newRating > 0) {
+                                                setReviewLiked(null);
+                                            }
+                                        }}
+                                        value={reviewStars}
+                                    />
+                                    <span className="text-muted-foreground text-sm font-medium uppercase">
+                                        {tMediaPage('or')}
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            type="button"
+                                            variant={
+                                                reviewLiked === true
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            size="sm"
+                                            onClick={() => {
+                                                setReviewLiked(true);
+                                                setReviewStars(0);
+                                            }}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <ThumbsUp className="h-4 w-4" />
+                                            <span className="hidden sm:inline">
+                                                {tMediaPage('like')}
+                                            </span>
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant={
+                                                reviewLiked === false
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            size="sm"
+                                            onClick={() => {
+                                                setReviewLiked(false);
+                                                setReviewStars(0);
+                                            }}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <ThumbsDown className="h-4 w-4" />
+                                            <span className="hidden sm:inline">
+                                                {tMediaPage('dislike')}
+                                            </span>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div>
+                            <label
+                                htmlFor="comment"
+                                className="text-foreground mb-2 block text-sm font-semibold"
+                            >
+                                {tMediaPage('yourReview')}
+                            </label>
+                            <textarea
+                                id="comment"
+                                placeholder={tMediaPage('shareThoughts')}
+                                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-24 w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:h-48"
+                                value={reviewText}
+                                onChange={(e) =>
+                                    setReviewText(e.target.value)
+                                }
+                            />
+                        </div>
+                    </form>
+                </div>
+            )}
+        </Modal>
+    );
 }

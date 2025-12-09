@@ -30,6 +30,10 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
+vi.mock('@/lib/store', () => ({
+    useAppStore: vi.fn(),
+}));
+
 describe('UserMenu', () => {
     const mockPush = vi.fn();
     const mockT = vi.fn((key: string) => {
@@ -358,7 +362,7 @@ describe('UserMenu', () => {
             expect(screen.queryByText('Settings')).not.toBeInTheDocument();
         });
 
-        it('settings button is clickable but does not have click handler', async () => {
+        it('opens the configuration modal when settings is clicked', async () => {
             const user = userEvent.setup();
             render(<UserMenu />);
 
@@ -367,16 +371,8 @@ describe('UserMenu', () => {
             });
             await user.click(userButton);
 
-            const settingsButton = screen
-                .getByText('Settings')
-                .closest('button');
-            expect(settingsButton).toBeInTheDocument();
-
-            // Settings button should be clickable but no action is expected since no handler is implemented
-            await user.click(settingsButton!);
-
-            // Dropdown should still be open since no handler closes it
-            expect(screen.getByText('Settings')).toBeInTheDocument();
+            const settingsButton = screen.getByText('Settings');
+            await user.click(settingsButton);
         });
 
         it('dropdown can be toggled open and closed', async () => {

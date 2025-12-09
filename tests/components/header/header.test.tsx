@@ -8,9 +8,13 @@ vi.mock('@/components/media/media-type-filter', () => ({
     default: () => <div data-testid="media-type-filter">Media Type Filter</div>,
 }));
 
-vi.mock('@/components/theme/theme-toggle', () => ({
-    default: () => <div data-testid="theme-toggle">Theme Toggle</div>,
-}));
+vi.mock('@/components/theme/theme-toggle', async () => {
+    const actual = await vi.importActual('@/components/theme/theme-toggle');
+    return {
+        ...actual,
+        ThemeToggle: () => <div data-testid="theme-toggle">Theme Toggle</div>,
+    };
+});
 
 vi.mock('@/components/header/user-menu', () => ({
     default: () => <div data-testid="user-menu">User Menu</div>,
@@ -110,8 +114,6 @@ describe('Header', () => {
         render(<Header />);
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
-        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
-        expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
@@ -204,7 +206,7 @@ describe('Header', () => {
 
         // Actions section
         const actionsSection =
-            screen.getByTestId('language-selector').parentElement;
+            screen.getByTestId('user-menu').parentElement;
         expect(actionsSection).toHaveClass('flex', 'items-center', 'gap-2');
     });
 
@@ -251,8 +253,6 @@ describe('Header', () => {
         expect(children.length).toBeGreaterThanOrEqual(5);
 
         // Verify specific components exist
-        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
-        expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
     });
