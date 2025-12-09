@@ -58,11 +58,9 @@
     "Header": {
         "search": "Search media...",
         "profile": "Profile",
-        "settings": "Settings"
-    },
-    "LanguageSelector": {
-        "selectLanguage": "Select language",
-        "languageOptions": "Language options"
+        "settings": "Settings",
+        "theme": "Theme",
+        "language": "Language"
     },
     "Search": {
         "searchResults": "Search Results",
@@ -75,7 +73,7 @@
         "clearSearch": "Clear Search",
         "searchPlaceholder": "Search films, books, games..."
     },
-    "ThemeToggle": {
+    "Theme": {
         "light": "Light",
         "dark": "Dark",
         "system": "System"

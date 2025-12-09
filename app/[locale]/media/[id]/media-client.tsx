@@ -7,6 +7,9 @@ import { BackButton } from '@/components/button/back-button';
 import { useTranslations } from 'next-intl';
 import { SafeMediaItemWithReviews } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
+import { useState } from 'react';
+import { Button } from '@/components/button/button';
+import { Modal } from '@/components/modal/modal';
 
 interface MediaClientProps {
     mediaItem: SafeMediaItemWithReviews;
@@ -15,6 +18,7 @@ interface MediaClientProps {
 export function MediaClient({ mediaItem }: MediaClientProps) {
     const t = useTranslations('MediaPage');
     const { reviews, totalPages, currentPage, ...media } = mediaItem;
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
     return (
         <div className="bg-background min-h-screen">
@@ -38,6 +42,12 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                                 ({media.totalReviews})
                             </span>
                         </h2>
+                        <Button
+                            variant="default"
+                            onClick={() => setIsReviewModalOpen(true)}
+                        >
+                            {t('leaveReview')}
+                        </Button>
                     </div>
                     {reviews.length > 0 ? (
                         <>
@@ -57,14 +67,16 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                 </div>
 
                 {/* Review Form Section */}
-                <div className="mb-8 sm:mb-12 lg:mb-16">
-                    <h2 className="text-foreground mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">
-                        {t('leaveReview')}
-                    </h2>
-                    <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
-                        <ReviewForm mediaId={mediaItem.id} />
-                    </div>
-                </div>
+                <Modal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    title={t('leaveReview')}
+                >
+                    <ReviewForm
+                        mediaId={mediaItem.id}
+                        onSuccess={() => setIsReviewModalOpen(false)}
+                    />
+                </Modal>
             </div>
         </div>
     );

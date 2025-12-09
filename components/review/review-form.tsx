@@ -10,9 +10,10 @@ import { useAuth } from '@/lib/auth/auth-provider';
 
 interface ReviewFormProps {
     mediaId: string;
+    onSuccess?: () => void;
 }
 
-export function ReviewForm({ mediaId }: ReviewFormProps) {
+export function ReviewForm({ mediaId, onSuccess }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
     const router = useRouter();
     const [rating, setRating] = useState(0);
@@ -59,6 +60,9 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
 
             // Refresh the page to show the new review
             router.refresh();
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
