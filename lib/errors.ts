@@ -50,7 +50,7 @@ export function createApiError(
             message: message || 'Internal server error',
         },
         [ApiErrorType.VALIDATION_ERROR]: {
-            status: 400,
+            status: 422,
             message: message || 'Validation error',
         },
         [ApiErrorType.INVALID_INPUT]: {

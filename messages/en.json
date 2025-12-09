@@ -123,7 +123,9 @@
         "reviewModalDescription2": "Share your rating and thoughts about the media.",
         "selectMediaType": "Select Media Type",
         "inputMediaTitle": "Enter Media Title",
-        "noImageAvailable": "No image available"
+        "noImageAvailable": "No image available",
+        "editReviewModalTitle": "Edit Your Review",
+        "editReviewModalDescription": "Update your rating and thoughts about the media."
     },
     "CTA": {
         "addReviewsTitle": "Want to add your own reviews?",
@@ -138,7 +140,8 @@
         "settings": "Settings",
         "edit": "Edit",
         "delete": "Delete",
-        "share": "Share"
+        "share": "Share",
+        "save": "Save"
     },
     "MediaPage": {
         "reviews": "Reviews",

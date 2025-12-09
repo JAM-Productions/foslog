@@ -7,6 +7,7 @@ import { ReviewDetailCard } from '@/components/review/review-detail-card';
 import { ReviewOptions } from '@/components/review/review-options';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
+import EditReviewModal from '@/components/modal/edit-review-modal';
 
 export function ReviewClient({
     reviewItem,
@@ -49,6 +50,7 @@ export function ReviewClient({
                                     <ReviewOptions
                                         isOwner={isOwner}
                                         variant="mobile"
+                                        review={reviewItem}
                                     />
                                 </div>
                             </div>
@@ -61,11 +63,13 @@ export function ReviewClient({
                             <ReviewOptions
                                 isOwner={isOwner}
                                 variant="desktop"
+                                review={reviewItem}
                             />
                         </div>
                     </div>
                 </div>
             </div>
+            <EditReviewModal />
         </div>
     );
 }
