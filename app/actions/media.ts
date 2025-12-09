@@ -39,6 +39,8 @@ export const getMedias = async (
             description: item.description,
             averageRating: item.averageRating,
             totalReviews: item.totalReviews,
+            totalLikes: item.totalLikes,
+            totalDislikes: item.totalDislikes,
         }));
 
         return { items, total };
@@ -88,7 +90,8 @@ export const getMediaById = async (
                 id: restOfReview.id,
                 mediaId: restOfReview.mediaId,
                 userId: restOfReview.userId,
-                rating: restOfReview.rating,
+                rating: restOfReview.rating ?? undefined,
+                liked: restOfReview.liked ?? undefined,
                 review: restOfReview.review ?? undefined,
                 createdAt: restOfReview.createdAt,
                 updatedAt: restOfReview.updatedAt,
@@ -112,6 +115,8 @@ export const getMediaById = async (
             description: mediaItem.description,
             averageRating: mediaItem.averageRating,
             totalReviews: mediaItem.totalReviews,
+            totalLikes: mediaItem.totalLikes,
+            totalDislikes: mediaItem.totalDislikes,
             reviews: safeReviews,
             totalPages,
             currentPage: page,

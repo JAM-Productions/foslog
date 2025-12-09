@@ -14,6 +14,8 @@ const mockMediaItems: MediaItem[] = [
         description: 'A test movie',
         averageRating: 8.5,
         totalReviews: 2,
+        totalLikes: 1,
+        totalDislikes: 0,
         year: 2023,
         genre: ['Drama'],
     },

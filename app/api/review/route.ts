@@ -28,7 +28,17 @@ export async function POST(request: NextRequest) {
             return validationError('Review object is required');
         }
 
-        if (!review.stars || review.stars < 1 || review.stars > 5) {
+        // Validate that at least one of stars or liked is provided
+        const hasRating = review.stars !== undefined && review.stars !== null;
+        const hasLike = review.liked !== undefined && review.liked !== null;
+
+        if (!hasRating && !hasLike) {
+            return validationError(
+                'Either rating (stars) or like/dislike must be provided'
+            );
+        }
+
+        if (hasRating && (review.stars < 1 || review.stars > 5)) {
             return validationError('Rating must be between 1 and 5');
         }
 
@@ -51,24 +61,48 @@ export async function POST(request: NextRequest) {
 
             const reviewItem = await tx.review.create({
                 data: {
-                    rating: review.stars,
+                    rating: review.stars || null,
+                    liked: review.liked !== undefined ? review.liked : null,
                     review: review.text,
                     mediaId: mediaId,
                     userId: session.user.id,
                 },
             });
 
-            const { _avg, _count } = await tx.review.aggregate({
-                where: { mediaId },
+            const { _avg } = await tx.review.aggregate({
+                where: {
+                    mediaId,
+                    rating: { not: null },
+                },
                 _avg: { rating: true },
-                _count: true,
             });
+
+            const [likesCount, dislikesCount, totalReviewsCount] =
+                await Promise.all([
+                    tx.review.count({
+                        where: {
+                            mediaId,
+                            liked: true,
+                        },
+                    }),
+                    tx.review.count({
+                        where: {
+                            mediaId,
+                            liked: false,
+                        },
+                    }),
+                    tx.review.count({
+                        where: { mediaId },
+                    }),
+                ]);
 
             await tx.mediaItem.update({
                 where: { id: mediaId },
                 data: {
                     averageRating: Number(_avg.rating?.toFixed(1)) || 0,
-                    totalReviews: _count,
+                    totalReviews: totalReviewsCount,
+                    totalLikes: likesCount,
+                    totalDislikes: dislikesCount,
                 },
             });
 

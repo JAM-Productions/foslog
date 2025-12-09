@@ -151,7 +151,14 @@
         "submitReview": "Submit Review",
         "shareThoughts": "Share your thoughts about this media...",
         "overview": "Overview",
-        "releaseDate": "Release year: {date}"
+        "releaseDate": "Release year: {date}",
+        "like": "Like",
+        "dislike": "Dislike",
+        "or": "or",
+        "likes": "Likes",
+        "dislikes": "Dislikes",
+        "likePercentage": "{percentage}% liked",
+        "atLeastOneRequired": "Please provide either a rating or like/dislike"
     },
     "BackButton": {
         "back": "Back"

@@ -135,11 +135,14 @@ export function RatingDisplay({
     showValue = true,
     className,
 }: {
-    rating: number;
+    rating?: number;
     size?: 'sm' | 'md' | 'lg';
     showValue?: boolean;
     className?: string;
 }) {
+    if (rating === undefined || rating === null || rating === 0) {
+        return null;
+    }
     return (
         <RatingInput
             value={rating}

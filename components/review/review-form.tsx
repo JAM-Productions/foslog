@@ -5,7 +5,7 @@ import { RatingInput } from '@/components/input/rating';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 
 interface ReviewFormProps {
@@ -16,6 +16,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
     const router = useRouter();
     const [rating, setRating] = useState(0);
+    const [liked, setLiked] = useState<boolean | null>(null);
     const [text, setText] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,8 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 body: JSON.stringify({
                     mediaId,
                     review: {
-                        stars: rating,
+                        stars: rating > 0 ? rating : undefined,
+                        liked: liked !== null ? liked : undefined,
                         text: text.trim(),
                     },
                 }),
@@ -52,6 +54,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
 
             // Reset form
             setRating(0);
+            setLiked(null);
             setText('');
 
             // Refresh the page to show the new review
@@ -72,11 +75,53 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-sm">
                     {t('yourRating')}
                 </legend>
-                <RatingInput
-                    size="lg"
-                    value={rating}
-                    onChange={setRating}
-                />
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                    <RatingInput
+                        size="lg"
+                        value={rating}
+                        onChange={(newRating) => {
+                            setRating(newRating);
+                            if (newRating > 0) {
+                                setLiked(null);
+                            }
+                        }}
+                    />
+                    <span className="text-muted-foreground text-sm font-medium uppercase">
+                        {t('or')}
+                    </span>
+                    <div className="flex gap-2">
+                        <Button
+                            type="button"
+                            variant={liked === true ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => {
+                                setLiked(true);
+                                setRating(0);
+                            }}
+                            className="flex items-center gap-2"
+                        >
+                            <ThumbsUp className="h-4 w-4" />
+                            <span className="hidden sm:inline">
+                                {t('like')}
+                            </span>
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={liked === false ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => {
+                                setLiked(false);
+                                setRating(0);
+                            }}
+                            className="flex items-center gap-2"
+                        >
+                            <ThumbsDown className="h-4 w-4" />
+                            <span className="hidden sm:inline">
+                                {t('dislike')}
+                            </span>
+                        </Button>
+                    </div>
+                </div>
             </fieldset>
             <div>
                 <label
@@ -110,7 +155,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     className={`w-full cursor-pointer sm:w-auto ${
                         isSubmitting ? 'text-transparent' : ''
                     }`}
-                    disabled={isSubmitting || rating === 0}
+                    disabled={isSubmitting || (rating === 0 && liked === null)}
                 >
                     {t('submitReview')}
                 </Button>

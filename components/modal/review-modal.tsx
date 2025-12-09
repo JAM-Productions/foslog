@@ -6,14 +6,15 @@ import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from '@/components/input/select';
 import { useState, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { X, LoaderCircle } from 'lucide-react';
+import { X, LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { RatingInput } from '@/components/input/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from '@/components/input/search-input';
 import { useRouter } from '@/i18n/navigation';
 
 interface Review {
-    stars: number;
+    stars?: number;
+    liked?: boolean;
     text: string;
 }
 
@@ -36,6 +37,7 @@ export default function ReviewModal() {
     const [mediaTitle, setMediaTitle] = useState<string>('');
 
     const [reviewStars, setReviewStars] = useState<number>(0);
+    const [reviewLiked, setReviewLiked] = useState<boolean | null>(null);
     const [reviewText, setReviewText] = useState<string>('');
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
@@ -58,6 +60,7 @@ export default function ReviewModal() {
         setSelectedMediaType('');
         setSelectedMedia(null);
         setReviewStars(0);
+        setReviewLiked(null);
         setReviewText('');
         setError(null);
     }, []);
@@ -71,6 +74,7 @@ export default function ReviewModal() {
         setError(null);
         setModalStep(1);
         setReviewStars(0);
+        setReviewLiked(null);
         setReviewText('');
     }, []);
 
@@ -96,7 +100,8 @@ export default function ReviewModal() {
 
             const data = await responseMedia.json();
             const review: Review = {
-                stars: reviewStars,
+                stars: reviewStars > 0 ? reviewStars : undefined,
+                liked: reviewLiked !== null ? reviewLiked : undefined,
                 text: reviewText,
             };
             const responseReview = await fetch('/api/review', {
@@ -209,11 +214,74 @@ export default function ReviewModal() {
                                         <legend className="text-foreground mb-2 block text-sm font-semibold">
                                             {tMediaPage('yourRating')}
                                         </legend>
-                                        <RatingInput
-                                            size="lg"
-                                            onChange={setReviewStars}
-                                            value={reviewStars}
-                                        />
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                                                <RatingInput
+                                                    size="lg"
+                                                    onChange={(newRating) => {
+                                                        setReviewStars(
+                                                            newRating
+                                                        );
+                                                        if (newRating > 0) {
+                                                            setReviewLiked(
+                                                                null
+                                                            );
+                                                        }
+                                                    }}
+                                                    value={reviewStars}
+                                                />
+                                                <span className="text-muted-foreground text-sm font-medium uppercase">
+                                                    {tMediaPage('or')}
+                                                </span>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant={
+                                                            reviewLiked === true
+                                                                ? 'default'
+                                                                : 'outline'
+                                                        }
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            setReviewLiked(
+                                                                true
+                                                            );
+                                                            setReviewStars(0);
+                                                        }}
+                                                        className="flex items-center gap-2"
+                                                    >
+                                                        <ThumbsUp className="h-4 w-4" />
+                                                        <span className="hidden sm:inline">
+                                                            {tMediaPage('like')}
+                                                        </span>
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant={
+                                                            reviewLiked ===
+                                                            false
+                                                                ? 'default'
+                                                                : 'outline'
+                                                        }
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            setReviewLiked(
+                                                                false
+                                                            );
+                                                            setReviewStars(0);
+                                                        }}
+                                                        className="flex items-center gap-2"
+                                                    >
+                                                        <ThumbsDown className="h-4 w-4" />
+                                                        <span className="hidden sm:inline">
+                                                            {tMediaPage(
+                                                                'dislike'
+                                                            )}
+                                                        </span>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </fieldset>
                                     <div>
                                         <label
@@ -269,7 +337,8 @@ export default function ReviewModal() {
                                         <Button
                                             disabled={
                                                 !selectedMedia ||
-                                                reviewStars < 1 ||
+                                                (reviewStars < 1 &&
+                                                    reviewLiked === null) ||
                                                 isLoadingSubmit
                                             }
                                             onClick={() => submitReview()}

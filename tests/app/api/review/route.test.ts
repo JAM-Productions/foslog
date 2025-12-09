@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { POST } from '@/app/api/review/route';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
@@ -7,7 +7,7 @@ import { ApiErrorType } from '@/lib/errors';
 
 // Mock dependencies
 vi.mock('next/cache', () => ({
-    revalidatePath: vi.fn(),
+  revalidatePath: vi.fn(),
 }));
 
 vi.mock('@/lib/prisma', () => ({
@@ -45,7 +45,7 @@ describe('POST /api/review', () => {
   };
 
   it('should return 401 Unauthorized if user is not authenticated', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue(null);
+    (auth.api.getSession as unknown as Mock).mockResolvedValue(null);
     const req = mockRequest({});
     const response = await POST(req);
     const data = await response.json();
@@ -55,7 +55,7 @@ describe('POST /api/review', () => {
   });
 
   it('should return 400 Validation Error for missing review object', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
     const req = mockRequest({ mediaId: '1' });
     const response = await POST(req);
     const data = await response.json();
@@ -66,7 +66,7 @@ describe('POST /api/review', () => {
   });
 
   it('should return 400 Validation Error for invalid rating', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
     const req = mockRequest({ review: { stars: 6 }, mediaId: '1' });
     const response = await POST(req);
     const data = await response.json();
@@ -77,7 +77,7 @@ describe('POST /api/review', () => {
   });
 
   it('should return 400 Validation Error for long review text', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
     const req = mockRequest({ review: { stars: 5, text: 'a'.repeat(5001) }, mediaId: '1' });
     const response = await POST(req);
     const data = await response.json();
@@ -88,7 +88,7 @@ describe('POST /api/review', () => {
   });
 
   it('should return 400 Validation Error for missing media ID', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
     const req = mockRequest({ review: { stars: 5 } });
     const response = await POST(req);
     const data = await response.json();
@@ -99,8 +99,8 @@ describe('POST /api/review', () => {
   });
 
   it('should return 404 Not Found if media item does not exist', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as jest.Mock).mockImplementation(async (callback) => {
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+    (prisma.$transaction as Mock).mockImplementation(async (callback) => {
       const tx = {
         mediaItem: {
           findUnique: vi.fn().mockResolvedValue(null),
@@ -120,8 +120,8 @@ describe('POST /api/review', () => {
   });
 
   it('should return 500 Internal Server Error on database failure', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as jest.Mock).mockRejectedValue(new Error('DB error'));
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+    (prisma.$transaction as Mock).mockRejectedValue(new Error('DB error'));
     const req = mockRequest({ review: { stars: 5 }, mediaId: '1' });
     const response = await POST(req);
     const data = await response.json();
@@ -131,8 +131,8 @@ describe('POST /api/review', () => {
   });
 
   it('should create a review successfully', async () => {
-    (auth.api.getSession as jest.Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as jest.Mock).mockImplementation(async (callback) => {
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+    (prisma.$transaction as Mock).mockImplementation(async (callback) => {
       const tx = {
         mediaItem: {
           findUnique: vi.fn().mockResolvedValue({ id: '1' }),
@@ -141,6 +141,7 @@ describe('POST /api/review', () => {
         review: {
           create: vi.fn().mockResolvedValue({ id: 'rev1' }),
           aggregate: vi.fn().mockResolvedValue({ _avg: { rating: 4.5 }, _count: 10 }),
+          count: vi.fn().mockResolvedValue(5),
         },
       };
       return callback(tx);

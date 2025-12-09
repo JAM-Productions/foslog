@@ -85,6 +85,8 @@ model MediaItem {
   description   String
   averageRating Float     @default(0)
   totalReviews  Int       @default(0)
+  totalLikes    Int       @default(0)
+  totalDislikes Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   genre         String[]
@@ -95,7 +97,8 @@ model MediaItem {
 
 model Review {
   id        String    @id @default(cuid())
-  rating    Int
+  rating    Int?
+  liked     Boolean?
   review    String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
