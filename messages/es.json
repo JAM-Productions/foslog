@@ -154,9 +154,9 @@
         "releaseDate": "Año de estreno: {date}",
         "like": "Me gusta",
         "dislike": "No me gusta",
-        "or": "o",
-        "likes": "Me gustan",
-        "dislikes": "No me gustan",
+        "or": " / ",
+        "likes": "Me gusta",
+        "dislikes": "No me gusta",
         "likePercentage": "{percentage}% les gusta",
         "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta"
     },

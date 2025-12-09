@@ -98,11 +98,11 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                                 setLiked(true);
                                 setRating(0);
                             }}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-1.5 px-3 py-2 text-sm sm:gap-2 sm:px-4"
                         >
-                            <ThumbsUp className="h-4 w-4" />
+                            <ThumbsUp className="h-4 w-4 flex-shrink-0" />
                             <span className="hidden sm:inline">
-                                {t('like')}
+                                {t('likes')}
                             </span>
                         </Button>
                         <Button
@@ -113,11 +113,11 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                                 setLiked(false);
                                 setRating(0);
                             }}
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-1.5 px-3 py-2 text-sm sm:gap-2 sm:px-4"
                         >
-                            <ThumbsDown className="h-4 w-4" />
+                            <ThumbsDown className="h-4 w-4 flex-shrink-0" />
                             <span className="hidden sm:inline">
-                                {t('dislike')}
+                                {t('dislikes')}
                             </span>
                         </Button>
                     </div>

@@ -36,30 +36,31 @@ export function ReviewCard({ review }: { review: SafeReview }) {
                 <div className="flex-1">
                     <p className="text-base font-bold">{user.name}</p>
                     <div className="flex items-center gap-2">
-                        {review.rating !== undefined &&
-                            review.rating !== null && (
-                                <RatingDisplay rating={review.rating} />
-                            )}
-                        {review.liked !== undefined &&
+                        {(review.rating !== undefined &&
+                        review.rating !== null) ? (
+                            <RatingDisplay rating={review.rating} />
+                        ) : (
+                            review.liked !== undefined &&
                             review.liked !== null && (
                                 <div className="flex items-center gap-1">
                                     {review.liked ? (
                                         <>
-                                            <ThumbsUp className="h-4 w-4 text-green-600" />
+                                            <ThumbsUp className="h-4 w-4 flex-shrink-0 text-green-600" />
                                             <span className="text-muted-foreground text-sm">
-                                                {t('like')}
+                                                {t('likes')}
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <ThumbsDown className="h-4 w-4 text-red-600" />
+                                            <ThumbsDown className="h-4 w-4 flex-shrink-0 text-red-600" />
                                             <span className="text-muted-foreground text-sm">
-                                                {t('dislike')}
+                                                {t('dislikes')}
                                             </span>
                                         </>
                                     )}
                                 </div>
-                            )}
+                            )
+                        )}
                     </div>
                 </div>
             </div>

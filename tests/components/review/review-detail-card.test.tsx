@@ -7,6 +7,7 @@ import { useLocale } from 'next-intl';
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useLocale: vi.fn(),
+    useTranslations: vi.fn(() => (key: string) => key),
 }));
 
 // Mock next/image
@@ -52,6 +53,18 @@ vi.mock('lucide-react', () => ({
     Star: ({ className }: { className?: string }) => (
         <svg
             data-testid="star-icon"
+            className={className}
+        />
+    ),
+    ThumbsUp: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-up-icon"
+            className={className}
+        />
+    ),
+    ThumbsDown: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-down-icon"
             className={className}
         />
     ),
@@ -217,5 +230,36 @@ describe('ReviewDetailCard', () => {
         const dateSection = container.querySelector('.mt-3');
         expect(dateSection).toBeInTheDocument();
         expect(dateSection).toHaveClass('mt-3', 'sm:mt-4');
+    });
+
+    it('renders the rating when a rating is present', () => {
+        render(<ReviewDetailCard review={mockReview} />);
+        expect(screen.queryAllByTestId('star-icon').length).toBeGreaterThan(0);
+        expect(screen.queryByTestId('thumbs-up-icon')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('thumbs-down-icon')).not.toBeInTheDocument();
+    });
+
+    it('renders the like icon when no rating is present and the review is liked', () => {
+        const reviewWithLike: SafeReview = {
+            ...mockReview,
+            rating: null,
+            liked: true,
+        };
+        render(<ReviewDetailCard review={reviewWithLike} />);
+        expect(screen.getByTestId('thumbs-up-icon')).toBeInTheDocument();
+        expect(screen.queryByTestId('star-icon')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('thumbs-down-icon')).not.toBeInTheDocument();
+    });
+
+    it('renders the dislike icon when no rating is present and the review is disliked', () => {
+        const reviewWithDislike: SafeReview = {
+            ...mockReview,
+            rating: null,
+            liked: false,
+        };
+        render(<ReviewDetailCard review={reviewWithDislike} />);
+        expect(screen.getByTestId('thumbs-down-icon')).toBeInTheDocument();
+        expect(screen.queryByTestId('star-icon')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('thumbs-up-icon')).not.toBeInTheDocument();
     });
 });

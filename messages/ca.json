@@ -154,9 +154,9 @@
         "releaseDate": "Any d'estrena: {date}",
         "like": "M'agrada",
         "dislike": "No m'agrada",
-        "or": "o",
-        "likes": "M'agraden",
-        "dislikes": "No m'agraden",
+        "or": " / ",
+        "likes": "M'agrada",
+        "dislikes": "No m'agrada",
         "likePercentage": "{percentage}% els agrada",
         "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada"
     },
