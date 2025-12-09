@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getReviewById } from '@/app/actions/review';
 import { prisma } from '@/lib/prisma';
-import { MediaType } from '@/lib/store';
 
-// Mock Prisma client
 vi.mock('@/lib/prisma', () => ({
     prisma: {
         review: {
