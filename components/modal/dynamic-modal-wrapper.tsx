@@ -6,6 +6,15 @@ const ReviewModal = dynamic(() => import('./review-modal'), {
     ssr: false,
 });
 
+const EditReviewModal = dynamic(() => import('./edit-review-modal'), {
+    ssr: false,
+});
+
 export default function DynamicModalWrapper() {
-    return <ReviewModal />;
+    return (
+        <>
+            <ReviewModal />
+            <EditReviewModal />
+        </>
+    );
 }

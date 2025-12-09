@@ -68,6 +68,12 @@ interface AppState {
     // Review Modal
     isReviewModalOpen: boolean;
     setIsReviewModalOpen: (isOpen: boolean) => void;
+
+    // Edit Review Modal
+    isEditReviewModalOpen: boolean;
+    setIsEditReviewModalOpen: (isOpen: boolean) => void;
+    editReviewData: Review | null;
+    setEditReviewData: (data: Review | null) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -122,6 +128,13 @@ export const useAppStore = create<AppState>()(
             isReviewModalOpen: false,
             setIsReviewModalOpen: (isReviewModalOpen) =>
                 set({ isReviewModalOpen }),
+
+            // Edit Review Modal
+            isEditReviewModalOpen: false,
+            setIsEditReviewModalOpen: (isEditReviewModalOpen) =>
+                set({ isEditReviewModalOpen }),
+            editReviewData: null,
+            setEditReviewData: (editReviewData) => set({ editReviewData }),
         }),
         {
             name: 'foslog-storage',

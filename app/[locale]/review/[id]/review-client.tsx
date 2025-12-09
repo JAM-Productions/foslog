@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import { BackButton } from '@/components/button/back-button';
 import { SafeReviewWithMedia } from '@/lib/types';
 import { MediaContext } from '@/components/media/media-context';
@@ -49,6 +51,7 @@ export function ReviewClient({
                                     <ReviewOptions
                                         isOwner={isOwner}
                                         variant="mobile"
+                                        review={reviewItem}
                                     />
                                 </div>
                             </div>
@@ -61,6 +64,7 @@ export function ReviewClient({
                             <ReviewOptions
                                 isOwner={isOwner}
                                 variant="desktop"
+                                review={reviewItem}
                             />
                         </div>
                     </div>

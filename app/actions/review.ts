@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
+import { revalidatePath } from 'next/cache';
 
 export const getReviewById = async (
     id: string
@@ -63,5 +64,44 @@ export const getReviewById = async (
     } catch (error) {
         console.error(`Error fetching review with id ${id}:`, error);
         throw new Error('Could not fetch review.');
+    }
+};
+
+export const updateReview = async (
+    id: string,
+    review: { stars: number; text: string }
+) => {
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/review/${id}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ review }),
+            }
+        );
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error(`Error updating review with id ${id}:`, error);
+        throw new Error('Could not update review.');
+    }
+};
+
+export const deleteReview = async (id: string) => {
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/review/${id}`,
+            {
+                method: 'DELETE',
+            }
+        );
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error(`Error deleting review with id ${id}:`, error);
+        throw new Error('Could not delete review.');
     }
 };
