@@ -101,7 +101,9 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             className="flex items-center gap-2"
                         >
                             <ThumbsUp className="h-4 w-4" />
-                            <span className="hidden sm:inline">{t('like')}</span>
+                            <span className="hidden sm:inline">
+                                {t('like')}
+                            </span>
                         </Button>
                         <Button
                             type="button"
@@ -114,7 +116,9 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             className="flex items-center gap-2"
                         >
                             <ThumbsDown className="h-4 w-4" />
-                            <span className="hidden sm:inline">{t('dislike')}</span>
+                            <span className="hidden sm:inline">
+                                {t('dislike')}
+                            </span>
                         </Button>
                     </div>
                 </div>
@@ -148,8 +152,9 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
             <div className="relative flex w-full flex-row items-center sm:w-auto">
                 <Button
                     type="submit"
-                    className={`w-full cursor-pointer sm:w-auto ${isSubmitting ? 'text-transparent' : ''
-                        }`}
+                    className={`w-full cursor-pointer sm:w-auto ${
+                        isSubmitting ? 'text-transparent' : ''
+                    }`}
                     disabled={isSubmitting || (rating === 0 && liked === null)}
                 >
                     {t('submitReview')}

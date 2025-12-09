@@ -219,9 +219,13 @@ export default function ReviewModal() {
                                                 <RatingInput
                                                     size="lg"
                                                     onChange={(newRating) => {
-                                                        setReviewStars(newRating);
+                                                        setReviewStars(
+                                                            newRating
+                                                        );
                                                         if (newRating > 0) {
-                                                            setReviewLiked(null);
+                                                            setReviewLiked(
+                                                                null
+                                                            );
                                                         }
                                                     }}
                                                     value={reviewStars}
@@ -239,19 +243,23 @@ export default function ReviewModal() {
                                                         }
                                                         size="sm"
                                                         onClick={() => {
-                                                            setReviewLiked(true);
+                                                            setReviewLiked(
+                                                                true
+                                                            );
                                                             setReviewStars(0);
                                                         }}
                                                         className="flex items-center gap-2"
                                                     >
                                                         <ThumbsUp className="h-4 w-4" />
-                                                        <span className="hidden sm:inline">{tMediaPage('like')}</span>
+                                                        <span className="hidden sm:inline">
+                                                            {tMediaPage('like')}
+                                                        </span>
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         variant={
                                                             reviewLiked ===
-                                                                false
+                                                            false
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
@@ -265,7 +273,11 @@ export default function ReviewModal() {
                                                         className="flex items-center gap-2"
                                                     >
                                                         <ThumbsDown className="h-4 w-4" />
-                                                        <span className="hidden sm:inline">{tMediaPage('dislike')}</span>
+                                                        <span className="hidden sm:inline">
+                                                            {tMediaPage(
+                                                                'dislike'
+                                                            )}
+                                                        </span>
                                                     </Button>
                                                 </div>
                                             </div>
@@ -330,10 +342,11 @@ export default function ReviewModal() {
                                                 isLoadingSubmit
                                             }
                                             onClick={() => submitReview()}
-                                            className={`w-full cursor-pointer ${isLoadingSubmit
+                                            className={`w-full cursor-pointer ${
+                                                isLoadingSubmit
                                                     ? 'text-transparent'
                                                     : ''
-                                                }`}
+                                            }`}
                                         >
                                             {tMediaPage('submitReview')}
                                         </Button>
