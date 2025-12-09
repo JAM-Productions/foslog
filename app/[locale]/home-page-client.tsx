@@ -47,7 +47,8 @@ export default function HomePageClient({
                 const { items, total } = await getMedias(currentPage, pageSize);
                 setMediaItems(items);
                 setTotal(total);
-            } catch (_err) {
+            } catch (err) {
+                console.error('Failed to fetch media:', err);
                 setError(t('error'));
             } finally {
                 setLoading(false);
