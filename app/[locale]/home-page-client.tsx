@@ -1,27 +1,23 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import MediaCard from '@/components/media/media-card';
 import { Button } from '@/components/button/button';
-import { TrendingUp, Clock, Star } from 'lucide-react';
+import { TrendingUp, Clock, Star, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
+import { getMedias } from '@/app/actions/media';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 export default function HomePageClient({
-    mediaItems: initialMediaItems,
-    total,
-    currentPage,
-    pageSize,
+    searchParams,
 }: {
-    mediaItems: SafeMediaItem[];
-    total: number;
-    currentPage: number;
-    pageSize: number;
+    searchParams: { page?: string | undefined };
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -30,13 +26,40 @@ export default function HomePageClient({
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const { mediaItems, selectedMediaType, searchQuery, setIsReviewModalOpen } =
+    const { selectedMediaType, searchQuery, setIsReviewModalOpen } =
         useAppStore();
     const { user } = useAuth();
 
+    const [mediaItems, setMediaItems] = useState<SafeMediaItem[]>([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const pageSize = isMobile ? 8 : 12;
+    const currentPage = Number(searchParams.page) || 1;
+
+    useEffect(() => {
+        const fetchMedia = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const { items, total } = await getMedias(currentPage, pageSize);
+                setMediaItems(items);
+                setTotal(total);
+            } catch (err) {
+                console.error('Failed to fetch media:', err);
+                setError(t('error'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMedia();
+    }, [currentPage, pageSize, t]);
+
     const filteredMedia = useMemo(() => {
-        // Use initialMediaItems if mediaItems is empty (first render)
-        let filtered = mediaItems.length > 0 ? mediaItems : initialMediaItems;
+        let filtered = mediaItems;
 
         // Filter by media type
         if (selectedMediaType !== 'all') {
@@ -61,13 +84,7 @@ export default function HomePageClient({
         }
 
         return filtered;
-    }, [
-        mediaItems,
-        initialMediaItems,
-        selectedMediaType,
-        searchQuery,
-        tGenres,
-    ]);
+    }, [mediaItems, selectedMediaType, searchQuery, tGenres]);
 
     const sortedMedia = useMemo(() => {
         return [...filteredMedia].sort((a, b) => {
@@ -120,6 +137,41 @@ export default function HomePageClient({
         () => Math.ceil(total / pageSize),
         [total, pageSize]
     );
+
+    if (loading) {
+        return (
+            <div className="container mx-auto animate-pulse px-4 py-8">
+                {/* Stats Cards Skeleton */}
+                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="bg-muted h-28 rounded-lg"></div>
+                    <div className="bg-muted h-28 rounded-lg"></div>
+                    <div className="bg-muted h-28 rounded-lg"></div>
+                </div>
+                {/* Media Grid Skeleton */}
+                <div className="mb-8">
+                    <div className="bg-muted mb-6 h-16 w-1/2 rounded-lg"></div>
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                        {[...Array(pageSize)].map((_, i) => (
+                            <div key={i} className="bg-muted h-64 rounded-lg"></div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container mx-auto flex h-screen flex-col items-center justify-center px-4 py-8">
+                <AlertCircle className="text-destructive h-12 w-12" />
+                <h2 className="mt-4 text-2xl font-bold">{t('errorTitle')}</h2>
+                <p className="text-muted-foreground mt-2">{error}</p>
+                <Button className="mt-6" onClick={() => window.location.reload()}>
+                    {t('retry')}
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -263,7 +315,7 @@ export default function HomePageClient({
                 )}
 
                 {/* Pagination */}
-                {sortedMedia.length > 0 && (
+                {sortedMedia.length > 0 && totalPages > 1 && (
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

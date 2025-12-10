@@ -1,21 +1,14 @@
-import { getMedias } from '@/app/actions/media';
 import HomePageClient from './home-page-client';
 
 export default async function HomePage({
     searchParams,
 }: {
-    searchParams: Promise<{ page?: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const params = await searchParams;
-    const page = Number(params.page) || 1;
-    const { items, total } = await getMedias(page);
+    const resolvedSearchParams = await searchParams;
+    const page = Array.isArray(resolvedSearchParams.page)
+        ? resolvedSearchParams.page[0]
+        : resolvedSearchParams.page;
 
-    return (
-        <HomePageClient
-            mediaItems={items}
-            total={total}
-            currentPage={page}
-            pageSize={12}
-        />
-    );
+    return <HomePageClient searchParams={{ page }} />;
 }
