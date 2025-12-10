@@ -1,12 +1,33 @@
 'use client';
 
-import { useAppStore } from '@/lib/store';
 import { Book, Clapperboard, Gamepad2, Music, Search, Tv } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 const MediaTypeFilter = () => {
     const t = useTranslations('MediaTypes');
-    const { selectedMediaType, setSelectedMediaType } = useAppStore();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const selectedMediaType = searchParams.get('type') || 'all';
+
+    const handleTypeChange = (type: string) => {
+        const params = new URLSearchParams(window.location.search);
+
+        if (type === 'all') {
+            params.delete('type');
+        } else {
+            params.set('type', type);
+        }
+
+        params.delete('page');
+
+        const newUrl = params.toString()
+            ? `${pathname}?${params.toString()}`
+            : pathname;
+
+        router.push(newUrl);
+    };
 
     const mediaTypes = [
         { value: 'all', label: t('all'), Icon: Search },
@@ -22,9 +43,9 @@ const MediaTypeFilter = () => {
             {mediaTypes.map((type) => (
                 <button
                     key={type.value}
-                    onClick={() => setSelectedMediaType(type.value)}
+                    onClick={() => handleTypeChange(type.value)}
                     className={[
-                        'flex cursor-pointer flex-col items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors sm:flex-row',
+                        'flex cursor-pointer flex-col items-center rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors sm:flex-row',
                         selectedMediaType === type.value
                             ? 'bg-background text-foreground shadow-sm'
                             : 'text-primary hover:text-foreground hover:bg-background/50',

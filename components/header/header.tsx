@@ -7,7 +7,7 @@ import UserMenu from '@/components/header/user-menu';
 import SearchBar from '@/components/header/search-bar';
 import LanguageSelector from '@/components/header/language-selector';
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ListFilterPlus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { routing } from '@/i18n/routing';
@@ -31,11 +31,9 @@ export default function Header() {
             aria-label={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
             title={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
         >
-            {isFilterExpanded ? (
-                <ChevronUp className="h-5 w-5" />
-            ) : (
-                <ChevronDown className="h-5 w-5" />
-            )}
+            <ListFilterPlus
+                className={`${isFilterExpanded ? 'text-primary' : ''} h-5 w-5`}
+            />
         </button>
     );
 
@@ -64,9 +62,9 @@ export default function Header() {
 
                     {/* Search - Always visible on desktop when on home page */}
                     {isHomePage && (
-                        <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:gap-2">
-                            <SearchBar />
+                        <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:max-w-3xl lg:gap-2">
                             <FilterToggleButton />
+                            <SearchBar />
                         </div>
                     )}
 
@@ -81,8 +79,8 @@ export default function Header() {
                 {/* Mobile Search - Always visible when on home page */}
                 {isHomePage && (
                     <div className="flex max-h-20 gap-2 pb-4 opacity-100 transition-all duration-300 lg:hidden">
-                        <SearchBar />
                         <FilterToggleButton />
+                        <SearchBar />
                     </div>
                 )}
 

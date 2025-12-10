@@ -68,18 +68,20 @@ describe('getMedias Server Action', () => {
 
     describe('Pagination', () => {
         it('fetches first page with default page size', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             const result = await getMedias(1, 12);
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
             expect(prisma.mediaItem.count).toHaveBeenCalled();
             expect(result.items).toHaveLength(2);
@@ -87,74 +89,86 @@ describe('getMedias Server Action', () => {
         });
 
         it('fetches second page correctly', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias(2, 12);
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 12,
                 take: 12,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
         });
 
         it('calculates skip correctly for page 3', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias(3, 10);
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 20,
                 take: 10,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
         });
 
         it('uses default page size when not provided', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias(1);
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
         });
 
         it('uses default page number when not provided', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias();
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
         });
     });
 
     describe('Sorting', () => {
         it('orders by averageRating descending, then totalReviews descending', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(2);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
 
             await getMedias(1, 12);
 
@@ -171,8 +185,12 @@ describe('getMedias Server Action', () => {
 
     describe('Data Transformation', () => {
         it('transforms Prisma data to SafeMediaItem format', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(2);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
 
             const result = await getMedias(1, 12);
 
@@ -194,8 +212,12 @@ describe('getMedias Server Action', () => {
         });
 
         it('converts MediaType enum to lowercase', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(2);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
 
             const result = await getMedias(1, 12);
 
@@ -204,8 +226,12 @@ describe('getMedias Server Action', () => {
         });
 
         it('converts null values to undefined', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(2);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
 
             const result = await getMedias(1, 12);
 
@@ -215,8 +241,12 @@ describe('getMedias Server Action', () => {
         });
 
         it('returns both items and total count', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(25);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(25);
 
             const result = await getMedias(1, 12);
 
@@ -229,8 +259,12 @@ describe('getMedias Server Action', () => {
 
     describe('Edge Cases', () => {
         it('handles empty result set', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(0);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue([]);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(0);
 
             const result = await getMedias(1, 12);
 
@@ -239,8 +273,12 @@ describe('getMedias Server Action', () => {
         });
 
         it('handles page beyond available data', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(10);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue([]);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(10);
 
             const result = await getMedias(5, 12);
 
@@ -249,18 +287,20 @@ describe('getMedias Server Action', () => {
         });
 
         it('handles custom page size', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias(1, 6);
 
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith({
+                where: {},
                 skip: 0,
                 take: 6,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                ],
+                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             });
         });
     });
@@ -278,7 +318,9 @@ describe('getMedias Server Action', () => {
         });
 
         it('logs error when database query fails', async () => {
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
             const dbError = new Error('Database connection failed');
             (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
                 dbError
@@ -301,8 +343,12 @@ describe('getMedias Server Action', () => {
 
     describe('Transaction Usage', () => {
         it('uses Prisma transaction for atomic operation', async () => {
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(20);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(20);
 
             await getMedias(1, 12);
 
@@ -323,8 +369,12 @@ describe('getMedias Server Action', () => {
                 { ...mockMediaItems[1], type: 'SERIES' },
             ];
 
-            (prisma.mediaItem.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mixedMediaItems);
-            (prisma.mediaItem.count as ReturnType<typeof vi.fn>).mockResolvedValue(2);
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mixedMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
 
             const result = await getMedias(1, 12);
 
@@ -350,8 +400,12 @@ describe('getMediaById Server Action', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(mockMediaItem);
-        (prisma.review.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockReviews);
+        (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockMediaItem);
+        (prisma.review.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(
+            mockReviews
+        );
     });
 
     it('fetches reviews for the first page', async () => {

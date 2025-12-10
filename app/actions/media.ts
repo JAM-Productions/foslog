@@ -7,21 +7,43 @@ import {
     SafeMediaItemWithReviews,
     SafeReview,
 } from '@/lib/types';
+import { Prisma, MediaType as PrismaMediaType } from '@prisma/client';
 
 export const getMedias = async (
     page: number = 1,
-    pageSize: number = 12
+    pageSize: number = 12,
+    mediaType?: string,
+    searchQuery?: string
 ): Promise<{ items: SafeMediaItem[]; total: number }> => {
     try {
         const skip = (page - 1) * pageSize;
 
+        const where: Prisma.MediaItemWhereInput = {};
+
+        if (mediaType && mediaType !== 'all') {
+            where.type = mediaType.toUpperCase() as PrismaMediaType;
+        }
+
+        if (searchQuery && searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            where.OR = [
+                { title: { contains: query, mode: 'insensitive' } },
+                { description: { contains: query, mode: 'insensitive' } },
+                { director: { contains: query, mode: 'insensitive' } },
+                { author: { contains: query, mode: 'insensitive' } },
+                { artist: { contains: query, mode: 'insensitive' } },
+                { genre: { has: query } },
+            ];
+        }
+
         const [mediaItems, total] = await prisma.$transaction([
             prisma.mediaItem.findMany({
+                where,
                 skip,
                 take: pageSize,
                 orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
             }),
-            prisma.mediaItem.count(),
+            prisma.mediaItem.count({ where }),
         ]);
 
         // Explicitly map to SafeMediaItem to avoid extra properties from Prisma model

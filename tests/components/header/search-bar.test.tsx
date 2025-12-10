@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import SearchBar from '@/components/header/search-bar';
-import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 
 // Mock next-intl
@@ -10,14 +9,20 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
-// Mock the store
-vi.mock('@/lib/store', () => ({
-    useAppStore: vi.fn(),
+// Mock next/navigation
+const mockPush = vi.fn();
+const mockPathname = '/en';
+const mockSearchParams = new URLSearchParams();
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: mockPush,
+    }),
+    usePathname: () => mockPathname,
+    useSearchParams: () => mockSearchParams,
 }));
 
 describe('SearchBar', () => {
-    const mockSetSearchQuery = vi.fn();
-    const mockedUseAppStore = vi.mocked(useAppStore);
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             searchPlaceholder: 'Search films, books, games...',
@@ -29,27 +34,17 @@ describe('SearchBar', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockSearchParams.delete('search');
+        mockSearchParams.delete('page');
         mockedUseTranslations.mockReturnValue(
             mockT as unknown as ReturnType<typeof useTranslations>
         );
-        mockedUseAppStore.mockReturnValue({
-            searchQuery: '',
-            setSearchQuery: mockSetSearchQuery,
-            // Add other store properties
-            theme: 'system',
-            setTheme: vi.fn(),
-            user: null,
-            setUser: vi.fn(),
-            selectedMediaType: 'all',
-            setSelectedMediaType: vi.fn(),
-            mediaItems: [],
-            setMediaItems: vi.fn(),
-            addMediaItem: vi.fn(),
-            reviews: [],
-            setReviews: vi.fn(),
-            addReview: vi.fn(),
-            updateReview: vi.fn(),
-            deleteReview: vi.fn(),
+        // Mock window.location.search
+        Object.defineProperty(window, 'location', {
+            value: {
+                search: '',
+            },
+            writable: true,
         });
     });
 
@@ -73,25 +68,8 @@ describe('SearchBar', () => {
         expect(container).toHaveClass('relative');
     });
 
-    it('displays current search query value', () => {
-        mockedUseAppStore.mockReturnValue({
-            searchQuery: 'test query',
-            setSearchQuery: mockSetSearchQuery,
-            theme: 'system',
-            setTheme: vi.fn(),
-            user: null,
-            setUser: vi.fn(),
-            selectedMediaType: 'all',
-            setSelectedMediaType: vi.fn(),
-            mediaItems: [],
-            setMediaItems: vi.fn(),
-            addMediaItem: vi.fn(),
-            reviews: [],
-            setReviews: vi.fn(),
-            addReview: vi.fn(),
-            updateReview: vi.fn(),
-            deleteReview: vi.fn(),
-        });
+    it('displays current search query value from URL params', () => {
+        mockSearchParams.set('search', 'test query');
 
         render(<SearchBar />);
 
@@ -99,7 +77,7 @@ describe('SearchBar', () => {
         expect(input).toBeInTheDocument();
     });
 
-    it('calls setSearchQuery when input value changes', async () => {
+    it('updates local state when input value changes', async () => {
         const user = userEvent.setup();
         render(<SearchBar />);
 
@@ -108,50 +86,73 @@ describe('SearchBar', () => {
         );
         await user.type(input, 'new search');
 
-        // setSearchQuery should be called for each character typed
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('n');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('e');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('w');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith(' ');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('s');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('e');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('a');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('r');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('c');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('h');
-
-        expect(mockSetSearchQuery).toHaveBeenCalledTimes(10);
+        expect(input).toHaveValue('new search');
     });
 
-    it('handles clearing the input', async () => {
+    it('calls router.push with search param when Enter is pressed', async () => {
         const user = userEvent.setup();
+        render(<SearchBar />);
 
-        // Start with some search query
-        mockedUseAppStore.mockReturnValue({
-            searchQuery: 'existing query',
-            setSearchQuery: mockSetSearchQuery,
-            theme: 'system',
-            setTheme: vi.fn(),
-            user: null,
-            setUser: vi.fn(),
-            selectedMediaType: 'all',
-            setSelectedMediaType: vi.fn(),
-            mediaItems: [],
-            setMediaItems: vi.fn(),
-            addMediaItem: vi.fn(),
-            reviews: [],
-            setReviews: vi.fn(),
-            addReview: vi.fn(),
-            updateReview: vi.fn(),
-            deleteReview: vi.fn(),
-        });
+        const input = screen.getByPlaceholderText(
+            'Search films, books, games...'
+        );
+        await user.type(input, 'test search{Enter}');
 
+        expect(mockPush).toHaveBeenCalledWith('/en?search=test+search');
+    });
+
+    it('calls router.push with search param when search button is clicked', async () => {
+        const user = userEvent.setup();
+        render(<SearchBar />);
+
+        const input = screen.getByPlaceholderText(
+            'Search films, books, games...'
+        );
+        await user.type(input, 'test search');
+
+        const searchButton = screen.getByRole('button', { name: 'Search' });
+        await user.click(searchButton);
+
+        expect(mockPush).toHaveBeenCalledWith('/en?search=test+search');
+    });
+
+    it('removes search param when input is empty', async () => {
+        const user = userEvent.setup();
+        mockSearchParams.set('search', 'existing query');
         render(<SearchBar />);
 
         const input = screen.getByDisplayValue('existing query');
         await user.clear(input);
+        await user.click(screen.getByRole('button', { name: 'Search' }));
 
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('');
+        expect(mockPush).toHaveBeenCalledWith('/en');
+    });
+
+    it('removes page param when searching', async () => {
+        const user = userEvent.setup();
+        window.location.search = '?page=2&type=film';
+        render(<SearchBar />);
+
+        const input = screen.getByPlaceholderText(
+            'Search films, books, games...'
+        );
+        await user.type(input, 'test{Enter}');
+
+        const calledUrl = mockPush.mock.calls[0][0];
+        expect(calledUrl).not.toContain('page=');
+        expect(calledUrl).toContain('search=test');
+    });
+
+    it('trims whitespace from search query', async () => {
+        const user = userEvent.setup();
+        render(<SearchBar />);
+
+        const input = screen.getByPlaceholderText(
+            'Search films, books, games...'
+        );
+        await user.type(input, '  test search  {Enter}');
+
+        expect(mockPush).toHaveBeenCalledWith('/en?search=test+search');
     });
 
     it('has proper styling classes', () => {
@@ -203,34 +204,11 @@ describe('SearchBar', () => {
         }
     });
 
-    it('handles special characters in search query', async () => {
-        const user = userEvent.setup();
+    it('renders search button with CornerDownRight icon', () => {
         render(<SearchBar />);
 
-        const input = screen.getByPlaceholderText(
-            'Search films, books, games...'
-        );
-        await user.type(input, '!@#$%');
-
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('!');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('@');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('#');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('$');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('%');
-    });
-
-    it('handles unicode characters in search query', async () => {
-        const user = userEvent.setup();
-        render(<SearchBar />);
-
-        const input = screen.getByPlaceholderText(
-            'Search films, books, games...'
-        );
-        await user.type(input, 'café');
-
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('c');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('a');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('f');
-        expect(mockSetSearchQuery).toHaveBeenCalledWith('é');
+        const searchButton = screen.getByRole('button', { name: 'Search' });
+        expect(searchButton).toBeInTheDocument();
+        expect(searchButton.querySelector('svg')).toBeInTheDocument();
     });
 });
