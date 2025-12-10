@@ -5,9 +5,11 @@ import MediaTypeFilter from '@/components/media/media-type-filter';
 import UserMenu from '@/components/header/user-menu';
 import SearchBar from '@/components/header/search-bar';
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Button } from '../button/button';
+import { useAppStore } from '@/lib/store';
 import { routing } from '@/i18n/routing';
 
 export default function Header() {
@@ -71,6 +73,17 @@ export default function Header() {
                     {/* Actions */}
                     <div className="flex items-center gap-2">
                         <UserMenu />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                                const { setIsConfigurationModalOpen } =
+                                    useAppStore.getState();
+                                setIsConfigurationModalOpen(true);
+                            }}
+                        >
+                            <Settings className="h-4 w-4" />
+                        </Button>
                     </div>
                 </div>
 

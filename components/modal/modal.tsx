@@ -3,7 +3,7 @@
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { Button } from '@/components/button/button';
 import { X } from 'lucide-react';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 interface ModalProps {
     isOpen: boolean;
@@ -24,15 +24,30 @@ export default function Modal({
 }: ModalProps) {
     useBodyScrollLock(isOpen);
 
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            return () => document.removeEventListener('keydown', handleEscape);
+        }
+    }, [isOpen, onClose]);
+
     if (isOpen) {
         return (
             <div
                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5"
                 data-testid="modal-overlay"
+                onClick={onClose}
             >
                 <div
                     className="bg-muted flex h-screen w-full max-w-4xl flex-col p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-lg sm:border"
                     aria-modal="true"
+                    onClick={(e) => e.stopPropagation()}
                     aria-labelledby="modal-title"
                     data-testid="modal-container"
                 >

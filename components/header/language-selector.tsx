@@ -73,7 +73,7 @@ export default function LanguageSelector() {
                             onClick={() =>
                                 handleLocaleChange(localeOption.code)
                             }
-                            className={`hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-3 rounded px-3 py-2 text-sm transition-colors ${
+                            className={`hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between rounded px-3 py-2 text-sm transition-colors ${
                                 locale === localeOption.code
                                     ? 'bg-accent text-accent-foreground'
                                     : ''
@@ -81,10 +81,15 @@ export default function LanguageSelector() {
                             role="option"
                             aria-selected={locale === localeOption.code}
                         >
-                            <span>{localeOption.name}</span>
-                            {locale === localeOption.code && (
-                                <div className="ml-auto h-1 w-1 rounded-full bg-current" />
-                            )}
+                            <div className="flex items-center gap-3">
+                                <span>{localeOption.name}</span>
+                                {locale === localeOption.code && (
+                                    <div className="h-1 w-1 rounded-full bg-current" />
+                                )}
+                            </div>
+                            <span className="text-muted-foreground">
+                                {localeOption.code.toUpperCase()}
+                            </span>
                         </button>
                     ))}
                 </div>

@@ -60,6 +60,40 @@ describe('Modal', () => {
         expect(onClose).toHaveBeenCalledTimes(1);
     });
 
+    it('calls the onClose function when the overlay is clicked', () => {
+        const onClose = vi.fn();
+        render(
+            <Modal
+                isOpen={true}
+                onClose={onClose}
+                title="Test Modal"
+                description="This is a test modal"
+            >
+                <p>Modal Content</p>
+            </Modal>
+        );
+
+        fireEvent.click(screen.getByTestId('modal-overlay'));
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls the onClose function when the Escape key is pressed', () => {
+        const onClose = vi.fn();
+        render(
+            <Modal
+                isOpen={true}
+                onClose={onClose}
+                title="Test Modal"
+                description="This is a test modal"
+            >
+                <p>Modal Content</p>
+            </Modal>
+        );
+
+        fireEvent.keyDown(document, { key: 'Escape' });
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
     it('renders the footer when it is provided', () => {
         render(
             <Modal
