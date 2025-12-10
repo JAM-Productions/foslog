@@ -17,7 +17,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 export default function HomePageClient({
     searchParams,
 }: {
-    searchParams: { page?: string };
+    searchParams: { page?: string | undefined };
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
