@@ -7,7 +7,7 @@ import LanguageSelector from '../header/language-selector';
 import ThemeToggle from '../theme/theme-toggle';
 
 export default function ConfigurationModal() {
-    const t = useTranslations('ConfigurationModal');
+    const t = useTranslations('Header');
     const { isConfigurationModalOpen, setIsConfigurationModalOpen } =
         useAppStore();
 
@@ -19,8 +19,8 @@ export default function ConfigurationModal() {
         <Modal
             isOpen={isConfigurationModalOpen}
             onClose={closeModal}
-            title={t('title')}
-            description={t('description')}
+            title={t('configurationModalTitle')}
+            description={t('configurationModalDescription')}
         >
             <div className="flex w-full flex-col gap-4">
                 <div className="flex items-center justify-between">

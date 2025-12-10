@@ -58,7 +58,11 @@
     "Header": {
         "search": "Buscar medios...",
         "profile": "Perfil",
-        "settings": "Configuración"
+        "settings": "Configuración",
+        "configurationModalTitle": "Configuración",
+        "configurationModalDescription": "Configura tus preferencias de idioma y tema.",
+        "language": "Idioma",
+        "theme": "Tema"
     },
     "LanguageSelector": {
         "selectLanguage": "Seleccionar idioma",
@@ -183,11 +187,5 @@
     "Footer": {
         "privacyPolicy": "Política de Privacidad",
         "termsOfService": "Términos de Servicio"
-    },
-    "ConfigurationModal": {
-        "title": "Configuración",
-        "description": "Configura tus preferencias de idioma y tema.",
-        "language": "Idioma",
-        "theme": "Tema"
     }
 }
