@@ -1,6 +1,5 @@
 import { getMedias } from '@/app/actions/media';
 import HomePageClient from './home-page-client';
-
 import { headers } from 'next/headers';
 
 export default async function HomePage({
