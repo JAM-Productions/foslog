@@ -4,7 +4,7 @@ import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 import Modal from './modal';
 import LanguageSelector from '../header/language-selector';
-import { ThemeToggle } from '../theme/theme-toggle';
+import ThemeToggle from '../theme/theme-toggle';
 
 export default function ConfigurationModal() {
     const t = useTranslations('ConfigurationModal');
