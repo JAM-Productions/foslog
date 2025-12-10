@@ -1,5 +1,6 @@
 import { getMedias } from '@/app/actions/media';
 import HomePageClient from './home-page-client';
+import { headers } from 'next/headers';
 
 export default async function HomePage({
     searchParams,
@@ -10,14 +11,28 @@ export default async function HomePage({
     const page = Number(params.page) || 1;
     const mediaType = params.type || 'all';
     const searchQuery = params.search || '';
-    const { items, total } = await getMedias(page, 12, mediaType, searchQuery);
+
+    const headersList = await headers();
+    const userAgent = headersList.get('user-agent') || '';
+    const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            userAgent
+        );
+    const pageSize = isMobile ? 8 : 12;
+
+    const { items, total } = await getMedias(
+        page,
+        pageSize,
+        mediaType,
+        searchQuery
+    );
 
     return (
         <HomePageClient
             mediaItems={items}
             total={total}
             currentPage={page}
-            pageSize={12}
+            pageSize={pageSize}
         />
     );
 }
