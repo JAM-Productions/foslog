@@ -30,8 +30,8 @@ describe('Footer', () => {
         expect(screen.getByText(`© ${year} Foslog`)).toBeInTheDocument();
 
         // Check for links
-        expect(screen.getByText('privacyPolicy')).toHaveAttribute('href', '/privacy-policy');
-        expect(screen.getByText('termsOfService')).toHaveAttribute('href', '/terms-of-service');
+        expect(screen.getByText('Privacy Policy')).toHaveAttribute('href', '/privacy-policy');
+        expect(screen.getByText('Terms of Service')).toHaveAttribute('href', '/terms-of-service');
 
         // Check for version link
         const versionLink = screen.getByText(`v${pkg.version}`);

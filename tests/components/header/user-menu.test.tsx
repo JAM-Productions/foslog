@@ -8,6 +8,7 @@ import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import type { User, Session } from '@/lib/auth/auth-client';
+import { useAppStore } from '@/lib/store';
 
 // Mock dependencies
 vi.mock('@/lib/auth/auth-provider', () => ({
@@ -51,6 +52,7 @@ describe('UserMenu', () => {
     const mockedUseClickOutside = vi.mocked(useClickOutside);
     const mockedUseRouter = vi.mocked(useRouter);
     const mockedUseTranslations = vi.mocked(useTranslations);
+    const mockedUseAppStore = vi.mocked(useAppStore);
 
     const mockUser: User = {
         id: '1',
@@ -77,6 +79,9 @@ describe('UserMenu', () => {
             mockT as unknown as ReturnType<typeof useTranslations>
         );
         mockedSignOut.mockImplementation(() => Promise.resolve());
+        mockedUseAppStore.mockReturnValue({
+            setIsConfigurationModalOpen: vi.fn(),
+        } as any);
     });
 
     describe('when user is not logged in', () => {
@@ -364,6 +369,11 @@ describe('UserMenu', () => {
 
         it('opens the configuration modal when settings is clicked', async () => {
             const user = userEvent.setup();
+            const setIsConfigurationModalOpen = vi.fn();
+            mockedUseAppStore.mockReturnValue({
+                setIsConfigurationModalOpen,
+            } as any);
+
             render(<UserMenu />);
 
             const userButton = screen.getByRole('button', {
@@ -373,6 +383,8 @@ describe('UserMenu', () => {
 
             const settingsButton = screen.getByText('Settings');
             await user.click(settingsButton);
+
+            expect(setIsConfigurationModalOpen).toHaveBeenCalledWith(true);
         });
 
         it('dropdown can be toggled open and closed', async () => {

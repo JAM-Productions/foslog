@@ -9,7 +9,6 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import ConfigurationModal from '../modal/configuration-modal';
 
 export default function Header() {
     const pathname = usePathname();
@@ -39,12 +38,11 @@ export default function Header() {
     );
 
     return (
-        <>
-            <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
-                <div className="container mx-auto px-4">
-                    <div className="flex h-16 items-center justify-between">
-                        {/* Logo */}
-                        <Link
+        <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
+            <div className="container mx-auto px-4">
+                <div className="flex h-16 items-center justify-between">
+                    {/* Logo */}
+                    <Link
                         href="/"
                         className="flex items-center gap-2"
                     >
@@ -98,7 +96,5 @@ export default function Header() {
                 )}
             </div>
         </header>
-        <ConfigurationModal />
-    </>
     );
 }
