@@ -7,7 +7,7 @@ import { AuthProvider } from '@/lib/auth/auth-provider';
 import Footer from '@/components/footer/footer';
 import Header from '@/components/header/header';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
+import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
@@ -71,6 +71,8 @@ export default async function LocaleLayout({
     // Enable static rendering
     setRequestLocale(locale);
 
+    const messages = await getMessages();
+
     return (
         <html
             lang={locale}
@@ -86,7 +88,7 @@ export default async function LocaleLayout({
             <body
                 className={`${font.className} bg-background flex min-h-screen flex-col antialiased`}
             >
-                <NextIntlClientProvider>
+                <NextIntlClientProvider messages={messages}>
                     <ThemeProvider>
                         <AuthProvider>
                             <Header />
