@@ -183,5 +183,11 @@
     "Footer": {
         "privacyPolicy": "Política de Privacidad",
         "termsOfService": "Términos de Servicio"
+    },
+    "ConfigurationModal": {
+        "title": "Configuración",
+        "description": "Configura tus preferencias de idioma y tema.",
+        "language": "Idioma",
+        "theme": "Tema"
     }
 }
