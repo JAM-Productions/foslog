@@ -34,24 +34,36 @@ vi.mock('next/navigation', () => ({
 }));
 
 // Mock lucide-react icons
-vi.mock('lucide-react', () => ({
-    ChevronDown: ({ className }: { className?: string }) => (
-        <span
-            data-testid="chevron-down"
-            className={className}
-        >
-            ▼
-        </span>
-    ),
-    ChevronUp: ({ className }: { className?: string }) => (
-        <span
-            data-testid="chevron-up"
-            className={className}
-        >
-            ▲
-        </span>
-    ),
-}));
+vi.mock('lucide-react', async () => {
+    const actual = await vi.importActual('lucide-react');
+    return {
+        ...actual,
+        Settings: ({ className }: { className?: string }) => (
+            <span
+                data-testid="settings"
+                className={className}
+            >
+                S
+            </span>
+        ),
+        ChevronDown: ({ className }: { className?: string }) => (
+            <span
+                data-testid="chevron-down"
+                className={className}
+            >
+                ▼
+            </span>
+        ),
+        ChevronUp: ({ className }: { className?: string }) => (
+            <span
+                data-testid="chevron-up"
+                className={className}
+            >
+                ▲
+            </span>
+        ),
+    };
+});
 
 // Mock Next.js Image component
 vi.mock('next/image', () => ({

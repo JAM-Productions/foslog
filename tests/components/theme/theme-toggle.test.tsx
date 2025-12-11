@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ThemeToggle from '@/components/theme/theme-toggle';
@@ -89,9 +89,9 @@ describe('ThemeToggle', () => {
         await user.click(button);
 
         // Check if theme options are visible
-        expect(screen.getByText('Light')).toBeInTheDocument();
-        expect(screen.getByText('Dark')).toBeInTheDocument();
-        expect(screen.getByText('System')).toBeInTheDocument();
+            expect(screen.getAllByText('Light')[0]).toBeInTheDocument();
+            expect(screen.getAllByText('Dark')[0]).toBeInTheDocument();
+            expect(screen.getAllByText('System')[0]).toBeInTheDocument();
     });
 
     it('highlights the current theme in dropdown', async () => {
@@ -106,7 +106,9 @@ describe('ThemeToggle', () => {
         const button = screen.getByRole('button');
         await user.click(button);
 
-        const darkOption = screen.getByText('Dark').closest('button');
+        // Find the dropdown, then find the option within it
+        const dropdown = screen.getByRole('button', { name: /light/i }).closest('div.p-1');
+        const darkOption = within(dropdown).getByText('Dark').closest('button');
         expect(darkOption).toHaveClass('bg-accent', 'text-accent-foreground');
     });
 
@@ -164,14 +166,14 @@ describe('ThemeToggle', () => {
         // Open dropdown to check menu styling
         await user.click(screen.getByRole('button'));
 
-        const dropdown = screen.getByText('Light').closest('div');
+        const dropdown = screen.getByText('Light').closest('.bg-card');
         expect(dropdown).toHaveClass(
             'bg-card',
             'absolute',
             'top-12',
             'right-0',
             'z-50',
-            'w-32',
+            'w-40',
             'rounded-lg',
             'border',
             'shadow-lg'
@@ -191,7 +193,8 @@ describe('ThemeToggle', () => {
             'flex',
             'w-full',
             'items-center',
-            'gap-2',
+            'justify-between',
+            'rounded-md',
             'px-3',
             'py-2',
             'text-left',

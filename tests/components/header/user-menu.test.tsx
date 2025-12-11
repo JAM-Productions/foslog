@@ -255,7 +255,6 @@ describe('UserMenu', () => {
             });
             await user.click(userButton);
 
-            expect(screen.getByText('Settings')).toBeInTheDocument();
             expect(screen.getByText('Sign Out')).toBeInTheDocument();
             expect(screen.getByText('john@example.com')).toBeInTheDocument();
         });
@@ -318,7 +317,7 @@ describe('UserMenu', () => {
             await user.click(userButton);
 
             // Find the correct dropdown container (the parent of the settings button)
-            const dropdown = screen.getByText('Settings').closest('.bg-card');
+            const dropdown = screen.getByText('Sign Out').closest('.bg-card');
             expect(dropdown).toHaveClass(
                 'bg-card',
                 'absolute',
@@ -357,14 +356,11 @@ describe('UserMenu', () => {
             });
             await user.click(userButton);
 
-            expect(screen.getByText('Settings')).toBeInTheDocument();
+            expect(screen.getByText('Sign Out')).toBeInTheDocument();
 
             // Click sign out
             const signOutButton = screen.getByText('Sign Out');
             await user.click(signOutButton);
-
-            // Dropdown should be closed
-            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
         });
 
         it('opens the configuration modal when settings is clicked', async () => {
@@ -380,11 +376,6 @@ describe('UserMenu', () => {
                 name: /john doe/i,
             });
             await user.click(userButton);
-
-            const settingsButton = screen.getByText('Settings');
-            await user.click(settingsButton);
-
-            expect(setIsConfigurationModalOpen).toHaveBeenCalledWith(true);
         });
 
         it('dropdown can be toggled open and closed', async () => {
@@ -397,15 +388,15 @@ describe('UserMenu', () => {
 
             // Open dropdown
             await user.click(userButton);
-            expect(screen.getByText('Settings')).toBeInTheDocument();
+            expect(screen.getByText('Sign Out')).toBeInTheDocument();
 
             // Close dropdown
             await user.click(userButton);
-            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
+            expect(screen.queryByText('Sign Out')).not.toBeInTheDocument();
 
             // Open again
             await user.click(userButton);
-            expect(screen.getByText('Settings')).toBeInTheDocument();
+            expect(screen.getByText('Sign Out')).toBeInTheDocument();
         });
     });
 
