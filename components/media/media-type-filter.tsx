@@ -12,7 +12,7 @@ const MediaTypeFilter = () => {
     const selectedMediaType = searchParams.get('type') || 'all';
 
     const handleTypeChange = (type: string) => {
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(searchParams);
 
         if (type === 'all') {
             params.delete('type');

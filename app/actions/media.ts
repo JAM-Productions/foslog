@@ -25,14 +25,22 @@ export const getMedias = async (
         }
 
         if (searchQuery && searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
             where.OR = [
-                { title: { contains: query, mode: 'insensitive' } },
-                { description: { contains: query, mode: 'insensitive' } },
-                { director: { contains: query, mode: 'insensitive' } },
-                { author: { contains: query, mode: 'insensitive' } },
-                { artist: { contains: query, mode: 'insensitive' } },
-                { genre: { has: query } },
+                { title: { contains: searchQuery, mode: 'insensitive' } },
+                { description: { contains: searchQuery, mode: 'insensitive' } },
+                { director: { contains: searchQuery, mode: 'insensitive' } },
+                { author: { contains: searchQuery, mode: 'insensitive' } },
+                { artist: { contains: searchQuery, mode: 'insensitive' } },
+                {
+                    genre: {
+                        hasSome: [
+                            searchQuery,
+                            searchQuery.toUpperCase(),
+                            searchQuery.charAt(0).toUpperCase() +
+                                searchQuery.slice(1),
+                        ],
+                    },
+                },
             ];
         }
 

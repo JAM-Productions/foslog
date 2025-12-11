@@ -16,7 +16,7 @@ const SearchBar = () => {
     const t = useTranslations('Search');
 
     const handleSearch = () => {
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(searchParams.toString());
 
         if (searchValue.trim()) {
             params.set('search', searchValue.trim());

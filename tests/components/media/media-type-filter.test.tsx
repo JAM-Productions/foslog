@@ -39,8 +39,10 @@ describe('MediaTypeFilter', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockSearchParams.delete('type');
-        mockSearchParams.delete('page');
+        // Clear all search params
+        Array.from(mockSearchParams.keys()).forEach((key) => {
+            mockSearchParams.delete(key);
+        });
         mockedUseTranslations.mockReturnValue(
             mockT as unknown as ReturnType<typeof useTranslations>
         );
@@ -136,7 +138,8 @@ describe('MediaTypeFilter', () => {
 
     it('removes page param when changing media type', async () => {
         const user = userEvent.setup();
-        window.location.search = '?page=2&search=test';
+        mockSearchParams.set('page', '2');
+        mockSearchParams.set('search', 'test');
         render(<MediaTypeFilter />);
 
         const filmsButton = screen.getByRole('button', { name: /films/i });
@@ -149,7 +152,8 @@ describe('MediaTypeFilter', () => {
 
     it('preserves other query params when changing media type', async () => {
         const user = userEvent.setup();
-        window.location.search = '?search=test&sort=rating';
+        mockSearchParams.set('search', 'test');
+        mockSearchParams.set('sort', 'rating');
         render(<MediaTypeFilter />);
 
         const filmsButton = screen.getByRole('button', { name: /films/i });
@@ -157,6 +161,8 @@ describe('MediaTypeFilter', () => {
 
         const calledUrl = mockPush.mock.calls[0][0];
         expect(calledUrl).toContain('type=film');
+        expect(calledUrl).toContain('search=test');
+        expect(calledUrl).toContain('sort=rating');
     });
 
     it('has proper responsive classes', () => {

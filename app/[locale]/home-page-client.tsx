@@ -8,7 +8,7 @@ import { Button } from '@/components/button/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
 
@@ -17,11 +17,15 @@ export default function HomePageClient({
     total,
     currentPage,
     pageSize,
+    selectedMediaType,
+    searchQuery,
 }: {
     mediaItems: SafeMediaItem[];
     total: number;
     currentPage: number;
     pageSize: number;
+    selectedMediaType: string;
+    searchQuery: string;
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -29,13 +33,8 @@ export default function HomePageClient({
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const searchParams = useSearchParams();
     const { setIsReviewModalOpen } = useAppStore();
     const { user } = useAuth();
-
-    // Get filter values from URL
-    const selectedMediaType = searchParams.get('type') || 'all';
-    const searchQuery = searchParams.get('search') || '';
 
     const getTypeDisplayName = (type: string) => {
         switch (type) {
@@ -203,16 +202,7 @@ export default function HomePageClient({
                             <Button
                                 variant="outline"
                                 onClick={() => {
-                                    const params = new URLSearchParams(
-                                        searchParams.toString()
-                                    );
-                                    params.delete('search');
-                                    params.delete('type');
-                                    params.delete('page');
-                                    const newUrl = params.toString()
-                                        ? `?${params.toString()}`
-                                        : '';
-                                    router.push(newUrl || '/');
+                                    router.push('/');
                                 }}
                             >
                                 {tSearch('clearSearch')}

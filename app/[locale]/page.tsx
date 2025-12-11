@@ -33,6 +33,8 @@ export default async function HomePage({
             total={total}
             currentPage={page}
             pageSize={pageSize}
+            selectedMediaType={mediaType}
+            searchQuery={searchQuery}
         />
     );
 }

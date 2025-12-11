@@ -2,11 +2,13 @@
 
 import Image from 'next/image';
 import MediaTypeFilter from '@/components/media/media-type-filter';
+import MediaTypeFilterSkeleton from '@/components/media/media-type-filter-skeleton';
 import ThemeToggle from '@/components/theme/theme-toggle';
 import UserMenu from '@/components/header/user-menu';
 import SearchBar from '@/components/header/search-bar';
+import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
 import LanguageSelector from '@/components/header/language-selector';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { ListFilterPlus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -64,7 +66,9 @@ export default function Header() {
                     {isHomePage && (
                         <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:max-w-3xl lg:gap-2">
                             <FilterToggleButton />
-                            <SearchBar />
+                            <Suspense fallback={<SearchBarSkeleton />}>
+                                <SearchBar />
+                            </Suspense>
                         </div>
                     )}
 
@@ -80,7 +84,9 @@ export default function Header() {
                 {isHomePage && (
                     <div className="flex max-h-20 gap-2 pb-4 opacity-100 transition-all duration-300 lg:hidden">
                         <FilterToggleButton />
-                        <SearchBar />
+                        <Suspense fallback={<SearchBarSkeleton />}>
+                            <SearchBar />
+                        </Suspense>
                     </div>
                 )}
 
@@ -93,7 +99,9 @@ export default function Header() {
                                 : 'max-h-0 overflow-hidden opacity-0'
                         }`}
                     >
-                        <MediaTypeFilter />
+                        <Suspense fallback={<MediaTypeFilterSkeleton />}>
+                            <MediaTypeFilter />
+                        </Suspense>
                     </div>
                 )}
             </div>
