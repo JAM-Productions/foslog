@@ -4,6 +4,13 @@ import { ReviewDetailCard } from '@/components/review/review-detail-card';
 import { SafeReview } from '@/lib/types';
 import { useLocale } from 'next-intl';
 
+// Mock next/link
+vi.mock('next/link', () => ({
+    default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+        <a href={href}>{children}</a>
+    ),
+}));
+
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useLocale: vi.fn(),
@@ -120,10 +127,8 @@ describe('ReviewDetailCard', () => {
         render(<ReviewDetailCard review={mockReview} />);
 
         // RatingDisplay should render the stars
-        const ratingContainer = screen
-            .getByText('John Doe')
-            .parentElement?.querySelector('.flex.items-center.gap-1');
-        expect(ratingContainer).toBeInTheDocument();
+        const stars = screen.getAllByTestId('star-icon');
+        expect(stars.length).toBeGreaterThan(0);
     });
 
     it('displays calendar icon', () => {

@@ -127,6 +127,16 @@ const UserMenu = () => {
                         </p>
                     </div>
                     <div className="p-1">
+                        <button
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            onClick={() => {
+                                handleNavigate(`/profile/${user.id}`);
+                                setIsUserOpen(false);
+                            }}
+                        >
+                            <CircleUser className="h-4 w-4" />
+                            {tCTA('myProfile')}
+                        </button>
                         <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm">
                             <Settings className="h-4 w-4" />
                             {tCTA('settings')}
