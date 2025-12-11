@@ -95,7 +95,7 @@ export function ProfileHeader({ user, stats }: ProfileHeaderProps) {
                                     key={g.genre}
                                     className="bg-accent text-accent-foreground rounded-full px-2.5 py-1 text-xs font-medium"
                                 >
-                                    {tGenres(g.genre as any)} ({g.count})
+                                    {tGenres(g.genre as string)} ({g.count})
                                 </span>
                             ))}
                         </div>

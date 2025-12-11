@@ -51,7 +51,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                                 </h3>
                             </Link>
                             <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                                {tTypes(media.type.toLowerCase() as any)} •{' '}
+                                {tTypes(media.type.toLowerCase() as string)} •{' '}
                                 {media.year}
                             </p>
                         </div>
