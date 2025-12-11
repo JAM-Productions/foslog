@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import MediaTypeFilter from '@/components/media/media-type-filter';
-import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 
 // Mock next-intl
@@ -10,14 +9,20 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
-// Mock the store
-vi.mock('@/lib/store', () => ({
-    useAppStore: vi.fn(),
+// Mock next/navigation
+const mockPush = vi.fn();
+const mockPathname = '/en';
+const mockSearchParams = new URLSearchParams();
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: mockPush,
+    }),
+    usePathname: () => mockPathname,
+    useSearchParams: () => mockSearchParams,
 }));
 
 describe('MediaTypeFilter', () => {
-    const mockSetSelectedMediaType = vi.fn();
-    const mockedUseAppStore = vi.mocked(useAppStore);
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             all: 'All',
@@ -34,27 +39,19 @@ describe('MediaTypeFilter', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Clear all search params
+        Array.from(mockSearchParams.keys()).forEach((key) => {
+            mockSearchParams.delete(key);
+        });
         mockedUseTranslations.mockReturnValue(
             mockT as unknown as ReturnType<typeof useTranslations>
         );
-        mockedUseAppStore.mockReturnValue({
-            selectedMediaType: 'all',
-            setSelectedMediaType: mockSetSelectedMediaType,
-            // Add other store properties that might be needed
-            theme: 'system',
-            setTheme: vi.fn(),
-            user: null,
-            setUser: vi.fn(),
-            mediaItems: [],
-            setMediaItems: vi.fn(),
-            addMediaItem: vi.fn(),
-            reviews: [],
-            setReviews: vi.fn(),
-            addReview: vi.fn(),
-            updateReview: vi.fn(),
-            deleteReview: vi.fn(),
-            searchQuery: '',
-            setSearchQuery: vi.fn(),
+        // Mock window.location.search
+        Object.defineProperty(window, 'location', {
+            value: {
+                search: '',
+            },
+            writable: true,
         });
     });
 
@@ -91,25 +88,8 @@ describe('MediaTypeFilter', () => {
         });
     });
 
-    it('highlights the selected media type', () => {
-        mockedUseAppStore.mockReturnValue({
-            selectedMediaType: 'film',
-            setSelectedMediaType: mockSetSelectedMediaType,
-            theme: 'system',
-            setTheme: vi.fn(),
-            user: null,
-            setUser: vi.fn(),
-            mediaItems: [],
-            setMediaItems: vi.fn(),
-            addMediaItem: vi.fn(),
-            reviews: [],
-            setReviews: vi.fn(),
-            addReview: vi.fn(),
-            updateReview: vi.fn(),
-            deleteReview: vi.fn(),
-            searchQuery: '',
-            setSearchQuery: vi.fn(),
-        });
+    it('highlights the selected media type from URL params', () => {
+        mockSearchParams.set('type', 'film');
 
         render(<MediaTypeFilter />);
 
@@ -124,14 +104,14 @@ describe('MediaTypeFilter', () => {
         expect(allButton).toHaveClass('text-primary');
     });
 
-    it('calls setSelectedMediaType when a button is clicked', async () => {
+    it('calls router.push with type param when a button is clicked', async () => {
         const user = userEvent.setup();
         render(<MediaTypeFilter />);
 
         const filmsButton = screen.getByRole('button', { name: /films/i });
         await user.click(filmsButton);
 
-        expect(mockSetSelectedMediaType).toHaveBeenCalledWith('film');
+        expect(mockPush).toHaveBeenCalledWith('/en?type=film');
     });
 
     it('handles clicking different media type buttons', async () => {
@@ -141,19 +121,48 @@ describe('MediaTypeFilter', () => {
         // Test clicking games button
         const gamesButton = screen.getByRole('button', { name: /games/i });
         await user.click(gamesButton);
-        expect(mockSetSelectedMediaType).toHaveBeenCalledWith('game');
+        expect(mockPush).toHaveBeenCalledWith('/en?type=game');
 
         // Test clicking books button
         const booksButton = screen.getByRole('button', { name: /books/i });
         await user.click(booksButton);
-        expect(mockSetSelectedMediaType).toHaveBeenCalledWith('book');
+        expect(mockPush).toHaveBeenCalledWith('/en?type=book');
 
-        // Test clicking all button
+        // Test clicking all button (removes type param)
         const allButton = screen.getByRole('button', { name: /all/i });
         await user.click(allButton);
-        expect(mockSetSelectedMediaType).toHaveBeenCalledWith('all');
+        expect(mockPush).toHaveBeenCalledWith('/en');
 
-        expect(mockSetSelectedMediaType).toHaveBeenCalledTimes(3);
+        expect(mockPush).toHaveBeenCalledTimes(3);
+    });
+
+    it('removes page param when changing media type', async () => {
+        const user = userEvent.setup();
+        mockSearchParams.set('page', '2');
+        mockSearchParams.set('search', 'test');
+        render(<MediaTypeFilter />);
+
+        const filmsButton = screen.getByRole('button', { name: /films/i });
+        await user.click(filmsButton);
+
+        const calledUrl = mockPush.mock.calls[0][0];
+        expect(calledUrl).not.toContain('page=');
+        expect(calledUrl).toContain('type=film');
+    });
+
+    it('preserves other query params when changing media type', async () => {
+        const user = userEvent.setup();
+        mockSearchParams.set('search', 'test');
+        mockSearchParams.set('sort', 'rating');
+        render(<MediaTypeFilter />);
+
+        const filmsButton = screen.getByRole('button', { name: /films/i });
+        await user.click(filmsButton);
+
+        const calledUrl = mockPush.mock.calls[0][0];
+        expect(calledUrl).toContain('type=film');
+        expect(calledUrl).toContain('search=test');
+        expect(calledUrl).toContain('sort=rating');
     });
 
     it('has proper responsive classes', () => {
