@@ -34,7 +34,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         />
                     ) : (
                         <div className="bg-muted flex h-full w-full items-center justify-center text-xs text-gray-400">
-                            No Poster
+                            {t('noPoster')}
                         </div>
                     )}
                 </Link>

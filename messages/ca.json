@@ -172,7 +172,8 @@
         "likes": "M'agraden",
         "dislikes": "No m'agraden",
         "likePercentage": "{percentage}% els agrada",
-        "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada"
+        "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
+        "noPoster": "No hi ha pòster"
     },
     "BackButton": {
         "back": "Enrere"
