@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { User, LogOut, Settings, CircleUser } from 'lucide-react';
+import { User, LogOut, CircleUser } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { signOut } from '@/lib/auth/auth-client';
@@ -13,7 +13,6 @@ import Image from 'next/image';
 import { useAppStore } from '@/lib/store';
 
 const UserMenu = () => {
-    const { setIsConfigurationModalOpen } = useAppStore();
     const tCTA = useTranslations('CTA');
 
     const menuUserRef = useRef<HTMLDivElement>(null);
