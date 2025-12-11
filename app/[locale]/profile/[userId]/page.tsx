@@ -43,7 +43,9 @@ export default async function ProfilePage({
     const currentPage = Number(page) || 1;
     const pageSize = 12;
 
-    let user, reviewsData, stats;
+    let user: Awaited<ReturnType<typeof getUserProfile>>,
+        reviewsData: Awaited<ReturnType<typeof getUserReviews>>,
+        stats: Awaited<ReturnType<typeof getUserStats>>;
     try {
         [user, reviewsData, stats] = await Promise.all([
             getUserProfile(userId),
