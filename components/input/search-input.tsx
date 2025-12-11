@@ -1,8 +1,12 @@
 import * as React from 'react';
-import { useClickOutside } from '@/hooks/useClickOutside';
 import { MediaType } from '@prisma/client';
 import { LoaderCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import {
+    Dropdown,
+    DropdownTrigger,
+    DropdownContent,
+} from '@/components/input/dropdown';
 
 export interface Suggestion {
     title: string;
@@ -44,12 +48,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     ) => {
         const tSearchInput = useTranslations('SearchInput');
 
-        const searchInputRef = React.useRef<HTMLDivElement>(null);
-        const [isOpen, setIsOpen] = React.useState(false);
         const [suggestions, setSuggestions] = React.useState<Suggestion[]>([]);
         const [loading, setLoading] = React.useState<boolean>(false);
-
-        useClickOutside(searchInputRef, isOpen, setIsOpen);
 
         React.useEffect(() => {
             const isMediaTitleInData = (
@@ -113,7 +113,6 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         const handleSelect = (suggestion: Suggestion) => {
             setMediaTitle(suggestion.title);
             setSelectedMedia(suggestion);
-            setIsOpen(false);
         };
 
         const variants = {
@@ -132,31 +131,29 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
             'flex w-full rounded-md text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
 
         return (
-            <div
-                className="relative"
-                ref={searchInputRef}
-            >
-                <input
-                    type="text"
-                    className={[
-                        baseClasses,
-                        variants[variant],
-                        sizes[inputSize],
-                        className,
-                    ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    ref={ref}
-                    value={value}
-                    onChange={onChange}
-                    onFocus={() => setIsOpen(true)}
-                    {...props}
-                />
-                {isOpen &&
-                    (loading ||
+            <Dropdown>
+                <div className="relative">
+                    <DropdownTrigger>
+                        <input
+                            type="text"
+                            className={[
+                                baseClasses,
+                                variants[variant],
+                                sizes[inputSize],
+                                className,
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
+                            ref={ref}
+                            value={value}
+                            onChange={onChange}
+                            {...props}
+                        />
+                    </DropdownTrigger>
+                    {(loading ||
                         suggestions.length > 0 ||
                         (suggestions.length === 0 && value)) && (
-                        <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
+                        <DropdownContent>
                             <div className="p-1">
                                 {loading ? (
                                     <div className="flex items-center justify-center p-3">
@@ -181,9 +178,10 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </DropdownContent>
                     )}
-            </div>
+                </div>
+            </Dropdown>
         );
     }
 );

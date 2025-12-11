@@ -123,6 +123,9 @@ export const getMediaById = async (
         };
     } catch (error) {
         console.error(`Error fetching media item with id ${id}:`, error);
-        throw new Error('Could not fetch media item.');
+        return {
+            medias: [],
+            totalPages: 0,
+        };
     }
 };
