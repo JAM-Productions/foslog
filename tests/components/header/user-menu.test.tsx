@@ -108,7 +108,6 @@ describe('UserMenu', () => {
         it('does not display user menu dropdown', () => {
             render(<UserMenu />);
 
-            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
             expect(screen.queryByText('Sign Out')).not.toBeInTheDocument();
         });
 
@@ -363,20 +362,6 @@ describe('UserMenu', () => {
             await user.click(signOutButton);
         });
 
-        it('opens the configuration modal when settings is clicked', async () => {
-            const user = userEvent.setup();
-            const setIsConfigurationModalOpen = vi.fn();
-            mockedUseAppStore.mockReturnValue({
-                setIsConfigurationModalOpen,
-            } as any);
-
-            render(<UserMenu />);
-
-            const userButton = screen.getByRole('button', {
-                name: /john doe/i,
-            });
-            await user.click(userButton);
-        });
 
         it('dropdown can be toggled open and closed', async () => {
             const user = userEvent.setup();

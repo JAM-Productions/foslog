@@ -142,21 +142,7 @@
         "settings": "Configuració",
         "edit": "Editar",
         "delete": "Eliminar",
-        "share": "Compartir",
-        "myProfile": "El Meu Perfil"
-    },
-    "ProfilePage": {
-        "joined": "S'ha unit el {date}",
-        "latestReviews": "Últimes Ressenyes",
-        "reviews": "Ressenyes",
-        "likes": "M'agrada",
-        "ratingDistribution": "Distribució de Valoracions",
-        "favoriteGenres": "Gèneres Favorits",
-        "ratings": "Valoracions",
-        "statistics": "Estadístiques",
-        "totalReviews": "Total de Ressenyes",
-        "averageRating": "Valoració Mitjana",
-        "totalLikesReceived": "Total de M'agrada Rebuts"
+        "share": "Compartir"
     },
     "MediaPage": {
         "reviews": "Ressenyes",
@@ -176,8 +162,7 @@
         "likes": "M'agraden",
         "dislikes": "No m'agraden",
         "likePercentage": "{percentage}% els agrada",
-        "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
-        "noPoster": "No hi ha pòster"
+        "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada"
     },
     "BackButton": {
         "back": "Enrere"

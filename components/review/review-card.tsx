@@ -19,38 +19,22 @@ export function ReviewCard({ review }: { review: SafeReview }) {
             onClick={() => router.push(`/review/${review.id}`)}
         >
             <div className="flex flex-row items-center gap-3 sm:gap-4">
-                <div
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/profile/${user.id}`);
-                    }}
-                    className="transition-opacity hover:opacity-80"
-                >
-                    {user.image ? (
-                        <Image
-                            src={user.image}
-                            alt={user.name}
-                            width={40}
-                            height={40}
-                            className="h-10 w-10 rounded-full"
-                            unoptimized
-                        />
-                    ) : (
-                        <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border">
-                            <User className="h-7 w-7" />
-                        </div>
-                    )}
-                </div>
+                {user.image ? (
+                    <Image
+                        src={user.image}
+                        alt={user.name}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 rounded-full"
+                        unoptimized
+                    />
+                ) : (
+                    <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border">
+                        <User className="h-7 w-7" />
+                    </div>
+                )}
                 <div className="flex-1">
-                    <p
-                        className="text-base font-bold hover:underline"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/profile/${user.id}`);
-                        }}
-                    >
-                        {user.name}
-                    </p>
+                    <p className="text-base font-bold">{user.name}</p>
                     <div className="flex items-center gap-2">
                         {review.rating !== undefined &&
                             review.rating !== null && (
