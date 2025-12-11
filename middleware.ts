@@ -6,7 +6,7 @@ import { routing } from './i18n/routing';
 const intlMiddleware = createIntlMiddleware(routing);
 
 // Protected routes that require authentication
-const protectedRoutes = ['/dashboard', '/profile', '/settings'];
+const protectedRoutes = ['/dashboard', '/settings'];
 
 // Public routes that authenticated users shouldn't access
 const authRoutes = ['/login', '/signup'];

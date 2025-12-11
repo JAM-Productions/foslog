@@ -138,7 +138,21 @@
         "settings": "Settings",
         "edit": "Edit",
         "delete": "Delete",
-        "share": "Share"
+        "share": "Share",
+        "myProfile": "My Profile"
+    },
+    "ProfilePage": {
+        "joined": "Joined {date}",
+        "latestReviews": "Latest Reviews",
+        "reviews": "Reviews",
+        "likes": "Likes",
+        "ratingDistribution": "Rating Distribution",
+        "favoriteGenres": "Favorite Genres",
+        "ratings": "Ratings",
+        "statistics": "Statistics",
+        "totalReviews": "Total Reviews",
+        "averageRating": "Average Rating",
+        "totalLikesReceived": "Total Likes Received"
     },
     "MediaPage": {
         "reviews": "Reviews",
