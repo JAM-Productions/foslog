@@ -152,7 +152,8 @@
         "statistics": "Estadístiques",
         "totalReviews": "Total de Ressenyes",
         "averageRating": "Valoració Mitjana",
-        "totalLikesReceived": "Total de M'agrada Rebuts"
+        "totalLikesReceived": "Total de M'agrada Rebuts",
+        "noReviews": "Encara no hi ha ressenyes."
     },
     "MediaPage": {
         "reviews": "Ressenyes",

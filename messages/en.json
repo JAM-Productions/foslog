@@ -152,7 +152,8 @@
         "statistics": "Statistics",
         "totalReviews": "Total Reviews",
         "averageRating": "Average Rating",
-        "totalLikesReceived": "Total Likes Received"
+        "totalLikesReceived": "Total Likes Received",
+        "noReviews": "No reviews yet."
     },
     "MediaPage": {
         "reviews": "Reviews",
