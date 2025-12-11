@@ -63,7 +63,7 @@ export default async function ProfilePage({
         );
     }
 
-    if (!user || !reviewsData || !stats) {
+    if (!user) {
         notFound();
     }
 
