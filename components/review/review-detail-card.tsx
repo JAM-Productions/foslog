@@ -5,6 +5,7 @@ import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
 import { Calendar, User } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useLocale } from 'next-intl';
 
 export function ReviewDetailCard({ review }: { review: SafeReview }) {
@@ -28,22 +29,32 @@ export function ReviewDetailCard({ review }: { review: SafeReview }) {
         <Card className="p-4 sm:p-6">
             <div className="flex flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-4">
-                    {user.image ? (
-                        <Image
-                            src={user.image}
-                            alt={user.name}
-                            width={40}
-                            height={40}
-                            className="h-10 w-10 rounded-full"
-                            unoptimized
-                        />
-                    ) : (
-                        <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border">
-                            <User className="h-7 w-7" />
-                        </div>
-                    )}
+                    <Link
+                        href={`/profile/${user.id}`}
+                        className="group relative"
+                    >
+                        {user.image ? (
+                            <Image
+                                src={user.image}
+                                alt={user.name}
+                                width={40}
+                                height={40}
+                                className="h-10 w-10 rounded-full transition-opacity group-hover:opacity-80"
+                                unoptimized
+                            />
+                        ) : (
+                            <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border transition-opacity group-hover:opacity-80">
+                                <User className="h-7 w-7" />
+                            </div>
+                        )}
+                    </Link>
                     <div className="flex-1">
-                        <p className="text-base font-bold">{user.name}</p>
+                        <Link
+                            href={`/profile/${user.id}`}
+                            className="hover:underline"
+                        >
+                            <p className="text-base font-bold">{user.name}</p>
+                        </Link>
                         <RatingDisplay rating={review.rating} />
                     </div>
                 </div>

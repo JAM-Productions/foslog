@@ -142,7 +142,21 @@
         "settings": "Configuración",
         "edit": "Editar",
         "delete": "Eliminar",
-        "share": "Compartir"
+        "share": "Compartir",
+        "myProfile": "Mi Perfil"
+    },
+    "ProfilePage": {
+        "joined": "Se unió en {date}",
+        "latestReviews": "Últimas Reseñas",
+        "reviews": "Reseñas",
+        "likes": "Me gusta",
+        "ratingDistribution": "Distribución de Valoraciones",
+        "favoriteGenres": "Géneros Favoritos",
+        "ratings": "Valoraciones",
+        "statistics": "Estadísticas",
+        "totalReviews": "Total de Reseñas",
+        "averageRating": "Valoración Media",
+        "totalLikesReceived": "Total de Me gusta Recibidos"
     },
     "MediaPage": {
         "reviews": "Reseñas",
@@ -162,7 +176,8 @@
         "likes": "Me gustan",
         "dislikes": "No me gustan",
         "likePercentage": "{percentage}% les gusta",
-        "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta"
+        "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
+        "noPoster": "No hay póster"
     },
     "BackButton": {
         "back": "Atrás"
