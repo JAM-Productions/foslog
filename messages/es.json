@@ -172,7 +172,8 @@
         "likes": "Me gustan",
         "dislikes": "No me gustan",
         "likePercentage": "{percentage}% les gusta",
-        "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta"
+        "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
+        "noPoster": "No hay póster"
     },
     "BackButton": {
         "back": "Atrás"

@@ -172,7 +172,8 @@
         "likes": "Likes",
         "dislikes": "Dislikes",
         "likePercentage": "{percentage}% liked",
-        "atLeastOneRequired": "Please provide either a rating or like/dislike"
+        "atLeastOneRequired": "Please provide either a rating or like/dislike",
+        "noPoster": "No Poster"
     },
     "BackButton": {
         "back": "Back"
