@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import UserMenuSkeleton from './user-menu-skeleton';
 import Image from 'next/image';
-import { useAppStore } from '@/lib/store';
 
 const UserMenu = () => {
     const tCTA = useTranslations('CTA');
