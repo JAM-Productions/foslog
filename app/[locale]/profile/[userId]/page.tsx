@@ -43,13 +43,25 @@ export default async function ProfilePage({
     const currentPage = Number(page) || 1;
     const pageSize = 12;
 
-    const [user, reviewsData, stats] = await Promise.all([
-        getUserProfile(userId),
-        getUserReviews(userId, currentPage, pageSize),
-        getUserStats(userId),
-    ]);
+    let user, reviewsData, stats;
+    try {
+        [user, reviewsData, stats] = await Promise.all([
+            getUserProfile(userId),
+            getUserReviews(userId, currentPage, pageSize),
+            getUserStats(userId),
+        ]);
+    } catch (error) {
+        // Optionally log the error here
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="text-center text-red-500">
+                    An error occurred while loading the profile. Please try again later.
+                </div>
+            </div>
+        );
+    }
 
-    if (!user) {
+    if (!user || !reviewsData || !stats) {
         notFound();
     }
 
