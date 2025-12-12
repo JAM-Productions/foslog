@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import Select, { SelectOption } from '@/components/input/select';
@@ -11,7 +11,6 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(() => (key: string) => {
         const translations: Record<string, string> = {
             selectPlaceholder: 'Selecciona una opción',
-            noOptions: 'No options',
         };
         return translations[key] || key;
     }),
@@ -62,7 +61,7 @@ describe('Select', () => {
                 className="custom-class"
             />
         );
-        const selectContainer = screen.getByRole('button').closest('div')?.parentElement;
+        const selectContainer = screen.getByRole('button').closest('div');
         expect(selectContainer).toHaveClass('custom-class');
     });
 
@@ -76,6 +75,20 @@ describe('Select', () => {
         expect(screen.getByText('Option 1')).toBeInTheDocument();
         expect(screen.getByText('Option 2')).toBeInTheDocument();
         expect(screen.getByText('Option 3')).toBeInTheDocument();
+    });
+
+    it('rotates chevron icon when opened', async () => {
+        const user = userEvent.setup();
+        render(<Select options={mockOptions} />);
+
+        const selectButton = screen.getByRole('button');
+        const chevron = selectButton.querySelector('svg');
+
+        expect(chevron).not.toHaveClass('rotate-180');
+
+        await user.click(selectButton);
+
+        expect(chevron).toHaveClass('rotate-180');
     });
 
     it('calls onChange when option is selected', async () => {
@@ -111,7 +124,7 @@ describe('Select', () => {
         const option = screen.getByText('Option 2');
         await user.click(option);
 
-        expect(screen.queryByRole('list')).not.toBeInTheDocument();
+        expect(screen.queryByText('Option 1')).not.toBeInTheDocument();
     });
 
     it('highlights selected option in dropdown', async () => {
@@ -126,10 +139,7 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen.getByTestId('dropdown-content');
-        const selectedOption = within(dropdown).getByRole('button', {
-            name: 'Option 2',
-        });
+        const selectedOption = screen.getAllByText('Option 2')[1];
         expect(selectedOption).toHaveClass('bg-accent');
     });
 
@@ -209,7 +219,10 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen.getByTestId('dropdown-content');
+        const dropdown = screen
+            .getByRole('button')
+            .closest('div')
+            ?.querySelector('[class*="absolute"]');
         expect(dropdown).toBeInTheDocument();
     });
 
@@ -242,8 +255,16 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen.getByTestId('dropdown-content');
-        expect(dropdown).toBeInTheDocument();
+        const dropdown = selectButton
+            .closest('div')
+            ?.querySelector('[class*="absolute"]');
+        expect(dropdown).toHaveClass(
+            'absolute',
+            'top-12',
+            'right-0',
+            'left-0',
+            'z-50'
+        );
     });
 
     it('has scrollable dropdown for long option lists', async () => {
@@ -258,7 +279,9 @@ describe('Select', () => {
         const selectButton = screen.getByRole('button');
         await user.click(selectButton);
 
-        const dropdown = screen.getByTestId('dropdown-content');
+        const dropdown = selectButton
+            .closest('div')
+            ?.querySelector('[class*="absolute"]');
         expect(dropdown).toHaveClass('max-h-60', 'overflow-y-auto');
     });
 });

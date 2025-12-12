@@ -11,12 +11,21 @@ const Portal = ({ children }: { children: React.ReactNode }) => {
         return () => setMounted(false);
     }, []);
 
-    return mounted
-        ? createPortal(
-              <>{children}</>,
-              document.body.querySelector('#portal') as HTMLElement
-          )
-        : null;
+    const portalRoot =
+        typeof document !== 'undefined'
+            ? document.body.querySelector('#portal')
+            : null;
+
+    if (!portalRoot) {
+        if (process.env.NODE_ENV === 'development') {
+            console.warn(
+                'Portal root element with id "portal" not found in the document. Portal will not be rendered.'
+            );
+        }
+        return null;
+    }
+
+    return mounted ? createPortal(<>{children}</>, portalRoot) : null;
 };
 
 export default Portal;

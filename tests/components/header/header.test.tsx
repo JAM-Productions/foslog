@@ -31,20 +31,12 @@ vi.mock('next/navigation', () => ({
 
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
-    ChevronDown: ({ className }: { className?: string }) => (
+    ListFilterPlus: ({ className }: { className?: string }) => (
         <span
-            data-testid="chevron-down"
+            data-testid="list-filter-plus"
             className={className}
         >
-            ▼
-        </span>
-    ),
-    ChevronUp: ({ className }: { className?: string }) => (
-        <span
-            data-testid="chevron-up"
-            className={className}
-        >
-            ▲
+            🔍+
         </span>
     ),
 }));
@@ -123,15 +115,17 @@ describe('Header', () => {
             name: /expand filter/i,
         });
         expect(toggleButtons).toHaveLength(2);
-        expect(screen.getAllByTestId('chevron-down')[0]).toBeInTheDocument();
+        expect(
+            screen.getAllByTestId('list-filter-plus')[0]
+        ).toBeInTheDocument();
     });
 
     it('toggles header collapse state when button is clicked', async () => {
         const user = userEvent.setup();
         render(<Header />);
 
-        // Initially collapsed - shows ChevronDown
-        expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
+        // Initially collapsed
+        expect(screen.getAllByTestId('list-filter-plus')).toHaveLength(2);
         expect(
             screen.getAllByRole('button', { name: /expand filter/i })
         ).toHaveLength(2);
@@ -142,8 +136,7 @@ describe('Header', () => {
         });
         await user.click(toggleButtons[0]);
 
-        // Now expanded - shows ChevronUp
-        expect(screen.getAllByTestId('chevron-up')).toHaveLength(2);
+        // Now expanded
         expect(
             screen.getAllByRole('button', { name: /collapse filter/i })
         ).toHaveLength(2);
@@ -154,8 +147,10 @@ describe('Header', () => {
         });
         await user.click(collapseButtons[0]);
 
-        // Back to collapsed - shows ChevronDown
-        expect(screen.getAllByTestId('chevron-down')).toHaveLength(2);
+        // Back to collapsed
+        expect(
+            screen.getAllByRole('button', { name: /expand filter/i })
+        ).toHaveLength(2);
     });
 
     it('has responsive search bar layout', () => {

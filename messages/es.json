@@ -152,7 +152,8 @@
         "statistics": "Estadísticas",
         "totalReviews": "Total de Reseñas",
         "averageRating": "Valoración Media",
-        "totalLikesReceived": "Total de Me gusta Recibidos"
+        "totalLikesReceived": "Total de Me gusta Recibidos",
+        "noReviews": "Aún no hay reseñas."
     },
     "MediaPage": {
         "reviews": "Reseñas",

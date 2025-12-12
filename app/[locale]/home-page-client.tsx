@@ -17,66 +17,24 @@ export default function HomePageClient({
     total,
     currentPage,
     pageSize,
+    selectedMediaType,
+    searchQuery,
 }: {
     mediaItems: SafeMediaItem[];
     total: number;
     currentPage: number;
     pageSize: number;
+    selectedMediaType: string;
+    searchQuery: string;
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
-    const tGenres = useTranslations('MediaGenres');
     const tStats = useTranslations('Stats');
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const { mediaItems, selectedMediaType, searchQuery, setIsReviewModalOpen } =
-        useAppStore();
+    const { setIsReviewModalOpen } = useAppStore();
     const { user } = useAuth();
-
-    const filteredMedia = useMemo(() => {
-        // Use initialMediaItems if mediaItems is empty (first render)
-        let filtered = mediaItems.length > 0 ? mediaItems : initialMediaItems;
-
-        // Filter by media type
-        if (selectedMediaType !== 'all') {
-            filtered = filtered.filter(
-                (item) => item.type === selectedMediaType
-            );
-        }
-
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(
-                (item) =>
-                    item.title.toLowerCase().includes(query) ||
-                    item.description.toLowerCase().includes(query) ||
-                    item.genre.some((g) =>
-                        tGenres(g).toLowerCase().includes(query)
-                    ) ||
-                    item.director?.toLowerCase().includes(query) ||
-                    item.author?.toLowerCase().includes(query) ||
-                    item.artist?.toLowerCase().includes(query)
-            );
-        }
-
-        return filtered;
-    }, [
-        mediaItems,
-        initialMediaItems,
-        selectedMediaType,
-        searchQuery,
-        tGenres,
-    ]);
-
-    const sortedMedia = useMemo(() => {
-        return [...filteredMedia].sort((a, b) => {
-            if (a.averageRating !== b.averageRating) {
-                return b.averageRating - a.averageRating;
-            }
-            return b.totalReviews - a.totalReviews;
-        });
-    }, [filteredMedia]);
 
     const getTypeDisplayName = (type: string) => {
         switch (type) {
@@ -133,9 +91,11 @@ export default function HomePageClient({
                         </span>
                     </div>
                     <p className="text-2xl font-bold">
-                        {filteredMedia.length > 0
+                        {initialMediaItems.length > 0
                             ? Math.max(
-                                  ...filteredMedia.map((m) => m.averageRating)
+                                  ...initialMediaItems.map(
+                                      (m) => m.averageRating
+                                  )
                               ).toFixed(1)
                             : '0'}
                     </p>
@@ -151,7 +111,7 @@ export default function HomePageClient({
                             {tStats('totalItems')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold">{filteredMedia.length}</p>
+                    <p className="text-2xl font-bold">{total}</p>
                     <p className="text-muted-foreground text-xs">
                         {selectedMediaType === 'all'
                             ? tStats('allMediaTypes')
@@ -168,7 +128,7 @@ export default function HomePageClient({
                     </div>
                     <p className="text-2xl font-bold">
                         {
-                            sortedMedia.filter(
+                            initialMediaItems.filter(
                                 (m) => m.year && m.year >= currentYear
                             ).length
                         }
@@ -195,7 +155,7 @@ export default function HomePageClient({
                     subtitle={
                         searchQuery
                             ? tSearch('resultsFor', {
-                                  count: sortedMedia.length,
+                                  count: initialMediaItems.length,
                                   query: searchQuery,
                               })
                             : tSearch('popularWith', {
@@ -210,7 +170,7 @@ export default function HomePageClient({
                     icon={searchQuery ? TrendingUp : Star}
                 />
 
-                {sortedMedia.length === 0 ? (
+                {initialMediaItems.length === 0 ? (
                     <div className="py-16 text-center">
                         <div className="bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
                             <span className="text-2xl">🔍</span>
@@ -241,9 +201,9 @@ export default function HomePageClient({
                         {searchQuery && (
                             <Button
                                 variant="outline"
-                                onClick={() =>
-                                    useAppStore.getState().setSearchQuery('')
-                                }
+                                onClick={() => {
+                                    router.push('/');
+                                }}
                             >
                                 {tSearch('clearSearch')}
                             </Button>
@@ -251,7 +211,7 @@ export default function HomePageClient({
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                        {sortedMedia.map((media) => (
+                        {initialMediaItems.map((media) => (
                             <Link
                                 key={media.id}
                                 href={`/media/${media.id}`}
@@ -263,7 +223,7 @@ export default function HomePageClient({
                 )}
 
                 {/* Pagination */}
-                {sortedMedia.length > 0 && (
+                {initialMediaItems.length > 0 && (
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

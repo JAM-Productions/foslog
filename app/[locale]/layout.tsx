@@ -96,7 +96,6 @@ export default async function LocaleLayout({
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
-                <div id="portal" />
             </body>
         </html>
     );

@@ -167,7 +167,7 @@ export default function ReviewModal() {
                         </p>
                     </div>
 
-                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 overflow-y-auto px-1 py-4 sm:gap-8 sm:py-8">
+                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-1 py-4 sm:gap-8 sm:py-8">
                         <div
                             className={`flex w-full shrink-0 flex-col gap-4 sm:flex-row ${modalStep === 1 ? 'block' : 'hidden'}`}
                         >

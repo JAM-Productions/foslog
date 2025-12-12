@@ -13,8 +13,8 @@ import { useClickOutside } from '@/hooks/useClickOutside';
 interface DropdownContextProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    triggerRef: React.RefObject<HTMLDivElement>;
-    contentRef: React.RefObject<HTMLDivElement>;
+    triggerRef: React.RefObject<HTMLDivElement | null>;
+    contentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const DropdownContext = createContext<DropdownContextProps | undefined>(

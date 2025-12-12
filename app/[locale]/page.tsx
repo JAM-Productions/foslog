@@ -5,10 +5,12 @@ import { headers } from 'next/headers';
 export default async function HomePage({
     searchParams,
 }: {
-    searchParams: Promise<{ page?: string }>;
+    searchParams: Promise<{ page?: string; type?: string; search?: string }>;
 }) {
     const params = await searchParams;
     const page = Number(params.page) || 1;
+    const mediaType = params.type || 'all';
+    const searchQuery = params.search || '';
 
     const headersList = await headers();
     const userAgent = headersList.get('user-agent') || '';
@@ -18,7 +20,12 @@ export default async function HomePage({
         );
     const pageSize = isMobile ? 8 : 12;
 
-    const { items, total } = await getMedias(page, pageSize);
+    const { items, total } = await getMedias(
+        page,
+        pageSize,
+        mediaType,
+        searchQuery
+    );
 
     return (
         <HomePageClient
@@ -26,6 +33,8 @@ export default async function HomePage({
             total={total}
             currentPage={page}
             pageSize={pageSize}
+            selectedMediaType={mediaType}
+            searchQuery={searchQuery}
         />
     );
 }
