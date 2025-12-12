@@ -53,11 +53,15 @@ export default async function ProfilePage({
             getUserStats(userId),
         ]);
     } catch (error) {
-        console.error(`[ProfilePage] Failed to load profile for userId: ${userId}`, error);
+        console.error(
+            `[ProfilePage] Failed to load profile for userId: ${userId}`,
+            error
+        );
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="text-center text-red-500">
-                    An error occurred while loading the profile. Please try again later.
+                    An error occurred while loading the profile. Please try
+                    again later.
                 </div>
             </div>
         );
