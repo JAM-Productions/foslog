@@ -27,6 +27,30 @@ export const getMovieGenreByIdTMDB = (id: number): string => {
     return genreMap[id] || 'unknown';
 };
 
+// Utility function to map serie genre IDs to localized genre names
+// ref: https://developer.themoviedb.org/reference/genre-tv-list
+export const getSerieGenreByIdTMDB = (id: number): string => {
+    const genreMap: { [key: number]: string } = {
+        10759: 'actionAndAdventure',
+        16: 'animation',
+        35: 'comedy',
+        80: 'crime',
+        99: 'documentary',
+        18: 'drama',
+        10751: 'family',
+        10762: 'kids',
+        9648: 'mystery',
+        10763: 'news',
+        10764: 'reality',
+        10765: 'sciFiAndFantasy',
+        10766: 'soap',
+        10767: 'talk',
+        10768: 'warAndPolitics',
+        37: 'western',
+    };
+    return genreMap[id] || 'unknown';
+};
+
 // General utility function to get genre label based on media type
 export const getMediaGenreLabel = (
     type: MediaItem['type'],

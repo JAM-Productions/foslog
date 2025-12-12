@@ -35,7 +35,15 @@
         "thriller": "Suspense",
         "war": "Bélica",
         "western": "Western",
-        "unknown": "Desconocido"
+        "unknown": "Desconocido",
+        "actionAndAdventure": "Acción y Aventura",
+        "kids": "Infantil",
+        "news": "Noticias",
+        "reality": "Reality",
+        "sciFiAndFantasy": "Ciencia Ficción y Fantasía",
+        "soap": "Telenovela",
+        "talk": "Talk Show",
+        "warAndPolitics": "Guerra y Política"
     },
     "Stats": {
         "topRated": "Mejor Valorado",

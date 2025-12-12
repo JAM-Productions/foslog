@@ -35,7 +35,15 @@
         "thriller": "Thriller",
         "war": "War",
         "western": "Western",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "actionAndAdventure": "Action & Adventure",
+        "kids": "Kids",
+        "news": "News",
+        "reality": "Reality",
+        "sciFiAndFantasy": "Sci-Fi & Fantasy",
+        "soap": "Soap",
+        "talk": "Talk",
+        "warAndPolitics": "War & Politics"
     },
     "Stats": {
         "topRated": "Top Rated",
