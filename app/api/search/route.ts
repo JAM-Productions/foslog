@@ -1,7 +1,10 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
-import { getMovieGenreByIdTMDB } from '@/utils/mediaUtils';
+import {
+    getMovieGenreByIdTMDB,
+    getSerieGenreByIdTMDB,
+} from '@/utils/mediaUtils';
 
 interface TMDBDataMovie {
     title: string;
@@ -94,7 +97,7 @@ export async function GET(req: NextRequest) {
                         description: item.overview || '',
                         genre:
                             item.genre_ids?.map((id: number) =>
-                                getMovieGenreByIdTMDB(id)
+                                getSerieGenreByIdTMDB(id)
                             ) || [],
                     })) || [];
                 return NextResponse.json(formattedResultSeries);

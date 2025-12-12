@@ -35,7 +35,15 @@
         "thriller": "Suspens",
         "war": "Bèl·lica",
         "western": "Western",
-        "unknown": "Desconegut"
+        "unknown": "Desconegut",
+        "actionAndAdventure": "Acció i Aventura",
+        "kids": "Infantil",
+        "news": "Notícies",
+        "reality": "Reality",
+        "sciFiAndFantasy": "Ciència Ficció i Fantasia",
+        "soap": "Telenovel·la",
+        "talk": "Talk Show",
+        "warAndPolitics": "Guerra i Política"
     },
     "Stats": {
         "topRated": "Millor Valorat",
