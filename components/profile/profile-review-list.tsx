@@ -14,7 +14,9 @@ export function ProfileReviewList({ reviews }: ProfileReviewListProps) {
     if (reviews.length === 0) {
         return (
             <div className="py-12 text-center">
-                <p className="text-muted-foreground text-lg">{t('noReviews')}</p>
+                <p className="text-muted-foreground text-lg">
+                    {t('noReviews')}
+                </p>
             </div>
         );
     }
