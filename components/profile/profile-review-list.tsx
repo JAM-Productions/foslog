@@ -2,16 +2,21 @@
 
 import { ProfileReviewCard } from './profile-review-card';
 import { SafeReviewWithMedia } from '@/lib/types';
+import { useTranslations } from 'next-intl';
 
 interface ProfileReviewListProps {
     reviews: SafeReviewWithMedia[];
 }
 
 export function ProfileReviewList({ reviews }: ProfileReviewListProps) {
+    const t = useTranslations('ProfilePage');
+
     if (reviews.length === 0) {
         return (
             <div className="py-12 text-center">
-                <p className="text-muted-foreground text-lg">No reviews yet.</p>
+                <p className="text-muted-foreground text-lg">
+                    {t('noReviews')}
+                </p>
             </div>
         );
     }
