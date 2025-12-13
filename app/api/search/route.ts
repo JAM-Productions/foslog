@@ -10,6 +10,37 @@ import {
     getSerieGenreByIdTMDB,
 } from '@/utils/mediaUtils';
 
+// Token cache for IGDB API
+let cachedToken: { accessToken: string; expiresAt: number } | null = null;
+
+async function getIGDBAccessToken(): Promise<string> {
+    if (cachedToken && Date.now() < cachedToken.expiresAt) {
+        return cachedToken.accessToken;
+    }
+
+    const tokenRes = await fetch(
+        `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
+        {
+            method: 'POST',
+        }
+    );
+
+    if (!tokenRes.ok) {
+        throw new Error('Failed to fetch IGDB access token');
+    }
+
+    const tokenData = await tokenRes.json();
+    const accessToken = tokenData.access_token;
+    const expiresIn = tokenData.expires_in || 5184000; // Default to 60 days if not provided
+
+    cachedToken = {
+        accessToken,
+        expiresAt: Date.now() + (expiresIn - 300) * 1000,
+    };
+
+    return accessToken;
+}
+
 interface TMDBDataMovie {
     title: string;
     poster_path: string | null;
@@ -118,15 +149,8 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json(formattedResultSeries);
 
             case 'game':
-                const tokenRes = await fetch(
-                    `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
-                    {
-                        method: 'POST',
-                    }
-                );
-                const tokenData = await tokenRes.json();
-                const accessToken = tokenData.access_token;
-                apiUrl = `https://api.igdb.com/v4/games`;
+                const accessToken = await getIGDBAccessToken();
+                apiUrl = 'https://api.igdb.com/v4/games';
                 const apicalypseQuery = `search "${mediatitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
                 const resGames = await fetch(apiUrl, {
                     method: 'POST',
