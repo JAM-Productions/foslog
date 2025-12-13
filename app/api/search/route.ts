@@ -126,17 +126,16 @@ export async function GET(req: NextRequest) {
                 );
                 const tokenData = await tokenRes.json();
                 const accessToken = tokenData.access_token;
-                apiUrl = `https://api.igdb.com/v4/games/?search=${encodeURIComponent(
-                    mediatitle
-                )}&fields=id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes`;
+                apiUrl = `https://api.igdb.com/v4/games`;
+                const apicalypseQuery = `search "${mediatitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
                 const resGames = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Client-ID': process.env.IGDB_CLIENT_ID || '',
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
-                    body: JSON.stringify({}),
+                    body: apicalypseQuery,
                 });
                 if (!resGames.ok) {
                     return badGateway('Could not fetch data from IGDB API');
