@@ -18,42 +18,27 @@ async function getIGDBAccessToken(): Promise<string> {
         return cachedToken.accessToken;
     }
 
-    try {
-        const tokenRes = await fetch(
-            `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
-            {
-                method: 'POST',
-            }
-        );
-
-        if (!tokenRes.ok) {
-            throw new Error(
-                `Token request failed with status: ${tokenRes.status}`
-            );
+    const tokenRes = await fetch(
+        `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
+        {
+            method: 'POST',
         }
+    );
 
-        const tokenData = await tokenRes.json();
-
-        if (!tokenData.access_token) {
-            throw new Error('Invalid token response from Twitch');
-        }
-
-        const accessToken = tokenData.access_token;
-        const expiresIn = tokenData.expires_in || 5184000; // Default to 60 days if not provided
-
-        cachedToken = {
-            accessToken,
-            expiresAt: Date.now() + (expiresIn - 300) * 1000,
-        };
-
-        return accessToken;
-    } catch (error) {
-        throw new Error(
-            error instanceof Error
-                ? error.message
-                : 'Failed to authenticate with Twitch'
-        );
+    if (!tokenRes.ok) {
+        throw new Error('Failed to fetch IGDB access token');
     }
+
+    const tokenData = await tokenRes.json();
+    const accessToken = tokenData.access_token;
+    const expiresIn = tokenData.expires_in || 5184000; // Default to 60 days if not provided
+
+    cachedToken = {
+        accessToken,
+        expiresAt: Date.now() + (expiresIn - 300) * 1000,
+    };
+
+    return accessToken;
 }
 
 interface TMDBDataMovie {
@@ -164,64 +149,52 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json(formattedResultSeries);
 
             case 'game':
-                try {
-                    const accessToken = await getIGDBAccessToken();
-                    apiUrl = 'https://api.igdb.com/v4/games';
-                    const apicalypseQuery = `search "${mediatitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
-                    const resGames = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Client-ID': process.env.IGDB_CLIENT_ID || '',
-                            Authorization: `Bearer ${accessToken}`,
-                            'Content-Type': 'text/plain',
-                        },
-                        body: apicalypseQuery,
-                    });
-                    if (!resGames.ok) {
-                        return badGateway('Could not fetch data from IGDB API');
-                    }
-                    const dataGames = await resGames.json();
-                    const formattedResultGames =
-                        dataGames?.map((item: IGDBDataGame) => ({
-                            title: item.name,
-                            type: MediaType.GAME,
-                            year: item.first_release_date
-                                ? new Date(
-                                      item.first_release_date * 1000
-                                  ).getFullYear()
-                                : null,
-                            poster: item.cover
-                                ? 'https:' +
-                                  item.cover.url.replace(
-                                      /t_[a-z0-9_]+/,
-                                      't_1080p'
-                                  )
-                                : null,
-                            description: item.summary || '',
-                            genre: [
-                                ...(item.genres?.map((id: number) =>
-                                    getGameGenreByIdIGDB(id)
-                                ) || []),
-                                ...(item.game_modes?.map((id: number) =>
-                                    getGameGameModeByIdIGDB(id)
-                                ) || []),
-                                ...(item.player_perspectives?.map(
-                                    (id: number) =>
-                                        getGamePerspectiveByIdIGDB(id)
-                                ) || []),
-                                ...(item.themes?.map((id: number) =>
-                                    getGameThemeByIdIGDB(id)
-                                ) || []),
-                            ],
-                        })) || [];
-                    return NextResponse.json(formattedResultGames);
-                } catch (error) {
-                    return badGateway(
-                        error instanceof Error
-                            ? error.message
-                            : 'Could not fetch data from IGDB API'
-                    );
+                const accessToken = await getIGDBAccessToken();
+                apiUrl = 'https://api.igdb.com/v4/games';
+                const apicalypseQuery = `search "${mediatitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
+                const resGames = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Client-ID': process.env.IGDB_CLIENT_ID || '',
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'text/plain',
+                    },
+                    body: apicalypseQuery,
+                });
+                if (!resGames.ok) {
+                    return badGateway('Could not fetch data from IGDB API');
                 }
+                const dataGames = await resGames.json();
+                const formattedResultGames =
+                    dataGames?.map((item: IGDBDataGame) => ({
+                        title: item.name,
+                        type: MediaType.GAME,
+                        year: item.first_release_date
+                            ? new Date(
+                                  item.first_release_date * 1000
+                              ).getFullYear()
+                            : null,
+                        poster: item.cover
+                            ? 'https:' +
+                              item.cover.url.replace(/t_[a-z0-9_]+/, 't_1080p')
+                            : null,
+                        description: item.summary || '',
+                        genre: [
+                            ...(item.genres?.map((id: number) =>
+                                getGameGenreByIdIGDB(id)
+                            ) || []),
+                            ...(item.game_modes?.map((id: number) =>
+                                getGameGameModeByIdIGDB(id)
+                            ) || []),
+                            ...(item.player_perspectives?.map((id: number) =>
+                                getGamePerspectiveByIdIGDB(id)
+                            ) || []),
+                            ...(item.themes?.map((id: number) =>
+                                getGameThemeByIdIGDB(id)
+                            ) || []),
+                        ],
+                    })) || [];
+                return NextResponse.json(formattedResultGames);
 
             default:
                 return validationError(`Invalid media type: ${mediatype}`);
