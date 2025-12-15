@@ -120,15 +120,10 @@ export async function GET(req: NextRequest) {
 
             case 'game':
                 let accessToken: string;
-                const existingToken = await prisma.apiToken.findFirst({
-                    where: {
-                        apiName: 'IGDB',
-                        expiresAt: {
-                            gt: new Date(),
-                        },
-                    },
+                const existingToken = await prisma.apiToken.findUnique({
+                    where: { apiName: 'IGDB' },
                 });
-                if (existingToken) {
+                if (existingToken && existingToken.expiresAt > new Date()) {
                     accessToken = existingToken.token;
                 } else {
                     const tokenRes = await fetch(
@@ -146,16 +141,33 @@ export async function GET(req: NextRequest) {
                     const expiresAt = new Date(
                         Date.now() + (expiresIn - 300) * 1000
                     );
-                    await prisma.apiToken.create({
-                        data: {
-                            token: accessToken,
-                            apiName: 'IGDB',
-                            expiresAt,
-                        },
+
+                    await prisma.$transaction(async (tx) => {
+                        const tokenInDb = await tx.apiToken.findUnique({
+                            where: { apiName: 'IGDB' },
+                        });
+
+                        if (!tokenInDb || tokenInDb.expiresAt <= new Date()) {
+                            await tx.apiToken.upsert({
+                                where: { apiName: 'IGDB' },
+                                update: {
+                                    token: accessToken,
+                                    expiresAt,
+                                },
+                                create: {
+                                    token: accessToken,
+                                    apiName: 'IGDB',
+                                    expiresAt,
+                                },
+                            });
+                        }
                     });
                 }
                 apiUrl = 'https://api.igdb.com/v4/games';
-                const apicalypseQuery = `search "${mediatitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
+                const escapedTitle = mediatitle
+                    .replace(/\\/g, '\\\\')
+                    .replace(/"/g, '\\"');
+                const apicalypseQuery = `search "${escapedTitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
                 const resGames = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
