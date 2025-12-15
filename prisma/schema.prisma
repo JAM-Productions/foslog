@@ -85,11 +85,11 @@ model MediaItem {
   description   String
   averageRating Float     @default(0)
   totalReviews  Int       @default(0)
-  totalLikes    Int       @default(0)
-  totalDislikes Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   genre         String[]
+  totalDislikes Int       @default(0)
+  totalLikes    Int       @default(0)
   reviews       Review[]
 
   @@map("media_items")
@@ -98,16 +98,29 @@ model MediaItem {
 model Review {
   id        String    @id @default(cuid())
   rating    Int?
-  liked     Boolean?
   review    String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   mediaId   String
   userId    String
+  liked     Boolean?
   media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reviews")
+}
+
+model ApiToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  apiName   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([apiName])
+  @@index([expiresAt])
+  @@map("api_tokens")
 }
 
 enum MediaType {
