@@ -1,7 +1,12 @@
 import { MediaType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
+import { prisma } from '@/lib/prisma';
 import {
+    getGameGenreByIdIGDB,
+    getGameGameModeByIdIGDB,
+    getGamePerspectiveByIdIGDB,
+    getGameThemeByIdIGDB,
     getMovieGenreByIdTMDB,
     getSerieGenreByIdTMDB,
 } from '@/utils/mediaUtils';
@@ -20,6 +25,17 @@ interface TMDBDataSerie {
     first_air_date: string | null;
     overview: string | null;
     genre_ids: number[];
+}
+
+interface IGDBDataGame {
+    name: string;
+    cover: { id: number; url: string } | null;
+    first_release_date: number | null;
+    genres: number[] | null;
+    game_modes: number[] | null;
+    player_perspectives: number[] | null;
+    themes: number[] | null;
+    summary: string | null;
 }
 
 export async function GET(req: NextRequest) {
@@ -101,6 +117,100 @@ export async function GET(req: NextRequest) {
                             ) || [],
                     })) || [];
                 return NextResponse.json(formattedResultSeries);
+
+            case 'game':
+                let accessToken: string;
+                const existingToken = await prisma.apiToken.findUnique({
+                    where: { apiName: 'IGDB' },
+                });
+                if (existingToken && existingToken.expiresAt > new Date()) {
+                    accessToken = existingToken.token;
+                } else {
+                    const tokenRes = await fetch(
+                        `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
+                        {
+                            method: 'POST',
+                        }
+                    );
+                    if (!tokenRes.ok) {
+                        return badGateway('Failed to fetch IGDB access token');
+                    }
+                    const tokenData = await tokenRes.json();
+                    accessToken = tokenData.access_token;
+                    const expiresIn = tokenData.expires_in || 5184000;
+                    const expiresAt = new Date(
+                        Date.now() + (expiresIn - 300) * 1000
+                    );
+
+                    await prisma.$transaction(async (tx) => {
+                        const tokenInDb = await tx.apiToken.findUnique({
+                            where: { apiName: 'IGDB' },
+                        });
+
+                        if (!tokenInDb || tokenInDb.expiresAt <= new Date()) {
+                            await tx.apiToken.upsert({
+                                where: { apiName: 'IGDB' },
+                                update: {
+                                    token: accessToken,
+                                    expiresAt,
+                                },
+                                create: {
+                                    token: accessToken,
+                                    apiName: 'IGDB',
+                                    expiresAt,
+                                },
+                            });
+                        }
+                    });
+                }
+                apiUrl = 'https://api.igdb.com/v4/games';
+                const escapedTitle = mediatitle
+                    .replace(/\\/g, '\\\\')
+                    .replace(/"/g, '\\"');
+                const apicalypseQuery = `search "${escapedTitle}"; fields id,name,cover.url,first_release_date,genres,summary,game_modes,player_perspectives,themes; limit 10;`;
+                const resGames = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Client-ID': process.env.IGDB_CLIENT_ID || '',
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'text/plain',
+                    },
+                    body: apicalypseQuery,
+                });
+                if (!resGames.ok) {
+                    return badGateway('Could not fetch data from IGDB API');
+                }
+                const dataGames = await resGames.json();
+                const formattedResultGames =
+                    dataGames?.map((item: IGDBDataGame) => ({
+                        title: item.name,
+                        type: MediaType.GAME,
+                        year: item.first_release_date
+                            ? new Date(
+                                  item.first_release_date * 1000
+                              ).getFullYear()
+                            : null,
+                        poster: item.cover
+                            ? 'https:' +
+                              item.cover.url.replace(/t_[a-z0-9_]+/, 't_1080p')
+                            : null,
+                        description: item.summary || '',
+                        genre: [
+                            ...(item.genres?.map((id: number) =>
+                                getGameGenreByIdIGDB(id)
+                            ) || []),
+                            ...(item.game_modes?.map((id: number) =>
+                                getGameGameModeByIdIGDB(id)
+                            ) || []),
+                            ...(item.player_perspectives?.map((id: number) =>
+                                getGamePerspectiveByIdIGDB(id)
+                            ) || []),
+                            ...(item.themes?.map((id: number) =>
+                                getGameThemeByIdIGDB(id)
+                            ) || []),
+                        ],
+                    })) || [];
+                return NextResponse.json(formattedResultGames);
 
             default:
                 return validationError(`Invalid media type: ${mediatype}`);
