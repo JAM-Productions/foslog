@@ -132,3 +132,211 @@ export async function POST(request: NextRequest) {
         return internalServerError();
     }
 }
+
+async function updateMediaItemStats(tx: any, mediaId: string) {
+    const { _avg } = await tx.review.aggregate({
+        where: {
+            mediaId,
+            rating: { not: null },
+        },
+        _avg: { rating: true },
+    });
+
+    const [likesCount, dislikesCount, totalReviewsCount] = await Promise.all([
+        tx.review.count({
+            where: {
+                mediaId,
+                liked: true,
+            },
+        }),
+        tx.review.count({
+            where: {
+                mediaId,
+                liked: false,
+            },
+        }),
+        tx.review.count({
+            where: { mediaId },
+        }),
+    ]);
+
+    await tx.mediaItem.update({
+        where: { id: mediaId },
+        data: {
+            averageRating: Number(_avg.rating?.toFixed(1)) || 0,
+            totalReviews: totalReviewsCount,
+            totalLikes: likesCount,
+            totalDislikes: dislikesCount,
+        },
+    });
+}
+
+export async function PATCH(request: NextRequest) {
+    try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session) {
+            return unauthorized('Unauthorized. Please log in to edit a review.');
+        }
+
+        const { review, reviewId } = await request.json();
+
+        if (!reviewId) {
+            return validationError('Review ID is required');
+        }
+
+        if (!review) {
+            return validationError('Review object is required');
+        }
+
+        const hasRating = review.stars !== undefined && review.stars !== null;
+        const hasLike = review.liked !== undefined && review.liked !== null;
+
+        if (!hasRating && !hasLike) {
+            return validationError(
+                'Either rating (stars) or like/dislike must be provided'
+            );
+        }
+
+        if (hasRating && (review.stars < 1 || review.stars > 5)) {
+            return validationError('Rating must be between 1 and 5');
+        }
+
+        if (review.text && review.text.length > 5000) {
+            return validationError('Review text is too long');
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const existingReview = await tx.review.findUnique({
+                where: { id: reviewId },
+            });
+
+            if (!existingReview) {
+                throw new Error('REVIEW_NOT_FOUND');
+            }
+
+            if (existingReview.userId !== session.user.id) {
+                throw new Error('UNAUTHORIZED');
+            }
+
+            const updatedReview = await tx.review.update({
+                where: { id: reviewId },
+                data: {
+                    rating: review.stars ?? null,
+                    liked: review.liked ?? null,
+                    review: review.text,
+                },
+            });
+
+            await updateMediaItemStats(tx, existingReview.mediaId);
+
+            return updatedReview;
+        });
+
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+        const mediaId = (
+            await prisma.review.findUnique({ where: { id: reviewId } })
+        )?.mediaId;
+
+        if (mediaId) {
+            revalidatePath(`/${locale}/media/${mediaId}`, 'page');
+        }
+
+        return NextResponse.json(
+            {
+                message: 'Review updated successfully',
+                review: result,
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error in PATCH /api/review:', error);
+
+        if (error instanceof Error) {
+            if (error.message === 'REVIEW_NOT_FOUND') {
+                return notFound('Review not found');
+            }
+            if (error.message === 'UNAUTHORIZED') {
+                return unauthorized(
+                    'You are not authorized to edit this review.'
+                );
+            }
+        }
+
+        return internalServerError();
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session) {
+            return unauthorized(
+                'Unauthorized. Please log in to delete a review.'
+            );
+        }
+
+        const { reviewId } = await request.json();
+
+        if (!reviewId) {
+            return validationError('Review ID is required');
+        }
+
+        const mediaId = await prisma.$transaction(async (tx) => {
+            const existingReview = await tx.review.findUnique({
+                where: { id: reviewId },
+            });
+
+            if (!existingReview) {
+                throw new Error('REVIEW_NOT_FOUND');
+            }
+
+            if (existingReview.userId !== session.user.id) {
+                throw new Error('UNAUTHORIZED');
+            }
+
+            await tx.review.delete({
+                where: { id: reviewId },
+            });
+
+            await updateMediaItemStats(tx, existingReview.mediaId);
+
+            return existingReview.mediaId;
+        });
+
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+
+        revalidatePath(`/${locale}/media/${mediaId}`, 'page');
+
+        return NextResponse.json(
+            {
+                message: 'Review deleted successfully',
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error in DELETE /api/review:', error);
+
+        if (error instanceof Error) {
+            if (error.message === 'REVIEW_NOT_FOUND') {
+                return notFound('Review not found');
+            }
+            if (error.message === 'UNAUTHORIZED') {
+                return unauthorized(
+                    'You are not authorized to delete this review.'
+                );
+            }
+        }
+
+        return internalServerError();
+    }
+}

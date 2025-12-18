@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { POST } from '@/app/api/review/route';
+import { POST, PATCH, DELETE } from '@/app/api/review/route';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { NextRequest } from 'next/server';
@@ -20,6 +20,10 @@ vi.mock('@/lib/prisma', () => ({
     review: {
       create: vi.fn(),
       aggregate: vi.fn(),
+      findUnique: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
     },
   },
 }));
@@ -154,4 +158,144 @@ describe('POST /api/review', () => {
     expect(response.status).toBe(201);
     expect(data.message).toBe('Review created successfully');
   });
+});
+
+describe('PATCH /api/review', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    const mockRequest = (body: unknown) => {
+        return {
+            json: async () => body,
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+        } as unknown as NextRequest;
+    };
+
+    it('should return 401 Unauthorized if user is not authenticated', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue(null);
+        const req = mockRequest({});
+        const response = await PATCH(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(data.code).toBe(ApiErrorType.UNAUTHORIZED);
+    });
+
+    it('should return 400 Validation Error for missing review ID', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+        const req = mockRequest({ review: { stars: 5 } });
+        const response = await PATCH(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.code).toBe(ApiErrorType.VALIDATION_ERROR);
+        expect(data.error).toBe('Review ID is required');
+    });
+
+    it('should return 404 Not Found if review does not exist', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const tx = {
+                review: {
+                    findUnique: vi.fn().mockResolvedValue(null),
+                },
+            };
+            return callback(tx);
+        });
+        const req = mockRequest({ review: { stars: 5 }, reviewId: '1' });
+        const response = await PATCH(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(404);
+        expect(data.code).toBe(ApiErrorType.NOT_FOUND);
+    });
+
+    it('should return 401 Unauthorized if user is not the author', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '2' } });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const tx = {
+                review: {
+                    findUnique: vi.fn().mockResolvedValue({ id: '1', userId: '1' }),
+                },
+            };
+            return callback(tx);
+        });
+        const req = mockRequest({ review: { stars: 5 }, reviewId: '1' });
+        const response = await PATCH(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(data.code).toBe(ApiErrorType.UNAUTHORIZED);
+    });
+});
+
+describe('DELETE /api/review', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    const mockRequest = (body: unknown) => {
+        return {
+            json: async () => body,
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+        } as unknown as NextRequest;
+    };
+
+    it('should return 401 Unauthorized if user is not authenticated', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue(null);
+        const req = mockRequest({});
+        const response = await DELETE(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(data.code).toBe(ApiErrorType.UNAUTHORIZED);
+    });
+
+    it('should return 400 Validation Error for missing review ID', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+        const req = mockRequest({});
+        const response = await DELETE(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.code).toBe(ApiErrorType.VALIDATION_ERROR);
+        expect(data.error).toBe('Review ID is required');
+    });
+
+    it('should return 404 Not Found if review does not exist', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const tx = {
+                review: {
+                    findUnique: vi.fn().mockResolvedValue(null),
+                },
+            };
+            return callback(tx);
+        });
+        const req = mockRequest({ reviewId: '1' });
+        const response = await DELETE(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(404);
+        expect(data.code).toBe(ApiErrorType.NOT_FOUND);
+    });
+
+    it('should return 401 Unauthorized if user is not the author', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '2' } });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const tx = {
+                review: {
+                    findUnique: vi.fn().mockResolvedValue({ id: '1', userId: '1' }),
+                },
+            };
+            return callback(tx);
+        });
+        const req = mockRequest({ reviewId: '1' });
+        const response = await DELETE(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(data.code).toBe(ApiErrorType.UNAUTHORIZED);
+    });
 });

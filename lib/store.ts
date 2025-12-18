@@ -71,11 +71,23 @@ interface AppState {
     // Review Modal
     isReviewModalOpen: boolean;
     setIsReviewModalOpen: (isOpen: boolean) => void;
+
+    // Edit Review Modal
+    isEditReviewModalOpen: boolean;
+    editReviewData: Review | null;
+    openEditReviewModal: (review: Review) => void;
+    closeEditReviewModal: () => void;
+
+    // Delete Review Modal
+    isDeleteReviewModalOpen: boolean;
+    deleteReviewId: string | null;
+    openDeleteReviewModal: (reviewId: string) => void;
+    closeDeleteReviewModal: () => void;
 }
 
 export const useAppStore = create<AppState>()(
     persist(
-        (set /* , get */) => ({
+        (set) => ({
             // Theme
             theme: 'system',
             setTheme: (theme) => set({ theme }),
@@ -125,6 +137,22 @@ export const useAppStore = create<AppState>()(
             isReviewModalOpen: false,
             setIsReviewModalOpen: (isReviewModalOpen) =>
                 set({ isReviewModalOpen }),
+
+            // Edit Review Modal
+            isEditReviewModalOpen: false,
+            editReviewData: null,
+            openEditReviewModal: (review) =>
+                set({ isEditReviewModalOpen: true, editReviewData: review }),
+            closeEditReviewModal: () =>
+                set({ isEditReviewModalOpen: false, editReviewData: null }),
+
+            // Delete Review Modal
+            isDeleteReviewModalOpen: false,
+            deleteReviewId: null,
+            openDeleteReviewModal: (reviewId) =>
+                set({ isDeleteReviewModalOpen: true, deleteReviewId: reviewId }),
+            closeDeleteReviewModal: () =>
+                set({ isDeleteReviewModalOpen: false, deleteReviewId: null }),
         }),
         {
             name: 'foslog-storage',

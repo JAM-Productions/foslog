@@ -7,12 +7,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
+import { SafeReview } from '@/lib/types';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface ReviewFormProps {
     mediaId: string;
+    reviewData?: SafeReview;
+    onSuccess?: () => void;
 }
 
-export function ReviewForm({ mediaId }: ReviewFormProps) {
+export function ReviewForm({
+    mediaId,
+    reviewData,
+    onSuccess,
+}: ReviewFormProps) {
     const t = useTranslations('MediaPage');
     const router = useRouter();
     const [rating, setRating] = useState(0);
@@ -21,6 +30,16 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
+
+    const isEditMode = !!reviewData;
+
+    useEffect(() => {
+        if (isEditMode) {
+            setRating(reviewData.rating || 0);
+            setLiked(reviewData.liked !== undefined ? reviewData.liked : null);
+            setText(reviewData.review || '');
+        }
+    }, [isEditMode, reviewData]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,15 +51,16 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
         setIsSubmitting(true);
         try {
             const response = await fetch('/api/review', {
-                method: 'POST',
+                method: isEditMode ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     mediaId,
+                    reviewId: isEditMode ? reviewData.id : undefined,
                     review: {
-                        stars: rating > 0 ? rating : undefined,
-                        liked: liked !== null ? liked : undefined,
+                        stars: rating > 0 ? rating : null,
+                        liked: liked !== null ? liked : null,
                         text: text.trim(),
                     },
                 }),
@@ -52,12 +72,18 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                 throw new Error(data.error || 'Failed to submit review');
             }
 
-            // Reset form
-            setRating(0);
-            setLiked(null);
-            setText('');
+            toast.success(
+                isEditMode ? t('reviewUpdated') : t('reviewSubmitted')
+            );
 
-            // Refresh the page to show the new review
+            if (onSuccess) {
+                onSuccess();
+            } else {
+                setRating(0);
+                setLiked(null);
+                setText('');
+            }
+
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');

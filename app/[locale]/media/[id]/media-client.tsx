@@ -7,6 +7,8 @@ import { BackButton } from '@/components/button/back-button';
 import { useTranslations } from 'next-intl';
 import { SafeMediaItemWithReviews } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
+import { EditReviewModal } from '@/components/review/edit-review-modal';
+import { DeleteReviewModal } from '@/components/review/delete-review-modal';
 
 interface MediaClientProps {
     mediaItem: SafeMediaItemWithReviews;
@@ -17,12 +19,15 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
     const { reviews, totalPages, currentPage, ...media } = mediaItem;
 
     return (
-        <div className="bg-background min-h-screen">
-            <div className="container mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:py-8">
-                {/* Header with Back Button */}
-                <div className="mb-4 sm:mb-6 lg:mb-8">
-                    <BackButton />
-                </div>
+        <>
+            <EditReviewModal />
+            <DeleteReviewModal />
+            <div className="bg-background min-h-screen">
+                <div className="container mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:py-8">
+                    {/* Header with Back Button */}
+                    <div className="mb-4 sm:mb-6 lg:mb-8">
+                        <BackButton />
+                    </div>
 
                 {/* Media Details Section */}
                 <div className="mb-8 sm:mb-12 lg:mb-16">
@@ -67,5 +72,6 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                 </div>
             </div>
         </div>
+        </>
     );
 }
