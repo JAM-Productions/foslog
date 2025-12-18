@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 interface AITranslateTextProps {
     text: string;
@@ -13,20 +13,25 @@ export function AITranslateText({
     targetLanguage,
     className,
 }: AITranslateTextProps) {
-    const [translatedText, setTranslatedText] = useState(text);
+    const shouldTranslate =
+        targetLanguage !== 'en' &&
+        text &&
+        typeof window !== 'undefined' &&
+        'Translator' in (self as any);
 
-    useMemo(() => {
-        if (targetLanguage === 'en' || !text) {
+    const [translatedText, setTranslatedText] = useState(
+        shouldTranslate ? '' : text
+    );
+    const [isLoading, setIsLoading] = useState(shouldTranslate);
+
+    useEffect(() => {
+        if (!shouldTranslate) {
             setTranslatedText(text);
+            setIsLoading(false);
             return;
         }
 
-        if (typeof window === 'undefined' || !('Translator' in (self as any))) {
-            setTranslatedText(text);
-            return;
-        }
-
-        (async () => {
+        const translate = async () => {
             try {
                 // @ts-ignore - Chrome's Translator API
                 const translator = await Translator.create({
@@ -37,9 +42,25 @@ export function AITranslateText({
                 setTranslatedText(translated);
             } catch {
                 setTranslatedText(text);
+            } finally {
+                setIsLoading(false);
             }
-        })();
-    }, [text, targetLanguage]);
+        };
+
+        translate();
+    }, [text, targetLanguage, shouldTranslate]);
+
+    if (isLoading) {
+        return (
+            <span className={className}>
+                <span className="inline-block w-full space-y-2">
+                    <span className="bg-muted-foreground/20 block h-4 w-full animate-pulse rounded" />
+                    <span className="bg-muted-foreground/20 block h-4 w-5/6 animate-pulse rounded" />
+                    <span className="bg-muted-foreground/20 block h-4 w-4/5 animate-pulse rounded" />
+                </span>
+            </span>
+        );
+    }
 
     return <span className={className}>{translatedText}</span>;
 }
