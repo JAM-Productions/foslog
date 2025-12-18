@@ -1,4 +1,4 @@
-import { getMedias } from '@/app/actions/media';
+import { getMedias, getGlobalMediaStats } from '@/app/actions/media';
 import HomePageClient from './home-page-client';
 import { headers } from 'next/headers';
 
@@ -27,6 +27,8 @@ export default async function HomePage({
         searchQuery
     );
 
+    const globalStats = await getGlobalMediaStats();
+
     return (
         <HomePageClient
             mediaItems={items}
@@ -35,6 +37,7 @@ export default async function HomePage({
             pageSize={pageSize}
             selectedMediaType={mediaType}
             searchQuery={searchQuery}
+            globalStats={globalStats}
         />
     );
 }

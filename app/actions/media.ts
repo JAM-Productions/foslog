@@ -156,3 +156,37 @@ export const getMediaById = async (
         throw new Error('Could not fetch media item.');
     }
 };
+
+export const getGlobalMediaStats = async (): Promise<{
+    topRated: number;
+    recentlyAdded: number;
+}> => {
+    try {
+        const currentYear = new Date().getFullYear();
+
+        const [topRatedResult, recentlyAddedResult] = await prisma.$transaction(
+            [
+                prisma.mediaItem.aggregate({
+                    _max: {
+                        averageRating: true,
+                    },
+                }),
+                prisma.mediaItem.count({
+                    where: {
+                        year: {
+                            gte: currentYear,
+                        },
+                    },
+                }),
+            ]
+        );
+
+        return {
+            topRated: topRatedResult._max.averageRating ?? 0,
+            recentlyAdded: recentlyAddedResult,
+        };
+    } catch (error) {
+        console.error('Error fetching global media stats:', error);
+        throw new Error('Could not fetch global media stats.');
+    }
+};
