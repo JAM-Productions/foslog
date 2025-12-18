@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/button/button';
+import { ShareButton } from '@/components/button/share-button';
 import { Pencil, Share2, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -48,14 +49,14 @@ export function ReviewOptions({
                     </Button>
                 </>
             )}
-            <Button
+            <ShareButton
                 variant="outline"
                 size="sm"
                 className={buttonClassName}
             >
                 <Share2 className="h-4 w-4" />
                 <span>{tCTA('share')}</span>
-            </Button>
+            </ShareButton>
         </>
     );
 }

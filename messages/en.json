@@ -253,5 +253,8 @@
     "Footer": {
         "privacyPolicy": "Privacy Policy",
         "termsOfService": "Terms of Service"
+    },
+    "Toast": {
+        "urlCopied": "URL copied to clipboard!"
     }
 }
