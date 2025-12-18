@@ -1,7 +1,9 @@
+'use client';
+
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { MediaItem } from '@/lib/store';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
 import {
     Book,
@@ -13,12 +15,14 @@ import {
     ThumbsUp,
     ThumbsDown,
 } from 'lucide-react';
+import { AITranslateText } from '@/components/ai-translate-text';
 
 export function MediaDetails({ media }: { media: MediaItem }) {
     const imageUrl = media.poster || media.cover;
     const tMP = useTranslations('MediaPage');
     const tMT = useTranslations('MediaTypes');
     const tGenres = useTranslations('MediaGenres');
+    const locale = useLocale();
 
     const mediaTypes = [
         { value: 'film', Icon: Clapperboard },
@@ -136,7 +140,10 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                                 {tMP('overview')}
                             </h2>
                             <p className="text-card-foreground text-sm leading-relaxed sm:text-base">
-                                {media.description}
+                                <AITranslateText
+                                    text={media.description}
+                                    targetLanguage={locale}
+                                />
                             </p>
                         </div>
                     </div>
