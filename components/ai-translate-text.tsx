@@ -17,7 +17,7 @@ export function AITranslateText({
         targetLanguage !== 'en' &&
         text &&
         typeof window !== 'undefined' &&
-        'Translator' in (self as any);
+        'Translator' in (self as Window & typeof globalThis);
 
     const [translatedText, setTranslatedText] = useState(
         shouldTranslate ? '' : text
@@ -33,7 +33,7 @@ export function AITranslateText({
 
         const translate = async () => {
             try {
-                // @ts-ignore - Chrome's Translator API
+                // @ts-expect-error - Chrome's Translator API
                 const translator = await Translator.create({
                     sourceLanguage: 'en',
                     targetLanguage,
