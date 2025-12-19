@@ -163,6 +163,7 @@ export const getGlobalMediaStats = async (): Promise<{
 }> => {
     try {
         const currentYear = new Date().getFullYear();
+        const startOfYear = new Date(currentYear, 0, 1);
 
         const [topRatedResult, recentlyAddedResult] = await prisma.$transaction(
             [
@@ -173,8 +174,8 @@ export const getGlobalMediaStats = async (): Promise<{
                 }),
                 prisma.mediaItem.count({
                     where: {
-                        year: {
-                            gte: currentYear,
+                        createdAt: {
+                            gte: startOfYear,
                         },
                     },
                 }),
