@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
-import {
-    parseIGDBGame,
-    parseTMDBMovie,
-    parseTMDBSerie,
-} from './utils/parsers';
+import { parseIGDBGame, parseTMDBMovie, parseTMDBSerie } from './utils/parsers';
 
 export async function GET(req: NextRequest) {
     try {
@@ -36,8 +32,7 @@ export async function GET(req: NextRequest) {
                     return badGateway('Could not fetch data from TMDB API');
                 }
                 const data = await res.json();
-                const formattedResult =
-                    data.results?.map(parseTMDBMovie) || [];
+                const formattedResult = data.results?.map(parseTMDBMovie) || [];
                 return NextResponse.json(formattedResult);
 
             case 'serie':

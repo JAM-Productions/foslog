@@ -38,15 +38,12 @@ interface IGDBDataGame {
 export const parseTMDBMovie = (item: TMDBDataMovie) => ({
     title: item.title,
     type: MediaType.FILM,
-    year: item.release_date
-        ? parseInt(item.release_date.split('-')[0])
-        : null,
+    year: item.release_date ? parseInt(item.release_date.split('-')[0]) : null,
     poster: item.poster_path
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : null,
     description: item.overview || '',
-    genre:
-        item.genre_ids?.map((id: number) => getMovieGenreByIdTMDB(id)) || [],
+    genre: item.genre_ids?.map((id: number) => getMovieGenreByIdTMDB(id)) || [],
 });
 
 export const parseTMDBSerie = (item: TMDBDataSerie) => ({
@@ -59,8 +56,7 @@ export const parseTMDBSerie = (item: TMDBDataSerie) => ({
         ? 'https://image.tmdb.org/t/p/w500' + item.poster_path
         : null,
     description: item.overview || '',
-    genre:
-        item.genre_ids?.map((id: number) => getSerieGenreByIdTMDB(id)) || [],
+    genre: item.genre_ids?.map((id: number) => getSerieGenreByIdTMDB(id)) || [],
 });
 
 export const parseIGDBGame = (item: IGDBDataGame) => ({
