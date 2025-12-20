@@ -19,6 +19,7 @@ export default function HomePageClient({
     pageSize,
     selectedMediaType,
     searchQuery,
+    globalStats,
 }: {
     mediaItems: SafeMediaItem[];
     total: number;
@@ -26,6 +27,10 @@ export default function HomePageClient({
     pageSize: number;
     selectedMediaType: string;
     searchQuery: string;
+    globalStats: {
+        topRated: number;
+        recentlyAdded: number;
+    };
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -91,13 +96,7 @@ export default function HomePageClient({
                         </span>
                     </div>
                     <p className="text-2xl font-bold">
-                        {initialMediaItems.length > 0
-                            ? Math.max(
-                                  ...initialMediaItems.map(
-                                      (m) => m.averageRating
-                                  )
-                              ).toFixed(1)
-                            : '0'}
+                        {globalStats.topRated.toFixed(1)}
                     </p>
                     <p className="text-muted-foreground text-xs">
                         {tStats('highestRatedInCollection')}
@@ -127,11 +126,7 @@ export default function HomePageClient({
                         </span>
                     </div>
                     <p className="text-2xl font-bold">
-                        {
-                            initialMediaItems.filter(
-                                (m) => m.year && m.year >= currentYear
-                            ).length
-                        }
+                        {globalStats.recentlyAdded}
                     </p>
                     <p className="text-muted-foreground text-xs">
                         {tStats('fromDateOnwards', {
