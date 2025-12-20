@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
-import { prisma } from '@/lib/prisma';
 import { parseIGDBGame, parseTMDBMovie, parseTMDBSerie } from './utils/parsers';
+import { getIgdbToken, IgdbTokenError } from './utils/get-igdb-token';
 
 export async function GET(req: NextRequest) {
     try {
@@ -54,48 +54,13 @@ export async function GET(req: NextRequest) {
 
             case 'game':
                 let accessToken: string;
-                const existingToken = await prisma.apiToken.findUnique({
-                    where: { apiName: 'IGDB' },
-                });
-                if (existingToken && existingToken.expiresAt > new Date()) {
-                    accessToken = existingToken.token;
-                } else {
-                    const tokenRes = await fetch(
-                        `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
-                        {
-                            method: 'POST',
-                        }
-                    );
-                    if (!tokenRes.ok) {
-                        return badGateway('Failed to fetch IGDB access token');
+                try {
+                    accessToken = await getIgdbToken();
+                } catch (error) {
+                    if (error instanceof IgdbTokenError) {
+                        return badGateway(error.message);
                     }
-                    const tokenData = await tokenRes.json();
-                    accessToken = tokenData.access_token;
-                    const expiresIn = tokenData.expires_in || 5184000;
-                    const expiresAt = new Date(
-                        Date.now() + (expiresIn - 300) * 1000
-                    );
-
-                    await prisma.$transaction(async (tx) => {
-                        const tokenInDb = await tx.apiToken.findUnique({
-                            where: { apiName: 'IGDB' },
-                        });
-
-                        if (!tokenInDb || tokenInDb.expiresAt <= new Date()) {
-                            await tx.apiToken.upsert({
-                                where: { apiName: 'IGDB' },
-                                update: {
-                                    token: accessToken,
-                                    expiresAt,
-                                },
-                                create: {
-                                    token: accessToken,
-                                    apiName: 'IGDB',
-                                    expiresAt,
-                                },
-                            });
-                        }
-                    });
+                    throw error;
                 }
                 apiUrl = 'https://api.igdb.com/v4/games';
                 const escapedTitle = mediatitle
