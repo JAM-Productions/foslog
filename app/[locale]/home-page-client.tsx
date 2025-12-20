@@ -78,7 +78,6 @@ export default function HomePageClient({
         </div>
     );
 
-    const currentYear = useMemo(() => new Date().getFullYear(), []);
     const totalPages = useMemo(
         () => Math.ceil(total / pageSize),
         [total, pageSize]
