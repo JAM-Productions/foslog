@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
+    useLocale: vi.fn(() => 'en'),
 }));
 
 // Mock next/image
