@@ -11,6 +11,8 @@ import {
     Book,
     Music,
     StickyNote,
+    ThumbsUp,
+    ThumbsDown,
 } from 'lucide-react';
 import Image from 'next/image';
 import { Card } from '@/components/card';
@@ -172,12 +174,30 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
                         {/* Rating and Reviews */}
                         <div className="flex items-center justify-between pt-1">
-                            <div className="flex items-center gap-1">
-                                <StarRating rating={media.averageRating} />
-                                <span className="text-muted-foreground ml-1 text-xs">
-                                    {media.averageRating.toFixed(1)}
-                                </span>
-                            </div>
+                            {media.averageRating > 0 ? (
+                                <div className="flex items-center gap-1">
+                                    <StarRating rating={media.averageRating} />
+                                    <span className="text-muted-foreground ml-1 text-xs">
+                                        {media.averageRating.toFixed(1)}
+                                    </span>
+                                </div>
+                            ) : media.totalLikes > 0 ||
+                              media.totalDislikes > 0 ? (
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-1">
+                                        <ThumbsUp className="text-muted-foreground h-3 w-3" />
+                                        <span className="text-muted-foreground text-xs">
+                                            {media.totalLikes}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <ThumbsDown className="text-muted-foreground h-3 w-3" />
+                                        <span className="text-muted-foreground text-xs">
+                                            {media.totalDislikes}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : null}
 
                             <div className="text-muted-foreground flex items-center gap-1 text-xs">
                                 <Eye className="h-3 w-3" />

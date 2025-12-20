@@ -105,7 +105,55 @@ describe('MediaCard', () => {
             'A computer hacker learns about the true nature of reality.',
         averageRating: 4.5,
         totalReviews: 150,
+        totalLikes: 0,
+        totalDislikes: 0,
     };
+
+    describe('Rating and Likes Display', () => {
+        it('displays the star rating when averageRating is greater than 0', () => {
+            render(<MediaCard media={mockMediaItem} />);
+
+            expect(screen.getByText('4.5')).toBeInTheDocument();
+            expect(
+                screen.queryByText(/123/)
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByText(/45/)
+            ).not.toBeInTheDocument();
+        });
+
+        it('displays likes and dislikes when averageRating is 0', () => {
+            const mediaWithLikes = {
+                ...mockMediaItem,
+                averageRating: 0,
+                totalLikes: 123,
+                totalDislikes: 45,
+            };
+            render(<MediaCard media={mediaWithLikes} />);
+
+            expect(screen.queryByText('0.0')).not.toBeInTheDocument();
+            expect(screen.getByText('123')).toBeInTheDocument();
+            expect(screen.getByText('45')).toBeInTheDocument();
+        });
+
+        it('displays nothing when averageRating, likes, and dislikes are all 0', () => {
+            const mediaWithNoRatings = {
+                ...mockMediaItem,
+                averageRating: 0,
+                totalLikes: 0,
+                totalDislikes: 0,
+            };
+            render(<MediaCard media={mediaWithNoRatings} />);
+
+            expect(screen.queryByText('0.0')).not.toBeInTheDocument();
+            expect(
+                screen.queryByText(/123/)
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByText(/45/)
+            ).not.toBeInTheDocument();
+        });
+    });
 
     describe('Rendering', () => {
         it('renders the media title', () => {
@@ -364,7 +412,7 @@ describe('MediaCard', () => {
             };
             render(<MediaCard media={mediaWithZeroRating} />);
 
-            expect(screen.getByText('0.0')).toBeInTheDocument();
+            expect(screen.queryByText('0.0')).not.toBeInTheDocument();
         });
 
         it('handles full rating of 5', () => {
