@@ -35,7 +35,9 @@ export async function getIgdbToken(): Promise<string> {
     const tokenData = (await tokenRes.json()) as Partial<TokenResponse>;
 
     if (!tokenData.access_token) {
-        throw new IgdbTokenError('IGDB token response did not include an access token');
+        throw new IgdbTokenError(
+            'IGDB token response did not include an access token'
+        );
     }
 
     const accessToken: string = tokenData.access_token;

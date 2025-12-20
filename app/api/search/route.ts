@@ -64,7 +64,9 @@ export async function GET(req: NextRequest) {
                         '[GET MEDIA ERROR] Unexpected error obtaining IGDB token:',
                         error
                     );
-                    return badGateway('Could not obtain access token from IGDB');
+                    return badGateway(
+                        'Could not obtain access token from IGDB'
+                    );
                 }
                 apiUrl = 'https://api.igdb.com/v4/games';
                 const escapedTitle = mediatitle
