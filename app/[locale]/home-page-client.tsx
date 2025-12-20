@@ -129,9 +129,7 @@ export default function HomePageClient({
                         {globalStats.recentlyAdded}
                     </p>
                     <p className="text-muted-foreground text-xs">
-                        {tStats('fromDateOnwards', {
-                            date: currentYear,
-                        })}
+                        {tStats('fromLastMonth')}
                     </p>
                 </div>
             </div>

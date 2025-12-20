@@ -97,7 +97,7 @@
         "recentlyAdded": "Afegit Recentment",
         "highestRatedInCollection": "Millor valorat a la col·lecció",
         "allMediaTypes": "Tots els tipus de mitjans",
-        "fromDateOnwards": "Des de {date} en endavant"
+        "fromLastMonth": "Des de l'últim mes"
     },
     "Sections": {
         "trending": "Tendències Ara",
