@@ -97,7 +97,7 @@
         "recentlyAdded": "Añadido Recientemente",
         "highestRatedInCollection": "Mejor valorado en la colección",
         "allMediaTypes": "Todos los tipos de medios",
-        "fromDateOnwards": "Desde {date} en adelante"
+        "fromLastMonth": "Desde el último mes"
     },
     "Sections": {
         "trending": "Tendencias Ahora",

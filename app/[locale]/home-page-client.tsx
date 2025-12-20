@@ -78,7 +78,6 @@ export default function HomePageClient({
         </div>
     );
 
-    const currentYear = useMemo(() => new Date().getFullYear(), []);
     const totalPages = useMemo(
         () => Math.ceil(total / pageSize),
         [total, pageSize]
@@ -129,9 +128,7 @@ export default function HomePageClient({
                         {globalStats.recentlyAdded}
                     </p>
                     <p className="text-muted-foreground text-xs">
-                        {tStats('fromDateOnwards', {
-                            date: currentYear,
-                        })}
+                        {tStats('fromLastMonth')}
                     </p>
                 </div>
             </div>
