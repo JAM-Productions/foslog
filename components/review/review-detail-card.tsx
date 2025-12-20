@@ -3,7 +3,7 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, ThumbsDown, ThumbsUp, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
@@ -69,6 +69,20 @@ export function ReviewDetailCard({ review }: { review: SafeReview }) {
                     </p>
                 </div>
                 <p className="text-base leading-relaxed">{review.review}</p>
+            </div>
+            <div className="border-muted mt-3 flex items-center gap-4 border-t pt-3 sm:mt-4 sm:pt-4">
+                <div className="flex items-center gap-1.5">
+                    <ThumbsUp className="h-5 w-5" />
+                    <span className="text-sm font-medium">
+                        {review.totalLikes}
+                    </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                    <ThumbsDown className="h-5 w-5" />
+                    <span className="text-sm font-medium">
+                        {review.totalDislikes}
+                    </span>
+                </div>
             </div>
         </Card>
     );

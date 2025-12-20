@@ -104,6 +104,8 @@ model Review {
   mediaId   String
   userId    String
   liked     Boolean?
+  totalLikes    Int       @default(0)
+  totalDislikes Int       @default(0)
   media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
