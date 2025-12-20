@@ -35,24 +35,18 @@ export async function getIgdbToken(): Promise<string> {
     );
 
     await prisma.$transaction(async (tx) => {
-        const tokenInDb = await tx.apiToken.findUnique({
+        await tx.apiToken.upsert({
             where: { apiName: 'IGDB' },
+            update: {
+                token: accessToken,
+                expiresAt,
+            },
+            create: {
+                token: accessToken,
+                apiName: 'IGDB',
+                expiresAt,
+            },
         });
-
-        if (!tokenInDb || tokenInDb.expiresAt <= new Date()) {
-            await tx.apiToken.upsert({
-                where: { apiName: 'IGDB' },
-                update: {
-                    token: accessToken,
-                    expiresAt,
-                },
-                create: {
-                    token: accessToken,
-                    apiName: 'IGDB',
-                    expiresAt,
-                },
-            });
-        }
     });
 
     return accessToken;
