@@ -62,6 +62,18 @@ vi.mock('lucide-react', () => ({
             className={className}
         />
     ),
+    ThumbsUp: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-up-icon"
+            className={className}
+        />
+    ),
+    ThumbsDown: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-down-icon"
+            className={className}
+        />
+    ),
 }));
 
 describe('ReviewDetailCard', () => {
@@ -75,6 +87,8 @@ describe('ReviewDetailCard', () => {
         review: 'This is a great movie! Really enjoyed it.',
         createdAt: new Date('2024-01-15T10:00:00Z'),
         updatedAt: new Date('2024-01-15T10:00:00Z'),
+        totalLikes: 10,
+        totalDislikes: 2,
         user: {
             id: 'user-1',
             name: 'John Doe',
@@ -222,5 +236,15 @@ describe('ReviewDetailCard', () => {
         const dateSection = container.querySelector('.mt-3');
         expect(dateSection).toBeInTheDocument();
         expect(dateSection).toHaveClass('mt-3', 'sm:mt-4');
+    });
+
+    it('displays the correct number of likes and dislikes', () => {
+        render(<ReviewDetailCard review={mockReview} />);
+
+        expect(screen.getByTestId('thumbs-up-icon')).toBeInTheDocument();
+        expect(screen.getByText('10')).toBeInTheDocument();
+
+        expect(screen.getByTestId('thumbs-down-icon')).toBeInTheDocument();
+        expect(screen.getByText('2')).toBeInTheDocument();
     });
 });

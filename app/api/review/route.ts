@@ -66,6 +66,8 @@ export async function POST(request: NextRequest) {
                     review: review.text,
                     mediaId: mediaId,
                     userId: session.user.id,
+                    totalLikes: 0,
+                    totalDislikes: 0,
                 },
             });
 
@@ -127,6 +129,102 @@ export async function POST(request: NextRequest) {
 
         if (error instanceof Error && error.message === 'MEDIA_NOT_FOUND') {
             return notFound('Media item not found');
+        }
+
+        return internalServerError();
+    }
+}
+
+export async function PUT(request: NextRequest) {
+    try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session) {
+            return unauthorized(
+                'Unauthorized. Please log in to update a review.'
+            );
+        }
+
+        const { reviewId, liked } = await request.json();
+
+        if (!reviewId) {
+            return validationError('Review ID is required');
+        }
+
+        if (liked === undefined) {
+            return validationError('Liked status is required');
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const review = await tx.review.findUnique({
+                where: { id: reviewId },
+            });
+
+            if (!review) {
+                throw new Error('REVIEW_NOT_FOUND');
+            }
+
+            if (review.userId !== session.user.id) {
+                throw new Error('UNAUTHORIZED');
+            }
+
+            const updatedReview = await tx.review.update({
+                where: { id: reviewId },
+                data: { liked },
+            });
+
+            const [likesCount, dislikesCount] =
+                await Promise.all([
+                    tx.review.count({
+                        where: {
+                            mediaId: review.mediaId,
+                            liked: true,
+                        },
+                    }),
+                    tx.review.count({
+                        where: {
+                            mediaId: review.mediaId,
+                            liked: false,
+                        },
+                    }),
+                ]);
+
+            await tx.mediaItem.update({
+                where: { id: review.mediaId },
+                data: {
+                    totalLikes: likesCount,
+                    totalDislikes: dislikesCount,
+                },
+            });
+
+            return updatedReview;
+        });
+
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+
+        revalidatePath(`/${locale}/media/${result.mediaId}`, 'page');
+        revalidatePath(`/${locale}/review/${result.id}`, 'page');
+
+        return NextResponse.json(
+            {
+                message: 'Review updated successfully',
+                review: result,
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error in PUT /api/review:', error);
+
+        if (error instanceof Error && error.message === 'REVIEW_NOT_FOUND') {
+            return notFound('Review not found');
+        }
+
+        if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+            return unauthorized('You are not authorized to update this review');
         }
 
         return internalServerError();

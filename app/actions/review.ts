@@ -44,6 +44,8 @@ export const getReviewById = async (
             review: review.review ?? undefined,
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
+            totalLikes: review.totalLikes,
+            totalDislikes: review.totalDislikes,
             user: safeUser,
             media: {
                 id: review.media.id,

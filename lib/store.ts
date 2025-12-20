@@ -30,6 +30,8 @@ export interface Review {
     review?: string;
     createdAt: Date;
     updatedAt: Date;
+    totalLikes: number;
+    totalDislikes: number;
 }
 
 export interface User {
