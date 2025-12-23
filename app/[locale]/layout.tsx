@@ -11,6 +11,7 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
+import { ToastProvider } from '@/components/toast/toast-provider';
 import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
 
 const font = Ubuntu_Mono({
@@ -89,10 +90,12 @@ export default async function LocaleLayout({
                 <NextIntlClientProvider>
                     <ThemeProvider>
                         <AuthProvider>
-                            <Header />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                            <DynamicModalWrapper />
+                            <ToastProvider>
+                                <Header />
+                                <main className="flex-1">{children}</main>
+                                <Footer />
+                                <DynamicModalWrapper />
+                            </ToastProvider>
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
