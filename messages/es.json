@@ -195,6 +195,10 @@
         "share": "Compartir",
         "myProfile": "Mi Perfil"
     },
+    "Toast": {
+        "linkCopied": "Enlace copiado al portapapeles!",
+        "copyFailed": "Error al copiar el enlace"
+    },
     "ProfilePage": {
         "joined": "Se unió en {date}",
         "latestReviews": "Últimas Reseñas",
@@ -248,7 +252,8 @@
     "ReviewPage": {
         "reviewFor": "Reseña para",
         "review": "Reseña",
-        "options": "Opciones"
+        "options": "Opciones",
+        "shareTitle": "Reseña"
     },
     "Footer": {
         "privacyPolicy": "Política de Privacidad",

@@ -47,6 +47,7 @@ export function ReviewClient({
                             <div className="lg:hidden">
                                 <div className="flex flex-col gap-4 sm:flex-row">
                                     <ReviewOptions
+                                        reviewId={reviewItem.id}
                                         isOwner={isOwner}
                                         variant="mobile"
                                     />
@@ -59,6 +60,7 @@ export function ReviewClient({
                     <div className="hidden lg:col-span-2 lg:block">
                         <div className="flex flex-col gap-4 sm:gap-6">
                             <ReviewOptions
+                                reviewId={reviewItem.id}
                                 isOwner={isOwner}
                                 variant="desktop"
                             />

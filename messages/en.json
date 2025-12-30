@@ -195,6 +195,10 @@
         "share": "Share",
         "myProfile": "My Profile"
     },
+    "Toast": {
+        "linkCopied": "Link copied to clipboard!",
+        "copyFailed": "Failed to copy link"
+    },
     "ProfilePage": {
         "joined": "Joined {date}",
         "latestReviews": "Latest Reviews",
@@ -248,7 +252,8 @@
     "ReviewPage": {
         "reviewFor": "Review for",
         "review": "Review",
-        "options": "Options"
+        "options": "Options",
+        "shareTitle": "Review"
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",

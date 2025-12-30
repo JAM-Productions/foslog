@@ -195,6 +195,10 @@
         "share": "Compartir",
         "myProfile": "El Meu Perfil"
     },
+    "Toast": {
+        "linkCopied": "Enllaç copiat al porta-retalls!",
+        "copyFailed": "Error en copiar l'enllaç"
+    },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
         "latestReviews": "Últimes Ressenyes",
@@ -248,7 +252,8 @@
     "ReviewPage": {
         "reviewFor": "Ressenya per a",
         "review": "Ressenya",
-        "options": "Opcions"
+        "options": "Opcions",
+        "shareTitle": "Ressenya"
     },
     "Footer": {
         "privacyPolicy": "Política de Privacitat",
