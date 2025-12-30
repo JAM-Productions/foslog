@@ -252,7 +252,8 @@
     "ReviewPage": {
         "reviewFor": "Reseña para",
         "review": "Reseña",
-        "options": "Opciones"
+        "options": "Opciones",
+        "shareTitle": "Reseña"
     },
     "Footer": {
         "privacyPolicy": "Política de Privacidad",

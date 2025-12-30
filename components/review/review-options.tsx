@@ -30,31 +30,48 @@ export function ReviewOptions({
     const handleShare = async () => {
         const shareUrl = `${window.location.origin}/review/${reviewId}`;
 
-        // Check if we're on mobile and Web Share API is available
-        if (navigator.share && /mobile|android|iphone|ipad|ipod/i.test(navigator.userAgent)) {
+        // Check if Web Share API is available (primarily on mobile)
+        if (navigator.share) {
             try {
                 await navigator.share({
-                    title: 'Review',
+                    title: t('shareTitle'),
                     url: shareUrl,
                 });
             } catch (error) {
                 // User cancelled share or error occurred
-                // Fallback to copy
+                // Fallback to copy on error (but not on user cancel)
                 if ((error as Error).name !== 'AbortError') {
                     copyToClipboard(shareUrl);
                 }
             }
         } else {
-            // Desktop: copy to clipboard and show toast
+            // Desktop or browsers without Web Share API: copy to clipboard
             copyToClipboard(shareUrl);
         }
     };
 
     const copyToClipboard = async (text: string) => {
+        // Check for secure context and clipboard API availability
+        const hasWindow = typeof window !== 'undefined';
+        const isSecure = hasWindow && window.isSecureContext;
+        const hasClipboard =
+            typeof navigator !== 'undefined' &&
+            !!navigator.clipboard &&
+            typeof navigator.clipboard.writeText === 'function';
+
+        if (!isSecure || !hasClipboard) {
+            console.error(
+                'Clipboard access unavailable: requires secure HTTPS context'
+            );
+            showToast(tToast('copyFailed'), 'error');
+            return;
+        }
+
         try {
             await navigator.clipboard.writeText(text);
             showToast(tToast('linkCopied'), 'success');
-        } catch {
+        } catch (error) {
+            console.error('Failed to copy text to clipboard:', error);
             showToast(tToast('copyFailed'), 'error');
         }
     };

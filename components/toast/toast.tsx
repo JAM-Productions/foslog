@@ -7,6 +7,10 @@ export interface ToastProps {
     message: string;
     type?: 'success' | 'error' | 'info';
     duration?: number;
+    /**
+     * Callback function to close the toast.
+     * This function should be memoized (e.g., using useCallback) to prevent unnecessary re-renders.
+     */
     onClose: () => void;
 }
 
@@ -34,14 +38,14 @@ export function Toast({
 
     return (
         <div
-            className={`fixed bottom-4 right-4 z-50 flex min-w-[300px] max-w-md items-center gap-3 rounded-lg px-4 py-3 shadow-lg ${typeStyles[type]}`}
+            className={`fixed bottom-4 right-4 z-50 flex min-w-[300px] max-w-md items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-in-out animate-in slide-in-from-bottom-5 fade-in ${typeStyles[type]}`}
             role="alert"
             aria-live="polite"
         >
             <p className="flex-1 text-sm font-medium">{message}</p>
             <button
                 onClick={onClose}
-                className="inline-flex h-6 w-6 items-center justify-center rounded-md hover:bg-white/20"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/20"
                 aria-label="Close"
             >
                 <X className="h-4 w-4" />

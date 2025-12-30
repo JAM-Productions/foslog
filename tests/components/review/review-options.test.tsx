@@ -64,6 +64,7 @@ describe('ReviewOptions', () => {
     const mockT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             options: 'Options',
+            shareTitle: 'Review',
         };
         return translations[key] || key;
     });
@@ -110,6 +111,13 @@ describe('ReviewOptions', () => {
                 origin: 'http://localhost:3000',
             },
             writable: true,
+        });
+
+        // Mock window.isSecureContext
+        Object.defineProperty(window, 'isSecureContext', {
+            value: true,
+            writable: true,
+            configurable: true,
         });
     });
 
@@ -391,20 +399,21 @@ describe('ReviewOptions', () => {
     });
 
     describe('Share functionality', () => {
-        it('handles share button click on desktop', async () => {
+        it('handles share button click when Web Share API not available', async () => {
             const user = userEvent.setup();
             const writeTextMock = vi.fn(() => Promise.resolve());
+
+            // No navigator.share - will use clipboard
+            Object.defineProperty(navigator, 'share', {
+                value: undefined,
+                writable: true,
+                configurable: true,
+            });
 
             Object.defineProperty(navigator, 'clipboard', {
                 value: {
                     writeText: writeTextMock,
                 },
-                writable: true,
-                configurable: true,
-            });
-
-            Object.defineProperty(navigator, 'userAgent', {
-                value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                 writable: true,
                 configurable: true,
             });
@@ -419,18 +428,12 @@ describe('ReviewOptions', () => {
             );
         });
 
-        it('uses Web Share API on mobile if available', async () => {
+        it('uses Web Share API when available', async () => {
             const user = userEvent.setup();
             const shareMock = vi.fn(() => Promise.resolve());
 
             Object.defineProperty(navigator, 'share', {
                 value: shareMock,
-                writable: true,
-                configurable: true,
-            });
-
-            Object.defineProperty(navigator, 'userAgent', {
-                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
                 writable: true,
                 configurable: true,
             });
@@ -446,7 +449,7 @@ describe('ReviewOptions', () => {
             });
         });
 
-        it('falls back to clipboard on share cancel', async () => {
+        it('does not fallback to clipboard on share cancel', async () => {
             const user = userEvent.setup();
             const writeTextMock = vi.fn(() => Promise.resolve());
             const shareMock = vi.fn(() =>
@@ -463,12 +466,6 @@ describe('ReviewOptions', () => {
                 value: {
                     writeText: writeTextMock,
                 },
-                writable: true,
-                configurable: true,
-            });
-
-            Object.defineProperty(navigator, 'userAgent', {
-                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
                 writable: true,
                 configurable: true,
             });
@@ -500,12 +497,6 @@ describe('ReviewOptions', () => {
                 value: {
                     writeText: writeTextMock,
                 },
-                writable: true,
-                configurable: true,
-            });
-
-            Object.defineProperty(navigator, 'userAgent', {
-                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
                 writable: true,
                 configurable: true,
             });

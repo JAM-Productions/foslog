@@ -252,7 +252,8 @@
     "ReviewPage": {
         "reviewFor": "Review for",
         "review": "Review",
-        "options": "Options"
+        "options": "Options",
+        "shareTitle": "Review"
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",
