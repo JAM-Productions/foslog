@@ -2,10 +2,25 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReviewOptions } from '@/components/review/review-options';
 import { useTranslations } from 'next-intl';
+import userEvent from '@testing-library/user-event';
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
+}));
+
+// Mock useToast
+vi.mock('@/hooks/useToast', () => ({
+    useToast: vi.fn(() => ({
+        toast: { isVisible: false, message: '', type: 'success' },
+        showToast: vi.fn(),
+        hideToast: vi.fn(),
+    })),
+}));
+
+// Mock Toast component
+vi.mock('@/components/toast/toast', () => ({
+    Toast: () => null,
 }));
 
 // Mock lucide-react
@@ -28,6 +43,12 @@ vi.mock('lucide-react', () => ({
             className={className}
         />
     ),
+    X: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="x-icon"
+            className={className}
+        />
+    ),
 }));
 
 describe('ReviewOptions', () => {
@@ -47,6 +68,14 @@ describe('ReviewOptions', () => {
         return translations[key] || key;
     });
 
+    const mockTToast = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            linkCopied: 'Link copied to clipboard!',
+            copyFailed: 'Failed to copy link',
+        };
+        return translations[key] || key;
+    });
+
     const mockedUseTranslations = vi.mocked(useTranslations);
 
     beforeEach(() => {
@@ -58,20 +87,42 @@ describe('ReviewOptions', () => {
             if (namespace === 'ReviewPage') {
                 return mockT as unknown as ReturnType<typeof useTranslations>;
             }
+            if (namespace === 'Toast') {
+                return mockTToast as unknown as ReturnType<
+                    typeof useTranslations
+                >;
+            }
             return mockTCTA as unknown as ReturnType<typeof useTranslations>;
+        });
+
+        // Mock navigator.clipboard
+        Object.defineProperty(navigator, 'clipboard', {
+            value: {
+                writeText: vi.fn(() => Promise.resolve()),
+            },
+            writable: true,
+            configurable: true,
+        });
+
+        // Mock window.location.origin
+        Object.defineProperty(window, 'location', {
+            value: {
+                origin: 'http://localhost:3000',
+            },
+            writable: true,
         });
     });
 
     describe('Owner actions', () => {
         it('renders edit button when user is owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const editButton = screen.getByRole('button', { name: /edit/i });
             expect(editButton).toBeInTheDocument();
         });
 
         it('renders delete button when user is owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const deleteButton = screen.getByRole('button', {
                 name: /delete/i,
@@ -80,7 +131,7 @@ describe('ReviewOptions', () => {
         });
 
         it('renders edit icon when user is owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const editIcon = screen.getByTestId('pencil-icon');
             expect(editIcon).toBeInTheDocument();
@@ -88,7 +139,7 @@ describe('ReviewOptions', () => {
         });
 
         it('renders delete icon when user is owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const deleteIcon = screen.getByTestId('trash-icon');
             expect(deleteIcon).toBeInTheDocument();
@@ -114,7 +165,7 @@ describe('ReviewOptions', () => {
 
     describe('Share action', () => {
         it('renders share button for owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             expect(shareButton).toBeInTheDocument();
@@ -138,7 +189,7 @@ describe('ReviewOptions', () => {
 
     describe('Mobile variant', () => {
         it('renders with mobile variant by default', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -149,6 +200,7 @@ describe('ReviewOptions', () => {
         it('does not render options title with mobile variant', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="mobile"
                 />
@@ -161,6 +213,7 @@ describe('ReviewOptions', () => {
         it('applies mobile button classes', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="mobile"
                 />
@@ -181,6 +234,7 @@ describe('ReviewOptions', () => {
         it('renders options title with desktop variant', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
                 />
@@ -193,6 +247,7 @@ describe('ReviewOptions', () => {
         it('applies correct styling to options title', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
                 />
@@ -210,6 +265,7 @@ describe('ReviewOptions', () => {
         it('applies desktop button classes', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
                 />
@@ -228,7 +284,7 @@ describe('ReviewOptions', () => {
 
     describe('Button styling', () => {
         it('applies outline variant to all buttons', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -237,7 +293,7 @@ describe('ReviewOptions', () => {
         });
 
         it('applies small size to all buttons', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -246,7 +302,7 @@ describe('ReviewOptions', () => {
         });
 
         it('applies gap classes to button content', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             expect(shareButton).toHaveClass('gap-1.5');
@@ -255,7 +311,7 @@ describe('ReviewOptions', () => {
 
     describe('Button order', () => {
         it('renders buttons in correct order for owner', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const buttons = screen.getAllByRole('button');
             expect(buttons[0]).toHaveTextContent('Edit');
@@ -264,7 +320,7 @@ describe('ReviewOptions', () => {
         });
 
         it('renders only share button for non-owner', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
 
             const buttons = screen.getAllByRole('button');
             expect(buttons).toHaveLength(1);
@@ -274,7 +330,7 @@ describe('ReviewOptions', () => {
 
     describe('Translations', () => {
         it('uses correct translation namespace for CTA buttons', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             expect(mockTCTA).toHaveBeenCalledWith('edit');
             expect(mockTCTA).toHaveBeenCalledWith('delete');
@@ -284,6 +340,7 @@ describe('ReviewOptions', () => {
         it('uses correct translation namespace for options title', () => {
             render(
                 <ReviewOptions
+                    reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
                 />
@@ -295,7 +352,7 @@ describe('ReviewOptions', () => {
 
     describe('Icon and text alignment', () => {
         it('aligns icon and text in edit button', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const editButton = screen.getByRole('button', { name: /edit/i });
             const icon = editButton.querySelector('[data-testid="pencil-icon"]');
@@ -307,7 +364,7 @@ describe('ReviewOptions', () => {
         });
 
         it('aligns icon and text in delete button', () => {
-            render(<ReviewOptions isOwner={true} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
 
             const deleteButton = screen.getByRole('button', {
                 name: /delete/i,
@@ -321,7 +378,7 @@ describe('ReviewOptions', () => {
         });
 
         it('aligns icon and text in share button', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             const icon = shareButton.querySelector('[data-testid="share2-icon"]');
@@ -330,6 +387,139 @@ describe('ReviewOptions', () => {
             expect(icon).toBeInTheDocument();
             expect(text).toBeInTheDocument();
             expect(shareButton).toHaveClass('items-center');
+        });
+    });
+
+    describe('Share functionality', () => {
+        it('handles share button click on desktop', async () => {
+            const user = userEvent.setup();
+            const writeTextMock = vi.fn(() => Promise.resolve());
+
+            Object.defineProperty(navigator, 'clipboard', {
+                value: {
+                    writeText: writeTextMock,
+                },
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'userAgent', {
+                value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                writable: true,
+                configurable: true,
+            });
+
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+
+            const shareButton = screen.getByRole('button', { name: /share/i });
+            await user.click(shareButton);
+
+            expect(writeTextMock).toHaveBeenCalledWith(
+                'http://localhost:3000/review/test-review-id'
+            );
+        });
+
+        it('uses Web Share API on mobile if available', async () => {
+            const user = userEvent.setup();
+            const shareMock = vi.fn(() => Promise.resolve());
+
+            Object.defineProperty(navigator, 'share', {
+                value: shareMock,
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'userAgent', {
+                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
+                writable: true,
+                configurable: true,
+            });
+
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+
+            const shareButton = screen.getByRole('button', { name: /share/i });
+            await user.click(shareButton);
+
+            expect(shareMock).toHaveBeenCalledWith({
+                title: 'Review',
+                url: 'http://localhost:3000/review/test-review-id',
+            });
+        });
+
+        it('falls back to clipboard on share cancel', async () => {
+            const user = userEvent.setup();
+            const writeTextMock = vi.fn(() => Promise.resolve());
+            const shareMock = vi.fn(() =>
+                Promise.reject(new DOMException('AbortError', 'AbortError'))
+            );
+
+            Object.defineProperty(navigator, 'share', {
+                value: shareMock,
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'clipboard', {
+                value: {
+                    writeText: writeTextMock,
+                },
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'userAgent', {
+                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
+                writable: true,
+                configurable: true,
+            });
+
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+
+            const shareButton = screen.getByRole('button', { name: /share/i });
+            await user.click(shareButton);
+
+            expect(shareMock).toHaveBeenCalled();
+            // Should not fallback to clipboard on user cancel
+            expect(writeTextMock).not.toHaveBeenCalled();
+        });
+
+        it('falls back to clipboard on share error', async () => {
+            const user = userEvent.setup();
+            const writeTextMock = vi.fn(() => Promise.resolve());
+            const shareMock = vi.fn(() =>
+                Promise.reject(new Error('Share failed'))
+            );
+
+            Object.defineProperty(navigator, 'share', {
+                value: shareMock,
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'clipboard', {
+                value: {
+                    writeText: writeTextMock,
+                },
+                writable: true,
+                configurable: true,
+            });
+
+            Object.defineProperty(navigator, 'userAgent', {
+                value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
+                writable: true,
+                configurable: true,
+            });
+
+            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+
+            const shareButton = screen.getByRole('button', { name: /share/i });
+            await user.click(shareButton);
+
+            expect(shareMock).toHaveBeenCalled();
+            // Should fallback to clipboard on error
+            expect(writeTextMock).toHaveBeenCalledWith(
+                'http://localhost:3000/review/test-review-id'
+            );
         });
     });
 });

@@ -195,6 +195,10 @@
         "share": "Share",
         "myProfile": "My Profile"
     },
+    "Toast": {
+        "linkCopied": "Link copied to clipboard!",
+        "copyFailed": "Failed to copy link"
+    },
     "ProfilePage": {
         "joined": "Joined {date}",
         "latestReviews": "Latest Reviews",
