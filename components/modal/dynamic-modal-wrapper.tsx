@@ -6,6 +6,15 @@ const ReviewModal = dynamic(() => import('./review-modal'), {
     ssr: false,
 });
 
+const ConfigurationModal = dynamic(() => import('./configuration-modal'), {
+    ssr: false,
+});
+
 export default function DynamicModalWrapper() {
-    return <ReviewModal />;
+    return (
+        <>
+            <ReviewModal />
+            <ConfigurationModal />
+        </>
+    );
 }
