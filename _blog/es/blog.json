@@ -1,0 +1,20 @@
+
+{
+  "posts": [
+    {
+      "category": "Películas",
+      "title": "Los Últimos Éxitos de Taquilla",
+      "content": "Mantente al día de las últimas críticas y noticias de cine. ![Póster de película](/images/blog/movie.jpg)"
+    },
+    {
+      "category": "Series",
+      "title": "Series para Maratones",
+      "content": "Estamos viendo las últimas series para que tú no tengas que hacerlo. ![Póster de serie](/images/blog/series.jpg)"
+    },
+    {
+      "category": "Videojuegos",
+      "title": "Videojuegos Mejor Valorados",
+      "content": "Lee nuestras críticas expertas sobre los videojuegos más populares. ![Portada de videojuego](/images/blog/videogame.jpg)"
+    }
+  ]
+}

@@ -112,7 +112,8 @@
     "Header": {
         "search": "Search media...",
         "profile": "Profile",
-        "settings": "Settings"
+        "settings": "Settings",
+        "blog": "Blog"
     },
     "LanguageSelector": {
         "selectLanguage": "Select language",
@@ -253,5 +254,8 @@
     "Footer": {
         "privacyPolicy": "Privacy Policy",
         "termsOfService": "Terms of Service"
+    },
+    "BlogPage": {
+        "allCategories": "All"
     }
 }

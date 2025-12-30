@@ -1,0 +1,20 @@
+
+{
+  "posts": [
+    {
+      "category": "Movies",
+      "title": "The Latest Blockbusters",
+      "content": "Stay tuned for the latest movie reviews and news. ![Movie Poster](/images/blog/movie.jpg)"
+    },
+    {
+      "category": "Series",
+      "title": "Binge-Worthy Series",
+      "content": "We are binge-watching the latest series so you don't have to. ![Series Poster](/images/blog/series.jpg)"
+    },
+    {
+      "category": "Videogames",
+      "title": "Top-Rated Videogames",
+      "content": "Read our expert reviews on the most popular videogames. ![Videogame Cover](/images/blog/videogame.jpg)"
+    }
+  ]
+}

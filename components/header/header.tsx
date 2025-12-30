@@ -10,11 +10,12 @@ import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
 import LanguageSelector from '@/components/header/language-selector';
 import { useState, Suspense } from 'react';
 import { ListFilterPlus } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export default function Header() {
+    const t = useTranslations('Header');
     const pathname = usePathname();
     // Check if we're on the home route (with or without locale)
     const isHomePage =
@@ -60,6 +61,13 @@ export default function Header() {
                         <span className="text-xl font-bold tracking-tight">
                             Foslog
                         </span>
+                    </Link>
+
+                    <Link
+                        href="/blog"
+                        className="ml-4 text-lg font-medium text-foreground/60 transition-colors hover:text-foreground/80"
+                    >
+                        {t('blog')}
                     </Link>
 
                     {/* Search - Always visible on desktop when on home page */}

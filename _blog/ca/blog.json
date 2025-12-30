@@ -1,0 +1,20 @@
+
+{
+  "posts": [
+    {
+      "category": "Pel·lícules",
+      "title": "Els Últims Èxits de Taquilla",
+      "content": "Estigues al dia de les últimes crítiques i notícies de cinema. ![Pòster de pel·lícula](/images/blog/movie.jpg)"
+    },
+    {
+      "category": "Sèries",
+      "title": "Sèries per a Maratons",
+      "content": "Estem veient les últimes sèries perquè tu no hagis de fer-ho. ![Pòster de sèrie](/images/blog/series.jpg)"
+    },
+    {
+      "category": "Videojocs",
+      "title": "Videojocs Millor Valorats",
+      "content": "Llegeix les nostres crítiques expertes sobre els videojocs més populars. ![Portada de videojoc](/images/blog/videogame.jpg)"
+    }
+  ]
+}
