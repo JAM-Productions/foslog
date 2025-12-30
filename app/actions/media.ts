@@ -49,7 +49,11 @@ export const getMedias = async (
                 where,
                 skip,
                 take: pageSize,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             }),
             prisma.mediaItem.count({ where }),
         ]);
