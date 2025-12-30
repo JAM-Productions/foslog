@@ -55,7 +55,7 @@ export default function Modal({
                     <div className="flex w-full flex-col justify-center sm:relative sm:flex-row">
                         {showCloseButton && (
                             <Button
-                                className="absolute top-4 right-4 cursor-pointer sm:top-0 sm:right-0"
+                                className="absolute top-4 right-4 sm:top-0 sm:right-0"
                                 variant="ghost"
                                 size="sm"
                                 onClick={onClose}

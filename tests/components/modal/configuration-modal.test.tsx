@@ -263,7 +263,7 @@ describe('ConfigurationModal', () => {
         // Should still call router.replace even if localStorage fails
         expect(mockReplace).toHaveBeenCalledWith('/', { locale: 'es' });
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Failed to set preferred locale:',
+            'Failed to save language preference to local storage:',
             expect.any(Error)
         );
 

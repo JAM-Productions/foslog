@@ -38,7 +38,10 @@ export default function ConfigurationModal() {
         try {
             window.localStorage.setItem('preferredLocale', newLocale);
         } catch (error) {
-            console.error('Failed to set preferred locale:', error);
+            console.error(
+                'Failed to save language preference to local storage:',
+                error
+            );
         }
         router.replace(pathname, { locale: newLocale });
     };
