@@ -35,6 +35,15 @@ export default function ConfigurationModal() {
     };
 
     const handleLocaleChange = (newLocale: string) => {
+        // Validate that the locale is supported
+        const supportedLocales = locales.map((l) => l.code);
+        if (!supportedLocales.includes(newLocale)) {
+            console.error(
+                `Unsupported locale: ${newLocale}. Supported locales are: ${supportedLocales.join(', ')}`
+            );
+            return;
+        }
+
         try {
             window.localStorage.setItem('preferredLocale', newLocale);
         } catch (error) {

@@ -153,7 +153,7 @@ describe('Modal', () => {
             </Modal>
         );
 
-        // Check that there are exactly 2 divs with shrink-0 class (header + content container, but no footer)
+        // Check that there is only 1 div with shrink-0 class (the header, but no footer)
         const shrinkDivs = container.querySelectorAll('.shrink-0');
         expect(shrinkDivs.length).toBe(1); // Only header has shrink-0 when footer is not provided
     });
