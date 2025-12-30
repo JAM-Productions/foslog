@@ -211,28 +211,58 @@ describe('getMedias Server Action', () => {
                     id: '1',
                     title: 'Item 1',
                     type: 'GAME',
+                    year: 2023,
+                    director: null,
+                    author: null,
+                    artist: null,
+                    genre: [],
+                    poster: null,
+                    cover: null,
+                    description: 'Test',
                     averageRating: 5.0,
                     totalReviews: 10,
-                    genre: [],
-                    description: 'Test',
+                    totalLikes: 5,
+                    totalDislikes: 1,
+                    createdAt: new Date('2023-01-01'),
+                    updatedAt: new Date('2023-01-01'),
                 },
                 {
                     id: '2',
                     title: 'Item 2',
                     type: 'GAME',
+                    year: 2023,
+                    director: null,
+                    author: null,
+                    artist: null,
+                    genre: [],
+                    poster: null,
+                    cover: null,
+                    description: 'Test',
                     averageRating: 5.0,
                     totalReviews: 10,
-                    genre: [],
-                    description: 'Test',
+                    totalLikes: 5,
+                    totalDislikes: 1,
+                    createdAt: new Date('2023-01-02'),
+                    updatedAt: new Date('2023-01-02'),
                 },
                 {
                     id: '3',
                     title: 'Item 3',
                     type: 'GAME',
+                    year: 2023,
+                    director: null,
+                    author: null,
+                    artist: null,
+                    genre: [],
+                    poster: null,
+                    cover: null,
+                    description: 'Test',
                     averageRating: 5.0,
                     totalReviews: 10,
-                    genre: [],
-                    description: 'Test',
+                    totalLikes: 5,
+                    totalDislikes: 1,
+                    createdAt: new Date('2023-01-03'),
+                    updatedAt: new Date('2023-01-03'),
                 },
             ];
 
@@ -245,12 +275,14 @@ describe('getMedias Server Action', () => {
 
             await getMedias(1, 12, 'game');
 
-            // Verify that the orderBy includes id as the final tiebreaker
+            // Verify that the orderBy has the exact structure with id as the final tiebreaker
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    orderBy: expect.arrayContaining([
-                        expect.objectContaining({ id: 'asc' }),
-                    ]),
+                    orderBy: [
+                        { averageRating: 'desc' },
+                        { totalReviews: 'desc' },
+                        { id: 'asc' },
+                    ],
                 })
             );
         });
