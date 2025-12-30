@@ -38,7 +38,7 @@ export function Toast({
 
     return (
         <div
-            className={`fixed bottom-4 right-4 z-50 flex min-w-[300px] max-w-md items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-in-out animate-in slide-in-from-bottom-5 fade-in ${typeStyles[type]}`}
+            className={`animate-in slide-in-from-bottom-5 fade-in fixed right-4 bottom-4 z-50 flex max-w-md min-w-[300px] items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-in-out ${typeStyles[type]}`}
             role="alert"
             aria-live="polite"
         >
