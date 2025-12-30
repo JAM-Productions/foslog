@@ -14,6 +14,7 @@ const messages = {
     Footer: {
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
+        blog: 'Blog',
     },
 };
 
@@ -32,6 +33,7 @@ describe('Footer', () => {
         // Check for links
         expect(screen.getByText('Privacy Policy')).toHaveAttribute('href', '/privacy-policy');
         expect(screen.getByText('Terms of Service')).toHaveAttribute('href', '/terms-of-service');
+        expect(screen.getByText('Blog')).toHaveAttribute('href', '/blog');
 
         // Check for version link
         const versionLink = screen.getByText(`v${pkg.version}`);

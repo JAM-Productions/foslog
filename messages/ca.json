@@ -252,6 +252,7 @@
     },
     "Footer": {
         "privacyPolicy": "Política de Privacitat",
-        "termsOfService": "Termes de Servei"
+        "termsOfService": "Termes de Servei",
+        "blog": "Blog"
     }
 }

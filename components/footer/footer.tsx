@@ -24,6 +24,13 @@ const Footer = () => {
                     >
                         {t('termsOfService')}
                     </Link>
+                    <Link
+                        href="/blog"
+                        className="hover:underline"
+                        prefetch={false}
+                    >
+                        {t('blog')}
+                    </Link>
                 </div>
                 <a
                     href={`https://github.com/JAM-Productions/foslog/releases/tag/v${pkg.version}`}
