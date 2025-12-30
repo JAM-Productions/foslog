@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import UserMenuSkeleton from './user-menu-skeleton';
 import Image from 'next/image';
+import { useAppStore } from '@/lib/store';
 
 const UserMenu = () => {
     const tCTA = useTranslations('CTA');
@@ -20,6 +21,8 @@ const UserMenu = () => {
     const { user, isAuthenticated, isLoading } = useAuth();
     const [isNotUserOpen, setIsNotUserOpen] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
+    
+    const { setIsConfigModalOpen } = useAppStore();
 
     useClickOutside(menuNotUserRef, isNotUserOpen, setIsNotUserOpen);
     useClickOutside(menuUserRef, isUserOpen, setIsUserOpen);
@@ -137,7 +140,13 @@ const UserMenu = () => {
                             <CircleUser className="h-4 w-4" />
                             {tCTA('myProfile')}
                         </button>
-                        <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm">
+                        <button
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            onClick={() => {
+                                setIsConfigModalOpen(true);
+                                setIsUserOpen(false);
+                            }}
+                        >
                             <Settings className="h-4 w-4" />
                             {tCTA('settings')}
                         </button>
