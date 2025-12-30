@@ -14,6 +14,13 @@ vi.mock('next/link', () => ({
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useLocale: vi.fn(),
+    useTranslations: vi.fn(() => (key: string) => {
+        const translations: Record<string, string> = {
+            like: 'Like',
+            dislike: 'Dislike',
+        };
+        return translations[key] || key;
+    }),
 }));
 
 // Mock next/image
@@ -59,6 +66,18 @@ vi.mock('lucide-react', () => ({
     Star: ({ className }: { className?: string }) => (
         <svg
             data-testid="star-icon"
+            className={className}
+        />
+    ),
+    ThumbsUp: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-up-icon"
+            className={className}
+        />
+    ),
+    ThumbsDown: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbs-down-icon"
             className={className}
         />
     ),
@@ -222,5 +241,76 @@ describe('ReviewDetailCard', () => {
         const dateSection = container.querySelector('.mt-3');
         expect(dateSection).toBeInTheDocument();
         expect(dateSection).toHaveClass('mt-3', 'sm:mt-4');
+    });
+
+    it('displays thumbs up icon and text when review is liked', () => {
+        const likedReview: SafeReview = {
+            ...mockReview,
+            liked: true,
+        };
+
+        render(<ReviewDetailCard review={likedReview} />);
+
+        const thumbsUpIcon = screen.getByTestId('thumbs-up-icon');
+        expect(thumbsUpIcon).toBeInTheDocument();
+        expect(thumbsUpIcon).toHaveClass('h-4', 'w-4', 'text-green-600');
+        expect(screen.getByText('Like')).toBeInTheDocument();
+    });
+
+    it('displays thumbs down icon and text when review is disliked', () => {
+        const dislikedReview: SafeReview = {
+            ...mockReview,
+            liked: false,
+        };
+
+        render(<ReviewDetailCard review={dislikedReview} />);
+
+        const thumbsDownIcon = screen.getByTestId('thumbs-down-icon');
+        expect(thumbsDownIcon).toBeInTheDocument();
+        expect(thumbsDownIcon).toHaveClass('h-4', 'w-4', 'text-red-600');
+        expect(screen.getByText('Dislike')).toBeInTheDocument();
+    });
+
+    it('does not display like/dislike when liked is undefined', () => {
+        const reviewWithoutLike: SafeReview = {
+            ...mockReview,
+            liked: undefined,
+        };
+
+        render(<ReviewDetailCard review={reviewWithoutLike} />);
+
+        expect(screen.queryByTestId('thumbs-up-icon')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('thumbs-down-icon')).not.toBeInTheDocument();
+    });
+
+    it('does not display like/dislike when liked is null', () => {
+        const reviewWithoutLike: SafeReview = {
+            ...mockReview,
+            liked: null,
+        };
+
+        render(<ReviewDetailCard review={reviewWithoutLike} />);
+
+        expect(screen.queryByTestId('thumbs-up-icon')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('thumbs-down-icon')).not.toBeInTheDocument();
+    });
+
+    it('displays both rating and like indicator when both are present', () => {
+        const reviewWithBoth: SafeReview = {
+            ...mockReview,
+            rating: 4,
+            liked: true,
+        };
+
+        render(<ReviewDetailCard review={reviewWithBoth} />);
+
+        // Should have stars for rating
+        const stars = screen.getAllByTestId('star-icon');
+        expect(stars.length).toBeGreaterThan(0);
+
+        // Should have thumbs up for like
+        const thumbsUpIcon = screen.getByTestId('thumbs-up-icon');
+        expect(thumbsUpIcon).toBeInTheDocument();
+        expect(screen.getByText('Like')).toBeInTheDocument();
     });
 });
