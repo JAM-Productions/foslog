@@ -45,11 +45,28 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         const tSearchInput = useTranslations('SearchInput');
 
         const searchInputRef = React.useRef<HTMLDivElement>(null);
+        const inputRef = React.useRef<HTMLInputElement>(null);
         const [isOpen, setIsOpen] = React.useState(false);
         const [suggestions, setSuggestions] = React.useState<Suggestion[]>([]);
         const [loading, setLoading] = React.useState<boolean>(false);
+        const [dropdownPosition, setDropdownPosition] = React.useState<{
+            top: number;
+            left: number;
+            width: number;
+        } | null>(null);
 
         useClickOutside(searchInputRef, isOpen, setIsOpen);
+
+        React.useEffect(() => {
+            if (isOpen && inputRef.current) {
+                const rect = inputRef.current.getBoundingClientRect();
+                setDropdownPosition({
+                    top: rect.bottom + window.scrollY,
+                    left: rect.left + window.scrollX,
+                    width: rect.width,
+                });
+            }
+        }, [isOpen]);
 
         React.useEffect(() => {
             const isMediaTitleInData = (
@@ -146,17 +163,32 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                     ]
                         .filter(Boolean)
                         .join(' ')}
-                    ref={ref}
+                    ref={(element) => {
+                        inputRef.current = element;
+                        if (typeof ref === 'function') {
+                            ref(element);
+                        } else if (ref) {
+                            ref.current = element;
+                        }
+                    }}
                     value={value}
                     onChange={onChange}
                     onFocus={() => setIsOpen(true)}
                     {...props}
                 />
                 {isOpen &&
+                    dropdownPosition &&
                     (loading ||
                         suggestions.length > 0 ||
                         (suggestions.length === 0 && value)) && (
-                        <div className="bg-background absolute top-12 right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg">
+                        <div
+                            className="bg-background fixed z-50 max-h-60 overflow-y-auto rounded-lg border shadow-lg"
+                            style={{
+                                top: `${dropdownPosition.top}px`,
+                                left: `${dropdownPosition.left}px`,
+                                width: `${dropdownPosition.width}px`,
+                            }}
+                        >
                             <div className="p-1">
                                 {loading ? (
                                     <div className="flex items-center justify-center p-3">
