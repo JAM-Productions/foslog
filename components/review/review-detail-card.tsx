@@ -3,14 +3,15 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export function ReviewDetailCard({ review }: { review: SafeReview }) {
     const { user } = review;
     const locale = useLocale();
+    const t = useTranslations('MediaPage');
 
     const formatDate = (date: Date | string) => {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
@@ -55,7 +56,32 @@ export function ReviewDetailCard({ review }: { review: SafeReview }) {
                         >
                             <p className="text-base font-bold">{user.name}</p>
                         </Link>
-                        <RatingDisplay rating={review.rating} />
+                        <div className="flex items-center gap-2">
+                            {review.rating !== undefined &&
+                                review.rating !== null && (
+                                    <RatingDisplay rating={review.rating} />
+                                )}
+                            {review.liked !== undefined &&
+                                review.liked !== null && (
+                                    <div className="flex items-center gap-1.5">
+                                        {review.liked ? (
+                                            <>
+                                                <ThumbsUp className="h-4 w-4 shrink-0 text-green-600" />
+                                                <span className="text-muted-foreground text-sm">
+                                                    {t('like')}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ThumbsDown className="h-4 w-4 shrink-0 text-red-600" />
+                                                <span className="text-muted-foreground text-sm">
+                                                    {t('dislike')}
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                        </div>
                     </div>
                 </div>
             </div>
