@@ -82,7 +82,11 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
             expect(prisma.mediaItem.count).toHaveBeenCalled();
             expect(result.items).toHaveLength(2);
@@ -103,7 +107,11 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 12,
                 take: 12,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
         });
 
@@ -121,7 +129,11 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 20,
                 take: 10,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
         });
 
@@ -139,7 +151,11 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
         });
 
@@ -157,13 +173,17 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 0,
                 take: 12,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
         });
     });
 
     describe('Sorting', () => {
-        it('orders by averageRating descending, then totalReviews descending', async () => {
+        it('orders by averageRating descending, then totalReviews descending, then id ascending', async () => {
             (
                 prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
             ).mockResolvedValue(mockMediaItems);
@@ -178,7 +198,59 @@ describe('getMedias Server Action', () => {
                     orderBy: [
                         { averageRating: 'desc' },
                         { totalReviews: 'desc' },
+                        { id: 'asc' },
                     ],
+                })
+            );
+        });
+
+        it('ensures stable pagination with id as tiebreaker', async () => {
+            // This test verifies that items with identical ratings are ordered consistently by ID
+            const itemsWithSameRating = [
+                {
+                    id: '1',
+                    title: 'Item 1',
+                    type: 'GAME',
+                    averageRating: 5.0,
+                    totalReviews: 10,
+                    genre: [],
+                    description: 'Test',
+                },
+                {
+                    id: '2',
+                    title: 'Item 2',
+                    type: 'GAME',
+                    averageRating: 5.0,
+                    totalReviews: 10,
+                    genre: [],
+                    description: 'Test',
+                },
+                {
+                    id: '3',
+                    title: 'Item 3',
+                    type: 'GAME',
+                    averageRating: 5.0,
+                    totalReviews: 10,
+                    genre: [],
+                    description: 'Test',
+                },
+            ];
+
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(itemsWithSameRating);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(3);
+
+            await getMedias(1, 12, 'game');
+
+            // Verify that the orderBy includes id as the final tiebreaker
+            expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderBy: expect.arrayContaining([
+                        expect.objectContaining({ id: 'asc' }),
+                    ]),
                 })
             );
         });
@@ -301,7 +373,11 @@ describe('getMedias Server Action', () => {
                 where: {},
                 skip: 0,
                 take: 6,
-                orderBy: [{ averageRating: 'desc' }, { totalReviews: 'desc' }],
+                orderBy: [
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' },
+                    { id: 'asc' },
+                ],
             });
         });
     });
