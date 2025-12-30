@@ -65,6 +65,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                     left: rect.left + window.scrollX,
                     width: rect.width,
                 });
+            } else {
+                setDropdownPosition(null);
             }
         }, [isOpen]);
 
