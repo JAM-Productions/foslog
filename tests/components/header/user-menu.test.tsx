@@ -30,6 +30,12 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
+vi.mock('@/lib/store', () => ({
+    useAppStore: vi.fn(() => ({
+        setIsConfigModalOpen: vi.fn(),
+    })),
+}));
+
 describe('UserMenu', () => {
     const mockPush = vi.fn();
     const mockT = vi.fn((key: string) => {
@@ -358,8 +364,19 @@ describe('UserMenu', () => {
             expect(screen.queryByText('Settings')).not.toBeInTheDocument();
         });
 
-        it('settings button is clickable but does not have click handler', async () => {
+        it('settings button opens the configuration modal', async () => {
             const user = userEvent.setup();
+            const mockSetIsConfigModalOpen = vi.fn();
+
+            // Mock the store to track modal open calls
+            vi.mocked(
+                await import('@/lib/store')
+            ).useAppStore.mockReturnValue({
+                setIsConfigModalOpen: mockSetIsConfigModalOpen,
+            } as unknown as ReturnType<
+                typeof import('@/lib/store').useAppStore
+            >);
+
             render(<UserMenu />);
 
             const userButton = screen.getByRole('button', {
@@ -372,11 +389,14 @@ describe('UserMenu', () => {
                 .closest('button');
             expect(settingsButton).toBeInTheDocument();
 
-            // Settings button should be clickable but no action is expected since no handler is implemented
+            // Click the settings button
             await user.click(settingsButton!);
 
-            // Dropdown should still be open since no handler closes it
-            expect(screen.getByText('Settings')).toBeInTheDocument();
+            // Check that the configuration modal open function was called
+            expect(mockSetIsConfigModalOpen).toHaveBeenCalledWith(true);
+
+            // Dropdown should be closed after clicking settings
+            expect(screen.queryByText('Settings')).not.toBeInTheDocument();
         });
 
         it('dropdown can be toggled open and closed', async () => {
