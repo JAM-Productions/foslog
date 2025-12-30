@@ -185,13 +185,13 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                               media.totalDislikes > 0 ? (
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-1">
-                                        <ThumbsUp className="text-muted-foreground h-3 w-3" />
+                                        <ThumbsUp className="text-muted-foreground h-3 w-3 shrink-0" />
                                         <span className="text-muted-foreground text-xs">
                                             {media.totalLikes}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <ThumbsDown className="text-muted-foreground h-3 w-3" />
+                                        <ThumbsDown className="text-muted-foreground h-3 w-3 shrink-0" />
                                         <span className="text-muted-foreground text-xs">
                                             {media.totalDislikes}
                                         </span>

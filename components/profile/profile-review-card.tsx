@@ -73,14 +73,14 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                                 <div className="flex items-center gap-1.5 rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
                                     {review.liked ? (
                                         <>
-                                            <ThumbsUp className="h-3.5 w-3.5 text-green-600" />
+                                            <ThumbsUp className="h-3.5 w-3.5 shrink-0 text-green-600" />
                                             <span className="text-xs font-medium text-green-700 dark:text-green-400">
                                                 {t('like')}
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <ThumbsDown className="h-3.5 w-3.5 text-red-600" />
+                                            <ThumbsDown className="h-3.5 w-3.5 shrink-0 text-red-600" />
                                             <span className="text-xs font-medium text-red-700 dark:text-red-400">
                                                 {t('dislike')}
                                             </span>

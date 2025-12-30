@@ -58,17 +58,17 @@ export function ReviewCard({ review }: { review: SafeReview }) {
                             )}
                         {review.liked !== undefined &&
                             review.liked !== null && (
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1.5">
                                     {review.liked ? (
                                         <>
-                                            <ThumbsUp className="h-4 w-4 text-green-600" />
+                                            <ThumbsUp className="h-4 w-4 shrink-0 text-green-600" />
                                             <span className="text-muted-foreground text-sm">
                                                 {t('like')}
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <ThumbsDown className="h-4 w-4 text-red-600" />
+                                            <ThumbsDown className="h-4 w-4 shrink-0 text-red-600" />
                                             <span className="text-muted-foreground text-sm">
                                                 {t('dislike')}
                                             </span>

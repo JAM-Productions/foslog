@@ -223,7 +223,7 @@
         "releaseDate": "Release year: {date}",
         "like": "Like",
         "dislike": "Dislike",
-        "or": "or",
+        "or": "OR",
         "likes": "Likes",
         "dislikes": "Dislikes",
         "likePercentage": "{percentage}% liked",

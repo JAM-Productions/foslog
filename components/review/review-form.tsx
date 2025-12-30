@@ -86,7 +86,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             }
                         }}
                     />
-                    <span className="text-muted-foreground text-sm font-medium uppercase">
+                    <span className="text-muted-foreground rounded-md border border-border bg-secondary/50 px-2.5 py-1 text-sm font-bold uppercase">
                         {t('or')}
                     </span>
                     <div className="flex gap-2">
@@ -100,7 +100,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             }}
                             className="flex items-center gap-2"
                         >
-                            <ThumbsUp className="h-4 w-4" />
+                            <ThumbsUp className="h-4 w-4 shrink-0" />
                             <span className="hidden sm:inline">
                                 {t('like')}
                             </span>
@@ -115,7 +115,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             }}
                             className="flex items-center gap-2"
                         >
-                            <ThumbsDown className="h-4 w-4" />
+                            <ThumbsDown className="h-4 w-4 shrink-0" />
                             <span className="hidden sm:inline">
                                 {t('dislike')}
                             </span>
