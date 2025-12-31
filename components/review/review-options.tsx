@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from '@/components/button/button';
-import { Toast } from '@/components/toast/toast';
-import { useToast } from '@/hooks/useToast';
+import { useToastStore } from '@/lib/toast-store';
 import { Pencil, Share2, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -20,7 +19,7 @@ export function ReviewOptions({
     const tCTA = useTranslations('CTA');
     const t = useTranslations('ReviewPage');
     const tToast = useTranslations('Toast');
-    const { toast, showToast, hideToast } = useToast();
+    const { showToast } = useToastStore();
 
     const isMobile = variant === 'mobile';
     const buttonClassName = isMobile
@@ -112,13 +111,6 @@ export function ReviewOptions({
                 <Share2 className="h-4 w-4" />
                 <span>{tCTA('share')}</span>
             </Button>
-            {toast.isVisible && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={hideToast}
-                />
-            )}
         </>
     );
 }

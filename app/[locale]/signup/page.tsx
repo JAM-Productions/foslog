@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
 import { signUp, signIn } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
+import { useToastStore } from '@/lib/toast-store';
 
 interface ValidationErrors {
     name?: string;
@@ -22,7 +23,9 @@ interface ValidationErrors {
 export default function RegisterPage() {
     const tRegisterPage = useTranslations('RegisterPage');
     const tCTA = useTranslations('CTA');
+    const tToast = useTranslations('Toast');
     const router = useRouter();
+    const { showToast } = useToastStore();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -158,12 +161,15 @@ export default function RegisterPage() {
                 });
 
                 if (result.data) {
+                    showToast(tToast('signupSuccess'), 'success');
                     router.push('/');
                 } else if (result.error) {
                     setError(result.error.message || 'Sign up failed');
+                    showToast(tToast('signupFailed'), 'error');
                 }
             } catch (err) {
                 setError('An unexpected error occurred');
+                showToast(tToast('signupFailed'), 'error');
                 console.error('Sign up error:', err);
             } finally {
                 setIsLoading(false);
