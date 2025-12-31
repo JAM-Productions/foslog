@@ -111,6 +111,7 @@ export default function BlogPost({
                                 [key: string]: unknown;
                             };
                             return (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     className="my-4 rounded-lg"
                                     alt={typeof alt === 'string' ? alt : ''}
