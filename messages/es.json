@@ -257,6 +257,23 @@
     },
     "Footer": {
         "privacyPolicy": "Política de Privacidad",
-        "termsOfService": "Términos de Servicio"
+        "termsOfService": "Términos de Servicio",
+        "blog": "Blog"
+    },
+    "BlogPage": {
+        "title": "Blog",
+        "allPosts": "Todas las entradas",
+        "categories": {
+            "all": "Todas",
+            "releases": "Lanzamientos",
+            "films": "Películas",
+            "series": "Series",
+            "games": "Videojuegos",
+            "books": "Libros",
+            "music": "Música"
+        },
+        "readMore": "Leer más",
+        "postedOn": "Publicado el",
+        "noPosts": "No hay entradas disponibles"
     }
 }

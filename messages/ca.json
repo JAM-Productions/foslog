@@ -257,6 +257,23 @@
     },
     "Footer": {
         "privacyPolicy": "Política de Privacitat",
-        "termsOfService": "Termes de Servei"
+        "termsOfService": "Termes de Servei",
+        "blog": "Blog"
+    },
+    "BlogPage": {
+        "title": "Blog",
+        "allPosts": "Totes les entrades",
+        "categories": {
+            "all": "Totes",
+            "releases": "Llançaments",
+            "films": "Pel·lícules",
+            "series": "Sèries",
+            "games": "Videojocs",
+            "books": "Llibres",
+            "music": "Música"
+        },
+        "readMore": "Llegir més",
+        "postedOn": "Publicat el",
+        "noPosts": "No hi ha entrades disponibles"
     }
 }

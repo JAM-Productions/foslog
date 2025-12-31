@@ -11,6 +11,13 @@ const Footer = () => {
                 <p>&copy; {new Date().getFullYear()} Foslog</p>
                 <div className="flex gap-4">
                     <Link
+                        href="/blog"
+                        className="hover:underline"
+                        prefetch={false}
+                    >
+                        {t('blog')}
+                    </Link>
+                    <Link
                         href="/privacy-policy"
                         className="hover:underline"
                         prefetch={false}
