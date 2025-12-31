@@ -7,8 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
-import { useToast } from '@/hooks/useToast';
-import { Toast } from '@/components/toast/toast';
+import { useToastStore } from '@/lib/toast-store';
 
 interface ReviewFormProps {
     mediaId: string;
@@ -24,7 +23,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
-    const { toast, showToast, hideToast } = useToast();
+    const { showToast } = useToastStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -171,13 +170,6 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     <LoaderCircle className="text-primary absolute left-1/2 -translate-x-1/2 animate-spin sm:left-[3.5rem] sm:-translate-x-1/12" />
                 )}
             </div>
-            {toast.isVisible && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={hideToast}
-                />
-            )}
         </form>
     );
 }

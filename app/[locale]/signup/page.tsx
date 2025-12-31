@@ -11,8 +11,7 @@ import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
 import { signUp, signIn } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/useToast';
-import { Toast } from '@/components/toast/toast';
+import { useToastStore } from '@/lib/toast-store';
 
 interface ValidationErrors {
     name?: string;
@@ -26,7 +25,7 @@ export default function RegisterPage() {
     const tCTA = useTranslations('CTA');
     const tToast = useTranslations('Toast');
     const router = useRouter();
-    const { toast, showToast, hideToast } = useToast();
+    const { showToast } = useToastStore();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -384,13 +383,6 @@ export default function RegisterPage() {
                     </div>
                 </div>
             </div>
-            {toast.isVisible && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={hideToast}
-                />
-            )}
         </div>
     );
 }

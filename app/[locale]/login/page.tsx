@@ -11,8 +11,7 @@ import { useTranslations } from 'next-intl';
 import { isUserEmailOk } from '@/utils/userValidationUtils';
 import { signIn } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/useToast';
-import { Toast } from '@/components/toast/toast';
+import { useToastStore } from '@/lib/toast-store';
 
 interface ValidationErrors {
     email?: string;
@@ -24,7 +23,7 @@ export default function LoginPage() {
     const tCTA = useTranslations('CTA');
     const tToast = useTranslations('Toast');
     const router = useRouter();
-    const { toast, showToast, hideToast } = useToast();
+    const { showToast } = useToastStore();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -285,13 +284,6 @@ export default function LoginPage() {
                     </div>
                 </div>
             </div>
-            {toast.isVisible && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={hideToast}
-                />
-            )}
         </div>
     );
 }
