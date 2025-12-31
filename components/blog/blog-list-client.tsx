@@ -15,6 +15,8 @@ export default function BlogListClient({ posts, locale }: BlogListClientProps) {
     const [activeCategory, setActiveCategory] = useState('all');
     const t = useTranslations('BlogPage');
 
+    // Client-side filtering for instant category switching without re-fetching
+    // This provides better UX than server-side filtering which would require page reloads
     const filteredPosts =
         activeCategory === 'all'
             ? posts

@@ -5,9 +5,10 @@ import { useTranslations } from 'next-intl';
 interface BlogCategoryFilterProps {
     activeCategory: string;
     onCategoryChange: (category: string) => void;
+    categories?: string[];
 }
 
-const categories = [
+const defaultCategories = [
     'all',
     'releases',
     'films',
@@ -20,12 +21,14 @@ const categories = [
 export default function BlogCategoryFilter({
     activeCategory,
     onCategoryChange,
+    categories,
 }: BlogCategoryFilterProps) {
     const t = useTranslations('BlogPage.categories');
+    const resolvedCategories = categories ?? defaultCategories;
 
     return (
         <div className="mb-8 flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {resolvedCategories.map((category) => (
                 <button
                     key={category}
                     onClick={() => onCategoryChange(category)}

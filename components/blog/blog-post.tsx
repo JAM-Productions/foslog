@@ -54,18 +54,21 @@ export default function BlogPost({
                                 {...props}
                             />
                         ),
-                        a: ({ ...props }) => (
-                            <a
-                                className="text-primary hover:underline"
-                                {...props}
-                                rel="noopener noreferrer"
-                                target={
-                                    props.href?.startsWith('http')
-                                        ? '_blank'
-                                        : undefined
-                                }
-                            />
-                        ),
+                        a: ({ ...props }) => {
+                            const isExternal = props.href?.startsWith('http');
+                            return (
+                                <a
+                                    className="text-primary hover:underline"
+                                    {...props}
+                                    target={isExternal ? '_blank' : undefined}
+                                    rel={
+                                        isExternal
+                                            ? 'noopener noreferrer'
+                                            : undefined
+                                    }
+                                />
+                            );
+                        },
                         ul: ({ ...props }) => (
                             <ul
                                 className="mb-4 ml-6 list-disc"
@@ -102,13 +105,19 @@ export default function BlogPost({
                                 {...props}
                             />
                         ),
-                        img: ({ ...props }) => (
-                            // eslint-disable-next-line jsx-a11y/alt-text
-                            <img
-                                className="my-4 rounded-lg"
-                                {...props}
-                            />
-                        ),
+                        img: ({ ...props }) => {
+                            const { alt, ...rest } = props as {
+                                alt?: unknown;
+                                [key: string]: unknown;
+                            };
+                            return (
+                                <img
+                                    className="my-4 rounded-lg"
+                                    alt={typeof alt === 'string' ? alt : ''}
+                                    {...rest}
+                                />
+                            );
+                        },
                     }}
                 >
                     {content}

@@ -78,7 +78,11 @@ export async function getBlogPost(
             description: metadata.description || '',
             content,
         };
-    } catch {
+    } catch (error) {
+        console.error(
+            `Failed to load blog post "${slug}" (locale="${locale}", category="${category}")`,
+            error
+        );
         return null;
     }
 }
@@ -89,36 +93,66 @@ export async function getBlogPost(
 export async function getAllBlogPosts(
     locale: string
 ): Promise<BlogPostMetadata[]> {
-    const posts: BlogPostMetadata[] = [];
+    let posts: BlogPostMetadata[] = [];
     const blogDir = path.join(process.cwd(), '_blog', locale);
 
     try {
         const categories = await fs.readdir(blogDir);
 
-        for (const category of categories) {
+        // Process categories in parallel for better performance
+        const categoryPromises = categories.map(async (category) => {
             const categoryPath = path.join(blogDir, category);
-            const stat = await fs.stat(categoryPath);
+            try {
+                const stat = await fs.stat(categoryPath);
+                if (!stat.isDirectory()) return [];
 
-            if (!stat.isDirectory()) continue;
+                const files = await fs.readdir(categoryPath);
+                const markdownFiles = files.filter((file) =>
+                    file.endsWith('.md')
+                );
 
-            const files = await fs.readdir(categoryPath);
-            const markdownFiles = files.filter((file) => file.endsWith('.md'));
+                // Read all markdown files in parallel
+                const filePromises = markdownFiles.map(async (file) => {
+                    const slug = file.replace('.md', '');
+                    const filePath = path.join(categoryPath, file);
+                    try {
+                        const fileContent = await fs.readFile(
+                            filePath,
+                            'utf-8'
+                        );
+                        const { metadata } = parseFrontmatter(fileContent);
 
-            for (const file of markdownFiles) {
-                const slug = file.replace('.md', '');
-                const filePath = path.join(categoryPath, file);
-                const fileContent = await fs.readFile(filePath, 'utf-8');
-                const { metadata } = parseFrontmatter(fileContent);
-
-                posts.push({
-                    slug: `${category}/${slug}`,
-                    title: metadata.title || 'Untitled',
-                    date: metadata.date || '',
-                    category: metadata.category || category,
-                    description: metadata.description || '',
+                        return {
+                            slug: `${category}/${slug}`,
+                            title: metadata.title || 'Untitled',
+                            date: metadata.date || '',
+                            category: metadata.category || category,
+                            description: metadata.description || '',
+                        };
+                    } catch (error) {
+                        console.error(
+                            `Failed to read blog post file ${filePath}:`,
+                            error
+                        );
+                        return null;
+                    }
                 });
+
+                const categoryPosts = await Promise.all(filePromises);
+                return categoryPosts.filter(
+                    (post): post is BlogPostMetadata => post !== null
+                );
+            } catch (error) {
+                console.error(
+                    `Failed to process category ${category}:`,
+                    error
+                );
+                return [];
             }
-        }
+        });
+
+        const allCategoryPosts = await Promise.all(categoryPromises);
+        posts = allCategoryPosts.flat();
 
         // Sort by date (newest first)
         posts.sort((a, b) => {
@@ -127,7 +161,8 @@ export async function getAllBlogPosts(
         });
 
         return posts;
-    } catch {
+    } catch (error) {
+        console.error('Failed to load blog posts:', error);
         return [];
     }
 }
@@ -163,7 +198,8 @@ export async function getBlogCategories(locale: string): Promise<string[]> {
         }
 
         return validCategories;
-    } catch {
+    } catch (error) {
+        console.error('Failed to load blog categories:', error);
         return [];
     }
 }

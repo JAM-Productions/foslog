@@ -3,12 +3,11 @@ import BlogPost from '@/components/blog/blog-post';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams({
-    params: paramsPromise,
+    params,
 }: {
-    params: Promise<{ locale: string }>;
+    params: { locale: string };
 }) {
-    const { locale } = await paramsPromise;
-    const posts = await getAllBlogPosts(locale);
+    const posts = await getAllBlogPosts(params.locale);
 
     return posts.map((post) => ({
         slug: post.slug.split('/'),
