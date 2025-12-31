@@ -197,7 +197,13 @@
     },
     "Toast": {
         "linkCopied": "Enllaç copiat al porta-retalls!",
-        "copyFailed": "Error en copiar l'enllaç"
+        "copyFailed": "Error en copiar l'enllaç",
+        "loginSuccess": "Inici de sessió correcte! Benvingut de nou!",
+        "loginFailed": "Error a l'inici de sessió. Si us plau, verifica les teves credencials.",
+        "signupSuccess": "Compte creat correctament! Benvingut a Foslog!",
+        "signupFailed": "Error en registrar-se. Si us plau, torna-ho a provar.",
+        "reviewSubmitted": "Ressenya enviada correctament!",
+        "reviewFailed": "Error en enviar la ressenya. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",

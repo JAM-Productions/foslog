@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/toast/toast';
 
 interface ReviewFormProps {
     mediaId: string;
@@ -14,6 +16,7 @@ interface ReviewFormProps {
 
 export function ReviewForm({ mediaId }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
+    const tToast = useTranslations('Toast');
     const router = useRouter();
     const [rating, setRating] = useState(0);
     const [liked, setLiked] = useState<boolean | null>(null);
@@ -21,6 +24,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
+    const { toast, showToast, hideToast } = useToast();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,10 +61,14 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
             setLiked(null);
             setText('');
 
+            // Show success toast
+            showToast(tToast('reviewSubmitted'), 'success');
+
             // Refresh the page to show the new review
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
+            showToast(tToast('reviewFailed'), 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -163,6 +171,13 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     <LoaderCircle className="text-primary absolute left-1/2 -translate-x-1/2 animate-spin sm:left-[3.5rem] sm:-translate-x-1/12" />
                 )}
             </div>
+            {toast.isVisible && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={hideToast}
+                />
+            )}
         </form>
     );
 }

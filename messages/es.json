@@ -197,7 +197,13 @@
     },
     "Toast": {
         "linkCopied": "Enlace copiado al portapapeles!",
-        "copyFailed": "Error al copiar el enlace"
+        "copyFailed": "Error al copiar el enlace",
+        "loginSuccess": "¡Inicio de sesión exitoso! ¡Bienvenido de vuelta!",
+        "loginFailed": "Error al iniciar sesión. Por favor verifica tus credenciales.",
+        "signupSuccess": "¡Cuenta creada exitosamente! ¡Bienvenido a Foslog!",
+        "signupFailed": "Error al registrarse. Por favor inténtalo de nuevo.",
+        "reviewSubmitted": "¡Reseña enviada exitosamente!",
+        "reviewFailed": "Error al enviar la reseña. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",

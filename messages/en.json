@@ -197,7 +197,13 @@
     },
     "Toast": {
         "linkCopied": "Link copied to clipboard!",
-        "copyFailed": "Failed to copy link"
+        "copyFailed": "Failed to copy link",
+        "loginSuccess": "Login successful! Welcome back!",
+        "loginFailed": "Login failed. Please check your credentials.",
+        "signupSuccess": "Account created successfully! Welcome to Foslog!",
+        "signupFailed": "Sign up failed. Please try again.",
+        "reviewSubmitted": "Review submitted successfully!",
+        "reviewFailed": "Failed to submit review. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
