@@ -2,6 +2,13 @@ import BlogPost from '@/components/blog/blog-post';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
+// Mock next/navigation
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        back: vi.fn(),
+    }),
+}));
+
 // Mock react-markdown
 vi.mock('react-markdown', () => ({
     default: ({ children }: { children: string }) => <div>{children}</div>,

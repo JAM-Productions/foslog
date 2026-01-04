@@ -1,3 +1,4 @@
+import BackButton from './back-button';
 import ReactMarkdown from 'react-markdown';
 
 interface BlogPostProps {
@@ -15,6 +16,7 @@ export default function BlogPost({
 }: BlogPostProps) {
     return (
         <article className="container mx-auto max-w-4xl px-4 py-8">
+            <BackButton />
             <header className="mb-8">
                 <div className="text-muted-foreground mb-2 flex items-center gap-3 text-sm">
                     <span className="bg-primary/10 text-primary rounded-full px-3 py-1">
