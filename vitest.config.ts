@@ -9,6 +9,17 @@ export default defineConfig({
         setupFiles: ['./vitest-setup.ts'],
         globals: true,
         include: ['tests/**/*.test.tsx', 'tests/**/*.test.ts'],
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'text-summary', 'json', 'html'],
+            // TODO: Enable coverage thresholds when ready
+            /* thresholds: {
+                statements: 80,
+                branches: 80,
+                functions: 80,
+                lines: 80,
+            }, */
+        },
     },
     resolve: {
         alias: {
