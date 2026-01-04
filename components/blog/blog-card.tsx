@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 interface BlogCardProps {
@@ -17,6 +18,8 @@ export default function BlogCard({
     description,
     locale,
 }: BlogCardProps) {
+    const t = useTranslations('BlogPage.categories');
+
     return (
         <Link
             href={`/${locale}/blog/${slug}`}
@@ -24,7 +27,7 @@ export default function BlogCard({
         >
             <div className="mb-2 flex items-center gap-2 text-sm">
                 <span className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-medium">
-                    {category}
+                    {t(category)}
                 </span>
                 <time
                     dateTime={date}

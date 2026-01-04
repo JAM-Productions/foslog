@@ -2,6 +2,11 @@ import BlogCard from '@/components/blog/blog-card';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
+// Mock next-intl
+vi.mock('next-intl', () => ({
+    useTranslations: () => (key: any) => key,
+}));
+
 // Mock next/link
 vi.mock('next/link', () => ({
     default: ({
