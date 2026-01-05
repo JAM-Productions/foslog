@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
-    useTranslations: () => (key: any) => key,
+    useTranslations: () => (key: string) => key,
 }));
 
 // Mock next/link
