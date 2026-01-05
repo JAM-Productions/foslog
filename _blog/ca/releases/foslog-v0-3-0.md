@@ -1,42 +1,49 @@
 ---
-title: "Foslog v0.3.0 - Llançament de la Funcionalitat del Blog"
-date: "2025-12-31"
+title: "Foslog v0.3.0 - L'Actualització de Contingut"
+date: "2025-12-01"
 category: "releases"
-description: "Presentem la nova funcionalitat del blog per compartir actualitzacions, idees i històries sobre els teus mitjans favorits."
+description: "Aquesta actualització massiva porta una gran quantitat de noves característiques, incloent-hi un sistema complet de ressenyes, paginació, pàgines legals i millores significatives en la interfície d'usuari."
 ---
 
-# Benvinguts al Blog de Foslog!
+# Presentem Foslog v0.3.0
 
-Estem emocionats d'anunciar el llançament de **Foslog v0.3.0**, que introdueix la nostra nova funcionalitat de blog! Aquesta actualització ens permet compartir notícies, idees i històries sobre pel·lícules, sèries, jocs, llibres i música amb la nostra comunitat.
+Estem encantats de presentar **Foslog v0.3.0**, un llançament històric ple de noves característiques i millores que aprofundeixen l'experiència de l'usuari. Aquesta actualització introdueix un sistema complet de ressenyes, una navegació millorada amb paginació i documents legals importants, juntament amb nombroses millores d'interfície d'usuari i rendiment.
 
-## Què hi ha de nou
+## Novetats
 
-### Sistema de Blog
-- **Suport Multilingüe**: Totes les entrades del blog estan disponibles en català, espanyol i anglès
-- **Filtratge per Categoria**: Filtra fàcilment les entrades per tema (Llançaments, Pel·lícules, Sèries, Jocs, Llibres, Música)
-- **Disseny Net**: Un disseny minimalista i funcional que manté el focus en el contingut
-- **Suport per Markdown**: Renderització completa de markdown per a contingut ric i formatat
+### Característiques Principals
+- **Sistema Complet de Ressenyes**: Ara pots afegir, veure i donar "m'agrada" a les ressenyes de qualsevol element multimèdia. Un nou modal de ressenyes i pàgines dedicades a les ressenyes fan que compartir la teva opinió sigui molt fàcil.
+- **Paginació**: Hem afegit paginació a la pàgina d'inici i a les ressenyes a les pàgines de mitjans, facilitant la navegació per grans col·leccions de contingut.
+- **Pàgines Legals**: Hem implementat pàgines de Política de Privacitat i Termes de Servei per a garantir la transparència i la confiança.
+- **Peu de Pàgina a Tot el Lloc**: S'ha afegit un nou peu de pàgina que proporciona un accés fàcil als documents legals i altres enllaços importants.
+- **Millores a la Pàgina de Mitjans**: Les pàgines de mitjans ara inclouen esquelets per a una experiència de càrrega més fluida, un formulari per a publicar ressenyes directament i mostren els gèneres associats.
 
-## Per què ho hem construït
+### Millores en UI/UX
+- **No Més Parpelleig del Tema**: Hem solucionat el molest parpelleig del tema que ocorria en carregar la pàgina.
+- **Capçalera Més Intel·ligent**: La capçalera ara és plegable i per defecte està en estat plegat per a un aspecte més net. El logotip de Foslog també enllaça a la pàgina d'inici.
+- **Actualització d'Icones**: Hem reemplaçat els emojis per icones nítides de `lucide-react` al filtre de tipus de mitjà per a una sensació més professional.
+- **Modals Millorats**: El modal de ressenyes ara funciona millor en dispositius mòbils i hem solucionat un error visual on els menús desplegables podien tallar-se.
+- **Millor Gestió d'Imatges**: Hem reemplaçat les etiquetes `<img>` pel component `<Image>` de Next.js per a una càrrega d'imatges optimitzada.
 
-Creiem que compartir coneixement i experiències al voltant dels mitjans és essencial. El blog ens permet:
+### API i Rendiment
+- **Qualificacions Més Intel·ligents**: El sistema per a calcular les qualificacions mitjanes i el nombre total de ressenyes s'ha optimitzat per a un millor rendiment.
+- **Gestió d'Errors Millorada**: Hem implementat un sistema de gestió d'errors d'API més robust per a una major estabilitat.
+- **Correccions de CORS i Autenticació**: Hem fet la nostra política de CORS més flexible i hem resolt diversos problemes d'autenticació relacionats amb els desplegaments de Vercel.
+- **Dades Reals**: Les pàgines d'inici i de mitjans ara carreguen dades reals i no simulades, donant vida a la plataforma.
 
-- Anunciar noves funcionalitats i actualitzacions
-- Compartir anàlisis en profunditat de pel·lícules, sèries i jocs
-- Discutir tendències i notícies de la indústria
-- Proporcionar consells per treure el màxim profit de Foslog
+## Changelog Complet
 
-## Què ve després
+Per a una llista detallada de tots els canvis, pots veure el [changelog complet a GitHub](https://github.com/JAM-Productions/foslog/compare/v0.2.0...v0.3.0).
 
-Això és només el començament! Tenim plans emocionants per al contingut futur del blog, incloent:
+## Col·laboradors
 
-- Anàlisis profundes de títols de mitjans específics
-- Entrevistes amb creadors
-- Destacats de la comunitat
-- Sèries de tutorials
+Aquest llançament no hauria estat possible sense el treball dur dels nostres increïbles col·laboradors:
 
-Mantingueu-vos atents a més actualitzacions, i gràcies per ser part de la comunitat de Foslog!
+- @jorbush
+- @mriverre8
+- @google-labs-jules
+- @dependabot
 
 ---
 
-*Tens comentaris o suggeriments? Ens encantaria escoltar-te a jamproductionsdev@gmail.com*
+*Tens comentaris o suggeriments? Ens encantaria saber de tu a jamproductionsdev@gmail.com*
