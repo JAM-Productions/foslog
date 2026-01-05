@@ -1,6 +1,7 @@
 import { getBlogPost, getAllBlogPosts } from '@/utils/blog-utils';
 import BlogPost from '@/components/blog/blog-post';
 import { notFound } from 'next/navigation';
+import { BackButton } from '@/components/button/back-button';
 
 export async function generateStaticParams({
     params,
@@ -35,11 +36,14 @@ export default async function BlogPostPage({
     }
 
     return (
-        <BlogPost
-            title={post.title}
-            date={post.date}
-            category={post.category}
-            content={post.content}
-        />
+        <div className="container mx-auto px-4 py-8">
+            <BackButton href="/blog" className="mb-8" />
+            <BlogPost
+                title={post.title}
+                date={post.date}
+                category={post.category}
+                content={post.content}
+            />
+        </div>
     );
 }
