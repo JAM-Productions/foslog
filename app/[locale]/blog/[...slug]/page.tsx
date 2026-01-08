@@ -36,14 +36,14 @@ export default async function BlogPostPage({
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <BackButton href="/blog" className="mb-8" />
+        <article className="container prose prose-lg prose-neutral dark:prose-invert mx-auto px-4 py-8">
+            <BackButton href="/blog" className="mb-4" />
             <BlogPost
                 title={post.title}
                 date={post.date}
                 category={post.category}
                 content={post.content}
             />
-        </div>
+        </article>
     );
 }

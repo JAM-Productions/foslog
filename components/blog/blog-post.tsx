@@ -14,7 +14,7 @@ export default function BlogPost({
     content,
 }: BlogPostProps) {
     return (
-        <article className="container mx-auto max-w-4xl px-4 py-8">
+        <>
             <header className="mb-8">
                 <div className="text-muted-foreground mb-2 flex items-center gap-3 text-sm">
                     <span className="bg-primary/10 text-primary rounded-full px-3 py-1">
@@ -27,11 +27,10 @@ export default function BlogPost({
                 <h1 className="text-4xl font-bold">{title}</h1>
             </header>
 
-            <div className="prose prose-neutral dark:prose-invert max-w-none">
-                <ReactMarkdown
-                    components={{
-                        h1: ({ ...props }) => (
-                            <h1
+            <ReactMarkdown
+                components={{
+                    h1: ({ ...props }) => (
+                        <h1
                                 className="mt-8 mb-4 text-3xl font-bold"
                                 {...props}
                             />
@@ -123,7 +122,6 @@ export default function BlogPost({
                 >
                     {content}
                 </ReactMarkdown>
-            </div>
-        </article>
+        </>
     );
 }
