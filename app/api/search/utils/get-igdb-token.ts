@@ -1,11 +1,5 @@
+import { IgdbTokenError } from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
-
-export class IgdbTokenError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'IgdbTokenError';
-    }
-}
 
 export async function getIgdbToken(): Promise<string> {
     const existingToken = await prisma.apiToken.findUnique({
