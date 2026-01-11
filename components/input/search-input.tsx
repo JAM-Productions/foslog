@@ -142,10 +142,15 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                         baseClasses,
                         variants[variant],
                         sizes[inputSize],
+                        'select-text', // iOS PWA fix
                         className,
                     ]
                         .filter(Boolean)
                         .join(' ')}
+                    style={{
+                        WebkitUserSelect: 'text', // iOS PWA fix
+                        userSelect: 'text',
+                    }}
                     ref={ref}
                     value={value}
                     onChange={onChange}
