@@ -48,7 +48,7 @@ Un enorme agradecimiento a todos los colaboradores que hicieron posible esta ver
 - @jorbush
 - @mriverre8
 - @dependabot
-- @Copilot
+- @copilot
 - @google-labs-jules
 
 ---
