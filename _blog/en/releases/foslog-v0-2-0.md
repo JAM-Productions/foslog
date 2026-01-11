@@ -48,7 +48,7 @@ A huge thank you to all the contributors who made this release possible:
 - @jorbush
 - @mriverre8
 - @dependabot
-- @Copilot
+- @copilot
 - @google-labs-jules
 
 ---
