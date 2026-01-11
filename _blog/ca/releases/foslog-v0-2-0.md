@@ -48,7 +48,7 @@ Un enorme agraïment a tots els col·laboradors que han fet possible aquesta ver
 - @jorbush
 - @mriverre8
 - @dependabot
-- @Copilot
+- @copilot
 - @google-labs-jules
 
 ---
