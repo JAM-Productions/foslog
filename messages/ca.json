@@ -17,7 +17,7 @@
     },
     "MediaGenres": {
         "action": "Acció",
-        "adventure": "Aventura",
+        "Adventure": "Aventura",
         "animation": "Animació",
         "comedy": "Comèdia",
         "crime": "Crim",
@@ -83,7 +83,7 @@
         "stealth": "Sigil",
         "business": "Negocis",
         "nonFiction": "No Ficció",
-        "fiction": "Ficció",
+        "Fiction": "Ficció",
         "sandbox": "Món Obert",
         "educational": "Educatiu",
         "openWorld": "Món Obert",

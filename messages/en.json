@@ -17,7 +17,7 @@
     },
     "MediaGenres": {
         "action": "Action",
-        "adventure": "Adventure",
+        "Adventure": "Adventure",
         "animation": "Animation",
         "comedy": "Comedy",
         "crime": "Crime",
@@ -83,7 +83,7 @@
         "stealth": "Stealth",
         "business": "Business",
         "nonFiction": "Non-Fiction",
-        "fiction": "Fiction",
+        "Fiction": "Fiction",
         "sandbox": "Sandbox",
         "educational": "Educational",
         "openWorld": "Open World",
