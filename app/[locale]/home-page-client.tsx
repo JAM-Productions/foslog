@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/navigation';
 import { useAppStore } from '@/lib/store';
 import MediaCard from '@/components/media/media-card';
 import { Button } from '@/components/button/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
-import { useRouter } from 'next/navigation';
 import { SafeMediaItem } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
 
