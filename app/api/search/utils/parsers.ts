@@ -105,4 +105,7 @@ export const parseGoogleBooksVolume = (item: GoogleBooksVolume) => ({
         null,
     description: item.volumeInfo.description || '',
     genre: item.volumeInfo.categories || [],
+    author: item.volumeInfo.authors
+        ? item.volumeInfo.authors.join(', ')
+        : null,
 });
