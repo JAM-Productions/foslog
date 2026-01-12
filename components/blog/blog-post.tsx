@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import ReactMarkdown from 'react-markdown';
 
 interface BlogPostProps {
@@ -13,12 +16,14 @@ export default function BlogPost({
     category,
     content,
 }: BlogPostProps) {
+    const t = useTranslations('BlogPage.categories');
+
     return (
         <article className="container mx-auto max-w-4xl px-4 py-8">
             <header className="mb-8">
                 <div className="text-muted-foreground mb-2 flex items-center gap-3 text-sm">
                     <span className="bg-primary/10 text-primary rounded-full px-3 py-1">
-                        {category}
+                        {t(category)}
                     </span>
                     <time dateTime={date}>
                         {new Date(date).toLocaleDateString()}
