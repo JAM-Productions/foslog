@@ -2,6 +2,11 @@ import BlogPost from '@/components/blog/blog-post';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
+// Mock next-intl
+vi.mock('next-intl', () => ({
+    useTranslations: () => (key: any) => key,
+}));
+
 // Mock react-markdown
 vi.mock('react-markdown', () => ({
     default: ({ children }: { children: string }) => <div>{children}</div>,
