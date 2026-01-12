@@ -1,11 +1,5 @@
 import { prisma } from '@/lib/prisma';
 
-export class IgdbTokenError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'IgdbTokenError';
-    }
-}
 
 // In-memory promise to ensure only one token refresh happens at a time.
 let inflightTokenRequest: Promise<string> | null = null;
