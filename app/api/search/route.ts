@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
                 }
                 apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
                     mediatitle
-                )}&key=${googleBooksApiKey}&printType=books&maxResults=20`;
+                )}&key=${googleBooksApiKey}&printType=books&maxResults=20&langRestrict=en`;
                 const resBooks = await fetch(apiUrl);
 
                 if (!resBooks.ok) {
