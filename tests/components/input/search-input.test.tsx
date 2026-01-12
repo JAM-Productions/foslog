@@ -37,6 +37,7 @@ describe('SearchInput', () => {
             year: 1999,
             poster: 'https://example.com/matrix.jpg',
             description: 'A sci-fi masterpiece',
+            genre: ['Sci-Fi'],
         },
         {
             title: 'The Matrix Reloaded',
@@ -44,6 +45,7 @@ describe('SearchInput', () => {
             year: 2003,
             poster: 'https://example.com/matrix2.jpg',
             description: 'The sequel',
+            genre: ['Sci-Fi'],
         },
     ];
 
@@ -244,6 +246,7 @@ describe('SearchInput', () => {
 
     it('fetches suggestions when value changes', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => mockSuggestions,
         });
         global.fetch = mockFetch;
@@ -324,6 +327,7 @@ describe('SearchInput', () => {
 
     it('handles empty search results', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => [],
         });
         global.fetch = mockFetch;
@@ -348,6 +352,7 @@ describe('SearchInput', () => {
 
     it('sets selected media when exact match is found', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => mockSuggestions,
         });
         global.fetch = mockFetch;
@@ -372,6 +377,7 @@ describe('SearchInput', () => {
 
     it('clears selected media when no exact match is found', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => mockSuggestions,
         });
         global.fetch = mockFetch;
@@ -396,6 +402,7 @@ describe('SearchInput', () => {
 
     it('refetches when selectedMediaType changes', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => mockSuggestions,
         });
         global.fetch = mockFetch;
@@ -438,6 +445,7 @@ describe('SearchInput', () => {
 
     it('debounces search requests', async () => {
         const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
             json: async () => mockSuggestions,
         });
         global.fetch = mockFetch;
