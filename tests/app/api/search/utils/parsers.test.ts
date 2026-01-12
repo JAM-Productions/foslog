@@ -3,6 +3,7 @@ import {
     parseTMDBMovie,
     parseTMDBSerie,
     parseIGDBGame,
+    parseGoogleBooksVolume,
 } from '@/app/api/search/utils/parsers';
 import { MediaType } from '@prisma/client';
 
@@ -85,6 +86,55 @@ describe('API Parsers', () => {
             };
 
             expect(parseIGDBGame(gameData)).toEqual(expected);
+        });
+    });
+    describe('parseGoogleBooksVolume', () => {
+        it('should correctly parse a Google Books volume object', () => {
+            const bookData = {
+                volumeInfo: {
+                    title: 'Test Book',
+                    authors: ['Author One', 'Author Two'],
+                    publishedDate: '2023-01-01',
+                    description: 'This is a test book.',
+                    imageLinks: {
+                        thumbnail:
+                            'http://books.google.com/books/content?id=123&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+                    },
+                    categories: ['Fiction', 'Adventure'],
+                },
+            };
+
+            const expected = {
+                title: 'Test Book',
+                type: MediaType.BOOK,
+                year: 2023,
+                poster: 'https://books.google.com/books/content?id=123&printsec=frontcover&img=1&zoom=1&source=gbs_api',
+                description: 'This is a test book.',
+                genre: ['Fiction', 'Adventure'],
+                author: 'Author One, Author Two',
+            };
+
+            expect(parseGoogleBooksVolume(bookData)).toEqual(expected);
+        });
+
+        it('should handle missing optional fields', () => {
+            const bookData = {
+                volumeInfo: {
+                    title: 'Minimal Book',
+                },
+            };
+
+            const expected = {
+                title: 'Minimal Book',
+                type: MediaType.BOOK,
+                year: null,
+                poster: null,
+                description: '',
+                genre: [],
+                author: null,
+            };
+
+            expect(parseGoogleBooksVolume(bookData)).toEqual(expected);
         });
     });
 });

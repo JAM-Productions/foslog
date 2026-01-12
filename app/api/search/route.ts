@@ -101,9 +101,7 @@ export async function GET(req: NextRequest) {
                     console.error(
                         'Google Books API Error: GOOGLE_BOOKS_API_KEY environment variable is not set'
                     );
-                    return badGateway(
-                        'Google Books API key is not configured'
-                    );
+                    return badGateway('Google Books API key is not configured');
                 }
                 apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
                     mediatitle
