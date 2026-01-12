@@ -79,3 +79,30 @@ export const parseIGDBGame = (item: IGDBDataGame) => ({
         ...(item.themes?.map((id: number) => getGameThemeByIdIGDB(id)) || []),
     ],
 });
+
+interface GoogleBooksVolume {
+    volumeInfo: {
+        title: string;
+        authors?: string[];
+        publishedDate?: string;
+        description?: string;
+        imageLinks?: {
+            thumbnail?: string;
+            smallThumbnail?: string;
+        };
+        categories?: string[];
+    };
+}
+
+export const parseGoogleBooksVolume = (item: GoogleBooksVolume) => ({
+    title: item.volumeInfo.title,
+    type: MediaType.BOOK,
+    year: item.volumeInfo.publishedDate
+        ? parseInt(item.volumeInfo.publishedDate.split('-')[0]) || null
+        : null,
+    poster:
+        item.volumeInfo.imageLinks?.thumbnail?.replace(/^http:/, 'https:') ||
+        null,
+    description: item.volumeInfo.description || '',
+    genre: item.volumeInfo.categories || [],
+});

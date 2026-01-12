@@ -87,11 +87,20 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                         });
 
                         const response = await fetch(url.toString());
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
                         const data = await response.json();
-                        setSuggestions(data);
-                        if (isMediaTitleInData(data)) {
-                            setSelectedMedia(getMediaInData(data));
+
+                        if (Array.isArray(data)) {
+                            setSuggestions(data);
+                            if (isMediaTitleInData(data)) {
+                                setSelectedMedia(getMediaInData(data));
+                            } else {
+                                setSelectedMedia(null);
+                            }
                         } else {
+                            setSuggestions([]);
                             setSelectedMedia(null);
                         }
                     } catch (error) {

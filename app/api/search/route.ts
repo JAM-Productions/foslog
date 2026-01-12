@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { badGateway, internalServerError, validationError } from '@/lib/errors';
-import { parseIGDBGame, parseTMDBMovie, parseTMDBSerie } from './utils/parsers';
+import {
+    parseIGDBGame,
+    parseTMDBMovie,
+    parseTMDBSerie,
+    parseGoogleBooksVolume,
+} from './utils/parsers';
 import { getIgdbToken, IgdbTokenError } from './utils/get-igdb-token';
 
 export async function GET(req: NextRequest) {
@@ -89,6 +94,28 @@ export async function GET(req: NextRequest) {
                 const formattedResultGames =
                     dataGames?.map(parseIGDBGame) || [];
                 return NextResponse.json(formattedResultGames);
+
+            case 'book':
+                apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+                    mediatitle
+                )}&key=${process.env.GOOGLE_BOOKS_API_KEY}&printType=books&maxResults=20`;
+                const resBooks = await fetch(apiUrl);
+
+                if (!resBooks.ok) {
+                    const errorText = await resBooks.text();
+                    console.error(
+                        'Google Books API Error:',
+                        resBooks.status,
+                        errorText
+                    );
+                    return badGateway(
+                        `Could not fetch data from Google Books API: ${resBooks.status}`
+                    );
+                }
+                const dataBooks = await resBooks.json();
+                const formattedResultBooks =
+                    dataBooks.items?.map(parseGoogleBooksVolume) || [];
+                return NextResponse.json(formattedResultBooks);
 
             default:
                 return validationError(`Invalid media type: ${mediatype}`);
