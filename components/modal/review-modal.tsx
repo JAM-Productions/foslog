@@ -48,7 +48,7 @@ export default function ReviewModal() {
         { value: 'film', label: tMediaTypes('films'), disabled: false },
         { value: 'serie', label: tMediaTypes('series'), disabled: false },
         { value: 'game', label: tMediaTypes('games'), disabled: false },
-        { value: 'book', label: tMediaTypes('books'), disabled: true },
+        { value: 'book', label: tMediaTypes('books'), disabled: false },
         { value: 'music', label: tMediaTypes('music'), disabled: true },
     ];
 

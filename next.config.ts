@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
                 hostname: 'images.igdb.com',
                 pathname: '/igdb/image/upload/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'books.google.com',
+            },
         ],
     },
 };
