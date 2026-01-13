@@ -123,7 +123,7 @@ export async function GET(req: NextRequest) {
                 const formattedResultBooks =
                     dataBooks.items
                         ?.filter(
-                            (book: any) =>
+                            (book: { volumeInfo: { language?: string } }) =>
                                 book.volumeInfo.language === 'en' ||
                                 book.volumeInfo.language === 'es' ||
                                 book.volumeInfo.language === 'ca'
