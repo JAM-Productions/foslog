@@ -121,7 +121,14 @@ export async function GET(req: NextRequest) {
                 }
                 const dataBooks = await resBooks.json();
                 const formattedResultBooks =
-                    dataBooks.items?.map(parseGoogleBooksVolume) || [];
+                    dataBooks.items
+                        ?.filter(
+                            (book: any) =>
+                                book.volumeInfo.language === 'en' ||
+                                book.volumeInfo.language === 'es' ||
+                                book.volumeInfo.language === 'ca'
+                        )
+                        .map(parseGoogleBooksVolume) || [];
                 return NextResponse.json(formattedResultBooks);
 
             default:
