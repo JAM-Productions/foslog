@@ -70,18 +70,18 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                             )}
                         {review.liked !== undefined &&
                             review.liked !== null && (
-                                <div className="flex items-center gap-1.5 rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-800">
+                                <div className="bg-background flex items-center gap-1.5 rounded-full px-2 py-0.5">
                                     {review.liked ? (
                                         <>
                                             <ThumbsUp className="h-3.5 w-3.5 text-green-600" />
-                                            <span className="text-xs font-medium text-green-700 dark:text-green-400">
+                                            <span className="text-xs font-medium text-green-600">
                                                 {t('like')}
                                             </span>
                                         </>
                                     ) : (
                                         <>
                                             <ThumbsDown className="h-3.5 w-3.5 text-red-600" />
-                                            <span className="text-xs font-medium text-red-700 dark:text-red-400">
+                                            <span className="text-xs font-medium text-red-600">
                                                 {t('dislike')}
                                             </span>
                                         </>
