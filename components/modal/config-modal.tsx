@@ -5,11 +5,14 @@ import { X } from 'lucide-react';
 import LanguageSelector from '../header/language-selector';
 import ThemeToggle from '../theme/theme-toggle';
 import { useTranslations } from 'next-intl';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
 export default function ConfigModal() {
     const tConfigModal = useTranslations('ConfigModal');
 
     const { isConfigModalOpen, setIsConfigModalOpen } = useAppStore();
+
+    useBodyScrollLock(isConfigModalOpen);
 
     return (
         <Modal isModalOpen={isConfigModalOpen}>
