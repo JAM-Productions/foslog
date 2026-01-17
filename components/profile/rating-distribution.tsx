@@ -35,7 +35,7 @@ export function RatingDistribution({ distribution }: RatingDistributionProps) {
                                     ★
                                 </span>
                             </div>
-                            <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                            <div className="bg-background relative h-4 flex-1 overflow-hidden rounded-full">
                                 <div
                                     className="h-full rounded-full bg-yellow-400 transition-all duration-500"
                                     style={{ width: `${percentage}%` }}
