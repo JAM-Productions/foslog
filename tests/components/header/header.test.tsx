@@ -8,20 +8,12 @@ vi.mock('@/components/media/media-type-filter', () => ({
     default: () => <div data-testid="media-type-filter">Media Type Filter</div>,
 }));
 
-vi.mock('@/components/theme/theme-toggle', () => ({
-    default: () => <div data-testid="theme-toggle">Theme Toggle</div>,
-}));
-
 vi.mock('@/components/header/user-menu', () => ({
     default: () => <div data-testid="user-menu">User Menu</div>,
 }));
 
 vi.mock('@/components/header/search-bar', () => ({
     default: () => <div data-testid="search-bar">Search Bar</div>,
-}));
-
-vi.mock('@/components/header/language-selector', () => ({
-    default: () => <div data-testid="language-selector">Language Selector</div>,
 }));
 
 // Mock Next.js navigation
@@ -102,8 +94,6 @@ describe('Header', () => {
         render(<Header />);
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
-        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
-        expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
@@ -196,11 +186,6 @@ describe('Header', () => {
             'items-center',
             'justify-between'
         );
-
-        // Actions section
-        const actionsSection =
-            screen.getByTestId('language-selector').parentElement;
-        expect(actionsSection).toHaveClass('flex', 'items-center', 'gap-2');
     });
 
     it('has proper spacing for components', () => {
@@ -242,12 +227,10 @@ describe('Header', () => {
         const header = screen.getByRole('banner');
         const children = Array.from(header.querySelectorAll('[data-testid]'));
 
-        // Should have language selector, theme toggle, user menu, search bars (desktop + mobile), media filter, and toggle button with chevron icon
+        // Should have user menu, search bars (desktop + mobile), media filter, and toggle button with chevron icon
         expect(children.length).toBeGreaterThanOrEqual(5);
 
         // Verify specific components exist
-        expect(screen.getByTestId('language-selector')).toBeInTheDocument();
-        expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
     });

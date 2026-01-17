@@ -7,6 +7,7 @@ import { signOut } from '@/lib/auth/auth-client';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useAppStore } from '@/lib/store';
 import type { User, Session } from '@/lib/auth/auth-client';
 
 // Mock dependencies
@@ -30,6 +31,10 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
+vi.mock('@/lib/store', () => ({
+    useAppStore: vi.fn(),
+}));
+
 describe('UserMenu', () => {
     const mockPush = vi.fn();
     const mockT = vi.fn((key: string) => {
@@ -47,6 +52,7 @@ describe('UserMenu', () => {
     const mockedUseClickOutside = vi.mocked(useClickOutside);
     const mockedUseRouter = vi.mocked(useRouter);
     const mockedUseTranslations = vi.mocked(useTranslations);
+    const mockedUseAppStore = vi.mocked(useAppStore);
 
     const mockUser: User = {
         id: '1',
@@ -73,6 +79,9 @@ describe('UserMenu', () => {
             mockT as unknown as ReturnType<typeof useTranslations>
         );
         mockedSignOut.mockImplementation(() => Promise.resolve());
+        mockedUseAppStore.mockReturnValue({
+            setIsConfigModalOpen: vi.fn(),
+        } as unknown as ReturnType<typeof useAppStore>);
     });
 
     describe('when user is not logged in', () => {
@@ -106,7 +115,10 @@ describe('UserMenu', () => {
         it('displays mobile user icon button on small screens', () => {
             render(<UserMenu />);
 
-            const mobileButton = screen.getByRole('button', { name: '' });
+            const buttons = screen.getAllByRole('button');
+            const mobileButton = buttons.find((btn) =>
+                btn.className.includes('sm:hidden')
+            );
             expect(mobileButton).toHaveClass('relative', 'block', 'sm:hidden');
         });
 
@@ -114,7 +126,10 @@ describe('UserMenu', () => {
             const user = userEvent.setup();
             render(<UserMenu />);
 
-            const mobileButton = screen.getByRole('button', { name: '' });
+            const buttons = screen.getAllByRole('button');
+            const mobileButton = buttons.find((btn) =>
+                btn.className.includes('sm:hidden')
+            )!;
             await user.click(mobileButton);
 
             // Should show the dropdown with login/signup options
@@ -126,7 +141,10 @@ describe('UserMenu', () => {
             const user = userEvent.setup();
             render(<UserMenu />);
 
-            const mobileButton = screen.getByRole('button', { name: '' });
+            const buttons = screen.getAllByRole('button');
+            const mobileButton = buttons.find((btn) =>
+                btn.className.includes('sm:hidden')
+            )!;
             await user.click(mobileButton);
 
             // Find the dropdown login button (not the desktop one)
@@ -145,7 +163,10 @@ describe('UserMenu', () => {
             const user = userEvent.setup();
             render(<UserMenu />);
 
-            const mobileButton = screen.getByRole('button', { name: '' });
+            const buttons = screen.getAllByRole('button');
+            const mobileButton = buttons.find((btn) =>
+                btn.className.includes('sm:hidden')
+            )!;
             await user.click(mobileButton);
 
             // Find all Sign Up buttons and get the one in the dropdown
@@ -414,7 +435,10 @@ describe('UserMenu', () => {
         it('mobile icon button has correct responsive classes', () => {
             render(<UserMenu />);
 
-            const mobileButton = screen.getByRole('button', { name: '' });
+            const buttons = screen.getAllByRole('button');
+            const mobileButton = buttons.find((btn) =>
+                btn.className.includes('sm:hidden')
+            );
             expect(mobileButton).toHaveClass('relative', 'block', 'sm:hidden');
         });
 

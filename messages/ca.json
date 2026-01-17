@@ -281,5 +281,10 @@
         "readMore": "Llegir més",
         "postedOn": "Publicat el",
         "noPosts": "No hi ha entrades disponibles"
+    },
+    "ConfigModal": {
+        "settings": "Configuració",
+        "language": "Idioma",
+        "theme": "Tema"
     }
 }

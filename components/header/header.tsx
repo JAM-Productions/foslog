@@ -3,11 +3,9 @@
 import Image from 'next/image';
 import MediaTypeFilter from '@/components/media/media-type-filter';
 import MediaTypeFilterSkeleton from '@/components/media/media-type-filter-skeleton';
-import ThemeToggle from '@/components/theme/theme-toggle';
 import UserMenu from '@/components/header/user-menu';
 import SearchBar from '@/components/header/search-bar';
 import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
-import LanguageSelector from '@/components/header/language-selector';
 import { useState, Suspense } from 'react';
 import { ListFilterPlus } from 'lucide-react';
 import Link from 'next/link';
@@ -74,8 +72,6 @@ export default function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                        <LanguageSelector />
-                        <ThemeToggle />
                         <UserMenu />
                     </div>
                 </div>
