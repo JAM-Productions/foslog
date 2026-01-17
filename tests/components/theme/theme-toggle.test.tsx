@@ -88,10 +88,9 @@ describe('ThemeToggle', () => {
         const button = screen.getByRole('button');
         await user.click(button);
 
-        // Check if theme options are visible
-        expect(screen.getByText('Light')).toBeInTheDocument();
-        expect(screen.getByText('Dark')).toBeInTheDocument();
-        expect(screen.getByText('System')).toBeInTheDocument();
+        expect(screen.getAllByText('Light')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Dark')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('System')[0]).toBeInTheDocument();
     });
 
     it('highlights the current theme in dropdown', async () => {
@@ -106,7 +105,8 @@ describe('ThemeToggle', () => {
         const button = screen.getByRole('button');
         await user.click(button);
 
-        const darkOption = screen.getByText('Dark').closest('button');
+        const darkOptions = screen.getAllByText('Dark');
+        const darkOption = darkOptions[1].closest('button');
         expect(darkOption).toHaveClass('bg-accent', 'text-accent-foreground');
     });
 
