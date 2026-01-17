@@ -18,7 +18,10 @@ export default function ConfigModal() {
         <Modal isModalOpen={isConfigModalOpen}>
             <div className="flex w-full flex-col">
                 <div className="relative mb-10 flex w-full flex-col items-center justify-between text-center">
-                    <h1 className="text-2xl font-semibold">
+                    <h1
+                        id="modal-title"
+                        className="text-2xl font-semibold"
+                    >
                         {tConfigModal('settings')}
                     </h1>
                     <Button

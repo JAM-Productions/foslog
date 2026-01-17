@@ -57,18 +57,21 @@ const UserMenu = () => {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleNavigate('/login')}
+                            aria-label={tCTA('login')}
                         >
                             {tCTA('login')}
                         </Button>
                         <Button
                             size="sm"
                             onClick={() => handleNavigate('/signup')}
+                            aria-label={tCTA('signUp')}
                         >
                             {tCTA('signUp')}
                         </Button>
                         <button
                             className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                             onClick={() => setIsConfigModalOpen(true)}
+                            aria-label={tCTA('settings')}
                         >
                             <Settings className="h-4 w-4" />
                         </button>
@@ -83,6 +86,7 @@ const UserMenu = () => {
                                     router.push('/login');
                                     setIsNotUserOpen(false);
                                 }}
+                                aria-label={tCTA('login')}
                             >
                                 {tCTA('login')}
                             </button>
@@ -91,6 +95,7 @@ const UserMenu = () => {
                                     router.push('/signup');
                                     setIsNotUserOpen(false);
                                 }}
+                                aria-label={tCTA('signUp')}
                                 className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                             >
                                 {tCTA('signUp')}
@@ -98,7 +103,11 @@ const UserMenu = () => {
                             <div className="m-1 border-t" />
                             <button
                                 className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
-                                onClick={() => setIsConfigModalOpen(true)}
+                                onClick={() => {
+                                    setIsConfigModalOpen(true);
+                                    setIsNotUserOpen(false);
+                                }}
+                                aria-label={tCTA('settings')}
                             >
                                 <Settings className="h-4 w-4" />
                                 {tCTA('settings')}
@@ -150,13 +159,18 @@ const UserMenu = () => {
                                 handleNavigate(`/profile/${user.id}`);
                                 setIsUserOpen(false);
                             }}
+                            aria-label={tCTA('myProfile')}
                         >
                             <CircleUser className="h-4 w-4" />
                             {tCTA('myProfile')}
                         </button>
                         <button
                             className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
-                            onClick={() => setIsConfigModalOpen(true)}
+                            onClick={() => {
+                                setIsConfigModalOpen(true);
+                                setIsUserOpen(false);
+                            }}
+                            aria-label={tCTA('settings')}
                         >
                             <Settings className="h-4 w-4" />
                             {tCTA('settings')}
@@ -170,6 +184,7 @@ const UserMenu = () => {
                                     console.error('Logout error:', error);
                                 }
                             }}
+                            aria-label={tCTA('signOut')}
                             className="hover:bg-accent hover:text-accent-foreground text-destructive flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                         >
                             <LogOut className="h-4 w-4" />
