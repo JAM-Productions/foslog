@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import UserMenuSkeleton from './user-menu-skeleton';
 import Image from 'next/image';
+import { useAppStore } from '@/lib/store';
 
 const UserMenu = () => {
     const tCTA = useTranslations('CTA');
@@ -20,6 +21,8 @@ const UserMenu = () => {
     const { user, isAuthenticated, isLoading } = useAuth();
     const [isNotUserOpen, setIsNotUserOpen] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
+
+    const { setIsConfigModalOpen } = useAppStore();
 
     useClickOutside(menuNotUserRef, isNotUserOpen, setIsNotUserOpen);
     useClickOutside(menuUserRef, isUserOpen, setIsUserOpen);
@@ -54,26 +57,36 @@ const UserMenu = () => {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleNavigate('/login')}
+                            aria-label={tCTA('login')}
                         >
                             {tCTA('login')}
                         </Button>
                         <Button
                             size="sm"
                             onClick={() => handleNavigate('/signup')}
+                            aria-label={tCTA('signUp')}
                         >
                             {tCTA('signUp')}
                         </Button>
+                        <button
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            onClick={() => setIsConfigModalOpen(true)}
+                            aria-label={tCTA('settings')}
+                        >
+                            <Settings className="h-4 w-4" />
+                        </button>
                     </div>
                 </div>
                 {isNotUserOpen && (
                     <div className="bg-card absolute top-12 right-0 z-50 w-48 rounded-lg border shadow-lg">
                         <div className="p-1">
                             <button
-                                className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                                className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                                 onClick={() => {
                                     router.push('/login');
                                     setIsNotUserOpen(false);
                                 }}
+                                aria-label={tCTA('login')}
                             >
                                 {tCTA('login')}
                             </button>
@@ -82,9 +95,22 @@ const UserMenu = () => {
                                     router.push('/signup');
                                     setIsNotUserOpen(false);
                                 }}
-                                className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                                aria-label={tCTA('signUp')}
+                                className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                             >
                                 {tCTA('signUp')}
+                            </button>
+                            <div className="m-1 border-t" />
+                            <button
+                                className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                                onClick={() => {
+                                    setIsConfigModalOpen(true);
+                                    setIsNotUserOpen(false);
+                                }}
+                                aria-label={tCTA('settings')}
+                            >
+                                <Settings className="h-4 w-4" />
+                                {tCTA('settings')}
                             </button>
                         </div>
                     </div>
@@ -128,16 +154,24 @@ const UserMenu = () => {
                     </div>
                     <div className="p-1">
                         <button
-                            className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                             onClick={() => {
                                 handleNavigate(`/profile/${user.id}`);
                                 setIsUserOpen(false);
                             }}
+                            aria-label={tCTA('myProfile')}
                         >
                             <CircleUser className="h-4 w-4" />
                             {tCTA('myProfile')}
                         </button>
-                        <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm">
+                        <button
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            onClick={() => {
+                                setIsConfigModalOpen(true);
+                                setIsUserOpen(false);
+                            }}
+                            aria-label={tCTA('settings')}
+                        >
                             <Settings className="h-4 w-4" />
                             {tCTA('settings')}
                         </button>
@@ -150,7 +184,8 @@ const UserMenu = () => {
                                     console.error('Logout error:', error);
                                 }
                             }}
-                            className="hover:bg-accent hover:text-accent-foreground text-destructive flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
+                            aria-label={tCTA('signOut')}
+                            className="hover:bg-accent hover:text-accent-foreground text-destructive flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm"
                         >
                             <LogOut className="h-4 w-4" />
                             {tCTA('signOut')}

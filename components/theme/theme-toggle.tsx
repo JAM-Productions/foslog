@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Monitor, ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useTheme } from '@/components/theme/theme-provider';
 import { useClickOutside } from '@/hooks/useClickOutside';
@@ -32,11 +32,17 @@ const ThemeToggle = () => {
         >
             <Button
                 variant="ghost"
-                size="icon"
+                size="sm"
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative"
+                className="flex items-center gap-2 px-3"
             >
                 {currentTheme && <currentTheme.icon className="h-4 w-4" />}
+                {currentTheme && <span>{currentTheme.label}</span>}
+                <ChevronDownIcon
+                    className={`h-3 w-3 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180' : ''
+                    }`}
+                />
             </Button>
 
             {isOpen && (
