@@ -132,3 +132,109 @@ export async function POST(request: NextRequest) {
         return internalServerError();
     }
 }
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session) {
+            return unauthorized(
+                'Unauthorized. Please log in to delete a review.'
+            );
+        }
+
+        const { reviewId } = await request.json();
+
+        if (!reviewId) {
+            return validationError('Review ID is required');
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const existingReview = await tx.review.findUnique({
+                where: { id: reviewId },
+            });
+
+            if (!existingReview) {
+                throw new Error('REVIEW_NOT_FOUND');
+            }
+
+            if (existingReview.userId !== session.user.id) {
+                throw new Error('UNAUTHORIZED_DELETE');
+            }
+
+            await tx.review.delete({
+                where: { id: reviewId },
+            });
+            const mediaId = existingReview.mediaId;
+
+            const { _avg } = await tx.review.aggregate({
+                where: {
+                    mediaId,
+                    rating: { not: null },
+                },
+                _avg: { rating: true },
+            });
+
+            const [likesCount, dislikesCount, totalReviewsCount] =
+                await Promise.all([
+                    tx.review.count({
+                        where: {
+                            mediaId,
+                            liked: true,
+                        },
+                    }),
+                    tx.review.count({
+                        where: {
+                            mediaId,
+                            liked: false,
+                        },
+                    }),
+                    tx.review.count({
+                        where: { mediaId },
+                    }),
+                ]);
+
+            await tx.mediaItem.update({
+                where: { id: mediaId },
+                data: {
+                    averageRating: Number(_avg.rating?.toFixed(1)) || 0,
+                    totalReviews: totalReviewsCount,
+                    totalLikes: likesCount,
+                    totalDislikes: dislikesCount,
+                },
+            });
+
+            return mediaId;
+        });
+
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+
+        revalidatePath(`/${locale}/media/${result}`, 'page');
+
+        return NextResponse.json(
+            {
+                message: 'Review deleted successfully',
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error in DELETE /api/review:', error);
+
+        if (error instanceof Error) {
+            if (error.message === 'REVIEW_NOT_FOUND') {
+                return notFound('Review not found');
+            }
+            if (error.message === 'UNAUTHORIZED_DELETE') {
+                return unauthorized(
+                    'You are not authorized to delete this review.'
+                );
+            }
+        }
+
+        return internalServerError();
+    }
+}
