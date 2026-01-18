@@ -14,7 +14,6 @@ const messages = {
     Footer: {
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
-        blog: 'Blog',
     },
 };
 

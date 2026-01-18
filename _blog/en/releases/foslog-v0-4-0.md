@@ -1,6 +1,6 @@
 ---
 title: "Foslog v0.4.0 - The Expansion Update"
-date: "2026-01-18"
+date: "2024-07-25"
 category: "releases"
 description: "Version 0.4.0 is here, bringing a massive expansion with TV Series, Games, and Books, plus new features like User Profiles, a Blog, and advanced search."
 ---
