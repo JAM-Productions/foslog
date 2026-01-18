@@ -14,6 +14,7 @@ vi.mock('@/utils/mediaUtils', () => ({
     getGameGameModeByIdIGDB: (id: number) => `GameMode${id}`,
     getGamePerspectiveByIdIGDB: (id: number) => `GamePerspective${id}`,
     getGameThemeByIdIGDB: (id: number) => `GameTheme${id}`,
+    getBookGenreByIdGoogle: (cat: string) => `Mapped${cat}`,
 }));
 
 describe('API Parsers', () => {
@@ -110,7 +111,7 @@ describe('API Parsers', () => {
                 year: 2023,
                 poster: 'https://books.google.com/books/content?id=123&printsec=frontcover&img=1&zoom=1&source=gbs_api',
                 description: 'This is a test book.',
-                genre: ['Fiction', 'Adventure'],
+                genre: ['MappedFiction', 'MappedAdventure'],
                 author: 'Author One, Author Two',
             };
 

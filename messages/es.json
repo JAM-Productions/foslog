@@ -89,7 +89,20 @@
         "warfare": "Guerra",
         "party": "Fiesta",
         "fourX": "4X (explorar, expandir, explotar y exterminar)",
-        "erotic": "Erótico"
+        "erotic": "Erótico",
+        "biography": "Biografía",
+        "philosophy": "Filosofía",
+        "science": "Ciencia",
+        "technology": "Tecnología",
+        "selfHelp": "Autoayuda",
+        "travel": "Viajes",
+        "cooking": "Cocina",
+        "art": "Arte",
+        "comics": "Cómics y Novelas Gráficas",
+        "poetry": "Poesía",
+        "religion": "Religión",
+        "psychology": "Psicología",
+        "fiction": "Ficción"
     },
     "Stats": {
         "topRated": "Mejor Valorado",
