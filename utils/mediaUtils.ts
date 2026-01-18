@@ -189,8 +189,8 @@ export const getBookGenreByIdGoogle = (category: string): string => {
     if (lower.includes('music')) return 'music';
     if (lower.includes('western')) return 'western';
 
-    if (lower.includes('fiction')) return 'fiction';
     if (lower.includes('non-fiction') || lower.includes('non fiction')) return 'nonFiction';
+    if (lower.includes('fiction')) return 'fiction';
 
     return 'unknown';
 };
