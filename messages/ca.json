@@ -89,7 +89,20 @@
         "warfare": "Guerra",
         "party": "Festa",
         "fourX": "4X (explorar, expandir, explotar i exterminar)",
-        "erotic": "Eròtic"
+        "erotic": "Eròtic",
+        "biography": "Biografia",
+        "philosophy": "Filosofia",
+        "science": "Ciència",
+        "technology": "Tecnologia",
+        "selfHelp": "Autoajuda",
+        "travel": "Viatges",
+        "cooking": "Cuina",
+        "art": "Art",
+        "comics": "Còmics i Novel·les Gràfiques",
+        "poetry": "Poesia",
+        "religion": "Religió",
+        "psychology": "Psicologia",
+        "fiction": "Ficció"
     },
     "Stats": {
         "topRated": "Millor Valorat",

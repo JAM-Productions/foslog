@@ -153,6 +153,48 @@ export const getGameThemeByIdIGDB = (id: number): string => {
     return themeMap[id] || 'unknown';
 };
 
+// Utility function to map Google Books categories to localized genre names
+export const getBookGenreByIdGoogle = (category: string): string => {
+    const lower = category.toLowerCase();
+
+    if (lower.includes('science fiction') || lower.includes('sci-fi')) return 'sciFi';
+    if (lower.includes('action')) return 'action';
+    if (lower.includes('adventure')) return 'adventure';
+    if (lower.includes('fantasy')) return 'fantasy';
+    if (lower.includes('mystery') || lower.includes('detective')) return 'mystery';
+    if (lower.includes('horror')) return 'horror';
+    if (lower.includes('thriller') || lower.includes('suspense')) return 'thriller';
+    if (lower.includes('romance')) return 'romance';
+    if (lower.includes('biography') || lower.includes('autobiography')) return 'biography';
+    if (lower.includes('history') || lower.includes('historical')) return 'history';
+    if (lower.includes('business') || lower.includes('economics')) return 'business';
+    if (lower.includes('comics') || lower.includes('graphic novels')) return 'comics';
+    if (lower.includes('cooking') || lower.includes('cookbooks')) return 'cooking';
+    if (lower.includes('art') || lower.includes('photography')) return 'art';
+    if (lower.includes('poetry')) return 'poetry';
+    if (lower.includes('psychology')) return 'psychology';
+    if (lower.includes('philosophy')) return 'philosophy';
+    if (lower.includes('religion') || lower.includes('spirituality')) return 'religion';
+    if (lower.includes('technology') || lower.includes('computers')) return 'technology';
+    if (lower.includes('science') && !lower.includes('fiction')) return 'science';
+    if (lower.includes('self-help') || lower.includes('self help')) return 'selfHelp';
+    if (lower.includes('travel')) return 'travel';
+    if (lower.includes('juvenile') || lower.includes('children')) return 'kids';
+    if (lower.includes('education')) return 'educational';
+    if (lower.includes('humor') || lower.includes('comedy')) return 'comedy';
+    if (lower.includes('drama')) return 'drama';
+    if (lower.includes('crime')) return 'crime';
+    if (lower.includes('sports')) return 'sport';
+    if (lower.includes('war')) return 'war';
+    if (lower.includes('music')) return 'music';
+    if (lower.includes('western')) return 'western';
+
+    if (lower.includes('fiction')) return 'fiction';
+    if (lower.includes('non-fiction') || lower.includes('non fiction')) return 'nonFiction';
+
+    return 'unknown';
+};
+
 // General utility function to get genre label based on media type
 export const getMediaGenreLabel = (
     type: MediaItem['type'],
