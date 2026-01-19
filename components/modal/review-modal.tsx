@@ -69,8 +69,7 @@ export default function ReviewModal() {
         setSelectedMedia(null);
         setReviewStars(0);
         setReviewLiked(null);
-        setReviewStars(0);
-        setReviewLiked(null);
+
         setReviewText('');
         setConsumedMoreThanOnce(false);
         setHasReviewed(false);
@@ -159,12 +158,9 @@ export default function ReviewModal() {
 
             const data = await responseMedia.json();
 
-            if (data.hasReviewed) {
-                setHasReviewed(true);
-                setConsumedMoreThanOnce(true);
-            } else {
-                setHasReviewed(false);
-            }
+            // We don't need to set hasReviewed/consumedMoreThanOnce here
+            // because handleNext already did it, and the user hasn't successfully posted
+            // *this* review yet.
 
             const review: Review = {
                 stars: reviewStars > 0 ? reviewStars : undefined,
@@ -349,7 +345,15 @@ export default function ReviewModal() {
                             </div>
                             <Checkbox
                                 label={tConsumed(
-                                    selectedMediaType.toLowerCase()
+                                    [
+                                        'film',
+                                        'serie',
+                                        'book',
+                                        'game',
+                                        'music',
+                                    ].includes(selectedMediaType.toLowerCase())
+                                        ? selectedMediaType.toLowerCase()
+                                        : 'default'
                                 )}
                                 checked={consumedMoreThanOnce}
                                 onCheckedChange={setConsumedMoreThanOnce}

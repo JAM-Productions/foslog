@@ -161,17 +161,20 @@ export function ReviewForm({
             </div>
 
             <Checkbox
-                label={tConsumed(mediaType.toLowerCase())}
+                label={tConsumed(
+                    ['film', 'serie', 'book', 'game', 'music'].includes(
+                        mediaType.toLowerCase()
+                    )
+                        ? mediaType.toLowerCase()
+                        : 'default'
+                )}
                 checked={hasReviewed || consumedMoreThanOnce}
                 onCheckedChange={(checked) => {
                     if (!hasReviewed) {
                         setConsumedMoreThanOnce(checked);
                     }
                 }}
-                disabled={
-                    isSubmitting ||
-                    (hasReviewed && (hasReviewed || consumedMoreThanOnce))
-                }
+                disabled={isSubmitting || hasReviewed}
             />
             {error && (
                 <p
