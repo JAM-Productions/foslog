@@ -3,7 +3,8 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
-import { Calendar, User, ThumbsUp, ThumbsDown, Repeat } from 'lucide-react';
+import { ConsumedBadge } from '@/components/review/consumed-badge';
+import { Calendar, User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -18,7 +19,6 @@ export function ReviewDetailCard({
     const { user } = review;
     const locale = useLocale();
     const t = useTranslations('MediaPage');
-    const tConsumed = useTranslations('ConsumedMoreThanOnce');
 
     const formatDate = (date: Date | string) => {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
@@ -102,23 +102,11 @@ export function ReviewDetailCard({
                     </p>
                 </div>
                 <p className="text-base leading-relaxed">{review.review}</p>
-                {review.consumedMoreThanOnce && mediaType && (
-                    <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm italic">
-                        <Repeat className="h-3 w-3" />
-                        <span>
-                            {tConsumed(
-                                [
-                                    'film',
-                                    'serie',
-                                    'book',
-                                    'game',
-                                    'music',
-                                ].includes(mediaType.toLowerCase())
-                                    ? mediaType.toLowerCase()
-                                    : 'default'
-                            )}
-                        </span>
-                    </div>
+                {review.consumedMoreThanOnce && (
+                    <ConsumedBadge
+                        mediaType={mediaType}
+                        className="mt-2 text-sm"
+                    />
                 )}
             </div>
         </Card>

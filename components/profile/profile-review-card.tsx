@@ -3,7 +3,8 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReviewWithMedia } from '@/lib/types';
-import { ThumbsDown, ThumbsUp, Repeat } from 'lucide-react';
+import { ConsumedBadge } from '@/components/review/consumed-badge';
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -16,7 +17,6 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
     const { media } = review;
     const t = useTranslations('MediaPage');
     const tTypes = useTranslations('MediaTypes');
-    const tConsumed = useTranslations('ConsumedMoreThanOnce');
 
     return (
         <Card className="overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600">
@@ -97,22 +97,10 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         </p>
                     )}
                     {review.consumedMoreThanOnce && (
-                        <div className="text-muted-foreground mt-2 flex items-center gap-2 text-xs italic">
-                            <Repeat className="h-3 w-3" />
-                            <span>
-                                {tConsumed(
-                                    [
-                                        'film',
-                                        'serie',
-                                        'book',
-                                        'game',
-                                        'music',
-                                    ].includes(media.type.toLowerCase())
-                                        ? media.type.toLowerCase()
-                                        : 'default'
-                                )}
-                            </span>
-                        </div>
+                        <ConsumedBadge
+                            mediaType={media.type}
+                            className="mt-2 text-xs"
+                        />
                     )}
                 </div>
             </div>

@@ -3,7 +3,8 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
-import { User, ThumbsUp, ThumbsDown, Repeat } from 'lucide-react';
+import { ConsumedBadge } from '@/components/review/consumed-badge';
+import { User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -18,7 +19,6 @@ export function ReviewCard({
     const { user } = review;
     const router = useRouter();
     const t = useTranslations('MediaPage');
-    const tConsumed = useTranslations('ConsumedMoreThanOnce');
 
     return (
         <Card
@@ -91,19 +91,11 @@ export function ReviewCard({
                     {review.review}
                 </p>
             )}
-            {review.consumedMoreThanOnce && mediaType && (
-                <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm italic">
-                    <Repeat className="h-3 w-3" />
-                    <span>
-                        {tConsumed(
-                            ['film', 'serie', 'book', 'game', 'music'].includes(
-                                mediaType.toLowerCase()
-                            )
-                                ? mediaType.toLowerCase()
-                                : 'default'
-                        )}
-                    </span>
-                </div>
+            {review.consumedMoreThanOnce && (
+                <ConsumedBadge
+                    mediaType={mediaType}
+                    className="mt-2 text-sm"
+                />
             )}
         </Card>
     );
