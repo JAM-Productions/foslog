@@ -10,9 +10,13 @@ import Pagination from '@/components/pagination/pagination';
 
 interface MediaClientProps {
     mediaItem: SafeMediaItemWithReviews;
+    hasReviewed?: boolean;
 }
 
-export function MediaClient({ mediaItem }: MediaClientProps) {
+export function MediaClient({
+    mediaItem,
+    hasReviewed = false,
+}: MediaClientProps) {
     const t = useTranslations('MediaPage');
     const { reviews, totalPages, currentPage, ...media } = mediaItem;
 
@@ -41,7 +45,10 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                     </div>
                     {reviews.length > 0 ? (
                         <>
-                            <ReviewList reviews={reviews} />
+                            <ReviewList
+                                reviews={reviews}
+                                mediaType={mediaItem.type}
+                            />
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
@@ -62,7 +69,11 @@ export function MediaClient({ mediaItem }: MediaClientProps) {
                         {t('leaveReview')}
                     </h2>
                     <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
-                        <ReviewForm mediaId={mediaItem.id} />
+                        <ReviewForm
+                            mediaId={mediaItem.id}
+                            mediaType={mediaItem.type}
+                            hasReviewed={hasReviewed}
+                        />
                     </div>
                 </div>
             </div>

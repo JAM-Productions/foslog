@@ -129,6 +129,7 @@ export const getMediaById = async (
                 review: restOfReview.review ?? undefined,
                 createdAt: restOfReview.createdAt,
                 updatedAt: restOfReview.updatedAt,
+                consumedMoreThanOnce: restOfReview.consumedMoreThanOnce,
                 user: safeUser,
             };
         });

@@ -54,10 +54,22 @@ export async function POST(request: NextRequest) {
         });
 
         if (existingMedia) {
+            let hasReviewed = false;
+            if (session) {
+                const reviewCount = await prisma.review.count({
+                    where: {
+                        mediaId: existingMedia.id,
+                        userId: session.user.id,
+                    },
+                });
+                hasReviewed = reviewCount > 0;
+            }
+
             return NextResponse.json(
                 {
                     message: 'Media already exists',
                     media: existingMedia,
+                    hasReviewed,
                 },
                 { status: 200 }
             );

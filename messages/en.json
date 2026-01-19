@@ -251,7 +251,8 @@
         "dislikes": "Dislikes",
         "likePercentage": "{percentage}% liked",
         "atLeastOneRequired": "Please provide either a rating or like/dislike",
-        "noPoster": "No Poster"
+        "noPoster": "No Poster",
+        "consumedMoreThanOnce": "I have watched/played/read this more than once"
     },
     "BackButton": {
         "back": "Back"
@@ -299,5 +300,13 @@
         "settings": "Settings",
         "language": "Language",
         "theme": "Theme"
+    },
+    "ConsumedMoreThanOnce": {
+        "film": "Has watched this film more than once",
+        "serie": "Has watched this series more than once",
+        "book": "Has read this book more than once",
+        "game": "Has played this game more than once",
+        "music": "Has listened to this music more than once",
+        "default": "Has consumed this more than once"
     }
 }

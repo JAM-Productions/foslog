@@ -106,6 +106,7 @@ model Review {
   liked     Boolean?
   media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consumedMoreThanOnce Boolean @default(false)
 
   @@map("reviews")
 }

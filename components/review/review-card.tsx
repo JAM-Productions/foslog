@@ -3,12 +3,19 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
+import { ConsumedBadge } from '@/components/review/consumed-badge';
 import { User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-export function ReviewCard({ review }: { review: SafeReview }) {
+export function ReviewCard({
+    review,
+    mediaType,
+}: {
+    review: SafeReview;
+    mediaType?: string;
+}) {
     const { user } = review;
     const router = useRouter();
     const t = useTranslations('MediaPage');
@@ -83,6 +90,12 @@ export function ReviewCard({ review }: { review: SafeReview }) {
                 <p className="mt-3 text-base leading-relaxed sm:mt-4">
                     {review.review}
                 </p>
+            )}
+            {review.consumedMoreThanOnce && (
+                <ConsumedBadge
+                    mediaType={mediaType}
+                    className="mt-2 text-sm"
+                />
             )}
         </Card>
     );

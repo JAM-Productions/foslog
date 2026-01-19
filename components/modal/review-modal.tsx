@@ -12,11 +12,13 @@ import Image from 'next/image';
 import { SearchInput, Suggestion } from '@/components/input/search-input';
 import { useRouter } from '@/i18n/navigation';
 import Modal from './modal';
+import { Checkbox } from '@/components/input/checkbox';
 
 interface Review {
     stars?: number;
     liked?: boolean;
     text: string;
+    consumedMoreThanOnce?: boolean;
 }
 
 export default function ReviewModal() {
@@ -26,6 +28,7 @@ export default function ReviewModal() {
     const tReviewModal = useTranslations('ReviewModal');
     const tMediaTypes = useTranslations('MediaTypes');
     const tMediaPage = useTranslations('MediaPage');
+    const tConsumed = useTranslations('ConsumedMoreThanOnce');
     const tBackButton = useTranslations('BackButton');
 
     const { isReviewModalOpen, setIsReviewModalOpen } = useAppStore();
@@ -40,8 +43,12 @@ export default function ReviewModal() {
     const [reviewStars, setReviewStars] = useState<number>(0);
     const [reviewLiked, setReviewLiked] = useState<boolean | null>(null);
     const [reviewText, setReviewText] = useState<string>('');
+    const [consumedMoreThanOnce, setConsumedMoreThanOnce] =
+        useState<boolean>(false);
+    const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
+    const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
 
     const [error, setError] = useState<string | null>(null);
 
@@ -62,7 +69,10 @@ export default function ReviewModal() {
         setSelectedMedia(null);
         setReviewStars(0);
         setReviewLiked(null);
+
         setReviewText('');
+        setConsumedMoreThanOnce(false);
+        setHasReviewed(false);
         setError(null);
     }, []);
 
@@ -77,7 +87,54 @@ export default function ReviewModal() {
         setReviewStars(0);
         setReviewLiked(null);
         setReviewText('');
+        // Reset these when going back, although they will be re-checked on Next
+        setHasReviewed(false);
+        setConsumedMoreThanOnce(false);
     }, []);
+
+    const handleNext = async () => {
+        if (!selectedMedia) return;
+        setIsLoadingNext(true);
+        setError(null);
+
+        try {
+            const response = await fetch('/api/media', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    selectedMedia,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.error || 'Failed to check media');
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.hasReviewed) {
+                setHasReviewed(true);
+                setConsumedMoreThanOnce(true);
+            } else {
+                setHasReviewed(false);
+                setConsumedMoreThanOnce(false);
+            }
+
+            setModalStep(2);
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'An unexpected error occurred'
+            );
+        } finally {
+            setIsLoadingNext(false);
+        }
+    };
 
     const submitReview = async () => {
         try {
@@ -100,10 +157,16 @@ export default function ReviewModal() {
             }
 
             const data = await responseMedia.json();
+
+            // We don't need to set hasReviewed/consumedMoreThanOnce here
+            // because handleNext already did it, and the user hasn't successfully posted
+            // *this* review yet.
+
             const review: Review = {
                 stars: reviewStars > 0 ? reviewStars : undefined,
                 liked: reviewLiked !== null ? reviewLiked : undefined,
                 text: reviewText,
+                consumedMoreThanOnce,
             };
             const responseReview = await fetch('/api/review', {
                 method: 'POST',
@@ -280,6 +343,25 @@ export default function ReviewModal() {
                                     }
                                 />
                             </div>
+                            <Checkbox
+                                label={tConsumed(
+                                    [
+                                        'film',
+                                        'serie',
+                                        'book',
+                                        'game',
+                                        'music',
+                                    ].includes(selectedMediaType.toLowerCase())
+                                        ? selectedMediaType.toLowerCase()
+                                        : 'default'
+                                )}
+                                checked={consumedMoreThanOnce}
+                                onCheckedChange={setConsumedMoreThanOnce}
+                                disabled={
+                                    isLoadingSubmit ||
+                                    (hasReviewed && consumedMoreThanOnce)
+                                }
+                            />
                         </form>
                     </div>
                 )}
@@ -293,13 +375,18 @@ export default function ReviewModal() {
                 )}
                 <div className="flex w-full gap-4 sm:w-auto">
                     {modalStep === 1 && (
-                        <Button
-                            disabled={!selectedMedia}
-                            className="w-full cursor-pointer sm:w-auto"
-                            onClick={() => setModalStep(2)}
-                        >
-                            {tCTA('next')}
-                        </Button>
+                        <div className="relative w-full sm:w-auto">
+                            <Button
+                                disabled={!selectedMedia || isLoadingNext}
+                                className={`w-full cursor-pointer sm:w-auto ${isLoadingNext ? 'text-transparent' : ''}`}
+                                onClick={handleNext}
+                            >
+                                {tCTA('next')}
+                            </Button>
+                            {isLoadingNext && (
+                                <LoaderCircle className="text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin" />
+                            )}
+                        </div>
                     )}
                     {modalStep === 2 && (
                         <div className="flex w-full gap-4">

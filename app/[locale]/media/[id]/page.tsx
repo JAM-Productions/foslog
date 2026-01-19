@@ -1,5 +1,8 @@
 import { getMediaById } from '@/app/actions/media';
 import { MediaClient } from './media-client';
+import { auth } from '@/lib/auth/auth';
+import { prisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
 
 export default async function MediaPage({
     params,
@@ -20,5 +23,25 @@ export default async function MediaPage({
         return <div>Media not found</div>;
     }
 
-    return <MediaClient mediaItem={mediaItem} />;
+    let hasReviewed = false;
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (session?.user?.id) {
+        const count = await prisma.review.count({
+            where: {
+                mediaId: resolvedParams.id,
+                userId: session.user.id,
+            },
+        });
+        hasReviewed = count > 0;
+    }
+
+    return (
+        <MediaClient
+            mediaItem={mediaItem}
+            hasReviewed={hasReviewed}
+        />
+    );
 }
