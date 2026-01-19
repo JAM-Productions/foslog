@@ -14,6 +14,12 @@ Some key benefits of using Foslog:
 
 - Expand your interests by connecting recommendations across different media types.
 
+---
+
+## Architecture
+
+![Architecture Diagram](docs/assets/architecture.png)
+
 ## Technology
 
 - Built with **Next.js** as the main framework.
