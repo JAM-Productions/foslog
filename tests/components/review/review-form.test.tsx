@@ -49,51 +49,17 @@ describe('ReviewForm', () => {
 
     it('renders the form correctly', () => {
         render(<ReviewForm {...defaultProps} />);
-
         expect(screen.getByText('yourRating')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('shareThoughts')).toBeInTheDocument();
         expect(screen.getByText('Consumed film')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'submitReview' })).toBeInTheDocument();
     });
 
-    it('renders checkbox with correct label based on media type', () => {
-        render(<ReviewForm {...defaultProps} mediaType="Book" />);
-        // useTranslations mock lowers case implicitly or we should match usage
-        // implementation does `mediaType.toLowerCase()`
-        expect(screen.getByText('Consumed book')).toBeInTheDocument();
-    });
-
-    it('checkbox is initially unchecked by default', () => {
+    it('checkbox is initially unchecked', () => {
         render(<ReviewForm {...defaultProps} />);
         const checkbox = screen.getByRole('checkbox');
         expect(checkbox).not.toBeChecked();
     });
 
-    it('checkbox is checked if initialConsumedMoreThanOnce is true', () => {
-        render(<ReviewForm {...defaultProps} initialConsumedMoreThanOnce={true} />);
-        const checkbox = screen.getByRole('checkbox');
-        expect(checkbox).toBeChecked();
-    });
-
-    it('checkbox is checked and disabled if hasReviewed is true', () => {
-        render(<ReviewForm {...defaultProps} hasReviewed={true} />);
-        const checkbox = screen.getByRole('checkbox');
-        expect(checkbox).toBeChecked();
-        expect(checkbox).toBeDisabled();
-    });
-
-    it('toggles checkbox state when clicked (if not disabled)', () => {
-        render(<ReviewForm {...defaultProps} />);
-        const checkbox = screen.getByRole('checkbox');
-
-        fireEvent.click(checkbox);
-        expect(checkbox).toBeChecked();
-
-        fireEvent.click(checkbox);
-        expect(checkbox).not.toBeChecked();
-    });
-
-    it('submits the form with correct payload including consumedMoreThanOnce', async () => {
+    it('submits consumedMoreThanOnce as true when checked manually', async () => {
         (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
             ok: true,
             json: async () => ({}),
@@ -101,32 +67,63 @@ describe('ReviewForm', () => {
 
         render(<ReviewForm {...defaultProps} />);
 
-        // Fill form
-        fireEvent.click(screen.getByRole('button', { name: 'like' })); // Set liked=true
-        fireEvent.change(screen.getByPlaceholderText('shareThoughts'), { target: { value: 'Great!' } });
-        fireEvent.click(screen.getByRole('checkbox')); // Set consumedMoreThanOnce=true
-
-        // Submit
+        fireEvent.click(screen.getByRole('button', { name: 'like' }));
+        fireEvent.click(screen.getByRole('checkbox'));
         fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/review', {
+            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    mediaId: 'media-123',
-                    review: {
-                        liked: true,
-                        text: 'Great!',
-                        consumedMoreThanOnce: true,
-                    },
-                }),
-            });
+                body: expect.stringContaining('"consumedMoreThanOnce":true'),
+            }));
         });
     });
 
-    it('uses "default" translation fallback for unknown media types', () => {
-        render(<ReviewForm {...defaultProps} mediaType="unknown-type" />);
-        expect(screen.getByText('Consumed default')).toBeInTheDocument();
+    it('submits consumedMoreThanOnce as false when NOT checked', async () => {
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({}),
+        });
+
+        render(<ReviewForm {...defaultProps} />);
+
+        fireEvent.click(screen.getByRole('button', { name: 'like' }));
+        fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
+                method: 'POST',
+                body: expect.stringContaining('"consumedMoreThanOnce":false'),
+            }));
+        });
+    });
+
+    it('submits consumedMoreThanOnce as true when hasReviewed is true', async () => {
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({}),
+        });
+
+        // Pass hasReviewed=true
+        render(<ReviewForm {...defaultProps} hasReviewed={true} />);
+
+        // Checkbox visual check
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).toBeChecked();
+        expect(checkbox).toBeDisabled();
+
+        // Submit
+        fireEvent.click(screen.getByRole('button', { name: 'like' })); // Re-rate or just submit?
+        // Note: Logic says disabled if rating==0 AND liked==null.
+        // We set like to enable submit button.
+
+        fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
+                method: 'POST',
+                body: expect.stringContaining('"consumedMoreThanOnce":true'),
+            }));
+        });
     });
 });

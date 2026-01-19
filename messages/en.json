@@ -302,11 +302,11 @@
         "theme": "Theme"
     },
     "ConsumedMoreThanOnce": {
-        "film": "I have watched this film more than once",
-        "serie": "I have watched this series more than once",
-        "book": "I have read this book more than once",
-        "game": "I have played this game more than once",
-        "music": "I have listened to this music more than once",
-        "default": "I have consumed this more than once"
+        "film": "Has watched this film more than once",
+        "serie": "Has watched this series more than once",
+        "book": "Has read this book more than once",
+        "game": "Has played this game more than once",
+        "music": "Has listened to this music more than once",
+        "default": "Has consumed this more than once"
     }
 }

@@ -58,7 +58,8 @@ export function ReviewForm({
                         stars: rating > 0 ? rating : undefined,
                         liked: liked !== null ? liked : undefined,
                         text: text.trim(),
-                        consumedMoreThanOnce,
+                        consumedMoreThanOnce:
+                            hasReviewed || consumedMoreThanOnce,
                     },
                 }),
             });

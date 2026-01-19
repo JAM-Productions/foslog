@@ -45,7 +45,10 @@ export function MediaClient({
                     </div>
                     {reviews.length > 0 ? (
                         <>
-                            <ReviewList reviews={reviews} />
+                            <ReviewList
+                                reviews={reviews}
+                                mediaType={mediaItem.type}
+                            />
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}

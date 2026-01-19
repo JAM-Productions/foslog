@@ -68,6 +68,7 @@ export const getUserReviews = async (
             review: review.review ?? undefined,
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
+            consumedMoreThanOnce: review.consumedMoreThanOnce,
             user: {
                 id: review.user.id,
                 name: review.user.name ?? 'Unknown User',

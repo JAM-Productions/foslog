@@ -302,11 +302,11 @@
         "theme": "Tema"
     },
     "ConsumedMoreThanOnce": {
-        "film": "He vist aquesta pel·lícula més d'una vegada",
-        "serie": "He vist aquesta sèrie més d'una vegada",
-        "book": "He llegit aquest llibre més d'una vegada",
-        "game": "He jugat a aquest joc més d'una vegada",
-        "music": "He escoltat aquesta música més d'una vegada",
-        "default": "He consumit això més d'una vegada"
+        "film": "Ha vist aquesta pel·lícula més d'una vegada",
+        "serie": "Ha vist aquesta sèrie més d'una vegada",
+        "book": "Ha llegit aquest llibre més d'una vegada",
+        "game": "Ha jugat a aquest joc més d'una vegada",
+        "music": "Ha escoltat aquesta música més d'una vegada",
+        "default": "Ha consumit això més d'una vegada"
     }
 }

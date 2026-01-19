@@ -41,7 +41,10 @@ export function ReviewClient({
                                 {t('review')}
                             </span>
 
-                            <ReviewDetailCard review={reviewItem} />
+                            <ReviewDetailCard
+                                review={reviewItem}
+                                mediaType={media.type}
+                            />
 
                             {/* Actions below review on sm screens */}
                             <div className="lg:hidden">

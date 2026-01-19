@@ -86,6 +86,7 @@ describe('User Actions', () => {
                         totalLikes: 5,
                         totalDislikes: 1,
                     },
+                    consumedMoreThanOnce: true,
                 },
             ];
 
@@ -103,6 +104,7 @@ describe('User Actions', () => {
             });
             expect(result.reviews).toHaveLength(1);
             expect(result.reviews[0].id).toBe('review1');
+            expect(result.reviews[0].consumedMoreThanOnce).toBe(true);
             expect(result.total).toBe(1);
             expect(result.totalPages).toBe(1);
         });
