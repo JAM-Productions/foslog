@@ -22,7 +22,7 @@ export function ReviewCard({
 
     return (
         <Card
-            className="cursor-pointer p-4 transition-opacity duration-200 hover:opacity-80 sm:p-6"
+            className="flex h-full cursor-pointer flex-col p-4 transition-opacity duration-200 hover:opacity-80 sm:p-6"
             onClick={() => router.push(`/review/${review.id}`)}
         >
             <div className="flex flex-row items-center gap-3 sm:gap-4">
@@ -86,15 +86,17 @@ export function ReviewCard({
                     </div>
                 </div>
             </div>
-            {review.review && (
-                <p className="mt-3 text-base leading-relaxed sm:mt-4">
-                    {review.review}
-                </p>
-            )}
+            <div className="flex-1">
+                {review.review && (
+                    <p className="mt-3 text-base leading-relaxed sm:mt-4">
+                        {review.review}
+                    </p>
+                )}
+            </div>
             {review.consumedMoreThanOnce && (
                 <ConsumedBadge
                     mediaType={mediaType}
-                    className="mt-2 text-sm"
+                    className="mt-auto text-sm"
                 />
             )}
         </Card>

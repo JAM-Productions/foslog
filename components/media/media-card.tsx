@@ -96,7 +96,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
     return (
         <Card
-            className={`group transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
+            className={`group flex h-full flex-col transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
         >
             <div className="p-0">
                 {/* Image */}
@@ -133,7 +133,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                 </div>
 
                 {/* Content */}
-                <div className="p-4">
+                <div className="flex flex-1 flex-col p-4">
                     <div className="space-y-2">
                         {/* Title */}
                         <h3
@@ -171,38 +171,38 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                 </span>
                             )}
                         </div>
+                    </div>
 
-                        {/* Rating and Reviews */}
-                        <div className="flex items-center justify-between pt-1">
-                            {media.averageRating > 0 ? (
+                    {/* Rating and Reviews */}
+                    <div className="mt-auto flex items-center justify-between pt-1">
+                        {media.averageRating > 0 ? (
+                            <div className="flex items-center gap-1">
+                                <StarRating rating={media.averageRating} />
+                                <span className="text-muted-foreground ml-1 text-xs">
+                                    {media.averageRating.toFixed(1)}
+                                </span>
+                            </div>
+                        ) : media.totalLikes > 0 ||
+                          media.totalDislikes > 0 ? (
+                            <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1">
-                                    <StarRating rating={media.averageRating} />
-                                    <span className="text-muted-foreground ml-1 text-xs">
-                                        {media.averageRating.toFixed(1)}
+                                    <ThumbsUp className="text-muted-foreground h-3 w-3" />
+                                    <span className="text-muted-foreground text-xs">
+                                        {media.totalLikes}
                                     </span>
                                 </div>
-                            ) : media.totalLikes > 0 ||
-                              media.totalDislikes > 0 ? (
-                                <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <ThumbsUp className="text-muted-foreground h-3 w-3" />
-                                        <span className="text-muted-foreground text-xs">
-                                            {media.totalLikes}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <ThumbsDown className="text-muted-foreground h-3 w-3" />
-                                        <span className="text-muted-foreground text-xs">
-                                            {media.totalDislikes}
-                                        </span>
-                                    </div>
+                                <div className="flex items-center gap-1">
+                                    <ThumbsDown className="text-muted-foreground h-3 w-3" />
+                                    <span className="text-muted-foreground text-xs">
+                                        {media.totalDislikes}
+                                    </span>
                                 </div>
-                            ) : null}
-
-                            <div className="text-muted-foreground flex items-center gap-1 text-xs">
-                                <Eye className="h-3 w-3" />
-                                {media.totalReviews.toLocaleString()}
                             </div>
+                        ) : null}
+
+                        <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                            <Eye className="h-3 w-3" />
+                            {media.totalReviews.toLocaleString()}
                         </div>
                     </div>
                 </div>
