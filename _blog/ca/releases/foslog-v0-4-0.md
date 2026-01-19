@@ -1,6 +1,6 @@
 ---
 title: "Foslog v0.4.0 - L'Actualització d'Expansió"
-date: "2024-07-25"
+date: "2026-01-19"
 category: "releases"
 description: "La versió 0.4.0 ja és aquí, portant una expansió massiva amb Sèries de TV, Jocs i Llibres, a més de noves característiques com Perfils d'Usuari, un Blog i cerca avançada."
 ---
@@ -28,7 +28,7 @@ Estem emocionats d'anunciar el llançament de **Foslog v0.4.0**, una actualitzac
 ### API i Rendiment
 - **Estabilitat de la Paginació**: Hem resolt un error crític que causava inestabilitat, elements duplicats i contingut que faltava a les vistes paginades.
 - **Correcció en l'Actualització de Tokens**: S'ha corregit una condició de carrera en la lògica d'actualització de tokens de l'API, la qual cosa porta a connexions més estables i fiables amb serveis de tercers.
-- **Gestió de Dades Optimitzada**: Hem implementat funcions d'ajuda per analitzar i gestionar millor les dades d'APIs externes com Google Books i IGDB.
+- **Gestió de Dades Optimizada**: Hem implementat funcions d'ajuda per analitzar i gestionar millor les dades d'APIs externes com Google Books i IGDB.
 - **Estadístiques Globals a la Pàgina d'Inici**: Les estadístiques a la pàgina d'inici ara són globals, reflectint l'activitat de tota la comunitat de Foslog durant l'últim mes.
 
 ## Changelog Complet
