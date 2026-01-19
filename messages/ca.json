@@ -251,7 +251,8 @@
         "dislikes": "No m'agraden",
         "likePercentage": "{percentage}% els agrada",
         "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
-        "noPoster": "No hi ha pòster"
+        "noPoster": "No hi ha pòster",
+        "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada"
     },
     "BackButton": {
         "back": "Enrere"
@@ -299,5 +300,13 @@
         "settings": "Configuració",
         "language": "Idioma",
         "theme": "Tema"
+    },
+    "ConsumedMoreThanOnce": {
+        "film": "He vist aquesta pel·lícula més d'una vegada",
+        "serie": "He vist aquesta sèrie més d'una vegada",
+        "book": "He llegit aquest llibre més d'una vegada",
+        "game": "He jugat a aquest joc més d'una vegada",
+        "music": "He escoltat aquesta música més d'una vegada",
+        "default": "He consumit això més d'una vegada"
     }
 }
