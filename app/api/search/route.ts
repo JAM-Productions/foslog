@@ -6,7 +6,8 @@ import {
     parseTMDBSerie,
     parseGoogleBooksVolume,
 } from './utils/parsers';
-import { getIgdbToken, IgdbTokenError } from './utils/get-igdb-token';
+import { getIgdbToken } from './utils/get-igdb-token';
+import { IgdbTokenError } from '@/utils/errors';
 
 export async function GET(req: NextRequest) {
     try {
