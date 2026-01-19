@@ -193,7 +193,8 @@
         "edit": "Edit",
         "delete": "Delete",
         "share": "Share",
-        "myProfile": "My Profile"
+        "myProfile": "My Profile",
+        "goBack": "Go Back"
     },
     "Toast": {
         "linkCopied": "Link copied to clipboard!",
@@ -259,7 +260,9 @@
         "reviewFor": "Review for",
         "review": "Review",
         "options": "Options",
-        "shareTitle": "Review"
+        "shareTitle": "Review",
+        "deleteReviewTitle": "Delete Review",
+        "deleteReviewDescription": "You are about to permanently delete this review. This action cannot be undone."
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",

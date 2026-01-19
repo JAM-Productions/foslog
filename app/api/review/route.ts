@@ -151,7 +151,7 @@ export async function DELETE(request: NextRequest) {
             return validationError('Review ID is required');
         }
 
-        const result = await prisma.$transaction(async (tx) => {
+        const mediaId = await prisma.$transaction(async (tx) => {
             const existingReview = await tx.review.findUnique({
                 where: { id: reviewId },
             });
@@ -213,11 +213,12 @@ export async function DELETE(request: NextRequest) {
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
 
-        revalidatePath(`/${locale}/media/${result}`, 'page');
+        revalidatePath(`/${locale}/media/${mediaId}`, 'page');
 
         return NextResponse.json(
             {
                 message: 'Review deleted successfully',
+                mediaId: mediaId,
             },
             { status: 200 }
         );

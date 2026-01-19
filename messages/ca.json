@@ -193,7 +193,8 @@
         "edit": "Editar",
         "delete": "Eliminar",
         "share": "Compartir",
-        "myProfile": "El Meu Perfil"
+        "myProfile": "El Meu Perfil",
+        "goBack": "Tornar Enrere"
     },
     "Toast": {
         "linkCopied": "Enllaç copiat al porta-retalls!",
@@ -259,7 +260,9 @@
         "reviewFor": "Ressenya per a",
         "review": "Ressenya",
         "options": "Opcions",
-        "shareTitle": "Ressenya"
+        "shareTitle": "Ressenya",
+        "deleteReviewTitle": "Eliminar Ressenya",
+        "deleteReviewDescription": "Estàs a punt d'eliminar aquesta ressenya de forma permanent. Aquesta acció no es pot desfer."
     },
     "Footer": {
         "privacyPolicy": "Política de Privacitat",
