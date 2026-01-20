@@ -9,6 +9,10 @@ vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
 }));
 
+vi.mock('@/i18n/navigation', () => ({
+    useRouter: vi.fn(),
+}));
+
 // Mock useToast
 vi.mock('@/hooks/useToast', () => ({
     useToast: vi.fn(() => ({
@@ -83,7 +87,9 @@ describe('ReviewOptions', () => {
         vi.clearAllMocks();
         mockedUseTranslations.mockImplementation((namespace?: string) => {
             if (namespace === 'CTA') {
-                return mockTCTA as unknown as ReturnType<typeof useTranslations>;
+                return mockTCTA as unknown as ReturnType<
+                    typeof useTranslations
+                >;
             }
             if (namespace === 'ReviewPage') {
                 return mockT as unknown as ReturnType<typeof useTranslations>;
@@ -122,15 +128,29 @@ describe('ReviewOptions', () => {
     });
 
     describe('Owner actions', () => {
+        const mockOnEdit = vi.fn();
+
         it('renders edit button when user is owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const editButton = screen.getByRole('button', { name: /edit/i });
             expect(editButton).toBeInTheDocument();
         });
 
         it('renders delete button when user is owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const deleteButton = screen.getByRole('button', {
                 name: /delete/i,
@@ -139,15 +159,45 @@ describe('ReviewOptions', () => {
         });
 
         it('renders edit icon when user is owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const editIcon = screen.getByTestId('pencil-icon');
             expect(editIcon).toBeInTheDocument();
             expect(editIcon).toHaveClass('h-4', 'w-4');
         });
 
+        it('calls onEdit callback when edit button is clicked', async () => {
+            const user = userEvent.setup();
+            const onEditMock = vi.fn();
+
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={onEditMock}
+                />
+            );
+
+            const editButton = screen.getByRole('button', { name: /edit/i });
+            await user.click(editButton);
+
+            expect(onEditMock).toHaveBeenCalledTimes(1);
+        });
+
         it('renders delete icon when user is owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const deleteIcon = screen.getByTestId('trash-icon');
             expect(deleteIcon).toBeInTheDocument();
@@ -155,14 +205,26 @@ describe('ReviewOptions', () => {
         });
 
         it('does not render edit button when user is not owner', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const editButton = screen.queryByRole('button', { name: /edit/i });
             expect(editButton).not.toBeInTheDocument();
         });
 
         it('does not render delete button when user is not owner', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const deleteButton = screen.queryByRole('button', {
                 name: /delete/i,
@@ -172,22 +234,42 @@ describe('ReviewOptions', () => {
     });
 
     describe('Share action', () => {
+        const mockOnEdit = vi.fn();
+
         it('renders share button for owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             expect(shareButton).toBeInTheDocument();
         });
 
         it('renders share button for non-owner', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             expect(shareButton).toBeInTheDocument();
         });
 
         it('renders share icon', () => {
-            render(<ReviewOptions isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const shareIcon = screen.getByTestId('share2-icon');
             expect(shareIcon).toBeInTheDocument();
@@ -196,8 +278,16 @@ describe('ReviewOptions', () => {
     });
 
     describe('Mobile variant', () => {
+        const mockOnEdit = vi.fn();
+
         it('renders with mobile variant by default', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -211,6 +301,7 @@ describe('ReviewOptions', () => {
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="mobile"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -224,6 +315,7 @@ describe('ReviewOptions', () => {
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="mobile"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -239,12 +331,15 @@ describe('ReviewOptions', () => {
     });
 
     describe('Desktop variant', () => {
+        const mockOnEdit = vi.fn();
+
         it('renders options title with desktop variant', () => {
             render(
                 <ReviewOptions
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -258,6 +353,7 @@ describe('ReviewOptions', () => {
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -276,6 +372,7 @@ describe('ReviewOptions', () => {
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -291,8 +388,16 @@ describe('ReviewOptions', () => {
     });
 
     describe('Button styling', () => {
+        const mockOnEdit = vi.fn();
+
         it('applies outline variant to all buttons', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -301,7 +406,13 @@ describe('ReviewOptions', () => {
         });
 
         it('applies small size to all buttons', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const buttons = screen.getAllByRole('button');
             buttons.forEach((button) => {
@@ -310,7 +421,13 @@ describe('ReviewOptions', () => {
         });
 
         it('applies gap classes to button content', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             expect(shareButton).toHaveClass('gap-1.5');
@@ -318,8 +435,16 @@ describe('ReviewOptions', () => {
     });
 
     describe('Button order', () => {
+        const mockOnEdit = vi.fn();
+
         it('renders buttons in correct order for owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const buttons = screen.getAllByRole('button');
             expect(buttons[0]).toHaveTextContent('Edit');
@@ -328,7 +453,13 @@ describe('ReviewOptions', () => {
         });
 
         it('renders only share button for non-owner', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const buttons = screen.getAllByRole('button');
             expect(buttons).toHaveLength(1);
@@ -337,8 +468,16 @@ describe('ReviewOptions', () => {
     });
 
     describe('Translations', () => {
+        const mockOnEdit = vi.fn();
+
         it('uses correct translation namespace for CTA buttons', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             expect(mockTCTA).toHaveBeenCalledWith('edit');
             expect(mockTCTA).toHaveBeenCalledWith('delete');
@@ -351,6 +490,7 @@ describe('ReviewOptions', () => {
                     reviewId="test-review-id"
                     isOwner={true}
                     variant="desktop"
+                    onEdit={mockOnEdit}
                 />
             );
 
@@ -359,11 +499,21 @@ describe('ReviewOptions', () => {
     });
 
     describe('Icon and text alignment', () => {
+        const mockOnEdit = vi.fn();
+
         it('aligns icon and text in edit button', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const editButton = screen.getByRole('button', { name: /edit/i });
-            const icon = editButton.querySelector('[data-testid="pencil-icon"]');
+            const icon = editButton.querySelector(
+                '[data-testid="pencil-icon"]'
+            );
             const text = editButton.querySelector('span');
 
             expect(icon).toBeInTheDocument();
@@ -372,12 +522,20 @@ describe('ReviewOptions', () => {
         });
 
         it('aligns icon and text in delete button', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={true} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={true}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const deleteButton = screen.getByRole('button', {
                 name: /delete/i,
             });
-            const icon = deleteButton.querySelector('[data-testid="trash-icon"]');
+            const icon = deleteButton.querySelector(
+                '[data-testid="trash-icon"]'
+            );
             const text = deleteButton.querySelector('span');
 
             expect(icon).toBeInTheDocument();
@@ -386,10 +544,18 @@ describe('ReviewOptions', () => {
         });
 
         it('aligns icon and text in share button', () => {
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={() => {}}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
-            const icon = shareButton.querySelector('[data-testid="share2-icon"]');
+            const icon = shareButton.querySelector(
+                '[data-testid="share2-icon"]'
+            );
             const text = shareButton.querySelector('span');
 
             expect(icon).toBeInTheDocument();
@@ -399,6 +565,8 @@ describe('ReviewOptions', () => {
     });
 
     describe('Share functionality', () => {
+        const mockOnEdit = vi.fn();
+
         it('handles share button click when Web Share API not available', async () => {
             const user = userEvent.setup();
             const writeTextMock = vi.fn(() => Promise.resolve());
@@ -418,7 +586,13 @@ describe('ReviewOptions', () => {
                 configurable: true,
             });
 
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             await user.click(shareButton);
@@ -438,7 +612,13 @@ describe('ReviewOptions', () => {
                 configurable: true,
             });
 
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             await user.click(shareButton);
@@ -470,7 +650,13 @@ describe('ReviewOptions', () => {
                 configurable: true,
             });
 
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             await user.click(shareButton);
@@ -501,7 +687,13 @@ describe('ReviewOptions', () => {
                 configurable: true,
             });
 
-            render(<ReviewOptions reviewId="test-review-id" isOwner={false} />);
+            render(
+                <ReviewOptions
+                    reviewId="test-review-id"
+                    isOwner={false}
+                    onEdit={mockOnEdit}
+                />
+            );
 
             const shareButton = screen.getByRole('button', { name: /share/i });
             await user.click(shareButton);
