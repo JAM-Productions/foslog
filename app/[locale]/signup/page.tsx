@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { Input } from '@/components/input/input';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { isUserEmailOk } from '@/utils/userValidationUtils';
+import { isUserEmailOk } from '@/utils/user-validation-utils';
 import { signUp, signIn } from '@/lib/auth/auth-client';
 import { useRouter } from 'next/navigation';
 import { useToastStore } from '@/lib/toast-store';
