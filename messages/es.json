@@ -89,7 +89,20 @@
         "warfare": "Guerra",
         "party": "Fiesta",
         "fourX": "4X (explorar, expandir, explotar y exterminar)",
-        "erotic": "Erótico"
+        "erotic": "Erótico",
+        "biography": "Biografía",
+        "philosophy": "Filosofía",
+        "science": "Ciencia",
+        "technology": "Tecnología",
+        "selfHelp": "Autoayuda",
+        "travel": "Viajes",
+        "cooking": "Cocina",
+        "art": "Arte",
+        "comics": "Cómics y Novelas Gráficas",
+        "poetry": "Poesía",
+        "religion": "Religión",
+        "psychology": "Psicología",
+        "fiction": "Ficción"
     },
     "Stats": {
         "topRated": "Mejor Valorado",
@@ -245,7 +258,8 @@
         "likePercentage": "{percentage}% les gusta",
         "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
         "noPoster": "No hay póster",
-        "updateReview": "Editar Reseña"
+        "updateReview": "Editar Reseña",
+        "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez"
     },
     "BackButton": {
         "back": "Atrás"
@@ -295,5 +309,13 @@
         "settings": "Configuración",
         "language": "Idioma",
         "theme": "Tema"
+    },
+    "ConsumedMoreThanOnce": {
+        "film": "Ha visto esta película más de una vez",
+        "serie": "Ha visto esta serie más de una vez",
+        "book": "Ha leído este libro más de una vez",
+        "game": "Ha jugado a este juego más de una vez",
+        "music": "Ha escuchado esta música más de una vez",
+        "default": "Ha consumido esto más de una vez"
     }
 }

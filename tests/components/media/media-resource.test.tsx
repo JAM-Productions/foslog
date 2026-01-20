@@ -88,7 +88,7 @@ describe('ReviewCard', () => {
 
 describe('ReviewForm', () => {
     it('renders a review form', () => {
-        render(<ReviewForm mediaId="1" />);
+        render(<ReviewForm mediaId="1" mediaType="film" />);
         expect(screen.getByText('yourRating')).toBeInTheDocument();
         expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
         expect(

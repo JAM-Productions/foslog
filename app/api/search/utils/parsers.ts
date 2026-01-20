@@ -6,6 +6,7 @@ import {
     getGameThemeByIdIGDB,
     getMovieGenreByIdTMDB,
     getSerieGenreByIdTMDB,
+    getBookGenreByIdGoogle,
 } from '@/utils/mediaUtils';
 
 interface TMDBDataMovie {
@@ -104,6 +105,9 @@ export const parseGoogleBooksVolume = (item: GoogleBooksVolume) => ({
         item.volumeInfo.imageLinks?.thumbnail?.replace(/^http:/, 'https:') ||
         null,
     description: item.volumeInfo.description || '',
-    genre: item.volumeInfo.categories || [],
+    genre:
+        item.volumeInfo.categories
+            ?.map((cat) => getBookGenreByIdGoogle(cat))
+            .filter((g) => g !== 'unknown') || [],
     author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : null,
 });

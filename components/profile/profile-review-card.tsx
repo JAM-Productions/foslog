@@ -3,6 +3,7 @@
 import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReviewWithMedia } from '@/lib/types';
+import { ConsumedBadge } from '@/components/review/consumed-badge';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -94,6 +95,12 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         <p className="text-muted-foreground mt-auto line-clamp-3 text-sm leading-relaxed">
                             &ldquo;{review.review}&rdquo;
                         </p>
+                    )}
+                    {review.consumedMoreThanOnce && (
+                        <ConsumedBadge
+                            mediaType={media.type}
+                            className="mt-2 text-xs"
+                        />
                     )}
                 </div>
             </div>

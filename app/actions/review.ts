@@ -44,6 +44,7 @@ export const getReviewById = async (
             review: review.review ?? undefined,
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
+            consumedMoreThanOnce: review.consumedMoreThanOnce,
             user: safeUser,
             media: {
                 id: review.media.id,

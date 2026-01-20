@@ -9,27 +9,41 @@ import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
 import { SafeReviewWithMedia } from '@/lib/types';
-
+import { Checkbox } from '@/components/input/checkbox';
 interface EditProps {
     review: SafeReviewWithMedia;
     setIsEditingReview: (editing: boolean) => void;
 }
-
 interface ReviewFormProps {
     mediaId: string;
+    mediaType: string;
+    hasReviewed?: boolean;
+    initialConsumedMoreThanOnce?: boolean;
     editProps?: EditProps;
 }
 
-export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
+export function ReviewForm({
+    mediaId,
+    mediaType,
+    hasReviewed = false,
+    initialConsumedMoreThanOnce = false,
+    editProps,
+}: ReviewFormProps) {
     const t = useTranslations('MediaPage');
+    const tConsumed = useTranslations('ConsumedMoreThanOnce');
     const tToast = useTranslations('Toast');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
+
     const [rating, setRating] = useState(editProps?.review.rating ?? 0);
     const [liked, setLiked] = useState<boolean | null>(
         editProps?.review.liked ?? null
     );
     const [text, setText] = useState(editProps?.review.review ?? '');
+    const [consumedMoreThanOnce, setConsumedMoreThanOnce] = useState(
+        initialConsumedMoreThanOnce
+    );
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
@@ -55,6 +69,8 @@ export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
                         stars: rating > 0 ? rating : undefined,
                         liked: liked !== null ? liked : undefined,
                         text: text.trim(),
+                        consumedMoreThanOnce:
+                            hasReviewed || consumedMoreThanOnce,
                     },
                 }),
             });
@@ -69,11 +85,9 @@ export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
             setRating(0);
             setLiked(null);
             setText('');
+            setConsumedMoreThanOnce(false);
 
-            // Show success toast
             showToast(tToast('reviewSubmitted'), 'success');
-
-            // Refresh the page to show the new review
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
@@ -108,7 +122,13 @@ export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to update review');
             }
-            // Show success toast
+
+            // Reset form
+            setRating(0);
+            setLiked(null);
+            setText('');
+            setConsumedMoreThanOnce(false);
+
             showToast(tToast('reviewUpdated'), 'success');
             router.refresh();
             editProps.setIsEditingReview(false);
@@ -197,6 +217,23 @@ export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
                     disabled={isSubmitting}
                 />
             </div>
+
+            <Checkbox
+                label={tConsumed(
+                    ['film', 'serie', 'book', 'game', 'music'].includes(
+                        mediaType.toLowerCase()
+                    )
+                        ? mediaType.toLowerCase()
+                        : 'default'
+                )}
+                checked={hasReviewed || consumedMoreThanOnce}
+                onCheckedChange={(checked) => {
+                    if (!hasReviewed) {
+                        setConsumedMoreThanOnce(checked);
+                    }
+                }}
+                disabled={isSubmitting || hasReviewed}
+            />
             {error && (
                 <p
                     className="text-destructive text-sm"

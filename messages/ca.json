@@ -89,7 +89,20 @@
         "warfare": "Guerra",
         "party": "Festa",
         "fourX": "4X (explorar, expandir, explotar i exterminar)",
-        "erotic": "Eròtic"
+        "erotic": "Eròtic",
+        "biography": "Biografia",
+        "philosophy": "Filosofia",
+        "science": "Ciència",
+        "technology": "Tecnologia",
+        "selfHelp": "Autoajuda",
+        "travel": "Viatges",
+        "cooking": "Cuina",
+        "art": "Art",
+        "comics": "Còmics i Novel·les Gràfiques",
+        "poetry": "Poesia",
+        "religion": "Religió",
+        "psychology": "Psicologia",
+        "fiction": "Ficció"
     },
     "Stats": {
         "topRated": "Millor Valorat",
@@ -245,7 +258,8 @@
         "likePercentage": "{percentage}% els agrada",
         "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
         "noPoster": "No hi ha pòster",
-        "updateReview": "Editar Ressenya"
+        "updateReview": "Editar Ressenya",
+        "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada"
     },
     "BackButton": {
         "back": "Enrere"
@@ -295,5 +309,13 @@
         "settings": "Configuració",
         "language": "Idioma",
         "theme": "Tema"
+    },
+    "ConsumedMoreThanOnce": {
+        "film": "Ha vist aquesta pel·lícula més d'una vegada",
+        "serie": "Ha vist aquesta sèrie més d'una vegada",
+        "book": "Ha llegit aquest llibre més d'una vegada",
+        "game": "Ha jugat a aquest joc més d'una vegada",
+        "music": "Ha escoltat aquesta música més d'una vegada",
+        "default": "Ha consumit això més d'una vegada"
     }
 }

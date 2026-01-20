@@ -57,7 +57,10 @@ export function ReviewClient({
                                     />
                                 </div>
                             ) : (
-                                <ReviewDetailCard review={reviewItem} />
+                                <ReviewDetailCard
+                                    review={reviewItem}
+                                    mediaType={media.type}
+                                />
                             )}
 
                             {/* Actions below review on sm screens */}

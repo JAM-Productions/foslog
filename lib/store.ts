@@ -28,6 +28,7 @@ export interface Review {
     rating?: number;
     liked?: boolean;
     review?: string;
+    consumedMoreThanOnce?: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

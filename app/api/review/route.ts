@@ -46,6 +46,13 @@ export async function POST(request: NextRequest) {
             return validationError('Review text is too long');
         }
 
+        if (
+            review.consumedMoreThanOnce !== undefined &&
+            typeof review.consumedMoreThanOnce !== 'boolean'
+        ) {
+            return validationError('consumedMoreThanOnce must be a boolean');
+        }
+
         if (!mediaId) {
             return validationError('Media ID is required');
         }
@@ -64,6 +71,7 @@ export async function POST(request: NextRequest) {
                     rating: review.stars || null,
                     liked: review.liked !== undefined ? review.liked : null,
                     review: review.text,
+                    consumedMoreThanOnce: review.consumedMoreThanOnce || false,
                     mediaId: mediaId,
                     userId: session.user.id,
                 },
