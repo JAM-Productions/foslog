@@ -50,6 +50,7 @@ export function ReviewClient({
                                 <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
                                     <ReviewForm
                                         mediaId={media.id}
+                                        mediaType={media.type}
                                         editProps={{
                                             review: reviewItem,
                                             setIsEditingReview,
