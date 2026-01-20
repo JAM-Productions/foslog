@@ -194,7 +194,8 @@
         "delete": "Eliminar",
         "share": "Compartir",
         "myProfile": "El Meu Perfil",
-        "goBack": "Tornar Enrere"
+        "goBack": "Tornar Enrere",
+        "cancel": "Cancel·lar"
     },
     "Toast": {
         "linkCopied": "Enllaç copiat al porta-retalls!",
@@ -204,7 +205,11 @@
         "signupSuccess": "Compte creat correctament! Benvingut a Foslog!",
         "signupFailed": "Error en registrar-se. Si us plau, torna-ho a provar.",
         "reviewSubmitted": "Ressenya enviada correctament!",
-        "reviewFailed": "Error en enviar la ressenya. Si us plau, torna-ho a provar."
+        "reviewFailed": "Error en enviar la ressenya. Si us plau, torna-ho a provar.",
+        "reviewDeleted": "Ressenya eliminada correctament!",
+        "reviewDeleteFailed": "Error en eliminar la ressenya. Si us plau, torna-ho a provar.",
+        "reviewUpdated": "Ressenya actualitzada correctament!",
+        "reviewUpdateFailed": "Error en actualitzar la ressenya. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -239,7 +244,8 @@
         "dislikes": "No m'agraden",
         "likePercentage": "{percentage}% els agrada",
         "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
-        "noPoster": "No hi ha pòster"
+        "noPoster": "No hi ha pòster",
+        "updateReview": "Editar Ressenya"
     },
     "BackButton": {
         "back": "Enrere"

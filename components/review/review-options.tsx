@@ -11,12 +11,14 @@ interface ReviewOptionsProps {
     reviewId: string;
     isOwner: boolean;
     variant?: 'mobile' | 'desktop';
+    onEdit: () => void;
 }
 
 export function ReviewOptions({
     reviewId,
     isOwner,
     variant = 'mobile',
+    onEdit,
 }: ReviewOptionsProps) {
     const tCTA = useTranslations('CTA');
     const t = useTranslations('ReviewPage');
@@ -118,6 +120,7 @@ export function ReviewOptions({
                         variant="outline"
                         size="sm"
                         className={buttonClassName}
+                        onClick={onEdit}
                     >
                         <Pencil className="h-4 w-4" />
                         <span>{tCTA('edit')}</span>

@@ -8,24 +8,34 @@ import { useRouter } from 'next/navigation';
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
+import { SafeReviewWithMedia } from '@/lib/types';
+
+interface EditProps {
+    review: SafeReviewWithMedia;
+    setIsEditingReview: (editing: boolean) => void;
+}
 
 interface ReviewFormProps {
     mediaId: string;
+    editProps?: EditProps;
 }
 
-export function ReviewForm({ mediaId }: ReviewFormProps) {
+export function ReviewForm({ mediaId, editProps }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
     const tToast = useTranslations('Toast');
+    const tCTA = useTranslations('CTA');
     const router = useRouter();
-    const [rating, setRating] = useState(0);
-    const [liked, setLiked] = useState<boolean | null>(null);
-    const [text, setText] = useState('');
+    const [rating, setRating] = useState(editProps?.review.rating ?? 0);
+    const [liked, setLiked] = useState<boolean | null>(
+        editProps?.review.liked ?? null
+    );
+    const [text, setText] = useState(editProps?.review.review ?? '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
     const { showToast } = useToastStore();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmitPost = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         if (!user) {
@@ -73,10 +83,47 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
         }
     };
 
+    const handleSubmitPut = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editProps) return;
+        setError(null);
+        setIsSubmitting(true);
+        try {
+            const response = await fetch(`/api/review`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    review: {
+                        stars: rating > 0 ? rating : undefined,
+                        liked: liked !== null ? liked : undefined,
+                        text: text.trim(),
+                    },
+                    reviewId: editProps.review.id,
+                }),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to update review');
+            }
+            // Show success toast
+            showToast(tToast('reviewUpdated'), 'success');
+            router.refresh();
+            editProps.setIsEditingReview(false);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+            showToast(tToast('reviewUpdateFailed'), 'error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <form
             className="space-y-4 sm:space-y-6"
-            onSubmit={handleSubmit}
+            onSubmit={editProps ? handleSubmitPut : handleSubmitPost}
         >
             <fieldset>
                 <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-sm">
@@ -86,6 +133,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     <RatingInput
                         size="lg"
                         value={rating}
+                        readonly={isSubmitting}
                         onChange={(newRating) => {
                             setRating(newRating);
                             if (newRating > 0) {
@@ -101,6 +149,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             type="button"
                             variant={liked === true ? 'default' : 'outline'}
                             size="sm"
+                            disabled={isSubmitting}
                             onClick={() => {
                                 setLiked(true);
                                 setRating(0);
@@ -116,6 +165,7 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                             type="button"
                             variant={liked === false ? 'default' : 'outline'}
                             size="sm"
+                            disabled={isSubmitting}
                             onClick={() => {
                                 setLiked(false);
                                 setRating(0);
@@ -156,19 +206,34 @@ export function ReviewForm({ mediaId }: ReviewFormProps) {
                     {error}
                 </p>
             )}
-            <div className="relative flex w-full flex-row items-center sm:w-auto">
-                <Button
-                    type="submit"
-                    className={`w-full cursor-pointer sm:w-auto ${
-                        isSubmitting ? 'text-transparent' : ''
-                    }`}
-                    disabled={isSubmitting || (rating === 0 && liked === null)}
-                >
-                    {t('submitReview')}
-                </Button>
-                {isSubmitting && (
-                    <LoaderCircle className="text-primary absolute left-1/2 -translate-x-1/2 animate-spin sm:left-[3.5rem] sm:-translate-x-1/12" />
+            <div className="flex flex-col gap-3 sm:flex-row">
+                {editProps && (
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        className="w-full cursor-pointer sm:w-auto"
+                        onClick={() => editProps.setIsEditingReview(false)}
+                        disabled={isSubmitting}
+                    >
+                        {tCTA('cancel')}
+                    </Button>
                 )}
+                <div className="relative flex w-full flex-row items-center sm:w-auto">
+                    <Button
+                        type="submit"
+                        className={`w-full cursor-pointer sm:w-auto ${
+                            isSubmitting ? 'text-transparent' : ''
+                        }`}
+                        disabled={
+                            isSubmitting || (rating === 0 && liked === null)
+                        }
+                    >
+                        {!editProps ? t('submitReview') : t('updateReview')}
+                    </Button>
+                    {isSubmitting && (
+                        <LoaderCircle className="text-primary absolute left-1/2 -translate-x-1/2 animate-spin sm:left-[3.5rem] sm:-translate-x-1/12" />
+                    )}
+                </div>
             </div>
         </form>
     );

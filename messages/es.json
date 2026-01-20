@@ -194,7 +194,8 @@
         "delete": "Eliminar",
         "share": "Compartir",
         "myProfile": "Mi Perfil",
-        "goBack": "Volver"
+        "goBack": "Volver",
+        "cancel": "Cancelar"
     },
     "Toast": {
         "linkCopied": "Enlace copiado al portapapeles!",
@@ -206,7 +207,9 @@
         "reviewSubmitted": "¡Reseña enviada exitosamente!",
         "reviewFailed": "Error al enviar la reseña. Por favor inténtalo de nuevo.",
         "reviewDeleted": "¡Reseña eliminada exitosamente!",
-        "reviewDeleteFailed": "Error al eliminar la reseña. Por favor inténtalo de nuevo."
+        "reviewDeleteFailed": "Error al eliminar la reseña. Por favor inténtalo de nuevo.",
+        "reviewUpdated": "¡Reseña actualizada exitosamente!",
+        "reviewUpdateFailed": "Error al actualizar la reseña. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -241,7 +244,8 @@
         "dislikes": "No me gustan",
         "likePercentage": "{percentage}% les gusta",
         "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
-        "noPoster": "No hay póster"
+        "noPoster": "No hay póster",
+        "updateReview": "Editar Reseña"
     },
     "BackButton": {
         "back": "Atrás"
