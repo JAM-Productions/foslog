@@ -25,7 +25,7 @@ export function ReviewClient({
         <div className="bg-background min-h-screen">
             <div className="container mx-auto max-w-7xl px-4 py-4 sm:py-6 lg:py-8">
                 <div className="mb-4 sm:mb-6 lg:mb-8">
-                    <BackButton href={`/media/${media.id}`} />
+                    <BackButton />
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:gap-6">
