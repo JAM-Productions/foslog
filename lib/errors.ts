@@ -104,3 +104,10 @@ export const invalidInput = (message?: string) =>
 
 export const badGateway = (message?: string) =>
     createApiError(ApiErrorType.BAD_GATEWAY, message);
+
+export class IgdbTokenError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'IgdbTokenError';
+    }
+}
