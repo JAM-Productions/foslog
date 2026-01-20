@@ -182,8 +182,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                     {media.averageRating.toFixed(1)}
                                 </span>
                             </div>
-                        ) : media.totalLikes > 0 ||
-                          media.totalDislikes > 0 ? (
+                        ) : media.totalLikes > 0 || media.totalDislikes > 0 ? (
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1">
                                     <ThumbsUp className="text-muted-foreground h-3 w-3" />
