@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { badGateway, internalServerError, validationError, IgdbTokenError } from '@/lib/errors';
+import {
+    badGateway,
+    internalServerError,
+    validationError,
+    IgdbTokenError,
+} from '@/lib/errors';
 import {
     parseIGDBGame,
     parseTMDBMovie,
