@@ -7,7 +7,7 @@ import {
 } from '@/app/api/search/utils/parsers';
 import { MediaType } from '@prisma/client';
 
-vi.mock('@/utils/mediaUtils', () => ({
+vi.mock('@/utils/media-utils', () => ({
     getMovieGenreByIdTMDB: (id: number) => `MovieGenre${id}`,
     getSerieGenreByIdTMDB: (id: number) => `SerieGenre${id}`,
     getGameGenreByIdIGDB: (id: number) => `GameGenre${id}`,
@@ -68,7 +68,10 @@ describe('API Parsers', () => {
         it('should correctly parse an IGDB game object', () => {
             const gameData = {
                 name: 'Test Game',
-                cover: { id: 1, url: '//images.igdb.com/igdb/image/upload/t_thumb/test.jpg' },
+                cover: {
+                    id: 1,
+                    url: '//images.igdb.com/igdb/image/upload/t_thumb/test.jpg',
+                },
                 first_release_date: 1672531200, // 2023-01-01
                 genres: [1],
                 game_modes: [2],
@@ -83,7 +86,12 @@ describe('API Parsers', () => {
                 year: 2023,
                 poster: 'https://images.igdb.com/igdb/image/upload/t_1080p/test.jpg',
                 description: 'This is a test game.',
-                genre: ['GameGenre1', 'GameMode2', 'GamePerspective3', 'GameTheme4'],
+                genre: [
+                    'GameGenre1',
+                    'GameMode2',
+                    'GamePerspective3',
+                    'GameTheme4',
+                ],
             };
 
             expect(parseIGDBGame(gameData)).toEqual(expected);
