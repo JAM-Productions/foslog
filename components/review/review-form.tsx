@@ -39,8 +39,7 @@ export function ReviewForm({
         editProps?.review.liked ?? null
     );
     const [text, setText] = useState(editProps?.review.review ?? '');
-    const [consumedMoreThanOnce, setConsumedMoreThanOnce] =
-        useState(hasReviewed);
+    const [consumedMoreThanOnce, setConsumedMoreThanOnce] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -73,7 +72,8 @@ export function ReviewForm({
                         stars: rating > 0 ? rating : undefined,
                         liked: liked !== null ? liked : undefined,
                         text: text.trim(),
-                        consumedMoreThanOnce: consumedMoreThanOnce,
+                        consumedMoreThanOnce:
+                            hasReviewed || consumedMoreThanOnce,
                     },
                 }),
             });
@@ -222,9 +222,11 @@ export function ReviewForm({
                             ? mediaType.toLowerCase()
                             : 'default'
                     )}
-                    checked={consumedMoreThanOnce}
+                    checked={hasReviewed || consumedMoreThanOnce}
                     onCheckedChange={(checked) => {
-                        setConsumedMoreThanOnce(checked);
+                        if (!hasReviewed) {
+                            setConsumedMoreThanOnce(checked);
+                        }
                     }}
                     disabled={isSubmitting || hasReviewed}
                 />
