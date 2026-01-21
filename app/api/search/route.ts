@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { badGateway, internalServerError, validationError } from '@/lib/errors';
+import {
+    badGateway,
+    internalServerError,
+    validationError,
+    IgdbTokenError,
+} from '@/lib/errors';
 import {
     parseIGDBGame,
     parseTMDBMovie,
     parseTMDBSerie,
     parseGoogleBooksVolume,
 } from './utils/parsers';
-import { getIgdbToken, IgdbTokenError } from './utils/get-igdb-token';
+import { getIgdbToken } from './utils/get-igdb-token';
 
 export async function GET(req: NextRequest) {
     try {
