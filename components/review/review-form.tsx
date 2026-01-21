@@ -100,14 +100,14 @@ export function ReviewForm({
         }
     };
 
-    const handleSubmitPut = async (e: React.FormEvent) => {
+    const handleSubmitPatch = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editProps) return;
         setError(null);
         setIsSubmitting(true);
         try {
             const response = await fetch(`/api/review`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -139,7 +139,7 @@ export function ReviewForm({
     return (
         <form
             className="space-y-4 sm:space-y-6"
-            onSubmit={editProps ? handleSubmitPut : handleSubmitPost}
+            onSubmit={editProps ? handleSubmitPatch : handleSubmitPost}
         >
             <fieldset>
                 <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-sm">

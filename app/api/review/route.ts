@@ -249,7 +249,7 @@ export async function DELETE(request: NextRequest) {
     }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
