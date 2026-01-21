@@ -49,6 +49,13 @@ vi.mock('next-intl', () => ({
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
+        push: vi.fn(),
+        refresh: vi.fn(),
+    }),
+}));
+
+vi.mock('@/i18n/navigation', () => ({
+    useRouter: () => ({
         refresh: vi.fn(),
     }),
 }));
@@ -88,7 +95,12 @@ describe('ReviewCard', () => {
 
 describe('ReviewForm', () => {
     it('renders a review form', () => {
-        render(<ReviewForm mediaId="1" mediaType="film" />);
+        render(
+            <ReviewForm
+                mediaId="1"
+                mediaType="film"
+            />
+        );
         expect(screen.getByText('yourRating')).toBeInTheDocument();
         expect(screen.getByLabelText('yourReview')).toBeInTheDocument();
         expect(

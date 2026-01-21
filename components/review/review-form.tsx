@@ -4,12 +4,13 @@ import { Button } from '@/components/button/button';
 import { RatingInput } from '@/components/input/rating';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
 import { SafeReviewWithMedia } from '@/lib/types';
 import { Checkbox } from '@/components/input/checkbox';
+import { useRouter } from '@/i18n/navigation';
 interface EditProps {
     review: SafeReviewWithMedia;
     setIsEditingReview: (editing: boolean) => void;
@@ -18,7 +19,6 @@ interface ReviewFormProps {
     mediaId: string;
     mediaType: string;
     hasReviewed?: boolean;
-    initialConsumedMoreThanOnce?: boolean;
     editProps?: EditProps;
 }
 
@@ -26,7 +26,6 @@ export function ReviewForm({
     mediaId,
     mediaType,
     hasReviewed = false,
-    initialConsumedMoreThanOnce = false,
     editProps,
 }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
@@ -40,14 +39,19 @@ export function ReviewForm({
         editProps?.review.liked ?? null
     );
     const [text, setText] = useState(editProps?.review.review ?? '');
-    const [consumedMoreThanOnce, setConsumedMoreThanOnce] = useState(
-        initialConsumedMoreThanOnce
-    );
+    const [consumedMoreThanOnce, setConsumedMoreThanOnce] =
+        useState(hasReviewed);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
     const { showToast } = useToastStore();
+
+    const hasEdited = editProps
+        ? rating === (editProps.review.rating ?? 0) &&
+          liked === (editProps.review.liked ?? null) &&
+          text.trim() === (editProps.review.review ?? '').trim()
+        : false;
 
     const handleSubmitPost = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -69,8 +73,7 @@ export function ReviewForm({
                         stars: rating > 0 ? rating : undefined,
                         liked: liked !== null ? liked : undefined,
                         text: text.trim(),
-                        consumedMoreThanOnce:
-                            hasReviewed || consumedMoreThanOnce,
+                        consumedMoreThanOnce: consumedMoreThanOnce,
                     },
                 }),
             });
@@ -217,23 +220,22 @@ export function ReviewForm({
                     disabled={isSubmitting}
                 />
             </div>
-
-            <Checkbox
-                label={tConsumed(
-                    ['film', 'serie', 'book', 'game', 'music'].includes(
-                        mediaType.toLowerCase()
-                    )
-                        ? mediaType.toLowerCase()
-                        : 'default'
-                )}
-                checked={hasReviewed || consumedMoreThanOnce}
-                onCheckedChange={(checked) => {
-                    if (!hasReviewed) {
+            {!editProps && (
+                <Checkbox
+                    label={tConsumed(
+                        ['film', 'serie', 'book', 'game', 'music'].includes(
+                            mediaType.toLowerCase()
+                        )
+                            ? mediaType.toLowerCase()
+                            : 'default'
+                    )}
+                    checked={consumedMoreThanOnce}
+                    onCheckedChange={(checked) => {
                         setConsumedMoreThanOnce(checked);
-                    }
-                }}
-                disabled={isSubmitting || hasReviewed}
-            />
+                    }}
+                    disabled={isSubmitting || hasReviewed}
+                />
+            )}
             {error && (
                 <p
                     className="text-destructive text-sm"
@@ -262,7 +264,9 @@ export function ReviewForm({
                             isSubmitting ? 'text-transparent' : ''
                         }`}
                         disabled={
-                            isSubmitting || (rating === 0 && liked === null)
+                            isSubmitting ||
+                            (rating === 0 && liked === null) ||
+                            hasEdited
                         }
                     >
                         {!editProps ? t('submitReview') : t('updateReview')}

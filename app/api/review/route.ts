@@ -279,7 +279,7 @@ export async function PUT(request: NextRequest) {
         if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');
         }
-        const mediaId = await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
             const existingReview = await tx.review.findUnique({
                 where: { id: reviewId },
             });
@@ -332,17 +332,15 @@ export async function PUT(request: NextRequest) {
                     totalDislikes: dislikesCount,
                 },
             });
-            return mediaId;
+            return;
         });
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
-        revalidatePath(`/${locale}/media/${mediaId}`, 'page');
         revalidatePath(`/${locale}/review/${reviewId}`, 'page');
         return NextResponse.json(
             {
                 message: 'Review updated successfully',
-                mediaId: mediaId,
             },
             { status: 200 }
         );

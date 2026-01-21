@@ -6,7 +6,7 @@ import { ReviewForm } from '@/components/review/review-form';
 const mockRouterPush = vi.fn();
 const mockRouterRefresh = vi.fn();
 
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
     useRouter: () => ({
         push: mockRouterPush,
         refresh: mockRouterRefresh,
@@ -72,10 +72,15 @@ describe('ReviewForm', () => {
         fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining('"consumedMoreThanOnce":true'),
-            }));
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining(
+                        '"consumedMoreThanOnce":true'
+                    ),
+                })
+            );
         });
     });
 
@@ -91,10 +96,15 @@ describe('ReviewForm', () => {
         fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining('"consumedMoreThanOnce":false'),
-            }));
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining(
+                        '"consumedMoreThanOnce":false'
+                    ),
+                })
+            );
         });
     });
 
@@ -105,7 +115,12 @@ describe('ReviewForm', () => {
         });
 
         // Pass hasReviewed=true
-        render(<ReviewForm {...defaultProps} hasReviewed={true} />);
+        render(
+            <ReviewForm
+                {...defaultProps}
+                hasReviewed={true}
+            />
+        );
 
         // Checkbox visual check
         const checkbox = screen.getByRole('checkbox');
@@ -120,10 +135,15 @@ describe('ReviewForm', () => {
         fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/review', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining('"consumedMoreThanOnce":true'),
-            }));
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining(
+                        '"consumedMoreThanOnce":true'
+                    ),
+                })
+            );
         });
     });
 });
