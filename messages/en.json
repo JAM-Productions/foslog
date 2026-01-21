@@ -206,7 +206,9 @@
         "edit": "Edit",
         "delete": "Delete",
         "share": "Share",
-        "myProfile": "My Profile"
+        "myProfile": "My Profile",
+        "goBack": "Go Back",
+        "cancel": "Cancel"
     },
     "Toast": {
         "linkCopied": "Link copied to clipboard!",
@@ -216,7 +218,11 @@
         "signupSuccess": "Account created successfully! Welcome to Foslog!",
         "signupFailed": "Sign up failed. Please try again.",
         "reviewSubmitted": "Review submitted successfully!",
-        "reviewFailed": "Failed to submit review. Please try again."
+        "reviewFailed": "Failed to submit review. Please try again.",
+        "reviewDeleted": "Review deleted successfully!",
+        "reviewDeleteFailed": "Failed to delete review. Please try again.",
+        "reviewUpdated": "Review updated successfully!",
+        "reviewUpdateFailed": "Failed to update review. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -252,6 +258,7 @@
         "likePercentage": "{percentage}% liked",
         "atLeastOneRequired": "Please provide either a rating or like/dislike",
         "noPoster": "No Poster",
+        "updateReview": "Update Review",
         "consumedMoreThanOnce": "I have watched/played/read this more than once"
     },
     "BackButton": {
@@ -273,7 +280,9 @@
         "reviewFor": "Review for",
         "review": "Review",
         "options": "Options",
-        "shareTitle": "Review"
+        "shareTitle": "Review",
+        "deleteReviewTitle": "Delete Review",
+        "deleteReviewDescription": "You are about to permanently delete this review. This action cannot be undone."
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",

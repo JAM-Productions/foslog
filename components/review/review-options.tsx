@@ -1,25 +1,31 @@
 'use client';
 
 import { Button } from '@/components/button/button';
+import { useOptionsModalStore } from '@/lib/options-modal-store';
 import { useToastStore } from '@/lib/toast-store';
 import { Pencil, Share2, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 
 interface ReviewOptionsProps {
     reviewId: string;
     isOwner: boolean;
     variant?: 'mobile' | 'desktop';
+    onEdit: () => void;
 }
 
 export function ReviewOptions({
     reviewId,
     isOwner,
     variant = 'mobile',
+    onEdit,
 }: ReviewOptionsProps) {
     const tCTA = useTranslations('CTA');
     const t = useTranslations('ReviewPage');
     const tToast = useTranslations('Toast');
     const { showToast } = useToastStore();
+    const { showModal, setIsCTALoading, hideModal } = useOptionsModalStore();
+    const router = useRouter();
 
     const isMobile = variant === 'mobile';
     const buttonClassName = isMobile
@@ -75,6 +81,34 @@ export function ReviewOptions({
         }
     };
 
+    const deleteReview = async () => {
+        setIsCTALoading(true);
+        try {
+            const response = await fetch('/api/review', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reviewId: reviewId,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                router.push(`/media/${data.mediaId}`);
+                showToast(tToast('reviewDeleted'), 'success');
+            } else {
+                showToast(tToast('reviewDeleteFailed'), 'error');
+            }
+        } catch (error) {
+            console.error('Failed to delete review:', error);
+            showToast(tToast('reviewDeleteFailed'), 'error');
+        } finally {
+            setIsCTALoading(false);
+            hideModal();
+        }
+    };
+
     return (
         <>
             {variant === 'desktop' && (
@@ -88,6 +122,7 @@ export function ReviewOptions({
                         variant="outline"
                         size="sm"
                         className={buttonClassName}
+                        onClick={onEdit}
                     >
                         <Pencil className="h-4 w-4" />
                         <span>{tCTA('edit')}</span>
@@ -96,6 +131,14 @@ export function ReviewOptions({
                         variant="outline"
                         size="sm"
                         className={buttonClassName}
+                        onClick={() =>
+                            showModal(
+                                t('deleteReviewTitle'),
+                                t('deleteReviewDescription'),
+                                tCTA('delete'),
+                                deleteReview
+                            )
+                        }
                     >
                         <Trash className="h-4 w-4" />
                         <span>{tCTA('delete')}</span>

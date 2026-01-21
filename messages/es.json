@@ -206,7 +206,9 @@
         "edit": "Editar",
         "delete": "Eliminar",
         "share": "Compartir",
-        "myProfile": "Mi Perfil"
+        "myProfile": "Mi Perfil",
+        "goBack": "Volver",
+        "cancel": "Cancelar"
     },
     "Toast": {
         "linkCopied": "Enlace copiado al portapapeles!",
@@ -216,7 +218,11 @@
         "signupSuccess": "¡Cuenta creada exitosamente! ¡Bienvenido a Foslog!",
         "signupFailed": "Error al registrarse. Por favor inténtalo de nuevo.",
         "reviewSubmitted": "¡Reseña enviada exitosamente!",
-        "reviewFailed": "Error al enviar la reseña. Por favor inténtalo de nuevo."
+        "reviewFailed": "Error al enviar la reseña. Por favor inténtalo de nuevo.",
+        "reviewDeleted": "¡Reseña eliminada exitosamente!",
+        "reviewDeleteFailed": "Error al eliminar la reseña. Por favor inténtalo de nuevo.",
+        "reviewUpdated": "¡Reseña actualizada exitosamente!",
+        "reviewUpdateFailed": "Error al actualizar la reseña. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -252,6 +258,7 @@
         "likePercentage": "{percentage}% les gusta",
         "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
         "noPoster": "No hay póster",
+        "updateReview": "Editar Reseña",
         "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez"
     },
     "BackButton": {
@@ -273,7 +280,9 @@
         "reviewFor": "Reseña para",
         "review": "Reseña",
         "options": "Opciones",
-        "shareTitle": "Reseña"
+        "shareTitle": "Reseña",
+        "deleteReviewTitle": "Eliminar Reseña",
+        "deleteReviewDescription": "Vas a eliminar esta reseña de forma permanente. Esta acción no se puede deshacer."
     },
     "Footer": {
         "privacyPolicy": "Política de Privacidad",
