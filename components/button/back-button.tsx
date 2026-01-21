@@ -19,7 +19,7 @@ export function BackButton({
     const t = useTranslations('BackButton');
     const router = useRouter();
     const baseClasses =
-        'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 text-foreground bg-card border border-border hover:bg-accent hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background';
+        'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 text-foreground bg-card border border-border hover:bg-accent hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background cursor-pointer';
 
     return (
         <button
