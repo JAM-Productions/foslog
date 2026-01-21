@@ -222,6 +222,7 @@ export async function DELETE(request: NextRequest) {
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
 
         revalidatePath(`/${locale}/media/${mediaId}`, 'page');
+        revalidatePath(`/${locale}/review/${reviewId}`, 'page');
 
         return NextResponse.json(
             {
@@ -292,8 +293,8 @@ export async function PUT(request: NextRequest) {
             await tx.review.update({
                 where: { id: reviewId },
                 data: {
-                    rating: review.stars || null,
-                    liked: review.liked !== undefined ? review.liked : null,
+                    rating: review.stars ?? null,
+                    liked: review.liked ?? null,
                     review: review.text,
                 },
             });

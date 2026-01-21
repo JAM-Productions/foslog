@@ -47,7 +47,7 @@ export function ReviewForm({
     const { user } = useAuth();
     const { showToast } = useToastStore();
 
-    const hasEdited = editProps
+    const hasNotBeenEdited = editProps
         ? rating === (editProps.review.rating ?? 0) &&
           liked === (editProps.review.liked ?? null) &&
           text.trim() === (editProps.review.review ?? '').trim()
@@ -120,21 +120,14 @@ export function ReviewForm({
                     reviewId: editProps.review.id,
                 }),
             });
-            const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to update review');
+            if (response.ok) {
+                showToast(tToast('reviewUpdated'), 'success');
+                router.refresh();
+                editProps.setIsEditingReview(false);
+            } else {
+                showToast(tToast('reviewUpdateFailed'), 'error');
             }
-
-            // Reset form
-            setRating(0);
-            setLiked(null);
-            setText('');
-            setConsumedMoreThanOnce(false);
-
-            showToast(tToast('reviewUpdated'), 'success');
-            router.refresh();
-            editProps.setIsEditingReview(false);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
             showToast(tToast('reviewUpdateFailed'), 'error');
@@ -266,7 +259,7 @@ export function ReviewForm({
                         disabled={
                             isSubmitting ||
                             (rating === 0 && liked === null) ||
-                            hasEdited
+                            hasNotBeenEdited
                         }
                     >
                         {!editProps ? t('submitReview') : t('updateReview')}

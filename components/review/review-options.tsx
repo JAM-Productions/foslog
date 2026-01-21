@@ -83,27 +83,29 @@ export function ReviewOptions({
 
     const deleteReview = async () => {
         setIsCTALoading(true);
-        const response = await fetch('/api/review', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                reviewId: reviewId,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            router.push(`/media/${data.mediaId}`);
+        try {
+            const response = await fetch('/api/review', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reviewId: reviewId,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                router.push(`/media/${data.mediaId}`);
+                showToast(tToast('reviewDeleted'), 'success');
+            } else {
+                showToast(tToast('reviewDeleteFailed'), 'error');
+            }
+        } catch (error) {
+            console.error('Failed to delete review:', error);
+            showToast(tToast('reviewDeleteFailed'), 'error');
+        } finally {
             setIsCTALoading(false);
             hideModal();
-            showToast(tToast('reviewDeleted'), 'success');
-        } else {
-            setIsCTALoading(false);
-            hideModal();
-            showToast(tToast('deleteFailed'), 'error');
         }
     };
 
