@@ -23,6 +23,7 @@ export function BackButton({
 
     return (
         <button
+            type="button"
             onClick={() => router.back()}
             className={[baseClasses, className].filter(Boolean).join(' ')}
             aria-label={ariaLabel}
