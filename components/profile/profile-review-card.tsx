@@ -19,8 +19,8 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
     const tTypes = useTranslations('MediaTypes');
 
     return (
-        <Card className="overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600">
-            <div className="flex flex-col sm:flex-row">
+        <Card className="h-full overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600">
+            <div className="flex h-full flex-col sm:flex-row">
                 <Link
                     href={`/media/${media.id}`}
                     className="group relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-32"
