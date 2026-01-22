@@ -49,15 +49,17 @@ export function ReviewCard({
                     )}
                 </div>
                 <div className="flex-1">
-                    <p
-                        className="text-base font-bold hover:underline"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/profile/${user.id}`);
-                        }}
-                    >
-                        {user.name}
-                    </p>
+                    <div className="flex">
+                        <p
+                            className="text-base font-bold hover:underline"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/profile/${user.id}`);
+                            }}
+                        >
+                            {user.name}
+                        </p>
+                    </div>
                     <div className="flex items-center gap-2">
                         {review.rating !== undefined &&
                             review.rating !== null && (

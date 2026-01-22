@@ -57,12 +57,16 @@ export function ReviewDetailCard({
                         )}
                     </Link>
                     <div className="flex-1">
-                        <Link
-                            href={`/profile/${user.id}`}
-                            className="hover:underline"
-                        >
-                            <p className="text-base font-bold">{user.name}</p>
-                        </Link>
+                        <div className="flex">
+                            <Link
+                                href={`/profile/${user.id}`}
+                                className="hover:underline"
+                            >
+                                <p className="text-base font-bold">
+                                    {user.name}
+                                </p>
+                            </Link>
+                        </div>
                         <div className="flex items-center gap-2">
                             {review.rating !== undefined &&
                                 review.rating !== null && (
