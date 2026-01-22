@@ -100,24 +100,24 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                             {(media.totalLikes > 0 ||
                                 media.totalDislikes > 0) && (
                                 <div className="flex flex-row items-center gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <ThumbsUp className="h-4 w-4 text-green-600" />
-                                        <span className="text-muted-foreground text-sm">
-                                            {media.totalLikes} {tMP('likes')}
-                                        </span>
-                                    </div>
-                                    <div className="bg-border block h-4 w-px"></div>
-                                    <div className="flex items-center gap-2">
-                                        <ThumbsDown className="h-4 w-4 text-red-600" />
-                                        <span className="text-muted-foreground text-sm">
-                                            {media.totalDislikes}{' '}
-                                            {tMP('dislikes')}
-                                        </span>
+                                    <div className="bg-background flex items-center gap-3 rounded-full px-2 py-0.5">
+                                        <div className="flex items-center gap-2">
+                                            <ThumbsUp className="h-4 w-4 text-green-600" />
+                                            <span className="text-muted-foreground text-sm">
+                                                {media.totalLikes}
+                                            </span>
+                                        </div>
+                                        <div className="bg-border block h-4 w-px"></div>
+                                        <div className="flex items-center gap-2">
+                                            <ThumbsDown className="h-4 w-4 text-red-600" />
+                                            <span className="text-muted-foreground text-sm">
+                                                {media.totalDislikes}
+                                            </span>
+                                        </div>
                                     </div>
                                     {media.totalLikes + media.totalDislikes >
                                         0 && (
                                         <>
-                                            <div className="bg-border block h-4 w-px"></div>
                                             <span className="text-muted-foreground text-sm">
                                                 {tMP('likePercentage', {
                                                     percentage: Math.round(

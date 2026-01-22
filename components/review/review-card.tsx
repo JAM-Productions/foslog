@@ -22,7 +22,7 @@ export function ReviewCard({
 
     return (
         <Card
-            className="flex h-full cursor-pointer flex-col p-4 transition-opacity duration-200 hover:opacity-80 sm:p-6"
+            className="flex h-full cursor-pointer flex-col p-4 sm:p-6"
             onClick={() => router.push(`/review/${review.id}`)}
         >
             <div className="flex flex-row items-center gap-3 sm:gap-4">
@@ -65,18 +65,18 @@ export function ReviewCard({
                             )}
                         {review.liked !== undefined &&
                             review.liked !== null && (
-                                <div className="flex items-center gap-1">
+                                <div className="bg-background flex items-center gap-1.5 rounded-full px-2 py-0.5">
                                     {review.liked ? (
                                         <>
-                                            <ThumbsUp className="h-4 w-4 text-green-600" />
-                                            <span className="text-muted-foreground text-sm">
+                                            <ThumbsUp className="h-3.5 w-3.5 text-green-600" />
+                                            <span className="text-xs font-medium text-green-600">
                                                 {t('like')}
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            <ThumbsDown className="h-4 w-4 text-red-600" />
-                                            <span className="text-muted-foreground text-sm">
+                                            <ThumbsDown className="h-3.5 w-3.5 text-red-600" />
+                                            <span className="text-xs font-medium text-red-600">
                                                 {t('dislike')}
                                             </span>
                                         </>
@@ -96,7 +96,7 @@ export function ReviewCard({
             {review.consumedMoreThanOnce && (
                 <ConsumedBadge
                     mediaType={mediaType}
-                    className="mt-auto text-sm"
+                    className={`${review.review ? 'mt-auto' : 'mt-3'} text-sm`}
                 />
             )}
         </Card>
