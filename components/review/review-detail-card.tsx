@@ -110,7 +110,7 @@ export function ReviewDetailCard({
                     {review.consumedMoreThanOnce && (
                         <ConsumedBadge
                             mediaType={mediaType}
-                            className="text-sm"
+                            className={`${review.review ? 'mt-1' : 'mt-3'} text-sm`}
                         />
                     )}
                 </div>
