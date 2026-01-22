@@ -22,7 +22,7 @@ export function ConsumedBadge({ mediaType, className }: ConsumedBadgeProps) {
             <Repeat className="h-3 w-3" />
             <span>
                 {tConsumed(
-                    ['film', 'serie', 'book', 'game', 'music'].includes(
+                    ['film', 'series', 'book', 'game', 'music'].includes(
                         mediaType.toLowerCase()
                     )
                         ? mediaType.toLowerCase()

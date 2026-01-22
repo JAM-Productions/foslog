@@ -312,7 +312,7 @@
     },
     "ConsumedMoreThanOnce": {
         "film": "Ha vist aquesta pel·lícula més d'una vegada",
-        "serie": "Ha vist aquesta sèrie més d'una vegada",
+        "series": "Ha vist aquesta sèrie més d'una vegada",
         "book": "Ha llegit aquest llibre més d'una vegada",
         "game": "Ha jugat a aquest joc més d'una vegada",
         "music": "Ha escoltat aquesta música més d'una vegada",
