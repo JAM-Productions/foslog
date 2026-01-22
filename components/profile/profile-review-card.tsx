@@ -51,6 +51,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                     <div className="mb-2 flex items-start justify-between">
                         <div>
                             <button
+                                type="button"
                                 className="line-clamp-1 cursor-pointer text-lg font-bold hover:underline"
                                 onClick={(e) => {
                                     e.stopPropagation();
