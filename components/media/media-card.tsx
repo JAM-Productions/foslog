@@ -134,7 +134,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
                 {/* Content */}
                 <div className="flex flex-1 flex-col gap-1.5 p-4">
-                    <div className="space-y-2">
+                    <div className="flex flex-1 flex-col space-y-2">
                         {/* Title */}
                         <h3
                             className="line-clamp-2 text-sm leading-tight font-semibold"
@@ -154,8 +154,8 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                         )}
 
                         {/* Genres */}
-                        <div className="flex flex-wrap gap-1">
-                            {media.genre.slice(0, 2).map((genre) => (
+                        <div className="flex flex-1 flex-wrap content-start gap-1 overflow-hidden">
+                            {media.genre.map((genre) => (
                                 <span
                                     key={genre}
                                     className="bg-secondary text-secondary-foreground line-clamp-1 rounded px-1.5 py-0.5 text-xs break-all"
@@ -163,18 +163,11 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                     {tGenres(genre)}
                                 </span>
                             ))}
-                            {media.genre.length > 2 && (
-                                <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs">
-                                    {t('more', {
-                                        count: media.genre.length - 2,
-                                    })}
-                                </span>
-                            )}
                         </div>
                     </div>
 
                     {/* Rating and Reviews */}
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="flex items-center justify-between">
                         {media.averageRating > 0 ? (
                             <div className="flex items-center gap-1">
                                 <StarRating rating={media.averageRating} />

@@ -270,14 +270,7 @@ describe('MediaCard', () => {
             expect(creatorElements.length).toBe(0);
         });
 
-        it('renders up to 2 genre tags', () => {
-            render(<MediaCard media={mockMediaItem} />);
-
-            expect(screen.getByText('Action')).toBeInTheDocument();
-            expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-        });
-
-        it('renders "more" badge when more than 2 genres', () => {
+        it('renders all genre tags', () => {
             const mediaWithManyGenres = {
                 ...mockMediaItem,
                 genre: ['action', 'sciFi', 'thriller', 'adventure'],
@@ -286,13 +279,8 @@ describe('MediaCard', () => {
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-            expect(screen.getByText('+2')).toBeInTheDocument();
-        });
-
-        it('does not render "more" badge when 2 or fewer genres', () => {
-            render(<MediaCard media={mockMediaItem} />);
-
-            expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument();
+            expect(screen.getByText('Thriller')).toBeInTheDocument();
+            expect(screen.getByText('Adventure')).toBeInTheDocument();
         });
 
         it('renders the rating display', () => {
@@ -499,10 +487,9 @@ describe('MediaCard', () => {
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-            expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument();
         });
 
-        it('handles media with 3 genres showing +1', () => {
+        it('handles media with 3 genres', () => {
             const mediaWithThreeGenres = {
                 ...mockMediaItem,
                 genre: ['action', 'sciFi', 'thriller'],
@@ -511,8 +498,7 @@ describe('MediaCard', () => {
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-            expect(screen.getByText('+1')).toBeInTheDocument();
-            expect(screen.queryByText('Thriller')).not.toBeInTheDocument();
+            expect(screen.getByText('Thriller')).toBeInTheDocument();
         });
 
         it('handles zero reviews', () => {
@@ -578,15 +564,6 @@ describe('MediaCard', () => {
             expect(mockT).toHaveBeenCalledWith('by');
         });
 
-        it('uses correct translation key for more badge', () => {
-            const mediaWithManyGenres = {
-                ...mockMediaItem,
-                genre: ['action', 'sciFi', 'thriller', 'adventure'],
-            };
-            render(<MediaCard media={mediaWithManyGenres} />);
-
-            expect(mockT).toHaveBeenCalledWith('more', { count: 2 });
-        });
 
         it('uses correct translation keys for genres', () => {
             render(<MediaCard media={mockMediaItem} />);
