@@ -2,6 +2,11 @@ import BlogPost from '@/components/blog/blog-post';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
+vi.mock('@/i18n/navigation', () => ({
+    useRouter: vi.fn(),
+    back: vi.fn(),
+}));
+
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useTranslations: () => (key: any) => key,
