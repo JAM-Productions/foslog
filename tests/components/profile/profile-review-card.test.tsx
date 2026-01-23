@@ -13,18 +13,27 @@ vi.mock('next-intl', () => ({
 vi.mock('next/image', () => ({
     default: ({ src, alt, fill, ...props }: any) => (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} data-fill={fill} {...props} />
+        <img
+            src={src}
+            alt={alt}
+            data-fill={fill}
+            {...props}
+        />
     ),
 }));
 
 vi.mock('next/link', () => ({
-    default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-        <a href={href}>{children}</a>
-    ),
+    default: ({
+        children,
+        href,
+    }: {
+        children: React.ReactNode;
+        href: string;
+    }) => <a href={href}>{children}</a>,
 }));
 
 // Mock router
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
     useRouter: () => ({
         push: vi.fn(),
     }),

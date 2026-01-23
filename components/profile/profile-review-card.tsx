@@ -6,8 +6,8 @@ import { SafeReviewWithMedia } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 
 interface ProfileReviewCardProps {
     review: SafeReviewWithMedia;
@@ -17,13 +17,20 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
     const { media } = review;
     const t = useTranslations('MediaPage');
     const tTypes = useTranslations('MediaTypes');
+    const router = useRouter();
 
     return (
-        <Card className="h-full overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600">
+        <Card
+            className="h-full cursor-pointer overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600"
+            onClick={() => router.push(`/review/${review.id}`)}
+        >
             <div className="flex h-full flex-col sm:flex-row">
-                <Link
-                    href={`/media/${media.id}`}
+                <div
                     className="group relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-32"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/media/${media.id}`);
+                    }}
                 >
                     {media.poster ? (
                         <Image
@@ -38,19 +45,22 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                             {t('noPoster')}
                         </div>
                     )}
-                </Link>
+                </div>
 
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
                     <div className="mb-2 flex items-start justify-between">
                         <div>
-                            <Link
-                                href={`/media/${media.id}`}
-                                className="hover:text-primary transition-colors"
+                            <button
+                                type="button"
+                                className="line-clamp-1 cursor-pointer text-lg font-bold hover:underline"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/media/${media.id}`);
+                                }}
                             >
-                                <h3 className="line-clamp-1 text-lg font-bold">
-                                    {media.title}
-                                </h3>
-                            </Link>
+                                {media.title}
+                            </button>
+
                             <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                                 {tTypes(media.type.toLowerCase() as string)} •{' '}
                                 {media.year}
