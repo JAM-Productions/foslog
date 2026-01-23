@@ -71,45 +71,48 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         </span>
                     </div>
 
-                    <div className="mb-3 flex items-center gap-3">
-                        {review.rating !== undefined &&
-                            review.rating !== null && (
-                                <RatingDisplay
-                                    rating={review.rating}
-                                    size="sm"
-                                />
-                            )}
-                        {review.liked !== undefined &&
-                            review.liked !== null && (
-                                <div className="bg-background flex items-center gap-1.5 rounded-full px-2 py-0.5">
-                                    {review.liked ? (
-                                        <>
-                                            <ThumbsUp className="h-3.5 w-3.5 text-green-600" />
-                                            <span className="text-xs font-medium text-green-600">
-                                                {t('like')}
-                                            </span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <ThumbsDown className="h-3.5 w-3.5 text-red-600" />
-                                            <span className="text-xs font-medium text-red-600">
-                                                {t('dislike')}
-                                            </span>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                    <div>
+                        <div className="mb-3 flex items-center gap-3">
+                            {review.rating !== undefined &&
+                                review.rating !== null && (
+                                    <RatingDisplay
+                                        rating={review.rating}
+                                        size="sm"
+                                    />
+                                )}
+                            {review.liked !== undefined &&
+                                review.liked !== null && (
+                                    <div className="bg-background flex items-center gap-1.5 rounded-full px-2 py-0.5">
+                                        {review.liked ? (
+                                            <>
+                                                <ThumbsUp className="h-3.5 w-3.5 text-green-600" />
+                                                <span className="text-xs font-medium text-green-600">
+                                                    {t('like')}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ThumbsDown className="h-3.5 w-3.5 text-red-600" />
+                                                <span className="text-xs font-medium text-red-600">
+                                                    {t('dislike')}
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                        </div>
+
+                        {review.review && (
+                            <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
+                                &ldquo;{review.review}&rdquo;
+                            </p>
+                        )}
                     </div>
 
-                    {review.review && (
-                        <p className="text-muted-foreground mt-auto line-clamp-3 text-sm leading-relaxed">
-                            &ldquo;{review.review}&rdquo;
-                        </p>
-                    )}
                     {review.consumedMoreThanOnce && (
                         <ConsumedBadge
                             mediaType={media.type}
-                            className="mt-2 text-xs"
+                            className="mt-auto pt-2 text-xs"
                         />
                     )}
                 </div>

@@ -98,7 +98,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
         <Card
             className={`group flex h-full flex-col transition-all hover:shadow-lg${className ? ` ${className}` : ''}`}
         >
-            <div className="p-0">
+            <div className="flex h-full flex-col p-0">
                 {/* Image */}
                 <div className="bg-muted relative aspect-[2/3] overflow-hidden rounded-t-lg">
                     {imageUrl ? (
@@ -133,7 +133,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-1 flex-col p-4">
+                <div className="flex flex-1 flex-col gap-1.5 p-4">
                     <div className="space-y-2">
                         {/* Title */}
                         <h3
@@ -158,7 +158,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                             {media.genre.slice(0, 2).map((genre) => (
                                 <span
                                     key={genre}
-                                    className="bg-secondary text-secondary-foreground rounded px-1.5 py-0.5 text-xs"
+                                    className="bg-secondary text-secondary-foreground line-clamp-1 rounded px-1.5 py-0.5 text-xs break-all"
                                 >
                                     {tGenres(genre)}
                                 </span>
@@ -174,7 +174,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                     </div>
 
                     {/* Rating and Reviews */}
-                    <div className="mt-auto flex items-center justify-between pt-1">
+                    <div className="mt-auto flex items-center justify-between">
                         {media.averageRating > 0 ? (
                             <div className="flex items-center gap-1">
                                 <StarRating rating={media.averageRating} />
@@ -183,15 +183,16 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                 </span>
                             </div>
                         ) : media.totalLikes > 0 || media.totalDislikes > 0 ? (
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1">
-                                    <ThumbsUp className="text-muted-foreground h-3 w-3" />
+                            <div className="bg-background mt-0.5 flex items-center gap-2 rounded-full px-2 py-0.5">
+                                <div className="flex items-center gap-2">
+                                    <ThumbsUp className="h-3 w-3 text-green-600" />
                                     <span className="text-muted-foreground text-xs">
                                         {media.totalLikes}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <ThumbsDown className="text-muted-foreground h-3 w-3" />
+                                <div className="bg-border block h-3 w-px"></div>
+                                <div className="flex items-center gap-2">
+                                    <ThumbsDown className="h-3 w-3 text-red-600" />
                                     <span className="text-muted-foreground text-xs">
                                         {media.totalDislikes}
                                     </span>
@@ -199,7 +200,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                             </div>
                         ) : null}
 
-                        <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                        <div className="text-muted-foreground ml-auto flex items-center gap-1 text-xs">
                             <Eye className="h-3 w-3" />
                             {media.totalReviews.toLocaleString()}
                         </div>
