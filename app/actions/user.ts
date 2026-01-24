@@ -1,5 +1,6 @@
 'use server';
 
+import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
@@ -11,9 +12,18 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
         });
 
         if (!user) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserProfile',
+                warn: 'User not found',
+                userId,
+            });
             return null;
         }
 
+        logger.info('GET /actions/user', {
+            method: 'getUserProfile',
+            userId,
+        });
         return {
             id: user.id,
             name: user.name ?? 'Unknown User',
@@ -23,7 +33,11 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
             joinedAt: user.createdAt,
         };
     } catch (error) {
-        console.error(`Error fetching user profile for ${userId}:`, error);
+        logger.error('GET /actions/user', {
+            method: 'getUserProfile',
+            error,
+            userId,
+        });
         throw new Error('Could not fetch user profile.');
     }
 };
@@ -96,6 +110,12 @@ export const getUserReviews = async (
             },
         }));
 
+        logger.info('GET /actions/user', {
+            method: 'getUserReviews',
+            userId,
+            total,
+            currentPage: page,
+        });
         return {
             reviews: safeReviews,
             total,
@@ -103,7 +123,11 @@ export const getUserReviews = async (
             currentPage: page,
         };
     } catch (error) {
-        console.error(`Error fetching reviews for user ${userId}:`, error);
+        logger.error('GET /actions/user', {
+            method: 'getUserReviews',
+            error,
+            userId,
+        });
         throw new Error('Could not fetch user reviews.');
     }
 };
@@ -156,6 +180,15 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
 
+        logger.info('GET /actions/user', {
+            method: 'getUserStats',
+            userId,
+            totalReviews,
+            totalLikesReceived,
+            averageRating,
+            ratingDistribution,
+            favoriteGenres,
+        });
         return {
             totalReviews,
             totalLikesReceived,
@@ -164,7 +197,11 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
             favoriteGenres,
         };
     } catch (error) {
-        console.error(`Error fetching stats for user ${userId}:`, error);
+        logger.error('GET /actions/user', {
+            method: 'getUserStats',
+            error,
+            userId,
+        });
         throw new Error('Could not fetch user stats.');
     }
 };

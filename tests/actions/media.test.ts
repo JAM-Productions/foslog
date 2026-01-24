@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getMedias, getMediaById, getGlobalMediaStats } from '@/app/actions/media';
+import {
+    getMedias,
+    getMediaById,
+    getGlobalMediaStats,
+} from '@/app/actions/media';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/axiom/server';
 
 // Mock Prisma client
 vi.mock('@/lib/prisma', () => ({
@@ -427,9 +432,7 @@ describe('getMedias Server Action', () => {
         });
 
         it('logs error when database query fails', async () => {
-            const consoleErrorSpy = vi
-                .spyOn(console, 'error')
-                .mockImplementation(() => {});
+            const loggerErrorSpy = vi.spyOn(logger, 'error');
             const dbError = new Error('Database connection failed');
             (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
                 dbError
@@ -441,12 +444,15 @@ describe('getMedias Server Action', () => {
                 // Expected to throw
             }
 
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                'Error fetching media items:',
-                dbError
+            expect(loggerErrorSpy).toHaveBeenCalledWith(
+                'GET /actions/media',
+                expect.objectContaining({
+                    method: 'getMedias',
+                    error: dbError,
+                })
             );
 
-            consoleErrorSpy.mockRestore();
+            loggerErrorSpy.mockRestore();
         });
     });
 
@@ -594,9 +600,11 @@ describe('getGlobalMediaStats Server Action', () => {
         });
     });
 
-    it('throws an error if the database query fails', async () => {
+    it('returns default values when database query fails', async () => {
         const dbError = new Error('Database connection failed');
-        (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(dbError);
+        (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
+            dbError
+        );
 
         await expect(getGlobalMediaStats()).rejects.toThrow(
             'Could not fetch global media stats.'
@@ -604,11 +612,11 @@ describe('getGlobalMediaStats Server Action', () => {
     });
 
     it('logs error when database query fails', async () => {
-        const consoleErrorSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error');
         const dbError = new Error('Database connection failed');
-        (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(dbError);
+        (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
+            dbError
+        );
 
         try {
             await getGlobalMediaStats();
@@ -616,11 +624,14 @@ describe('getGlobalMediaStats Server Action', () => {
             // Expected to throw
         }
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Error fetching global media stats:',
-            dbError
+        expect(loggerErrorSpy).toHaveBeenCalledWith(
+            'GET /actions/media',
+            expect.objectContaining({
+                method: 'getGlobalMediaStats',
+                error: dbError,
+            })
         );
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
     });
 });

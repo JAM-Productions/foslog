@@ -1,5 +1,6 @@
 'use server';
 
+import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
@@ -23,6 +24,11 @@ export const getReviewById = async (
         });
 
         if (!review) {
+            logger.warn('GET /actions/review', {
+                method: 'getReviewById',
+                warn: 'Review not found',
+                reviewId: id,
+            });
             return null;
         }
 
@@ -34,7 +40,10 @@ export const getReviewById = async (
             bio: undefined,
             joinedAt: new Date(),
         };
-
+        logger.info('GET /actions/review', {
+            method: 'getReviewById',
+            reviewId: id,
+        });
         return {
             id: review.id,
             mediaId: review.mediaId,
@@ -65,7 +74,11 @@ export const getReviewById = async (
             },
         };
     } catch (error) {
-        console.error(`Error fetching review with id ${id}:`, error);
+        logger.error('GET /actions/review', {
+            method: 'getReviewById',
+            error,
+            reviewId: id,
+        });
         throw new Error('Could not fetch review.');
     }
 };

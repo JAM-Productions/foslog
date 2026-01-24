@@ -42,7 +42,9 @@ describe('getReviewById Server Action', () => {
     });
 
     it('returns null if review is not found', async () => {
-        (prisma.review.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(null);
 
         const result = await getReviewById('non-existent-id');
 
@@ -76,7 +78,9 @@ describe('getReviewById Server Action', () => {
             media: mockMedia,
         };
 
-        (prisma.review.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(mockReview);
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
 
         const result = await getReviewById('review1');
 
@@ -129,7 +133,9 @@ describe('getReviewById Server Action', () => {
             media: mockMedia,
         };
 
-        (prisma.review.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(mockReview);
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
 
         const result = await getReviewById('review2');
 
@@ -151,7 +157,9 @@ describe('getReviewById Server Action', () => {
             media: mockMedia,
         };
 
-        (prisma.review.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue(mockReview);
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
 
         const result = await getReviewById('review3');
 
@@ -161,8 +169,12 @@ describe('getReviewById Server Action', () => {
 
     it('handles database errors gracefully', async () => {
         const dbError = new Error('Database connection failed');
-        (prisma.review.findUnique as ReturnType<typeof vi.fn>).mockRejectedValue(dbError);
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockRejectedValue(dbError);
 
-        await expect(getReviewById('review1')).rejects.toThrow('Could not fetch review.');
+        await expect(getReviewById('review1')).rejects.toThrow(
+            'Could not fetch review.'
+        );
     });
 });

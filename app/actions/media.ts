@@ -1,5 +1,6 @@
 'use server';
 
+import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import {
@@ -77,9 +78,22 @@ export const getMedias = async (
             totalDislikes: item.totalDislikes,
         }));
 
+        logger.info('GET /actions/media', {
+            method: 'getMedias',
+            total,
+            page,
+            mediaType,
+            searchQuery,
+        });
         return { items, total };
     } catch (error) {
-        console.error('Error fetching media items:', error);
+        logger.error('GET /actions/media', {
+            method: 'getMedias',
+            error,
+            page,
+            mediaType,
+            searchQuery,
+        });
         throw new Error('Could not fetch media items.');
     }
 };
@@ -97,6 +111,11 @@ export const getMediaById = async (
         });
 
         if (!mediaItem) {
+            logger.warn('GET /actions/media', {
+                method: 'getMediaById',
+                warn: 'Media not found',
+                mediaId: id,
+            });
             return null;
         }
 
@@ -136,6 +155,10 @@ export const getMediaById = async (
 
         const totalPages = Math.ceil(mediaItem.totalReviews / pageSize);
 
+        logger.info('GET /actions/media', {
+            method: 'getMediaById',
+            mediaId: id,
+        });
         return {
             id: mediaItem.id,
             title: mediaItem.title,
@@ -157,7 +180,11 @@ export const getMediaById = async (
             currentPage: page,
         };
     } catch (error) {
-        console.error(`Error fetching media item with id ${id}:`, error);
+        logger.error('GET /actions/media', {
+            method: 'getMediaById',
+            error,
+            mediaId: id,
+        });
         throw new Error('Could not fetch media item.');
     }
 };
@@ -186,13 +213,22 @@ export const getGlobalMediaStats = async (): Promise<{
                 }),
             ]
         );
-
+        logger.info('GET /actions/media', {
+            method: 'getGlobalMediaStats',
+            topRated: topRatedResult._max.averageRating ?? 0,
+            recentlyAdded: recentlyAddedResult,
+        });
         return {
             topRated: topRatedResult._max.averageRating ?? 0,
             recentlyAdded: recentlyAddedResult,
         };
     } catch (error) {
-        console.error('Error fetching global media stats:', error);
+        logger.error('GET /actions/media', {
+            method: 'getGlobalMediaStats',
+            error,
+            topRated: 0,
+            recentlyAdded: 0,
+        });
         throw new Error('Could not fetch global media stats.');
     }
 };
