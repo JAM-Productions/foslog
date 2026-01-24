@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ReviewClient } from './review-client';
 import { getReviewById } from '@/app/actions/review';
+import { notFound } from 'next/navigation';
 
 export default async function ReviewPage({
     params,
@@ -11,7 +12,7 @@ export default async function ReviewPage({
     const reviewItem = await getReviewById(resolvedParams.id);
 
     if (!reviewItem) {
-        return <div>Review not found</div>;
+        notFound();
     }
 
     return <ReviewClient reviewItem={reviewItem} />;

@@ -3,6 +3,7 @@ import { MediaClient } from './media-client';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 
 export default async function MediaPage({
     params,
@@ -20,7 +21,7 @@ export default async function MediaPage({
     const mediaItem = await getMediaById(resolvedParams.id, page);
 
     if (!mediaItem) {
-        return <div>Media not found</div>;
+        notFound();
     }
 
     let hasReviewed = false;
