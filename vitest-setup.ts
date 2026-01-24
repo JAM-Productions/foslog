@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock Axiom modules to avoid import issues with next/server
 vi.mock('@/lib/axiom/server', () => ({
     logger: {
         info: vi.fn(),
@@ -9,10 +8,4 @@ vi.mock('@/lib/axiom/server', () => ({
         warn: vi.fn(),
         debug: vi.fn(),
     },
-    withAxiom: vi.fn((handler) => handler),
-}));
-
-vi.mock('@axiomhq/nextjs', () => ({
-    createAxiomRouteHandler: vi.fn(() => (handler: any) => handler),
-    nextJsFormatters: {},
 }));

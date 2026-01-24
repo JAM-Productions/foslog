@@ -12,9 +12,9 @@ import {
     parseGoogleBooksVolume,
 } from './utils/parsers';
 import { getIgdbToken } from './utils/get-igdb-token';
-import { withAxiom, logger } from '@/lib/axiom/server';
+import { logger } from '@/lib/axiom/server';
 
-export const GET = withAxiom(async (req: NextRequest) => {
+export async function GET(req: NextRequest) {
     try {
         const mediatype = req.nextUrl.searchParams.get('mediatype');
         const mediatitle = req.nextUrl.searchParams.get('mediatitle');
@@ -152,4 +152,4 @@ export const GET = withAxiom(async (req: NextRequest) => {
         logger.error('GET /api/search', { error });
         return internalServerError();
     }
-});
+}

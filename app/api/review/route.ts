@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
-import { logger, withAxiom } from '@/lib/axiom/server';
+import { logger } from '@/lib/axiom/server';
 import {
     internalServerError,
     notFound,
@@ -11,7 +11,7 @@ import {
     validationError,
 } from '@/lib/errors';
 
-export const POST = withAxiom(async (request: NextRequest) => {
+export async function POST(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -142,9 +142,9 @@ export const POST = withAxiom(async (request: NextRequest) => {
         logger.error('POST /api/review', { error });
         return internalServerError();
     }
-});
+}
 
-export const DELETE = withAxiom(async (request: NextRequest) => {
+export async function DELETE(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -252,9 +252,9 @@ export const DELETE = withAxiom(async (request: NextRequest) => {
         logger.error('DELETE /api/review', { error });
         return internalServerError();
     }
-});
+}
 
-export const PATCH = withAxiom(async (request: NextRequest) => {
+export async function PATCH(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -369,4 +369,4 @@ export const PATCH = withAxiom(async (request: NextRequest) => {
         logger.error('PATCH /api/review', { error });
         return internalServerError();
     }
-});
+}

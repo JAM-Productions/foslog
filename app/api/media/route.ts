@@ -8,9 +8,9 @@ import {
     unauthorized,
     validationError,
 } from '@/lib/errors';
-import { logger, withAxiom } from '@/lib/axiom/server';
+import { logger } from '@/lib/axiom/server';
 
-export const POST = withAxiom(async (request: NextRequest) => {
+export async function POST(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -107,4 +107,4 @@ export const POST = withAxiom(async (request: NextRequest) => {
         logger.error('POST /api/media', { error });
         return internalServerError();
     }
-});
+}
