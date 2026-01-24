@@ -8,8 +8,9 @@ import {
     unauthorized,
     validationError,
 } from '@/lib/errors';
+import { logger, withAxiom } from '@/lib/axiom/server';
 
-export async function POST(request: NextRequest) {
+export const POST = withAxiom(async (request: NextRequest) => {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -91,7 +92,10 @@ export async function POST(request: NextRequest) {
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
 
         revalidatePath(`/${locale}`, 'page');
-
+        logger.info('POST /api/media', {
+            userId: session.user.id,
+            mediaId: mediaItem.id,
+        });
         return NextResponse.json(
             {
                 message: 'Media created successfully',
@@ -100,7 +104,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        console.error('Error in POST /api/media:', error);
+        logger.error('POST /api/media', { error });
         return internalServerError();
     }
-}
+});

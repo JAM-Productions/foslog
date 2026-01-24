@@ -13,6 +13,7 @@ import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
 import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
 import { ToastProvider } from '@/components/toast/toast-provider';
+import { WebVitals } from '@/lib/axiom/client';
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
@@ -77,6 +78,7 @@ export default async function LocaleLayout({
             lang={locale}
             suppressHydrationWarning
         >
+            <WebVitals />
             <head>
                 <ThemeScript />
                 <meta

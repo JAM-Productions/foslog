@@ -12,8 +12,9 @@ import {
     parseGoogleBooksVolume,
 } from './utils/parsers';
 import { getIgdbToken } from './utils/get-igdb-token';
+import { withAxiom, logger } from '@/lib/axiom/server';
 
-export async function GET(req: NextRequest) {
+export const GET = withAxiom(async (req: NextRequest) => {
     try {
         const mediatype = req.nextUrl.searchParams.get('mediatype');
         const mediatitle = req.nextUrl.searchParams.get('mediatitle');
@@ -43,6 +44,11 @@ export async function GET(req: NextRequest) {
                 }
                 const data = await res.json();
                 const formattedResult = data.results?.map(parseTMDBMovie) || [];
+                logger.info('GET /api/search', {
+                    mediatype,
+                    mediatitle,
+                    results: formattedResult.length,
+                });
                 return NextResponse.json(formattedResult);
 
             case 'serie':
@@ -60,6 +66,11 @@ export async function GET(req: NextRequest) {
                 const dataSeries = await resSeries.json();
                 const formattedResultSeries =
                     dataSeries.results?.map(parseTMDBSerie) || [];
+                logger.info('GET /api/search', {
+                    mediatype,
+                    mediatitle,
+                    results: formattedResultSeries.length,
+                });
                 return NextResponse.json(formattedResultSeries);
 
             case 'game':
@@ -70,10 +81,6 @@ export async function GET(req: NextRequest) {
                     if (error instanceof IgdbTokenError) {
                         return badGateway(error.message);
                     }
-                    console.error(
-                        '[GET MEDIA ERROR] Unexpected error obtaining IGDB token:',
-                        error
-                    );
                     return badGateway(
                         'Could not obtain access token from IGDB'
                     );
@@ -98,14 +105,16 @@ export async function GET(req: NextRequest) {
                 const dataGames = await resGames.json();
                 const formattedResultGames =
                     dataGames?.map(parseIGDBGame) || [];
+                logger.info('GET /api/search', {
+                    mediatype,
+                    mediatitle,
+                    results: formattedResultGames.length,
+                });
                 return NextResponse.json(formattedResultGames);
 
             case 'book':
                 const googleBooksApiKey = process.env.GOOGLE_BOOKS_API_KEY;
                 if (!googleBooksApiKey) {
-                    console.error(
-                        'Google Books API Error: GOOGLE_BOOKS_API_KEY environment variable is not set'
-                    );
                     return badGateway('Google Books API key is not configured');
                 }
                 apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
@@ -115,13 +124,8 @@ export async function GET(req: NextRequest) {
 
                 if (!resBooks.ok) {
                     const errorText = await resBooks.text();
-                    console.error(
-                        'Google Books API Error:',
-                        resBooks.status,
-                        errorText
-                    );
                     return badGateway(
-                        `Could not fetch data from Google Books API: ${resBooks.status}`
+                        `Could not fetch data from Google Books API: ${errorText}`
                     );
                 }
                 const dataBooks = await resBooks.json();
@@ -134,13 +138,18 @@ export async function GET(req: NextRequest) {
                                 book.volumeInfo.language === 'ca'
                         )
                         .map(parseGoogleBooksVolume) || [];
+                logger.info('GET /api/search', {
+                    mediatype,
+                    mediatitle,
+                    results: formattedResultBooks.length,
+                });
                 return NextResponse.json(formattedResultBooks);
 
             default:
                 return validationError(`Invalid media type: ${mediatype}`);
         }
     } catch (error) {
-        console.error('[GET MEDIA ERROR] Error fetching data:', error);
+        logger.error('GET /api/search', { error });
         return internalServerError();
     }
-}
+});

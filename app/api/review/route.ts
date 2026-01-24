@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
+import { logger, withAxiom } from '@/lib/axiom/server';
 import {
     internalServerError,
     notFound,
@@ -10,7 +11,7 @@ import {
     validationError,
 } from '@/lib/errors';
 
-export async function POST(request: NextRequest) {
+export const POST = withAxiom(async (request: NextRequest) => {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -122,7 +123,11 @@ export async function POST(request: NextRequest) {
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
 
         revalidatePath(`/${locale}/media/${mediaId}`, 'page');
-
+        logger.info('POST /api/review', {
+            userId: session.user.id,
+            mediaId,
+            reviewId: result.id,
+        });
         return NextResponse.json(
             {
                 message: 'Review created successfully',
@@ -131,17 +136,15 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        console.error('Error in POST /api/review:', error);
-
         if (error instanceof Error && error.message === 'MEDIA_NOT_FOUND') {
             return notFound('Media item not found');
         }
-
+        logger.error('POST /api/review', { error });
         return internalServerError();
     }
-}
+});
 
-export async function DELETE(request: NextRequest) {
+export const DELETE = withAxiom(async (request: NextRequest) => {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -223,7 +226,11 @@ export async function DELETE(request: NextRequest) {
 
         revalidatePath(`/${locale}/media/${mediaId}`, 'page');
         revalidatePath(`/${locale}/review/${reviewId}`, 'page');
-
+        logger.info('DELETE /api/review', {
+            userId: session.user.id,
+            mediaId,
+            reviewId: reviewId,
+        });
         return NextResponse.json(
             {
                 message: 'Review deleted successfully',
@@ -232,8 +239,6 @@ export async function DELETE(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error in DELETE /api/review:', error);
-
         if (error instanceof Error) {
             if (error.message === 'REVIEW_NOT_FOUND') {
                 return notFound('Review not found');
@@ -244,12 +249,12 @@ export async function DELETE(request: NextRequest) {
                 );
             }
         }
-
+        logger.error('DELETE /api/review', { error });
         return internalServerError();
     }
-}
+});
 
-export async function PATCH(request: NextRequest) {
+export const PATCH = withAxiom(async (request: NextRequest) => {
     try {
         const session = await auth.api.getSession({
             headers: request.headers,
@@ -280,7 +285,7 @@ export async function PATCH(request: NextRequest) {
         if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');
         }
-        await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx) => {
             const existingReview = await tx.review.findUnique({
                 where: { id: reviewId },
             });
@@ -333,12 +338,17 @@ export async function PATCH(request: NextRequest) {
                     totalDislikes: dislikesCount,
                 },
             });
-            return;
+            return mediaId;
         });
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
         revalidatePath(`/${locale}/review/${reviewId}`, 'page');
+        logger.info('PATCH /api/review', {
+            userId: session.user.id,
+            mediaId: result,
+            reviewId,
+        });
         return NextResponse.json(
             {
                 message: 'Review updated successfully',
@@ -346,7 +356,6 @@ export async function PATCH(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error in PUT /api/review:', error);
         if (error instanceof Error) {
             if (error.message === 'REVIEW_NOT_FOUND') {
                 return notFound('Review not found');
@@ -357,6 +366,7 @@ export async function PATCH(request: NextRequest) {
                 );
             }
         }
+        logger.error('PATCH /api/review', { error });
         return internalServerError();
     }
-}
+});
