@@ -173,7 +173,8 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockRejectedValue(dbError);
 
-        const result = await getReviewById('review1');
-        expect(result).toBeNull();
+        await expect(getReviewById('review1')).rejects.toThrow(
+            'Could not fetch review.'
+        );
     });
 });

@@ -94,7 +94,7 @@ export const getMedias = async (
             mediaType,
             searchQuery,
         });
-        return { items: [], total: 0 };
+        throw new Error('Could not fetch media items.');
     }
 };
 
@@ -185,7 +185,7 @@ export const getMediaById = async (
             error,
             mediaId: id,
         });
-        return null;
+        throw new Error('Could not fetch media item.');
     }
 };
 
@@ -229,6 +229,6 @@ export const getGlobalMediaStats = async (): Promise<{
             topRated: 0,
             recentlyAdded: 0,
         });
-        return { topRated: 0, recentlyAdded: 0 };
+        throw new Error('Could not fetch global media stats.');
     }
 };

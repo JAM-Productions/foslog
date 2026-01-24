@@ -79,6 +79,6 @@ export const getReviewById = async (
             error,
             reviewId: id,
         });
-        return null;
+        throw new Error('Could not fetch review.');
     }
 };

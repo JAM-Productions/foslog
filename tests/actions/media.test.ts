@@ -5,6 +5,7 @@ import {
     getGlobalMediaStats,
 } from '@/app/actions/media';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/axiom/server';
 
 // Mock Prisma client
 vi.mock('@/lib/prisma', () => ({
@@ -419,26 +420,39 @@ describe('getMedias Server Action', () => {
     });
 
     describe('Error Handling', () => {
-        it('returns empty result when database query fails', async () => {
+        it('throws error when database query fails', async () => {
             const dbError = new Error('Database connection failed');
             (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
                 dbError
             );
 
-            const result = await getMedias(1, 12);
-            expect(result).toEqual({ items: [], total: 0 });
+            await expect(getMedias(1, 12)).rejects.toThrow(
+                'Could not fetch media items.'
+            );
         });
 
         it('logs error when database query fails', async () => {
+            const loggerErrorSpy = vi.spyOn(logger, 'error');
             const dbError = new Error('Database connection failed');
             (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
                 dbError
             );
 
-            const result = await getMedias(1, 12);
+            try {
+                await getMedias(1, 12);
+            } catch {
+                // Expected to throw
+            }
 
-            // Verify logger.error was called (mocked in vitest-setup.ts)
-            expect(result).toEqual({ items: [], total: 0 });
+            expect(loggerErrorSpy).toHaveBeenCalledWith(
+                'GET /actions/media',
+                expect.objectContaining({
+                    method: 'getMedias',
+                    error: dbError,
+                })
+            );
+
+            loggerErrorSpy.mockRestore();
         });
     });
 
@@ -592,19 +606,32 @@ describe('getGlobalMediaStats Server Action', () => {
             dbError
         );
 
-        const result = await getGlobalMediaStats();
-        expect(result).toEqual({ topRated: 0, recentlyAdded: 0 });
+        await expect(getGlobalMediaStats()).rejects.toThrow(
+            'Could not fetch global media stats.'
+        );
     });
 
     it('logs error when database query fails', async () => {
+        const loggerErrorSpy = vi.spyOn(logger, 'error');
         const dbError = new Error('Database connection failed');
         (prisma.$transaction as ReturnType<typeof vi.fn>).mockRejectedValue(
             dbError
         );
 
-        const result = await getGlobalMediaStats();
+        try {
+            await getGlobalMediaStats();
+        } catch {
+            // Expected to throw
+        }
 
-        // Verify logger.error was called (mocked in vitest-setup.ts)
-        expect(result).toEqual({ topRated: 0, recentlyAdded: 0 });
+        expect(loggerErrorSpy).toHaveBeenCalledWith(
+            'GET /actions/media',
+            expect.objectContaining({
+                method: 'getGlobalMediaStats',
+                error: dbError,
+            })
+        );
+
+        loggerErrorSpy.mockRestore();
     });
 });

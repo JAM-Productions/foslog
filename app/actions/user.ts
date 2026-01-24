@@ -38,7 +38,7 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
             error,
             userId,
         });
-        return null;
+        throw new Error('Could not fetch user profile.');
     }
 };
 
