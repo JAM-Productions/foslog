@@ -125,7 +125,7 @@ export const GET = withAxiom(async (req: NextRequest) => {
                 if (!resBooks.ok) {
                     const errorText = await resBooks.text();
                     return badGateway(
-                        `Could not fetch data from Google Books API: ${errorText}`
+                        `Could not fetch data from Google Books API. Status: ${resBooks.status}, Error: ${errorText || 'No error details'}`
                     );
                 }
                 const dataBooks = await resBooks.json();
