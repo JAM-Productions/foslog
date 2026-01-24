@@ -9,10 +9,10 @@ vi.mock('@/lib/axiom/server', () => ({
         warn: vi.fn(),
         debug: vi.fn(),
     },
-    withAxiom: vi.fn((handler: any) => handler),
+    withAxiom: vi.fn((handler) => handler),
 }));
 
 vi.mock('@axiomhq/nextjs', () => ({
-    createAxiomRouteHandler: vi.fn((logger: any) => (handler: any) => handler),
+    createAxiomRouteHandler: vi.fn(() => (handler: any) => handler),
     nextJsFormatters: {},
 }));
