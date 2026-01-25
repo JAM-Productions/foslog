@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/button/button';
@@ -16,6 +16,18 @@ export default function Pagination({
     totalPages,
     onPageChange,
 }: PaginationProps) {
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 640px)');
+        setIsSmallScreen(mediaQuery.matches);
+
+        const handler = (event: MediaQueryListEvent) =>
+            setIsSmallScreen(event.matches);
+        mediaQuery.addEventListener('change', handler);
+
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -45,7 +57,7 @@ export default function Pagination({
     // Generate page numbers to display
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
-        const maxVisible = 7; // Maximum number of page buttons to show
+        const maxVisible = isSmallScreen ? 5 : 7;
 
         if (totalPages <= maxVisible) {
             // Show all pages if total is small
@@ -53,22 +65,23 @@ export default function Pagination({
                 pages.push(i);
             }
         } else {
+            const sideButtons = isSmallScreen ? 0 : 1;
             // Always show first page
             pages.push(1);
 
-            if (currentPage > 3) {
+            if (currentPage > 2 + sideButtons) {
                 pages.push('...');
             }
 
             // Show pages around current page
-            const start = Math.max(2, currentPage - 1);
-            const end = Math.min(totalPages - 1, currentPage + 1);
+            const start = Math.max(2, currentPage - sideButtons);
+            const end = Math.min(totalPages - 1, currentPage + sideButtons);
 
             for (let i = start; i <= end; i++) {
                 pages.push(i);
             }
 
-            if (currentPage < totalPages - 2) {
+            if (currentPage < totalPages - 1 - sideButtons) {
                 pages.push('...');
             }
 
