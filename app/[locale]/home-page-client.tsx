@@ -93,7 +93,7 @@ export default function HomePageClient({
                             {tStats('topRated')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold sm:text-2xl">
+                    <p className="text-2xl font-bold">
                         {globalStats.topRated.toFixed(1)}
                     </p>
                     <p className="text-muted-foreground hidden text-xs sm:block">
@@ -108,7 +108,7 @@ export default function HomePageClient({
                             {tStats('totalItems')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold sm:text-2xl">{total}</p>
+                    <p className="text-2xl font-bold">{total}</p>
                     <p className="text-muted-foreground hidden text-xs sm:block">
                         {selectedMediaType === 'all'
                             ? tStats('allMediaTypes')
@@ -123,7 +123,7 @@ export default function HomePageClient({
                             {tStats('recentlyAdded')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold sm:text-2xl">
+                    <p className="text-2xl font-bold">
                         {globalStats.recentlyAdded}
                     </p>
                     <p className="text-muted-foreground hidden text-xs sm:block">
