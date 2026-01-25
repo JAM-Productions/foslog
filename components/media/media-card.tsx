@@ -155,7 +155,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
 
                         {/* Genres */}
                         <div className="flex flex-wrap gap-1">
-                            {media.genre.slice(0, 2).map((genre) => (
+                            {media.genre.slice(0, 5).map((genre) => (
                                 <span
                                     key={genre}
                                     className="bg-secondary text-secondary-foreground line-clamp-1 rounded px-1.5 py-0.5 text-xs break-all"
@@ -163,10 +163,10 @@ export default function MediaCard({ media, className }: MediaCardProps) {
                                     {tGenres(genre)}
                                 </span>
                             ))}
-                            {media.genre.length > 2 && (
+                            {media.genre.length > 5 && (
                                 <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs">
                                     {t('more', {
-                                        count: media.genre.length - 2,
+                                        count: media.genre.length - 5,
                                     })}
                                 </span>
                             )}

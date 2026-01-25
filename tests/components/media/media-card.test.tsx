@@ -270,26 +270,29 @@ describe('MediaCard', () => {
             expect(creatorElements.length).toBe(0);
         });
 
-        it('renders up to 2 genre tags', () => {
+        it('renders up to 5 genre tags', () => {
             render(<MediaCard media={mockMediaItem} />);
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
         });
 
-        it('renders "more" badge when more than 2 genres', () => {
+        it('renders "more" badge when more than 5 genres', () => {
             const mediaWithManyGenres = {
                 ...mockMediaItem,
-                genre: ['action', 'sciFi', 'thriller', 'adventure'],
+                genre: ['action', 'sciFi', 'thriller', 'adventure', 'drama', 'comedy'],
             };
             render(<MediaCard media={mediaWithManyGenres} />);
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
-            expect(screen.getByText('+2')).toBeInTheDocument();
+            expect(screen.getByText('Thriller')).toBeInTheDocument();
+            expect(screen.getByText('Adventure')).toBeInTheDocument();
+            expect(screen.getByText('Drama')).toBeInTheDocument();
+            expect(screen.getByText('+1')).toBeInTheDocument();
         });
 
-        it('does not render "more" badge when 2 or fewer genres', () => {
+        it('does not render "more" badge when 5 or fewer genres', () => {
             render(<MediaCard media={mockMediaItem} />);
 
             expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument();
@@ -502,17 +505,20 @@ describe('MediaCard', () => {
             expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument();
         });
 
-        it('handles media with 3 genres showing +1', () => {
-            const mediaWithThreeGenres = {
+        it('handles media with 6 genres showing +1', () => {
+            const mediaWithSixGenres = {
                 ...mockMediaItem,
-                genre: ['action', 'sciFi', 'thriller'],
+                genre: ['action', 'sciFi', 'thriller', 'adventure', 'drama', 'comedy'],
             };
-            render(<MediaCard media={mediaWithThreeGenres} />);
+            render(<MediaCard media={mediaWithSixGenres} />);
 
             expect(screen.getByText('Action')).toBeInTheDocument();
             expect(screen.getByText('Science Fiction')).toBeInTheDocument();
+            expect(screen.getByText('Thriller')).toBeInTheDocument();
+            expect(screen.getByText('Adventure')).toBeInTheDocument();
+            expect(screen.getByText('Drama')).toBeInTheDocument();
             expect(screen.getByText('+1')).toBeInTheDocument();
-            expect(screen.queryByText('Thriller')).not.toBeInTheDocument();
+            expect(screen.queryByText('Comedy')).not.toBeInTheDocument();
         });
 
         it('handles zero reviews', () => {
@@ -581,11 +587,11 @@ describe('MediaCard', () => {
         it('uses correct translation key for more badge', () => {
             const mediaWithManyGenres = {
                 ...mockMediaItem,
-                genre: ['action', 'sciFi', 'thriller', 'adventure'],
+                genre: ['action', 'sciFi', 'thriller', 'adventure', 'drama', 'comedy'],
             };
             render(<MediaCard media={mediaWithManyGenres} />);
 
-            expect(mockT).toHaveBeenCalledWith('more', { count: 2 });
+            expect(mockT).toHaveBeenCalledWith('more', { count: 1 });
         });
 
         it('uses correct translation keys for genres', () => {
