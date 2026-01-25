@@ -86,47 +86,47 @@ export default function HomePageClient({
         <div className="container mx-auto px-4 py-8">
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-3 gap-2 sm:gap-4">
-                <div className="bg-card rounded-lg border p-2 sm:p-4">
+                <div className="bg-card flex flex-col items-center justify-center rounded-lg border p-2 sm:items-start sm:p-4">
                     <div className="text-primary mb-2 flex items-center gap-2">
                         <Star className="h-4 w-4" />
                         <span className="text-sm font-medium">
                             {tStats('topRated')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold">
+                    <p className="text-2xl font-bold sm:text-2xl">
                         {globalStats.topRated.toFixed(1)}
                     </p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-muted-foreground hidden text-xs sm:block">
                         {tStats('highestRatedInCollection')}
                     </p>
                 </div>
 
-                <div className="bg-card rounded-lg border p-2 sm:p-4">
+                <div className="bg-card flex flex-col items-center justify-center rounded-lg border p-2 sm:items-start sm:p-4">
                     <div className="text-primary mb-2 flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
                         <span className="text-sm font-medium">
                             {tStats('totalItems')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold">{total}</p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-2xl font-bold sm:text-2xl">{total}</p>
+                    <p className="text-muted-foreground hidden text-xs sm:block">
                         {selectedMediaType === 'all'
                             ? tStats('allMediaTypes')
                             : getTypeDisplayName(selectedMediaType)}
                     </p>
                 </div>
 
-                <div className="bg-card rounded-lg border p-2 sm:p-4">
+                <div className="bg-card flex flex-col items-center justify-center rounded-lg border p-2 sm:items-start sm:p-4">
                     <div className="text-primary mb-2 flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         <span className="text-sm font-medium">
                             {tStats('recentlyAdded')}
                         </span>
                     </div>
-                    <p className="text-2xl font-bold">
+                    <p className="text-2xl font-bold sm:text-2xl">
                         {globalStats.recentlyAdded}
                     </p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-muted-foreground hidden text-xs sm:block">
                         {tStats('fromLastMonth')}
                     </p>
                 </div>
