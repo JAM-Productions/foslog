@@ -2,11 +2,11 @@ export default function Loading() {
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Stats Cards Skeleton */}
-            <div className="mb-8 grid grid-cols-3 gap-4">
+            <div className="mb-8 grid grid-cols-3 gap-2 sm:gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                     <div
                         key={i}
-                        className="bg-card h-28 animate-pulse rounded-lg border p-4"
+                        className="bg-card h-20 animate-pulse rounded-lg border p-2 sm:h-28 sm:p-4"
                     ></div>
                 ))}
             </div>
