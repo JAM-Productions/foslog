@@ -66,9 +66,9 @@ Como siempre, habrá injusticias. Desde Foslog predecimos que **el cine de terro
 La ceremonia será larga, los chistes del presentador serán incómodos y alguien intentará colar un discurso político que nadie entenderá del todo. Pero ahí estaremos, pegados a la pantalla.
 
 **¿Tu tarea ahora?**
-1.  Vete al cine.
-2.  Entra en **Foslog**.
-3.  Ponle 5 estrellas a tu favorita y destroza con una crítica mordaz a la que te hizo dormir.
+1. Vete al cine.
+2. Entra en **Foslog**.
+3. Ponle 5 estrellas a tu favorita y destroza con una crítica mordaz a la que te hizo dormir.
 
 ¡Que gane el mejor (o el que haya pagado la mejor campaña de marketing)!
 
