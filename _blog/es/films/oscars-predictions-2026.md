@@ -37,7 +37,7 @@ Bong Joon-ho (*Parasite*) ha vuelto con Robert Pattinson muriendo una y otra vez
 
 ---
 
-## Mejor Actor: La Batalla del Testosterona
+## Mejor Actor: La Batalla de la Testosterona
 
 Aquí es donde la cosa se pone picante.
 
