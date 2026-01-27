@@ -235,7 +235,16 @@ export const getGlobalMediaStats = async (): Promise<{
             recentlyAdded: recentlyAddedResult,
         };
 
-        await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(stats));
+        try {
+            await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(stats));
+        } catch (cacheError) {
+            logger.error('GET /actions/media', {
+                method: 'getGlobalMediaStats',
+                cacheWriteFailed: true,
+                error: cacheError,
+            });
+            // Intentionally do not rethrow: caching failure should not break stats retrieval.
+        }
 
         logger.info('GET /actions/media', {
             method: 'getGlobalMediaStats',
