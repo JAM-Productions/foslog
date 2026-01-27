@@ -99,14 +99,12 @@ export async function DELETE(request: NextRequest) {
                 'Unauthorized. Please log in to delete a comment.'
             );
         }
-        const { commentId, reviewId } = await request.json();
+        const { commentId } = await request.json();
 
         if (!commentId) {
             return validationError('Comment id is required');
         }
-        if (!reviewId) {
-            return validationError('Review id is required');
-        }
+
         const result = await prisma.$transaction(async (tx) => {
             const commentItem = await tx.comment.findUnique({
                 where: { id: commentId },
@@ -121,7 +119,7 @@ export async function DELETE(request: NextRequest) {
                 where: { id: commentId },
             });
             await tx.review.update({
-                where: { id: reviewId },
+                where: { id: commentItem.reviewId },
                 data: {
                     totalComments: { decrement: 1 },
                 },
@@ -131,11 +129,11 @@ export async function DELETE(request: NextRequest) {
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
-        revalidatePath(`/${locale}/review/${reviewId}`, 'page');
+        revalidatePath(`/${locale}/review/${result.reviewId}`, 'page');
         logger.info('DELETE /api/comment', {
             userId: session.user.id,
             commentId: result.id,
-            reviewId: reviewId,
+            reviewId: result.reviewId,
         });
         return NextResponse.json({
             message: 'Comment deleted successfully',

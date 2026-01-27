@@ -241,14 +241,22 @@ describe('CommentForm', () => {
         });
     });
 
-    it('prevents empty comment submission due to required field', () => {
+    it('prevents empty comment submission due to required field', async () => {
         render(<CommentForm {...defaultProps} />);
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
+        const submitButton = screen.getByRole('button', {
+            name: 'Send Comment',
+        });
 
         expect(textarea).toHaveAttribute('required');
 
+        fireEvent.click(submitButton);
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
         expect(global.fetch).not.toHaveBeenCalled();
+        expect(mockShowToast).not.toHaveBeenCalled();
     });
 
     it('clears error state on new submission', async () => {

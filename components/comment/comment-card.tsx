@@ -4,7 +4,7 @@ import { Card } from '@/components/card';
 import { SafeComment } from '@/lib/types';
 import { Trash, User } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Button } from '../button/button';
 import { useOptionsModalStore } from '@/lib/options-modal-store';
 import { useToastStore } from '@/lib/toast-store';

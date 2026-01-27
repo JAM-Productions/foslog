@@ -23,6 +23,7 @@ const mockReview: SafeReview = {
     createdAt: new Date('2023-01-01'),
     updatedAt: new Date('2023-01-01'),
     consumedMoreThanOnce: false,
+    totalComments: 0,
     user: {
         id: 'user1',
         name: 'Jane Doe',
@@ -36,23 +37,40 @@ describe('ReviewDetailCard', () => {
     it('renders review content', () => {
         render(<ReviewDetailCard review={mockReview} />);
         expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-        expect(screen.getByText('Detailed review content here.')).toBeInTheDocument();
+        expect(
+            screen.getByText('Detailed review content here.')
+        ).toBeInTheDocument();
     });
 
     it('does not render consumed badge when false', () => {
-        render(<ReviewDetailCard review={mockReview} mediaType="book" />);
+        render(
+            <ReviewDetailCard
+                review={mockReview}
+                mediaType="book"
+            />
+        );
         expect(screen.queryByText(/Consumed/)).not.toBeInTheDocument();
     });
 
     it('renders consumed badge when true and mediaType provided', () => {
         const consumedReview = { ...mockReview, consumedMoreThanOnce: true };
-        render(<ReviewDetailCard review={consumedReview} mediaType="book" />);
+        render(
+            <ReviewDetailCard
+                review={consumedReview}
+                mediaType="book"
+            />
+        );
         expect(screen.getByText('Consumed book')).toBeInTheDocument();
     });
 
     it('renders default consumed badge when mediaType unknown', () => {
         const consumedReview = { ...mockReview, consumedMoreThanOnce: true };
-        render(<ReviewDetailCard review={consumedReview} mediaType="alien-tech" />);
+        render(
+            <ReviewDetailCard
+                review={consumedReview}
+                mediaType="alien-tech"
+            />
+        );
         expect(screen.getByText('Consumed default')).toBeInTheDocument();
     });
 });

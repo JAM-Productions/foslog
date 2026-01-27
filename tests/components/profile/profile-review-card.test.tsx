@@ -49,6 +49,7 @@ describe('ProfileReviewCard', () => {
         userId: 'user1',
         createdAt: new Date(),
         updatedAt: new Date(),
+        totalComments: 0,
         media: {
             id: 'media1',
             title: 'The Matrix',

@@ -149,6 +149,8 @@ describe('MediaContext', () => {
             'A computer hacker learns about the true nature of reality.',
         averageRating: 4.5,
         totalReviews: 100,
+        totalLikes: 80,
+        totalDislikes: 20,
     };
 
     const mockMediaWithoutPoster: SafeMediaItem = {
@@ -161,6 +163,8 @@ describe('MediaContext', () => {
         description: 'A story of wealth, love, and tragedy.',
         averageRating: 4.2,
         totalReviews: 50,
+        totalLikes: 40,
+        totalDislikes: 10,
     };
 
     it('renders media title correctly', () => {

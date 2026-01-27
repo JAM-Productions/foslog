@@ -7,7 +7,7 @@ import { SafeComment } from '@/lib/types';
 const mockRouterPush = vi.fn();
 const mockRouterRefresh = vi.fn();
 
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
     useRouter: () => ({
         push: mockRouterPush,
         refresh: mockRouterRefresh,

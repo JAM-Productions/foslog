@@ -13,7 +13,12 @@ vi.mock('next-intl', () => ({
 // Mock next/image
 vi.mock('next/image', () => ({
     default: ({ src, alt, ...props }: any) => (
-        <img src={src} alt={alt} {...props} />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+            src={src}
+            alt={alt}
+            {...props}
+        />
     ),
 }));
 
@@ -41,7 +46,12 @@ describe('ProfileHeader', () => {
     };
 
     test('renders user information correctly', () => {
-        render(<ProfileHeader user={mockUser} stats={mockStats} />);
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+            />
+        );
 
         expect(screen.getByText('Test User')).toBeInTheDocument();
         expect(screen.getByText(/Joined/)).toBeInTheDocument();
@@ -53,7 +63,12 @@ describe('ProfileHeader', () => {
     });
 
     test('renders statistics correctly', () => {
-        render(<ProfileHeader user={mockUser} stats={mockStats} />);
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+            />
+        );
 
         expect(screen.getByText('10')).toBeInTheDocument(); // totalReviews
         expect(screen.getByText('totalReviews')).toBeInTheDocument();
@@ -64,7 +79,12 @@ describe('ProfileHeader', () => {
     });
 
     test('renders favorite genres', () => {
-        render(<ProfileHeader user={mockUser} stats={mockStats} />);
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+            />
+        );
 
         expect(screen.getByText('favoriteGenres')).toBeInTheDocument();
         expect(screen.getByText('Action (5)')).toBeInTheDocument();
@@ -72,7 +92,12 @@ describe('ProfileHeader', () => {
 
     test('renders placeholder avatar when no image provided', () => {
         const userWithoutImage = { ...mockUser, image: undefined };
-        render(<ProfileHeader user={userWithoutImage} stats={mockStats} />);
+        render(
+            <ProfileHeader
+                user={userWithoutImage}
+                stats={mockStats}
+            />
+        );
 
         // Instead of looking for a specific icon which might be hidden or SVG,
         // we check that the image is NOT rendered.

@@ -30,6 +30,7 @@ const mockReview: SafeReview = {
     createdAt: new Date(),
     updatedAt: new Date(),
     consumedMoreThanOnce: false,
+    totalComments: 0,
     user: {
         id: 'user1',
         name: 'John Doe',
@@ -47,19 +48,34 @@ describe('ReviewCard', () => {
     });
 
     it('does not render consumed badge when false', () => {
-        render(<ReviewCard review={mockReview} mediaType="film" />);
+        render(
+            <ReviewCard
+                review={mockReview}
+                mediaType="film"
+            />
+        );
         expect(screen.queryByText(/Consumed/)).not.toBeInTheDocument();
     });
 
     it('renders consumed badge when true and mediaType provided', () => {
         const consumedReview = { ...mockReview, consumedMoreThanOnce: true };
-        render(<ReviewCard review={consumedReview} mediaType="film" />);
+        render(
+            <ReviewCard
+                review={consumedReview}
+                mediaType="film"
+            />
+        );
         expect(screen.getByText('Consumed film')).toBeInTheDocument();
     });
 
     it('renders default consumed badge when mediaType unknown', () => {
         const consumedReview = { ...mockReview, consumedMoreThanOnce: true };
-        render(<ReviewCard review={consumedReview} mediaType="unknown" />);
+        render(
+            <ReviewCard
+                review={consumedReview}
+                mediaType="unknown"
+            />
+        );
         expect(screen.getByText('Consumed default')).toBeInTheDocument();
     });
 
