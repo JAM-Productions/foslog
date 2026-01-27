@@ -241,32 +241,14 @@ describe('CommentForm', () => {
         });
     });
 
-    it('allows empty comment submission', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-            ok: true,
-            json: async () => ({}),
-        });
-
+    it('prevents empty comment submission due to required field', () => {
         render(<CommentForm {...defaultProps} />);
 
-        const submitButton = screen.getByRole('button', {
-            name: 'Send Comment',
-        });
+        const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 
-        fireEvent.click(submitButton);
+        expect(textarea).toHaveAttribute('required');
 
-        await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith(
-                '/api/comment',
-                expect.objectContaining({
-                    method: 'POST',
-                    body: JSON.stringify({
-                        reviewId: 'review-123',
-                        comment: '',
-                    }),
-                })
-            );
-        });
+        expect(global.fetch).not.toHaveBeenCalled();
     });
 
     it('clears error state on new submission', async () => {
