@@ -9,3 +9,13 @@ vi.mock('@/lib/axiom/server', () => ({
         debug: vi.fn(),
     },
 }));
+
+vi.mock('@/lib/redis', () => ({
+    redis: {
+        get: vi.fn(),
+        set: vi.fn(),
+        setex: vi.fn(),
+        del: vi.fn(),
+        incr: vi.fn(),
+    },
+}));
