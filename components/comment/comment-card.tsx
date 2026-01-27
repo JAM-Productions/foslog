@@ -31,7 +31,6 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                 },
                 body: JSON.stringify({
                     commentId: comment.id,
-                    reviewId: comment.reviewId,
                 }),
             });
             if (response.ok) {
