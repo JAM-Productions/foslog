@@ -212,7 +212,6 @@ describe('CommentCard', () => {
                     },
                     body: JSON.stringify({
                         commentId: 'comment-1',
-                        reviewId: 'review-1',
                     }),
                 })
             );
