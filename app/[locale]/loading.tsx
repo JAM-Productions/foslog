@@ -2,7 +2,7 @@ export default function Loading() {
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Stats Cards Skeleton */}
-            <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="mb-8 hidden grid-cols-1 gap-4 md:grid md:grid-cols-3">
                 {Array.from({ length: 3 }).map((_, i) => (
                     <div
                         key={i}
@@ -10,6 +10,7 @@ export default function Loading() {
                     ></div>
                 ))}
             </div>
+            <div className="bg-card mb-8 h-28 animate-pulse rounded-lg border p-4 md:hidden"></div>
 
             {/* Media Grid Skeleton */}
             <div className="mb-8">

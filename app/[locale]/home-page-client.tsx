@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useAppStore } from '@/lib/store';
 import MediaCard from '@/components/media/media-card';
+import StatsCarousel from '@/components/carousel/stats-carousel';
 import { Button } from '@/components/button/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -85,7 +86,15 @@ export default function HomePageClient({
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Stats Cards */}
-            <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="md:hidden" data-testid="stats-carousel">
+                <StatsCarousel
+                    globalStats={globalStats}
+                    total={total}
+                    selectedMediaType={selectedMediaType}
+                    getTypeDisplayName={getTypeDisplayName}
+                />
+            </div>
+            <div className="mb-8 hidden grid-cols-1 gap-4 md:grid md:grid-cols-3">
                 <div className="bg-card rounded-lg border p-4">
                     <div className="text-primary mb-2 flex items-center gap-2">
                         <Star className="h-4 w-4" />
