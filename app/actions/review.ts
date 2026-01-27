@@ -3,11 +3,13 @@
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
-import { SafeReviewWithMedia } from '@/lib/types';
+import { SafeComment, SafeReviewWithMediaAndComments } from '@/lib/types';
 
 export const getReviewById = async (
-    id: string
-): Promise<SafeReviewWithMedia | null> => {
+    id: string,
+    page: number = 1,
+    pageSize: number = 12
+): Promise<SafeReviewWithMediaAndComments | null> => {
     try {
         const review = await prisma.review.findUnique({
             where: { id },
@@ -20,6 +22,22 @@ export const getReviewById = async (
                     },
                 },
                 media: true,
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                    skip: (page - 1) * pageSize,
+                    take: pageSize,
+                },
             },
         });
 
@@ -40,6 +58,31 @@ export const getReviewById = async (
             bio: undefined,
             joinedAt: new Date(),
         };
+
+        const safeComments: SafeComment[] = review.comments.map((comment) => {
+            const safeUser: User = {
+                id: comment.user.id,
+                name: comment.user.name ?? 'Unknown User',
+                email: '',
+                image: comment.user.image ?? undefined,
+                bio: undefined,
+                joinedAt: new Date(),
+            };
+
+            return {
+                id: comment.id,
+                comment: comment.comment,
+                reviewId: comment.reviewId,
+                userId: comment.userId,
+                createdAt: comment.createdAt,
+                updatedAt: comment.updatedAt,
+                user: safeUser,
+            };
+        });
+
+        const totalComments = review.totalComments;
+        const totalPages = Math.ceil(totalComments / pageSize);
+
         logger.info('GET /actions/review', {
             method: 'getReviewById',
             reviewId: id,
@@ -54,6 +97,7 @@ export const getReviewById = async (
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
             consumedMoreThanOnce: review.consumedMoreThanOnce,
+            totalComments: review.totalComments,
             user: safeUser,
             media: {
                 id: review.media.id,
@@ -72,6 +116,9 @@ export const getReviewById = async (
                 totalLikes: review.media.totalLikes,
                 totalDislikes: review.media.totalDislikes,
             },
+            comments: safeComments,
+            totalPages,
+            currentPage: page,
         };
     } catch (error) {
         logger.error('GET /actions/review', {

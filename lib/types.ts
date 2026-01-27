@@ -1,7 +1,8 @@
-import { MediaItem, Review, User } from './store';
+import { Comment, MediaItem, Review, User } from './store';
 
 export type SafeMediaItem = MediaItem;
 export type SafeReview = Review & { user: User };
+export type SafeComment = Comment & { user: User };
 export type SafeMediaItemWithReviews = SafeMediaItem & {
     reviews: SafeReview[];
     totalPages: number;
@@ -9,4 +10,10 @@ export type SafeMediaItemWithReviews = SafeMediaItem & {
 };
 export type SafeReviewWithMedia = SafeReview & {
     media: SafeMediaItem;
+};
+
+export type SafeReviewWithMediaAndComments = SafeReviewWithMedia & {
+    comments: SafeComment[];
+    totalPages: number;
+    currentPage: number;
 };

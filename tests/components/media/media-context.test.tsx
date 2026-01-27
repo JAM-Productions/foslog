@@ -32,6 +32,13 @@ vi.mock('next/image', () => ({
     ),
 }));
 
+//Mock @/i18n/navigation
+vi.mock('@/i18n/navigation', () => ({
+    useRouter: () => ({
+        push: vi.fn(),
+    }),
+}));
+
 // Mock lucide-react
 vi.mock('lucide-react', () => ({
     Book: ({ className }: { className?: string }) => (
@@ -43,6 +50,12 @@ vi.mock('lucide-react', () => ({
     Clapperboard: ({ className }: { className?: string }) => (
         <svg
             data-testid="clapperboard-icon"
+            className={className}
+        />
+    ),
+    Eye: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="eye-icon"
             className={className}
         />
     ),
@@ -61,6 +74,24 @@ vi.mock('lucide-react', () => ({
     StickyNote: ({ className }: { className?: string }) => (
         <svg
             data-testid="stickynote-icon"
+            className={className}
+        />
+    ),
+    Star: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="star-icon"
+            className={className}
+        />
+    ),
+    ThumbsDown: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbsdown-icon"
+            className={className}
+        />
+    ),
+    ThumbsUp: ({ className }: { className?: string }) => (
+        <svg
+            data-testid="thumbsup-icon"
             className={className}
         />
     ),
@@ -239,14 +270,20 @@ describe('MediaContext', () => {
         );
 
         const posterContainer = container.querySelector('.aspect-\\[2\\/3\\]');
-        expect(posterContainer).toHaveClass('w-32', 'sm:w-full');
+        expect(posterContainer).toHaveClass('w-32', 'md:w-full');
     });
 
     it('applies correct border radius classes', () => {
         render(<MediaContext media={mockMediaWithPoster} />);
 
         const poster = screen.getByAltText('The Matrix');
-        expect(poster).toHaveClass('rounded-lg', 'object-cover');
+        expect(poster).toHaveClass(
+            'rounded-l-lg',
+            'rounded-r-none',
+            'object-cover',
+            'md:rounded-t-lg',
+            'md:rounded-b-none'
+        );
     });
 
     it('renders media type badge with icon and text', () => {
@@ -272,9 +309,10 @@ describe('MediaContext', () => {
         const title = screen.getByText('The Matrix');
         expect(title).toHaveClass(
             'text-foreground',
-            'text-lg',
+            'text-xl',
+            'sm:text-lg',
             'leading-tight',
-            'font-semibold'
+            'font-bold'
         );
     });
 
@@ -285,8 +323,8 @@ describe('MediaContext', () => {
         expect(label).toHaveClass(
             'text-muted-foreground',
             'text-xs',
-            'font-medium',
-            'tracking-wide',
+            'font-semibold',
+            'tracking-widest',
             'uppercase'
         );
     });

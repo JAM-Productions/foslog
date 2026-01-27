@@ -1,7 +1,7 @@
 'use client';
 
 import { BackButton } from '@/components/button/back-button';
-import { SafeReviewWithMedia } from '@/lib/types';
+import { SafeReviewWithMediaAndComments } from '@/lib/types';
 import { MediaContext } from '@/components/media/media-context';
 import { ReviewDetailCard } from '@/components/review/review-detail-card';
 import { ReviewOptions } from '@/components/review/review-options';
@@ -9,11 +9,14 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { ReviewForm } from '@/components/review/review-form';
 import { useState } from 'react';
+import { CommentForm } from '@/components/comment/comment-form';
+import Pagination from '@/components/pagination/pagination';
+import { CommentList } from '@/components/comment/comment-list';
 
 export function ReviewClient({
     reviewItem,
 }: {
-    reviewItem: SafeReviewWithMedia;
+    reviewItem: SafeReviewWithMediaAndComments;
 }) {
     const { media } = reviewItem;
 
@@ -32,15 +35,15 @@ export function ReviewClient({
                     <BackButton />
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-12">
                     {/* Left Column - Media Context */}
-                    <div className="sm:col-span-3">
+                    <div className="md:col-span-4 lg:col-span-3">
                         <MediaContext media={media} />
                     </div>
 
                     {/* Center Column - Review Detail */}
                     <div
-                        className={`sm:col-span-9 ${isEditingReview ? 'lg:col-span-9' : 'lg:col-span-7'}`}
+                        className={`md:col-span-8 ${isEditingReview ? 'lg:col-span-9' : 'lg:col-span-7'}`}
                     >
                         <div className="flex flex-col gap-4 sm:gap-6">
                             <span className="text-foreground text-2xl font-bold sm:text-3xl">
@@ -79,6 +82,43 @@ export function ReviewClient({
                                     </div>
                                 </div>
                             )}
+                            {/* Comments Section */}
+                            <div className="mt-8 mb-8 lg:mb-10">
+                                <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+                                    <h2 className="text-foreground text-2xl font-bold sm:text-3xl">
+                                        {t('comments')}
+                                        <span className="text-muted-foreground ml-2 text-base font-normal sm:ml-3 sm:text-lg">
+                                            ({reviewItem.totalComments})
+                                        </span>
+                                    </h2>
+                                </div>
+                                {reviewItem.comments.length > 0 ? (
+                                    <>
+                                        <CommentList
+                                            comments={reviewItem.comments}
+                                        />
+                                        <Pagination
+                                            currentPage={reviewItem.currentPage}
+                                            totalPages={reviewItem.totalPages}
+                                        />
+                                    </>
+                                ) : (
+                                    <div className="bg-card border-border rounded-lg border px-4 py-6 text-center sm:py-8">
+                                        <p className="text-muted-foreground text-sm sm:text-base">
+                                            {t('noComments')}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                            {/* Comment Form Section */}
+                            <div className="mb-8 sm:mb-12 lg:mb-16">
+                                <h2 className="text-foreground mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">
+                                    {t('leaveAComment')}
+                                </h2>
+                                <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
+                                    <CommentForm reviewId={reviewItem.id} />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

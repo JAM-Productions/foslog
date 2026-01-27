@@ -60,6 +60,22 @@ describe('getReviewById Server Action', () => {
                     },
                 },
                 media: true,
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                    skip: 0,
+                    take: 12,
+                },
             },
         });
     });
@@ -74,8 +90,11 @@ describe('getReviewById Server Action', () => {
             review: 'Great movie!',
             createdAt: mockDate,
             updatedAt: mockDate,
+            consumedMoreThanOnce: false,
+            totalComments: 0,
             user: mockUser,
             media: mockMedia,
+            comments: [],
         };
 
         (
@@ -93,6 +112,8 @@ describe('getReviewById Server Action', () => {
             review: 'Great movie!',
             createdAt: mockDate,
             updatedAt: mockDate,
+            consumedMoreThanOnce: false,
+            totalComments: 0,
             user: {
                 ...mockUser,
                 email: '',
@@ -116,6 +137,9 @@ describe('getReviewById Server Action', () => {
                 totalLikes: 5,
                 totalDislikes: 1,
             },
+            comments: [],
+            totalPages: 0,
+            currentPage: 1,
         });
     });
 
@@ -129,8 +153,11 @@ describe('getReviewById Server Action', () => {
             review: 'Liked it!',
             createdAt: mockDate,
             updatedAt: mockDate,
+            consumedMoreThanOnce: false,
+            totalComments: 0,
             user: mockUser,
             media: mockMedia,
+            comments: [],
         };
 
         (
@@ -153,8 +180,11 @@ describe('getReviewById Server Action', () => {
             review: 'Disliked it',
             createdAt: mockDate,
             updatedAt: mockDate,
+            consumedMoreThanOnce: false,
+            totalComments: 0,
             user: mockUser,
             media: mockMedia,
+            comments: [],
         };
 
         (

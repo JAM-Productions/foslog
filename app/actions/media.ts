@@ -149,6 +149,7 @@ export const getMediaById = async (
                 createdAt: restOfReview.createdAt,
                 updatedAt: restOfReview.updatedAt,
                 consumedMoreThanOnce: restOfReview.consumedMoreThanOnce,
+                totalComments: restOfReview.totalComments,
                 user: safeUser,
             };
         });

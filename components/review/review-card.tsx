@@ -4,7 +4,7 @@ import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
-import { User, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { User, ThumbsUp, ThumbsDown, MessagesSquare } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -48,7 +48,7 @@ export function ReviewCard({
                         </div>
                     )}
                 </div>
-                <div className="flex-1">
+                <div className="relative flex-1">
                     <div className="flex">
                         <p
                             className="text-base font-bold hover:underline"
@@ -85,6 +85,12 @@ export function ReviewCard({
                                     )}
                                 </div>
                             )}
+                    </div>
+                    <div className="absolute top-0 right-0 flex items-center gap-1">
+                        <p className="text-muted-foreground text-sm">
+                            {review.totalComments}
+                        </p>
+                        <MessagesSquare className="text-muted-foreground h-4 w-4" />
                     </div>
                 </div>
             </div>
