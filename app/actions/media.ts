@@ -2,6 +2,7 @@
 
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
+import { redis } from '@/lib/redis';
 import { MediaType, User } from '@/lib/store';
 import {
     SafeMediaItem,
@@ -193,7 +194,22 @@ export const getGlobalMediaStats = async (): Promise<{
     topRated: number;
     recentlyAdded: number;
 }> => {
+    const CACHE_KEY = 'global:media:stats';
+    const CACHE_TTL = 86400; // 1 day
+
     try {
+        const cachedStats = await redis.get(CACHE_KEY);
+        if (cachedStats) {
+            const parsed = JSON.parse(cachedStats);
+            logger.info('GET /actions/media', {
+                method: 'getGlobalMediaStats',
+                cached: true,
+                topRated: parsed.topRated,
+                recentlyAdded: parsed.recentlyAdded,
+            });
+            return parsed;
+        }
+
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
@@ -213,15 +229,21 @@ export const getGlobalMediaStats = async (): Promise<{
                 }),
             ]
         );
-        logger.info('GET /actions/media', {
-            method: 'getGlobalMediaStats',
-            topRated: topRatedResult._max.averageRating ?? 0,
-            recentlyAdded: recentlyAddedResult,
-        });
-        return {
+
+        const stats = {
             topRated: topRatedResult._max.averageRating ?? 0,
             recentlyAdded: recentlyAddedResult,
         };
+
+        await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(stats));
+
+        logger.info('GET /actions/media', {
+            method: 'getGlobalMediaStats',
+            cached: false,
+            topRated: stats.topRated,
+            recentlyAdded: stats.recentlyAdded,
+        });
+        return stats;
     } catch (error) {
         logger.error('GET /actions/media', {
             method: 'getGlobalMediaStats',

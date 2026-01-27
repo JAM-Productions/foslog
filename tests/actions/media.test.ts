@@ -6,6 +6,7 @@ import {
 } from '@/app/actions/media';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/axiom/server';
+import { redis } from '@/lib/redis';
 
 // Mock Prisma client
 vi.mock('@/lib/prisma', () => ({
@@ -570,6 +571,10 @@ describe('getMediaById Server Action', () => {
 describe('getGlobalMediaStats Server Action', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Mock redis.get to return null (cache miss) by default
+        (redis.get as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+        // Mock redis.setex to succeed
+        (redis.setex as ReturnType<typeof vi.fn>).mockResolvedValue('OK');
     });
 
     it('returns the correct global media stats', async () => {
