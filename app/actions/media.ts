@@ -209,7 +209,16 @@ export const getGlobalMediaStats = async (): Promise<{
             });
             return parsed;
         }
+    } catch (cacheError) {
+        logger.warn('GET /actions/media', {
+            method: 'getGlobalMediaStats',
+            cacheReadFailed: true,
+            error: cacheError,
+            message: 'Redis read failed, falling back to database',
+        });
+    }
 
+    try {
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
@@ -243,7 +252,6 @@ export const getGlobalMediaStats = async (): Promise<{
                 cacheWriteFailed: true,
                 error: cacheError,
             });
-            // Intentionally do not rethrow: caching failure should not break stats retrieval.
         }
 
         logger.info('GET /actions/media', {
