@@ -58,15 +58,7 @@ export default function Pagination({
                 } else if (currentPage >= totalPages - 2) {
                     pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
                 } else {
-                    pages.push(
-                        1,
-                        '...',
-                        currentPage - 1,
-                        currentPage,
-                        currentPage + 1,
-                        '...',
-                        totalPages,
-                    );
+                    pages.push(1, '...', currentPage, '...', totalPages);
                 }
             }
         } else {
