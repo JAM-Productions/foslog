@@ -29,6 +29,16 @@ export interface Review {
     liked?: boolean;
     review?: string;
     consumedMoreThanOnce?: boolean;
+    totalComments: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Comment {
+    id: string;
+    comment: string;
+    reviewId: string;
+    userId: string;
     createdAt: Date;
     updatedAt: Date;
 }

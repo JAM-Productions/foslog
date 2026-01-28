@@ -83,6 +83,7 @@ export const getUserReviews = async (
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
             consumedMoreThanOnce: review.consumedMoreThanOnce,
+            totalComments: review.totalComments,
             user: {
                 id: review.user.id,
                 name: review.user.name ?? 'Unknown User',

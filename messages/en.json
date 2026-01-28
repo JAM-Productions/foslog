@@ -222,7 +222,11 @@
         "reviewDeleted": "Review deleted successfully!",
         "reviewDeleteFailed": "Failed to delete review. Please try again.",
         "reviewUpdated": "Review updated successfully!",
-        "reviewUpdateFailed": "Failed to update review. Please try again."
+        "reviewUpdateFailed": "Failed to update review. Please try again.",
+        "commentCreated": "Comment added successfully!",
+        "commentCreateFailed": "Failed to add comment. Please try again.",
+        "commentDeleted": "Comment deleted successfully!",
+        "commentDeleteFailed": "Failed to delete comment. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -282,7 +286,15 @@
         "options": "Options",
         "shareTitle": "Review",
         "deleteReviewTitle": "Delete Review",
-        "deleteReviewDescription": "You are about to permanently delete this review. This action cannot be undone."
+        "deleteReviewDescription": "You are about to permanently delete this review. This action cannot be undone.",
+        "yourComment": "Your Comment",
+        "shareReviewThoughts": "Share your thoughts about this review...",
+        "sendComment": "Send Comment",
+        "comments": "Comments",
+        "noComments": "No comments for this review yet. Be the first to comment!",
+        "leaveAComment": "Leave a Comment",
+        "deleteCommentTitle": "Delete Comment",
+        "deleteCommentDescription": "You are about to permanently delete this comment. This action cannot be undone."
     },
     "Footer": {
         "privacyPolicy": "Privacy Policy",

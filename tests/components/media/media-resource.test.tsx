@@ -38,6 +38,7 @@ const mockReviews: (Review & { user: User })[] = [
         review: 'Great movie!',
         createdAt: new Date(),
         updatedAt: new Date(),
+        totalComments: 0,
         user: mockUser,
     },
 ];

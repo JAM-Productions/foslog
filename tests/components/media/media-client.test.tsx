@@ -26,9 +26,7 @@ vi.mock('@/components/pagination/pagination', () => ({
 // Mock the sub-components
 vi.mock('@/components/media/media-details', () => ({
     MediaDetails: ({ media }: { media: any }) => (
-        <div data-testid="media-details">
-            Media Details - {media.title}
-        </div>
+        <div data-testid="media-details">Media Details - {media.title}</div>
     ),
 }));
 
@@ -38,7 +36,9 @@ vi.mock('@/components/review/review-form', () => ({
 
 vi.mock('@/components/review/review-list', () => ({
     ReviewList: ({ reviews }: { reviews: any[] }) => (
-        <div data-testid="review-list">Review List - {reviews.length} reviews</div>
+        <div data-testid="review-list">
+            Review List - {reviews.length} reviews
+        </div>
     ),
 }));
 
@@ -68,6 +68,7 @@ const mockMediaItem: SafeMediaItemWithReviews = {
             review: 'Great movie!',
             createdAt: new Date(),
             updatedAt: new Date(),
+            totalComments: 0,
             user: {
                 id: '1',
                 name: 'John Doe',
@@ -83,6 +84,7 @@ const mockMediaItem: SafeMediaItemWithReviews = {
             review: 'Amazing!',
             createdAt: new Date(),
             updatedAt: new Date(),
+            totalComments: 0,
             user: {
                 id: '2',
                 name: 'Jane Smith',

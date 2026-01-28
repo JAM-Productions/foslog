@@ -222,7 +222,11 @@
         "reviewDeleted": "¡Reseña eliminada exitosamente!",
         "reviewDeleteFailed": "Error al eliminar la reseña. Por favor inténtalo de nuevo.",
         "reviewUpdated": "¡Reseña actualizada exitosamente!",
-        "reviewUpdateFailed": "Error al actualizar la reseña. Por favor inténtalo de nuevo."
+        "reviewUpdateFailed": "Error al actualizar la reseña. Por favor inténtalo de nuevo.",
+        "commentCreated": "¡Comentario agregado exitosamente!",
+        "commentCreateFailed": "Error al agregar el comentario. Por favor inténtalo de nuevo.",
+        "commentDeleted": "¡Comentario eliminado exitosamente!",
+        "commentDeleteFailed": "Error al eliminar el comentario. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -282,7 +286,15 @@
         "options": "Opciones",
         "shareTitle": "Reseña",
         "deleteReviewTitle": "Eliminar Reseña",
-        "deleteReviewDescription": "Vas a eliminar esta reseña de forma permanente. Esta acción no se puede deshacer."
+        "deleteReviewDescription": "Vas a eliminar esta reseña de forma permanente. Esta acción no se puede deshacer.",
+        "yourComment": "Tu Comentario",
+        "shareReviewThoughts": "Comparte tus pensamientos sobre esta reseña...",
+        "sendComment": "Enviar Comentario",
+        "comments": "Comentarios",
+        "noComments": "Todavía no hay comentarios para esta reseña. ¡Sé el primero en comentar!",
+        "leaveAComment": "Dejar un comentario",
+        "deleteCommentTitle": "Eliminar Comentario",
+        "deleteCommentDescription": "Vas a eliminar este comentario de forma permanente. Esta acción no se puede deshacer."
     },
     "Footer": {
         "privacyPolicy": "Política de Privacidad",

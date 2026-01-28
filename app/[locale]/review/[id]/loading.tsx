@@ -54,6 +54,50 @@ export default function Loading() {
                                     <div className="bg-card h-9 w-full animate-pulse rounded-md border sm:w-24"></div>
                                 </div>
                             </div>
+
+                            <div className="mt-8 mb-8 lg:mb-10">
+                                <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="bg-muted h-8 w-32 animate-pulse rounded sm:h-9"></div>
+                                        <div className="bg-muted h-6 w-12 animate-pulse rounded"></div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {[1, 2].map((i) => (
+                                        <div
+                                            key={i}
+                                            className="bg-card rounded-lg border p-4 shadow-sm sm:p-6"
+                                        >
+                                            <div className="flex items-start gap-3 sm:gap-4">
+                                                <div className="bg-muted h-10 w-10 shrink-0 animate-pulse rounded-full"></div>
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="bg-muted h-4 w-24 animate-pulse rounded"></div>
+                                                        <div className="bg-muted h-3 w-20 animate-pulse rounded"></div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <div className="bg-muted h-4 w-full animate-pulse rounded"></div>
+                                                        <div className="bg-muted h-4 w-3/4 animate-pulse rounded"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mb-8 sm:mb-12 lg:mb-16">
+                                <div className="bg-muted mb-4 h-8 w-48 animate-pulse rounded sm:mb-6 sm:h-9"></div>
+                                <div className="bg-card rounded-lg border p-4 shadow-sm sm:p-6 lg:p-8">
+                                    <div className="space-y-4">
+                                        <div className="bg-muted h-32 w-full animate-pulse rounded-md"></div>
+                                        <div className="flex">
+                                            <div className="bg-muted h-10 w-24 animate-pulse rounded-md"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

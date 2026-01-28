@@ -222,7 +222,11 @@
         "reviewDeleted": "Ressenya eliminada correctament!",
         "reviewDeleteFailed": "Error en eliminar la ressenya. Si us plau, torna-ho a provar.",
         "reviewUpdated": "Ressenya actualitzada correctament!",
-        "reviewUpdateFailed": "Error en actualitzar la ressenya. Si us plau, torna-ho a provar."
+        "reviewUpdateFailed": "Error en actualitzar la ressenya. Si us plau, torna-ho a provar.",
+        "commentCreated": "Comentari afegit correctament!",
+        "commentCreateFailed": "Error en afegir el comentari. Si us plau, torna-ho a provar.",
+        "commentDeleted": "Comentari eliminat correctament!",
+        "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -282,7 +286,15 @@
         "options": "Opcions",
         "shareTitle": "Ressenya",
         "deleteReviewTitle": "Eliminar Ressenya",
-        "deleteReviewDescription": "Estàs a punt d'eliminar aquesta ressenya de forma permanent. Aquesta acció no es pot desfer."
+        "deleteReviewDescription": "Estàs a punt d'eliminar aquesta ressenya de forma permanent. Aquesta acció no es pot desfer.",
+        "yourComment": "El teu Comentari",
+        "shareReviewThoughts": "Comparteix els teus pensaments sobre aquesta ressenya...",
+        "sendComment": "Enviar Comentari",
+        "comments": "Comentaris",
+        "noComments": "Encara no hi ha comentaris per a aquesta ressenya. Sigues el primer en comentar!",
+        "leaveAComment": "Deixa un comentari",
+        "deleteCommentTitle": "Eliminar Comentari",
+        "deleteCommentDescription": "Estàs a punt d'eliminar aquest comentari de forma permanent. Aquesta acció no es pot desfer."
     },
     "Footer": {
         "privacyPolicy": "Política de Privacitat",
