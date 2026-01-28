@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/button/button';
+import { useMediaQuery } from '@/lib/hooks/use-media-query';
 
 interface PaginationProps {
     currentPage: number;
@@ -18,6 +19,7 @@ export default function Pagination({
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
+    const isSmScreen = useMediaQuery('(max-width: 640px)');
 
     const handlePageChange = (page: number) => {
         if (page < 1 || page > totalPages) return;
@@ -45,37 +47,59 @@ export default function Pagination({
     // Generate page numbers to display
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
-        const maxVisible = 7; // Maximum number of page buttons to show
-
-        if (totalPages <= maxVisible) {
-            // Show all pages if total is small
-            for (let i = 1; i <= totalPages; i++) {
-                pages.push(i);
+        if (isSmScreen) {
+            if (totalPages <= 5) {
+                for (let i = 1; i <= totalPages; i++) {
+                    pages.push(i);
+                }
+            } else {
+                if (currentPage <= 3) {
+                    pages.push(1, 2, 3, '...', totalPages);
+                } else if (currentPage >= totalPages - 2) {
+                    pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
+                } else {
+                    pages.push(
+                        1,
+                        '...',
+                        currentPage - 1,
+                        currentPage,
+                        currentPage + 1,
+                        '...',
+                        totalPages,
+                    );
+                }
             }
         } else {
-            // Always show first page
-            pages.push(1);
+            const maxVisible = 7;
+            if (totalPages <= maxVisible) {
+                // Show all pages if total is small
+                for (let i = 1; i <= totalPages; i++) {
+                    pages.push(i);
+                }
+            } else {
+                // Always show first page
+                pages.push(1);
 
-            if (currentPage > 3) {
-                pages.push('...');
+                if (currentPage > 3) {
+                    pages.push('...');
+                }
+
+                // Show pages around current page
+                const start = Math.max(2, currentPage - 1);
+                const end = Math.min(totalPages - 1, currentPage + 1);
+
+                for (let i = start; i <= end; i++) {
+                    pages.push(i);
+                }
+
+                if (currentPage < totalPages - 2) {
+                    pages.push('...');
+                }
+
+                // Always show last page
+                pages.push(totalPages);
             }
-
-            // Show pages around current page
-            const start = Math.max(2, currentPage - 1);
-            const end = Math.min(totalPages - 1, currentPage + 1);
-
-            for (let i = start; i <= end; i++) {
-                pages.push(i);
-            }
-
-            if (currentPage < totalPages - 2) {
-                pages.push('...');
-            }
-
-            // Always show last page
-            pages.push(totalPages);
         }
-
         return pages;
     };
 
