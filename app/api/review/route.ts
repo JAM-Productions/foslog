@@ -58,64 +58,23 @@ export async function POST(request: NextRequest) {
             return validationError('Media ID is required');
         }
 
-        const result = await prisma.$transaction(async (tx) => {
-            const mediaItem = await tx.mediaItem.findUnique({
-                where: { id: mediaId },
-            });
+        const mediaItem = await prisma.mediaItem.findUnique({
+            where: { id: mediaId },
+        });
 
-            if (!mediaItem) {
-                throw new Error('MEDIA_NOT_FOUND');
-            }
+        if (!mediaItem) {
+            return notFound('Media item not found');
+        }
 
-            const reviewItem = await tx.review.create({
-                data: {
-                    rating: review.stars || null,
-                    liked: review.liked !== undefined ? review.liked : null,
-                    review: review.text,
-                    consumedMoreThanOnce: review.consumedMoreThanOnce || false,
-                    mediaId: mediaId,
-                    userId: session.user.id,
-                },
-            });
-
-            const { _avg } = await tx.review.aggregate({
-                where: {
-                    mediaId,
-                    rating: { not: null },
-                },
-                _avg: { rating: true },
-            });
-
-            const [likesCount, dislikesCount, totalReviewsCount] =
-                await Promise.all([
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: true,
-                        },
-                    }),
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: false,
-                        },
-                    }),
-                    tx.review.count({
-                        where: { mediaId },
-                    }),
-                ]);
-
-            await tx.mediaItem.update({
-                where: { id: mediaId },
-                data: {
-                    averageRating: Number(_avg.rating?.toFixed(1)) || 0,
-                    totalReviews: totalReviewsCount,
-                    totalLikes: likesCount,
-                    totalDislikes: dislikesCount,
-                },
-            });
-
-            return reviewItem;
+        const result = await prisma.review.create({
+            data: {
+                rating: review.stars || null,
+                liked: review.liked !== undefined ? review.liked : null,
+                review: review.text,
+                consumedMoreThanOnce: review.consumedMoreThanOnce || false,
+                mediaId: mediaId,
+                userId: session.user.id,
+            },
         });
 
         const referer = request.headers.get('referer') || '';
@@ -136,9 +95,6 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        if (error instanceof Error && error.message === 'MEDIA_NOT_FOUND') {
-            return notFound('Media item not found');
-        }
         logger.error('POST /api/review', { error });
         return internalServerError();
     }
@@ -162,63 +118,25 @@ export async function DELETE(request: NextRequest) {
             return validationError('Review ID is required');
         }
 
-        const mediaId = await prisma.$transaction(async (tx) => {
-            const existingReview = await tx.review.findUnique({
-                where: { id: reviewId },
-            });
-
-            if (!existingReview) {
-                throw new Error('REVIEW_NOT_FOUND');
-            }
-
-            if (existingReview.userId !== session.user.id) {
-                throw new Error('UNAUTHORIZED_DELETE');
-            }
-
-            await tx.review.delete({
-                where: { id: reviewId },
-            });
-            const mediaId = existingReview.mediaId;
-
-            const { _avg } = await tx.review.aggregate({
-                where: {
-                    mediaId,
-                    rating: { not: null },
-                },
-                _avg: { rating: true },
-            });
-
-            const [likesCount, dislikesCount, totalReviewsCount] =
-                await Promise.all([
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: true,
-                        },
-                    }),
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: false,
-                        },
-                    }),
-                    tx.review.count({
-                        where: { mediaId },
-                    }),
-                ]);
-
-            await tx.mediaItem.update({
-                where: { id: mediaId },
-                data: {
-                    averageRating: Number(_avg.rating?.toFixed(1)) || 0,
-                    totalReviews: totalReviewsCount,
-                    totalLikes: likesCount,
-                    totalDislikes: dislikesCount,
-                },
-            });
-
-            return mediaId;
+        const existingReview = await prisma.review.findUnique({
+            where: { id: reviewId },
         });
+
+        if (!existingReview) {
+            return notFound('Review not found');
+        }
+
+        if (existingReview.userId !== session.user.id) {
+            return unauthorized(
+                'You are not authorized to delete this review.'
+            );
+        }
+
+        await prisma.review.delete({
+            where: { id: reviewId },
+        });
+
+        const mediaId = existingReview.mediaId;
 
         const referer = request.headers.get('referer') || '';
         const locale =
@@ -239,16 +157,6 @@ export async function DELETE(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        if (error instanceof Error) {
-            if (error.message === 'REVIEW_NOT_FOUND') {
-                return notFound('Review not found');
-            }
-            if (error.message === 'UNAUTHORIZED_DELETE') {
-                return unauthorized(
-                    'You are not authorized to delete this review.'
-                );
-            }
-        }
         logger.error('DELETE /api/review', { error });
         return internalServerError();
     }
@@ -285,68 +193,34 @@ export async function PATCH(request: NextRequest) {
         if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');
         }
-        const result = await prisma.$transaction(async (tx) => {
-            const existingReview = await tx.review.findUnique({
-                where: { id: reviewId },
-            });
-            if (!existingReview) {
-                throw new Error('REVIEW_NOT_FOUND');
-            }
-            if (existingReview.userId !== session.user.id) {
-                throw new Error('UNAUTHORIZED_UPDATE');
-            }
-            await tx.review.update({
-                where: { id: reviewId },
-                data: {
-                    rating: review.stars ?? null,
-                    liked: review.liked ?? null,
-                    review: review.text,
-                },
-            });
-            const mediaId = existingReview.mediaId;
-            const { _avg } = await tx.review.aggregate({
-                where: {
-                    mediaId,
-                    rating: { not: null },
-                },
-                _avg: { rating: true },
-            });
-            const [likesCount, dislikesCount, totalReviewsCount] =
-                await Promise.all([
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: true,
-                        },
-                    }),
-                    tx.review.count({
-                        where: {
-                            mediaId,
-                            liked: false,
-                        },
-                    }),
-                    tx.review.count({
-                        where: { mediaId },
-                    }),
-                ]);
-            await tx.mediaItem.update({
-                where: { id: mediaId },
-                data: {
-                    averageRating: Number(_avg.rating?.toFixed(1)) || 0,
-                    totalReviews: totalReviewsCount,
-                    totalLikes: likesCount,
-                    totalDislikes: dislikesCount,
-                },
-            });
-            return mediaId;
+        const existingReview = await prisma.review.findUnique({
+            where: { id: reviewId },
         });
+        if (!existingReview) {
+            return notFound('Review not found');
+        }
+        if (existingReview.userId !== session.user.id) {
+            return unauthorized(
+                'You are not authorized to update this review.'
+            );
+        }
+        await prisma.review.update({
+            where: { id: reviewId },
+            data: {
+                rating: review.stars ?? null,
+                liked: review.liked ?? null,
+                review: review.text,
+            },
+        });
+        const mediaId = existingReview.mediaId;
+        
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
         revalidatePath(`/${locale}/review/${reviewId}`, 'page');
         logger.info('PATCH /api/review', {
             userId: session.user.id,
-            mediaId: result,
+            mediaId,
             reviewId,
         });
         return NextResponse.json(
@@ -356,16 +230,6 @@ export async function PATCH(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        if (error instanceof Error) {
-            if (error.message === 'REVIEW_NOT_FOUND') {
-                return notFound('Review not found');
-            }
-            if (error.message === 'UNAUTHORIZED_UPDATE') {
-                return unauthorized(
-                    'You are not authorized to update this review.'
-                );
-            }
-        }
         logger.error('PATCH /api/review', { error });
         return internalServerError();
     }

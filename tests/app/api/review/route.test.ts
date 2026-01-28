@@ -100,28 +100,19 @@ describe('POST /api/review', () => {
 
   it('should return 404 Not Found if media item does not exist', async () => {
     (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as Mock).mockImplementation(async (callback) => {
-      const tx = {
-        mediaItem: {
-          findUnique: vi.fn().mockResolvedValue(null),
-        },
-      };
-      return callback(tx);
-    });
+    (prisma.mediaItem.findUnique as Mock).mockResolvedValue(null);
     const req = mockRequest({ review: { stars: 5 }, mediaId: '1' });
 
-    // As the error is thrown inside the transaction, we need to catch it.
-    // The route handler catches it and returns a notFound response.
     const response = await POST(req);
     const data = await response.json();
 
     expect(response.status).toBe(404);
-    expect(data.code).toBe(ApiErrorType.NOT_FOUND);
+    expect(data.error).toBe('Media item not found');
   });
 
   it('should return 500 Internal Server Error on database failure', async () => {
     (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as Mock).mockRejectedValue(new Error('DB error'));
+    (prisma.mediaItem.findUnique as Mock).mockRejectedValue(new Error('DB error'));
     const req = mockRequest({ review: { stars: 5 }, mediaId: '1' });
     const response = await POST(req);
     const data = await response.json();
@@ -132,20 +123,8 @@ describe('POST /api/review', () => {
 
   it('should create a review successfully', async () => {
     (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
-    (prisma.$transaction as Mock).mockImplementation(async (callback) => {
-      const tx = {
-        mediaItem: {
-          findUnique: vi.fn().mockResolvedValue({ id: '1' }),
-          update: vi.fn(),
-        },
-        review: {
-          create: vi.fn().mockResolvedValue({ id: 'rev1' }),
-          aggregate: vi.fn().mockResolvedValue({ _avg: { rating: 4.5 }, _count: 10 }),
-          count: vi.fn().mockResolvedValue(5),
-        },
-      };
-      return callback(tx);
-    });
+    (prisma.mediaItem.findUnique as Mock).mockResolvedValue({ id: '1' });
+    (prisma.review.create as Mock).mockResolvedValue({ id: 'rev1' });
 
     const req = mockRequest({ review: { stars: 5 }, mediaId: '1' });
     const response = await POST(req);
@@ -153,5 +132,6 @@ describe('POST /api/review', () => {
 
     expect(response.status).toBe(201);
     expect(data.message).toBe('Review created successfully');
+    expect(prisma.review.create).toHaveBeenCalled();
   });
 });

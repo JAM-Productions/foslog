@@ -36,31 +36,20 @@ export async function POST(request: NextRequest) {
         if (comment.length > 2000) {
             return validationError('Comment text is too long');
         }
-        const result = await prisma.$transaction(async (tx) => {
-            const reviewItem = await tx.review.findUnique({
-                where: { id: reviewId },
-            });
+        const reviewItem = await prisma.review.findUnique({
+            where: { id: reviewId },
+        });
 
-            if (!reviewItem) {
-                throw new Error('REVIEW_NOT_FOUND');
-            }
+        if (!reviewItem) {
+            return notFound('Review not found');
+        }
 
-            const commentItem = await tx.comment.create({
-                data: {
-                    comment,
-                    reviewId: reviewId,
-                    userId: session.user.id,
-                },
-            });
-
-            await tx.review.update({
-                where: { id: reviewId },
-                data: {
-                    totalComments: { increment: 1 },
-                },
-            });
-
-            return commentItem;
+        const result = await prisma.comment.create({
+            data: {
+                comment,
+                reviewId: reviewId,
+                userId: session.user.id,
+            },
         });
 
         const referer = request.headers.get('referer') || '';
@@ -81,9 +70,6 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        if (error instanceof Error && error.message === 'REVIEW_NOT_FOUND') {
-            return notFound('Review not found');
-        }
         logger.error('POST /api/comment', { error });
         return internalServerError();
     }
@@ -105,51 +91,35 @@ export async function DELETE(request: NextRequest) {
             return validationError('Comment id is required');
         }
 
-        const result = await prisma.$transaction(async (tx) => {
-            const commentItem = await tx.comment.findUnique({
-                where: { id: commentId },
-            });
-            if (!commentItem) {
-                throw new Error('COMMENT_NOT_FOUND');
-            }
-            if (commentItem.userId !== session.user.id) {
-                throw new Error('UNAUTHORIZED');
-            }
-            await tx.comment.delete({
-                where: { id: commentId },
-            });
-            await tx.review.update({
-                where: { id: commentItem.reviewId },
-                data: {
-                    totalComments: { decrement: 1 },
-                },
-            });
-            return commentItem;
+        const commentItem = await prisma.comment.findUnique({
+            where: { id: commentId },
         });
+        if (!commentItem) {
+            return notFound('Comment not found');
+        }
+        if (commentItem.userId !== session.user.id) {
+            return unauthorized(
+                'You are not authorized to delete this comment.'
+            );
+        }
+        await prisma.comment.delete({
+            where: { id: commentId },
+        });
+        
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
-        revalidatePath(`/${locale}/review/${result.reviewId}`, 'page');
+        revalidatePath(`/${locale}/review/${commentItem.reviewId}`, 'page');
         logger.info('DELETE /api/comment', {
             userId: session.user.id,
-            commentId: result.id,
-            reviewId: result.reviewId,
+            commentId: commentItem.id,
+            reviewId: commentItem.reviewId,
         });
         return NextResponse.json({
             message: 'Comment deleted successfully',
-            comment: result,
+            comment: commentItem,
         });
     } catch (error) {
-        if (error instanceof Error) {
-            if (error.message === 'COMMENT_NOT_FOUND') {
-                return notFound('Comment not found');
-            }
-            if (error.message === 'UNAUTHORIZED') {
-                return unauthorized(
-                    'You are not authorized to delete this comment.'
-                );
-            }
-        }
         logger.error('DELETE /api/comment', { error });
         return internalServerError();
     }
