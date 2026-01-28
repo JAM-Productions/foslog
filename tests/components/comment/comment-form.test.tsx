@@ -37,6 +37,15 @@ vi.mock('@/lib/toast-store', () => ({
     }),
 }));
 
+vi.mock('@/lib/auth/auth-provider', () => ({
+    useAuth: () => ({
+        user: { id: 'user-1', name: 'Test User' },
+        session: null,
+        isLoading: false,
+        isAuthenticated: true,
+    }),
+}));
+
 describe('CommentForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
