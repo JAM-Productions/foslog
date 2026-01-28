@@ -3,11 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Pagination from '@/components/pagination/pagination';
 import { useRouter, usePathname } from 'next/navigation';
+import { useMediaQuery } from '@/lib/hooks/use-media-query';
 
 // Mock Next.js navigation hooks
 vi.mock('next/navigation', () => ({
     useRouter: vi.fn(),
     usePathname: vi.fn(),
+}));
+
+vi.mock('@/lib/hooks/use-media-query', () => ({
+    useMediaQuery: vi.fn(),
 }));
 
 describe('Pagination Component', () => {
@@ -27,6 +32,7 @@ describe('Pagination Component', () => {
             value: { search: '' },
             writable: true,
         });
+        (useMediaQuery as ReturnType<typeof vi.fn>).mockReturnValue(false);
     });
 
     describe('Rendering', () => {
@@ -284,6 +290,50 @@ describe('Pagination Component', () => {
             expect(screen.getByLabelText('Page 8')).toBeInTheDocument();
             expect(screen.getByLabelText('Page 9')).toBeInTheDocument();
             expect(screen.getByLabelText('Page 10')).toBeInTheDocument();
+        });
+    });
+
+    describe('Small Screen Display Logic', () => {
+        beforeEach(() => {
+            (useMediaQuery as ReturnType<typeof vi.fn>).mockReturnValue(true);
+        });
+
+        it('shows all pages when total is 5 or less', () => {
+            render(<Pagination currentPage={1} totalPages={5} />);
+            for (let i = 1; i <= 5; i++) {
+                expect(screen.getByLabelText(`Page ${i}`)).toBeInTheDocument();
+            }
+        });
+
+        it('shows correct pages when near the start', () => {
+            render(<Pagination currentPage={2} totalPages={10} />);
+            // Should show: 1 2 3 ... 10
+            expect(screen.getByLabelText('Page 1')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 2')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 3')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 10')).toBeInTheDocument();
+            expect(screen.getAllByText('...').length).toBe(1);
+        });
+
+        it('shows correct pages when near the end', () => {
+            render(<Pagination currentPage={9} totalPages={10} />);
+            // Should show: 1 ... 8 9 10
+            expect(screen.getByLabelText('Page 1')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 8')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 9')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 10')).toBeInTheDocument();
+            expect(screen.getAllByText('...').length).toBe(1);
+        });
+
+        it('shows pages around current page in middle range', () => {
+            render(<Pagination currentPage={5} totalPages={10} />);
+            // Should show: 1 ... 4 5 6 ... 10
+            expect(screen.getByLabelText('Page 1')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 4')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 5')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 6')).toBeInTheDocument();
+            expect(screen.getByLabelText('Page 10')).toBeInTheDocument();
+            expect(screen.getAllByText('...').length).toBe(2);
         });
     });
 });
