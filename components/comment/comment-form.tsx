@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useToastStore } from '@/lib/toast-store';
 import { useRouter } from '@/i18n/navigation';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 interface CommentFormProps {
     reviewId: string;
@@ -18,12 +19,16 @@ export function CommentForm({ reviewId }: CommentFormProps) {
     const tToast = useTranslations('Toast');
     const tRP = useTranslations('ReviewPage');
     const router = useRouter();
+    const { user } = useAuth();
 
     const [comment, setComment] = useState('');
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user) {
+            return router.push('/login');
+        }
         setError(null);
         setIsSubmitting(true);
         try {
