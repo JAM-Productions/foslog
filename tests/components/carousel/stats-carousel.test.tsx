@@ -278,9 +278,9 @@ describe('StatsCarousel', () => {
             await user.keyboard('{Enter}');
             expect(screen.getByText('100')).toBeInTheDocument();
 
-            // Verify aria-current attribute
-            expect(indicators[1]).toHaveAttribute('aria-current', 'true');
-            expect(indicators[0]).toHaveAttribute('aria-current', 'false');
+            // Verify aria-selected attribute
+            expect(indicators[1]).toHaveAttribute('aria-selected', 'true');
+            expect(indicators[0]).toHaveAttribute('aria-selected', 'false');
         });
 
         it('has proper tablist role for indicator navigation', () => {
@@ -305,7 +305,7 @@ describe('StatsCarousel', () => {
             expect(tablist).toHaveAttribute('aria-label', 'Slide navigation');
         });
 
-        it('updates aria-current on indicator dots when slide changes', () => {
+        it('updates aria-selected on indicator dots when slide changes', () => {
             render(
                 <NextIntlClientProvider
                     locale="en"
@@ -324,15 +324,15 @@ describe('StatsCarousel', () => {
             const nextButton = screen.getByRole('button', { name: /next/i });
 
             // Initially first indicator is active
-            expect(indicators[0]).toHaveAttribute('aria-current', 'true');
-            expect(indicators[1]).toHaveAttribute('aria-current', 'false');
+            expect(indicators[0]).toHaveAttribute('aria-selected', 'true');
+            expect(indicators[1]).toHaveAttribute('aria-selected', 'false');
 
             // Navigate to next slide
             fireEvent.click(nextButton);
 
             // Second indicator should now be active
-            expect(indicators[0]).toHaveAttribute('aria-current', 'false');
-            expect(indicators[1]).toHaveAttribute('aria-current', 'true');
+            expect(indicators[0]).toHaveAttribute('aria-selected', 'false');
+            expect(indicators[1]).toHaveAttribute('aria-selected', 'true');
         });
 
         it('announces content changes to screen readers via aria-live', () => {
