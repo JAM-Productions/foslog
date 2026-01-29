@@ -86,7 +86,10 @@ export default function HomePageClient({
     return (
         <div className="container mx-auto px-4 py-8">
             {/* Stats Cards */}
-            <div className="md:hidden" data-testid="stats-carousel">
+            <div
+                className="mb-5 md:hidden"
+                data-testid="stats-carousel"
+            >
                 <StatsCarousel
                     globalStats={globalStats}
                     total={total}

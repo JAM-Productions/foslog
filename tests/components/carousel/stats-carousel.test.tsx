@@ -1,4 +1,5 @@
 import React from 'react';
+import { describe, it, expect } from 'vitest';
 import { render, fireEvent, screen } from '@testing-library/react';
 import StatsCarousel from '@/components/carousel/stats-carousel';
 import { NextIntlClientProvider } from 'next-intl';
@@ -15,7 +16,10 @@ describe('StatsCarousel', () => {
 
     it('renders the first slide initially', () => {
         render(
-            <NextIntlClientProvider locale="en" messages={messages}>
+            <NextIntlClientProvider
+                locale="en"
+                messages={messages}
+            >
                 <StatsCarousel
                     globalStats={globalStats}
                     total={total}
@@ -29,7 +33,10 @@ describe('StatsCarousel', () => {
 
     it('goes to the next slide when the right arrow is clicked', () => {
         render(
-            <NextIntlClientProvider locale="en" messages={messages}>
+            <NextIntlClientProvider
+                locale="en"
+                messages={messages}
+            >
                 <StatsCarousel
                     globalStats={globalStats}
                     total={total}
@@ -44,7 +51,10 @@ describe('StatsCarousel', () => {
 
     it('goes to the previous slide when the left arrow is clicked', () => {
         render(
-            <NextIntlClientProvider locale="en" messages={messages}>
+            <NextIntlClientProvider
+                locale="en"
+                messages={messages}
+            >
                 <StatsCarousel
                     globalStats={globalStats}
                     total={total}
@@ -60,7 +70,10 @@ describe('StatsCarousel', () => {
 
     it('loops back to the first slide from the last slide', () => {
         render(
-            <NextIntlClientProvider locale="en" messages={messages}>
+            <NextIntlClientProvider
+                locale="en"
+                messages={messages}
+            >
                 <StatsCarousel
                     globalStats={globalStats}
                     total={total}
