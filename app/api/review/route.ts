@@ -213,7 +213,7 @@ export async function PATCH(request: NextRequest) {
             },
         });
         const mediaId = existingReview.mediaId;
-        
+
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';

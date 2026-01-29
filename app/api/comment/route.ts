@@ -105,7 +105,7 @@ export async function DELETE(request: NextRequest) {
         await prisma.comment.delete({
             where: { id: commentId },
         });
-        
+
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
