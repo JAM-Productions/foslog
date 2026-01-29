@@ -1,11 +1,21 @@
 export default function Loading() {
     return (
         <div className="container mx-auto px-4 py-8">
-            {/* Stats Carousel Skeleton */}
-            <div className="mb-8 flex flex-col gap-3">
+            {/* Stats Cards Skeleton (Desktop - 3 cards) */}
+            <div className="mb-8 hidden grid-cols-1 gap-4 md:grid md:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="bg-card h-28 animate-pulse rounded-lg border p-4"
+                    ></div>
+                ))}
+            </div>
+
+            {/* Stats Carousel Skeleton (Mobile) */}
+            <div className="mb-8 flex flex-col gap-3 md:hidden">
                 <div className="flex items-center justify-between gap-2">
                     {/* Previous button skeleton */}
-                    <div className="bg-muted h-9 w-9 animate-pulse rounded-md"></div>
+                    <div className="bg-muted h-9 w-14 animate-pulse rounded-md"></div>
 
                     {/* Card skeleton */}
                     <div className="bg-card w-full animate-pulse rounded-lg border p-4">
@@ -18,7 +28,7 @@ export default function Loading() {
                     </div>
 
                     {/* Next button skeleton */}
-                    <div className="bg-muted h-9 w-9 animate-pulse rounded-md"></div>
+                    <div className="bg-muted h-9 w-14 animate-pulse rounded-md"></div>
                 </div>
 
                 {/* Slide indicators skeleton */}

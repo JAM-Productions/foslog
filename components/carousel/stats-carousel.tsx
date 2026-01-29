@@ -76,6 +76,7 @@ export default function StatsCarousel({
                     <ChevronLeft className="h-5 w-5" />
                 </Button>
                 <div
+                    id="stats-carousel-content"
                     className="bg-card w-full rounded-lg border p-4"
                     aria-live="polite"
                     aria-atomic="true"
@@ -122,7 +123,8 @@ export default function StatsCarousel({
                                 : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
                         }`}
                         aria-label={`Go to slide ${index + 1}`}
-                        aria-current={index === activeIndex ? 'true' : 'false'}
+                        aria-selected={index === activeIndex}
+                        aria-controls="stats-carousel-content"
                         role="tab"
                     />
                 ))}
