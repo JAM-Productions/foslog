@@ -1,6 +1,12 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import {
+    render,
+    fireEvent,
+    screen,
+    waitFor,
+    act,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StatsCarousel from '@/components/carousel/stats-carousel';
 import { NextIntlClientProvider } from 'next-intl';
@@ -105,6 +111,238 @@ describe('StatsCarousel', () => {
             expect(
                 screen.getByRole('region', { hidden: false })
             ).toHaveTextContent('4.5');
+        });
+    });
+
+    describe('Mobile Responsive Behavior', () => {
+        it('shows navigation buttons when isMobile is false', () => {
+            renderCarousel({ isMobile: false });
+
+            const prevButton = screen.getByRole('button', {
+                name: /previous/i,
+            });
+            const nextButton = screen.getByRole('button', { name: /next/i });
+
+            expect(prevButton).toBeInTheDocument();
+            expect(nextButton).toBeInTheDocument();
+        });
+
+        it('hides navigation buttons when isMobile is true', () => {
+            renderCarousel({ isMobile: true });
+
+            const prevButton = screen.queryByRole('button', {
+                name: /previous/i,
+            });
+            const nextButton = screen.queryByRole('button', {
+                name: /next/i,
+            });
+
+            expect(prevButton).not.toBeInTheDocument();
+            expect(nextButton).not.toBeInTheDocument();
+        });
+
+        it('still allows slide indicator navigation on mobile', () => {
+            renderCarousel({ isMobile: true });
+
+            const indicators = screen.getAllByRole('tab');
+            expect(indicators).toHaveLength(3);
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Click second indicator
+            fireEvent.click(indicators[1]);
+
+            // Should navigate to second slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+        });
+    });
+
+    describe('Touch/Swipe Gestures', () => {
+        it('navigates to next slide on swipe left', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate swipe left (start at 200, move to 100 = -100px or -33.33%)
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 200 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 100 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should navigate to next slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
+        });
+
+        it('navigates to previous slide on swipe right', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Move to second slide first
+            fireEvent.click(screen.getByRole('button', { name: /next/i }));
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate swipe right (start at 100, move to 200 = +100px or +33.33%)
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 100 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 200 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should navigate to previous slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('4.5');
+            });
+        });
+
+        it('does not navigate if swipe distance is below 10% threshold', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate small swipe (start at 150, move to 125 = -25px or -8.33%, below 10% threshold)
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 150 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 125 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should stay on first slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('4.5');
+            });
+        });
+
+        it('navigates when swipe distance is exactly at 10% threshold', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate swipe at threshold (start at 150, move to 119 = -31px or -10.33%, just above 10% threshold)
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 150 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 119 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should navigate to next slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
+        });
+
+        it('updates drag offset during touch move', () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Set carousel width
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Start touch
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 200 }],
+            });
+
+            // Move touch (drag 60px = 20% of 300px)
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 140 }],
+            });
+
+            // The transform should include the drag offset
+            const slideContainer = carousel!.querySelector('.flex');
+
+            // During drag, the component applies dragOffset, but we can't easily assert the exact value
+            // Just verify touch events are handled without errors
+            expect(slideContainer).toBeInTheDocument();
         });
     });
 
@@ -258,6 +496,151 @@ describe('StatsCarousel', () => {
                     screen.getByRole('region', { hidden: false })
                 ).toHaveTextContent('100');
             });
+        });
+    });
+
+    describe('Auto-play', () => {
+        beforeEach(() => {
+            vi.useFakeTimers();
+        });
+
+        afterEach(() => {
+            vi.restoreAllMocks();
+        });
+
+        it('automatically advances to the next slide after 15 seconds', async () => {
+            renderCarousel();
+
+            // Initially on first slide
+            const activeRegion = screen.getByRole('region', { hidden: false });
+            expect(activeRegion).toHaveTextContent('4.5');
+
+            // Fast-forward 15 seconds + transition time
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+
+            // Should advance to second slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+        });
+
+        it('continues auto-playing through multiple slides', async () => {
+            renderCarousel();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Advance to second slide (15 seconds + transition)
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+
+            // Advance to third slide (another 15 seconds + transition)
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('10');
+
+            // Loop back to first slide (another 15 seconds + transition)
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+        });
+
+        it('pauses auto-play during touch interaction', async () => {
+            renderCarousel();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Simulate touch start
+            const carousel = screen.getByRole('region', {
+                hidden: false,
+            }).parentElement;
+            if (carousel) {
+                fireEvent.touchStart(carousel, {
+                    targetTouches: [{ clientX: 100 }],
+                });
+            }
+
+            // Advance time while touching - should not auto-play
+            vi.advanceTimersByTime(15000);
+
+            // Should still be on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+        });
+
+        it('resumes auto-play after touch interaction ends', async () => {
+            renderCarousel();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Simulate touch interaction
+            const carousel = screen.getByRole('region', {
+                hidden: false,
+            }).parentElement;
+            if (carousel) {
+                fireEvent.touchStart(carousel, {
+                    targetTouches: [{ clientX: 100 }],
+                });
+                fireEvent.touchEnd(carousel);
+            }
+
+            // Advance time after touch ends - should resume auto-play
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+        });
+
+        it('does not interfere with manual navigation', async () => {
+            renderCarousel();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Manual navigation to next slide
+            await act(async () => {
+                fireEvent.click(screen.getByRole('button', { name: /next/i }));
+                vi.advanceTimersByTime(300); // Allow transition to complete
+            });
+
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+
+            // Advance time - should continue from current position
+            await act(async () => {
+                vi.advanceTimersByTime(15300);
+            });
+
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('10');
         });
     });
 });

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     TrendingUp,
     Clock,
@@ -65,39 +65,48 @@ export default function StatsCarousel({
         statsCards[0], // Clone of first card at end
     ];
 
-    const nextSlide = () => {
+    const nextSlide = useCallback(() => {
         setIsTransitioning(true);
         setActiveIndex((prevIndex) => prevIndex + 1);
-    };
+    }, []);
 
-    const prevSlide = () => {
+    const prevSlide = useCallback(() => {
         setIsTransitioning(true);
         setActiveIndex((prevIndex) => prevIndex - 1);
-    };
+    }, []);
 
     useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         if (activeIndex === 0) {
             // We're at the cloned last card, jump to real last card
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 setIsTransitioning(false);
                 setActiveIndex(statsCards.length);
             }, 300); // Match transition duration
         } else if (activeIndex === statsCards.length + 1) {
             // We're at the cloned first card, jump to real first card
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 setIsTransitioning(false);
                 setActiveIndex(1);
             }, 300); // Match transition duration
         }
+        return () => {
+            if (timeoutId !== undefined) {
+                clearTimeout(timeoutId);
+            }
+        };
     }, [activeIndex, statsCards.length]);
 
     useEffect(() => {
+        // Pause auto-play while the user is interacting via touch
+        if (touchStart !== null) {
+            return;
+        }
         const timer = setInterval(() => {
             nextSlide();
         }, 15000); // 15 seconds
-
         return () => clearInterval(timer);
-    }, [activeIndex]);
+    }, [touchStart, nextSlide]);
 
     const onTouchStart = (e: React.TouchEvent) => {
         setIsTransitioning(false);
@@ -152,6 +161,7 @@ export default function StatsCarousel({
                 )}
                 <div
                     ref={containerRef}
+                    id="stats-carousel"
                     className="bg-card relative w-full overflow-hidden rounded-lg border"
                     onTouchStart={onTouchStart}
                     onTouchMove={onTouchMove}
@@ -169,11 +179,12 @@ export default function StatsCarousel({
 
                             return (
                                 <div
-                                    key={index}
-                                    id={
-                                        isActive
-                                            ? 'stats-carousel-content'
-                                            : undefined
+                                    key={
+                                        index === 0
+                                            ? 'clone-start'
+                                            : index === extendedCards.length - 1
+                                              ? 'clone-end'
+                                              : `original-${index - 1}`
                                     }
                                     className="w-full flex-shrink-0 p-4"
                                     aria-live={isActive ? 'polite' : 'off'}
@@ -239,7 +250,7 @@ export default function StatsCarousel({
                             }`}
                             aria-label={`Go to slide ${index + 1}`}
                             aria-selected={index === realActiveIndex}
-                            aria-controls="stats-carousel-content"
+                            aria-controls="stats-carousel"
                             role="tab"
                         />
                     );
