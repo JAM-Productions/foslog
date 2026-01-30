@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     TrendingUp,
     Clock,
@@ -10,6 +10,12 @@ import {
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '../button/button';
+
+// Animation and timing constants
+const TRANSITION_DURATION_MS = 300;
+const AUTO_ADVANCE_INTERVAL_MS = 5000;
+const SWIPE_THRESHOLD_PX = 50;
+const VISIBILITY_THRESHOLD = 0.5; // Carousel must be 50% visible to auto-advance
 
 export default function StatsCarousel({
     globalStats,
@@ -32,6 +38,7 @@ export default function StatsCarousel({
     const touchEndX = useRef(0);
     const carouselRef = useRef<HTMLDivElement>(null);
     const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const statsCards = [
         {
@@ -57,31 +64,54 @@ export default function StatsCarousel({
         },
     ];
 
-    const resetAutoAdvance = () => {
+    // Shared function to advance to the next slide with animation
+    const advanceSlide = useCallback(() => {
+        if (transitionTimeoutRef.current) {
+            clearTimeout(transitionTimeoutRef.current);
+        }
+        setIsTransitioning(true);
+        setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
+        transitionTimeoutRef.current = setTimeout(
+            () => setIsTransitioning(false),
+            TRANSITION_DURATION_MS
+        );
+    }, [statsCards.length]);
+
+    const resetAutoAdvance = useCallback(() => {
         if (autoAdvanceTimerRef.current) {
             clearInterval(autoAdvanceTimerRef.current);
         }
-        // Restart the timer
-        autoAdvanceTimerRef.current = setInterval(() => {
-            setIsTransitioning(true);
-            setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
-            setTimeout(() => setIsTransitioning(false), 300);
-        }, 5000);
-    };
+        autoAdvanceTimerRef.current = setInterval(
+            advanceSlide,
+            AUTO_ADVANCE_INTERVAL_MS
+        );
+    }, [advanceSlide]);
 
     const nextSlide = () => {
+        if (transitionTimeoutRef.current) {
+            clearTimeout(transitionTimeoutRef.current);
+        }
         setIsTransitioning(true);
         setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
-        setTimeout(() => setIsTransitioning(false), 300);
+        transitionTimeoutRef.current = setTimeout(
+            () => setIsTransitioning(false),
+            TRANSITION_DURATION_MS
+        );
         resetAutoAdvance();
     };
 
     const prevSlide = () => {
+        if (transitionTimeoutRef.current) {
+            clearTimeout(transitionTimeoutRef.current);
+        }
         setIsTransitioning(true);
         setActiveIndex((prevIndex) =>
             prevIndex === 0 ? statsCards.length - 1 : prevIndex - 1
         );
-        setTimeout(() => setIsTransitioning(false), 300);
+        transitionTimeoutRef.current = setTimeout(
+            () => setIsTransitioning(false),
+            TRANSITION_DURATION_MS
+        );
         resetAutoAdvance();
     };
 
@@ -95,10 +125,9 @@ export default function StatsCarousel({
     };
 
     const handleTouchEnd = () => {
-        const swipeThreshold = 50;
         const diff = touchStartX.current - touchEndX.current;
 
-        if (Math.abs(diff) > swipeThreshold) {
+        if (Math.abs(diff) > SWIPE_THRESHOLD_PX) {
             if (diff > 0) {
                 nextSlide();
             } else {
@@ -113,17 +142,14 @@ export default function StatsCarousel({
     useEffect(() => {
         const currentCarouselRef = carouselRef.current;
 
-        const autoAdvance = () => {
-            setIsTransitioning(true);
-            setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
-            setTimeout(() => setIsTransitioning(false), 300);
-        };
-
         const startTimer = () => {
             if (autoAdvanceTimerRef.current) {
                 clearInterval(autoAdvanceTimerRef.current);
             }
-            autoAdvanceTimerRef.current = setInterval(autoAdvance, 5000);
+            autoAdvanceTimerRef.current = setInterval(
+                advanceSlide,
+                AUTO_ADVANCE_INTERVAL_MS
+            );
         };
 
         const observer = new IntersectionObserver(
@@ -138,7 +164,7 @@ export default function StatsCarousel({
                     }
                 });
             },
-            { threshold: 0.5 }
+            { threshold: VISIBILITY_THRESHOLD }
         );
 
         if (currentCarouselRef) {
@@ -149,11 +175,14 @@ export default function StatsCarousel({
             if (autoAdvanceTimerRef.current) {
                 clearInterval(autoAdvanceTimerRef.current);
             }
+            if (transitionTimeoutRef.current) {
+                clearTimeout(transitionTimeoutRef.current);
+            }
             if (currentCarouselRef) {
                 observer.unobserve(currentCarouselRef);
             }
         };
-    }, [statsCards.length]);
+    }, [advanceSlide]);
 
     const Icon = statsCards[activeIndex].icon;
 
