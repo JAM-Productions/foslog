@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDrag } from '@use-gesture/react';
 import {
     TrendingUp,
     Clock,
@@ -64,6 +65,42 @@ export default function StatsCarousel({
 
     const Icon = statsCards[activeIndex].icon;
 
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const resetTimeout = () => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+    };
+
+    useEffect(() => {
+        resetTimeout();
+        timeoutRef.current = setTimeout(
+            () =>
+                setActiveIndex(
+                    (prevIndex) => (prevIndex + 1) % statsCards.length
+                ),
+            5000
+        );
+
+        return () => {
+            resetTimeout();
+        };
+    }, [activeIndex, statsCards.length]);
+
+    const bind = useDrag(
+        ({ down, movement: [mx], last }) => {
+            if (last) {
+                if (mx > 50) {
+                    prevSlide();
+                } else if (mx < -50) {
+                    nextSlide();
+                }
+            }
+        },
+        { axis: 'x' }
+    );
+
     return (
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-2">
@@ -72,29 +109,45 @@ export default function StatsCarousel({
                     aria-label="previous"
                     size="sm"
                     variant="ghost"
+                    className="hidden md:inline-flex"
                 >
                     <ChevronLeft className="h-5 w-5" />
                 </Button>
                 <div
+                    {...bind()}
                     id="stats-carousel-content"
-                    className="bg-card w-full rounded-lg border p-4"
+                    className="w-full overflow-x-hidden"
                     aria-live="polite"
                     aria-atomic="true"
                     role="region"
                     aria-label="Statistics carousel"
                 >
-                    <div className="text-primary mb-2 flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
-                        <span className="text-sm font-medium">
-                            {statsCards[activeIndex].title}
-                        </span>
+                    <div
+                        className="flex transition-transform duration-300"
+                        style={{
+                            transform: `translateX(-${activeIndex * 100}%)`,
+                        }}
+                    >
+                        {statsCards.map((card, index) => (
+                            <div
+                                key={index}
+                                className="bg-card w-full flex-shrink-0 rounded-lg border p-4"
+                            >
+                                <div className="text-primary mb-2 flex items-center gap-2">
+                                    <card.icon className="h-4 w-4" />
+                                    <span className="text-sm font-medium">
+                                        {card.title}
+                                    </span>
+                                </div>
+                                <p className="text-2xl font-bold">
+                                    {card.value}
+                                </p>
+                                <p className="text-muted-foreground text-xs">
+                                    {card.description}
+                                </p>
+                            </div>
+                        ))}
                     </div>
-                    <p className="text-2xl font-bold">
-                        {statsCards[activeIndex].value}
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                        {statsCards[activeIndex].description}
-                    </p>
                 </div>
 
                 <Button
@@ -102,6 +155,7 @@ export default function StatsCarousel({
                     aria-label="next"
                     size="sm"
                     variant="ghost"
+                    className="hidden md:inline-flex"
                 >
                     <ChevronRight className="h-5 w-5" />
                 </Button>
