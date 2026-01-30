@@ -20,6 +20,7 @@ export default function HomePageClient({
     selectedMediaType,
     searchQuery,
     globalStats,
+    isMobile,
 }: {
     mediaItems: SafeMediaItem[];
     total: number;
@@ -31,6 +32,7 @@ export default function HomePageClient({
         topRated: number;
         recentlyAdded: number;
     };
+    isMobile: boolean;
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -95,6 +97,7 @@ export default function HomePageClient({
                     total={total}
                     selectedMediaType={selectedMediaType}
                     getTypeDisplayName={getTypeDisplayName}
+                    isMobile={isMobile}
                 />
             </div>
             <div className="mb-8 hidden grid-cols-1 gap-4 md:grid md:grid-cols-3">

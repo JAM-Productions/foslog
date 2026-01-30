@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StatsCarousel from '@/components/carousel/stats-carousel';
 import { NextIntlClientProvider } from 'next-intl';
@@ -14,9 +14,10 @@ describe('StatsCarousel', () => {
     const total = 100;
     const selectedMediaType = 'all';
     const getTypeDisplayName = (type: string) => type;
+    const isMobile = false;
 
-    it('renders the first slide initially', () => {
-        render(
+    const renderCarousel = (customProps = {}) => {
+        return render(
             <NextIntlClientProvider
                 locale="en"
                 messages={messages}
@@ -26,131 +27,90 @@ describe('StatsCarousel', () => {
                     total={total}
                     selectedMediaType={selectedMediaType}
                     getTypeDisplayName={getTypeDisplayName}
+                    isMobile={isMobile}
+                    {...customProps}
                 />
             </NextIntlClientProvider>
         );
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+    };
+
+    it('renders the first slide initially', () => {
+        renderCarousel();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('4.5');
     });
 
     it('goes to the next slide when the right arrow is clicked', () => {
-        render(
-            <NextIntlClientProvider
-                locale="en"
-                messages={messages}
-            >
-                <StatsCarousel
-                    globalStats={globalStats}
-                    total={total}
-                    selectedMediaType={selectedMediaType}
-                    getTypeDisplayName={getTypeDisplayName}
-                />
-            </NextIntlClientProvider>
-        );
+        renderCarousel();
         fireEvent.click(screen.getByRole('button', { name: /next/i }));
-        expect(screen.getByText('100')).toBeInTheDocument();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('100');
     });
 
     it('goes to the previous slide when the left arrow is clicked', () => {
-        render(
-            <NextIntlClientProvider
-                locale="en"
-                messages={messages}
-            >
-                <StatsCarousel
-                    globalStats={globalStats}
-                    total={total}
-                    selectedMediaType={selectedMediaType}
-                    getTypeDisplayName={getTypeDisplayName}
-                />
-            </NextIntlClientProvider>
-        );
+        renderCarousel();
         fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the second slide
         fireEvent.click(screen.getByRole('button', { name: /previous/i }));
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('4.5');
     });
 
     it('loops back to the first slide from the last slide', () => {
-        render(
-            <NextIntlClientProvider
-                locale="en"
-                messages={messages}
-            >
-                <StatsCarousel
-                    globalStats={globalStats}
-                    total={total}
-                    selectedMediaType={selectedMediaType}
-                    getTypeDisplayName={getTypeDisplayName}
-                />
-            </NextIntlClientProvider>
-        );
+        renderCarousel();
         fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the second slide
         fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the third slide
         fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the first slide
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('4.5');
     });
 
-    it('loops to the last slide from the first slide when clicking previous', () => {
-        render(
-            <NextIntlClientProvider
-                locale="en"
-                messages={messages}
-            >
-                <StatsCarousel
-                    globalStats={globalStats}
-                    total={total}
-                    selectedMediaType={selectedMediaType}
-                    getTypeDisplayName={getTypeDisplayName}
-                />
-            </NextIntlClientProvider>
-        );
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+    it('loops to the last slide from the first slide when clicking previous', async () => {
+        renderCarousel();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('4.5');
 
         fireEvent.click(screen.getByRole('button', { name: /previous/i }));
-        expect(screen.getByText('10')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('10');
+        });
     });
 
-    it('navigates to the correct slide when clicking on indicator dots', () => {
-        render(
-            <NextIntlClientProvider
-                locale="en"
-                messages={messages}
-            >
-                <StatsCarousel
-                    globalStats={globalStats}
-                    total={total}
-                    selectedMediaType={selectedMediaType}
-                    getTypeDisplayName={getTypeDisplayName}
-                />
-            </NextIntlClientProvider>
-        );
+    it('navigates to the correct slide when clicking on indicator dots', async () => {
+        renderCarousel();
 
         const indicators = screen.getAllByRole('tab');
         expect(indicators).toHaveLength(3);
 
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+        const activeRegion = screen.getByRole('region', { hidden: false });
+        expect(activeRegion).toHaveTextContent('4.5');
+
         fireEvent.click(indicators[2]);
-        expect(screen.getByText('10')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('10');
+        });
+
         fireEvent.click(indicators[1]);
-        expect(screen.getByText('100')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('100');
+        });
+
         fireEvent.click(indicators[0]);
-        expect(screen.getByText('4.5')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+        });
     });
 
     describe('Accessibility', () => {
         it('has proper ARIA labels and roles', () => {
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const prevButton = screen.getByRole('button', {
                 name: /previous/i,
@@ -168,19 +128,7 @@ describe('StatsCarousel', () => {
 
         it('allows keyboard navigation to buttons using Tab key', async () => {
             const user = userEvent.setup();
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const prevButton = screen.getByRole('button', {
                 name: /previous/i,
@@ -198,73 +146,47 @@ describe('StatsCarousel', () => {
 
         it('activates buttons using Enter key', async () => {
             const user = userEvent.setup();
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const nextButton = screen.getByRole('button', { name: /next/i });
             nextButton.focus();
 
             // Initially showing first slide with 4.5
-            expect(screen.getByText('4.5')).toBeInTheDocument();
+            const activeRegion = screen.getByRole('region', { hidden: false });
+            expect(activeRegion).toHaveTextContent('4.5');
 
             // Press Enter to go to next slide
             await user.keyboard('{Enter}');
-            expect(screen.getByText('100')).toBeInTheDocument();
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
         });
 
         it('activates buttons using Space key', async () => {
             const user = userEvent.setup();
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const nextButton = screen.getByRole('button', { name: /next/i });
             nextButton.focus();
 
             // Initially showing first slide with 4.5
-            expect(screen.getByText('4.5')).toBeInTheDocument();
+            const activeRegion = screen.getByRole('region', { hidden: false });
+            expect(activeRegion).toHaveTextContent('4.5');
 
             // Press Space to go to next slide
             await user.keyboard(' ');
-            expect(screen.getByText('100')).toBeInTheDocument();
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
         });
 
         it('makes indicator dots keyboard accessible', async () => {
             const user = userEvent.setup();
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const indicators = screen.getAllByRole('tab');
             expect(indicators).toHaveLength(3);
@@ -276,7 +198,8 @@ describe('StatsCarousel', () => {
             // Activate second indicator using Enter
             indicators[1].focus();
             await user.keyboard('{Enter}');
-            expect(screen.getByText('100')).toBeInTheDocument();
+            const activeRegion = screen.getByRole('region', { hidden: false });
+            expect(activeRegion).toHaveTextContent('100');
 
             // Verify aria-selected attribute
             expect(indicators[1]).toHaveAttribute('aria-selected', 'true');
@@ -284,19 +207,7 @@ describe('StatsCarousel', () => {
         });
 
         it('has proper tablist role for indicator navigation', () => {
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const tablist = screen.getByRole('tablist', {
                 name: /slide navigation/i,
@@ -306,19 +217,7 @@ describe('StatsCarousel', () => {
         });
 
         it('updates aria-selected on indicator dots when slide changes', () => {
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+            renderCarousel();
 
             const indicators = screen.getAllByRole('tab');
             const nextButton = screen.getByRole('button', { name: /next/i });
@@ -335,23 +234,11 @@ describe('StatsCarousel', () => {
             expect(indicators[1]).toHaveAttribute('aria-selected', 'true');
         });
 
-        it('announces content changes to screen readers via aria-live', () => {
-            render(
-                <NextIntlClientProvider
-                    locale="en"
-                    messages={messages}
-                >
-                    <StatsCarousel
-                        globalStats={globalStats}
-                        total={total}
-                        selectedMediaType={selectedMediaType}
-                        getTypeDisplayName={getTypeDisplayName}
-                    />
-                </NextIntlClientProvider>
-            );
+        it('announces content changes to screen readers via aria-live', async () => {
+            renderCarousel();
 
             const carouselRegion = screen.getByRole('region', {
-                name: /statistics carousel/i,
+                hidden: false,
             });
 
             // Verify aria-live region is set up correctly
@@ -366,7 +253,11 @@ describe('StatsCarousel', () => {
             fireEvent.click(nextButton);
 
             // Content should update and be announced
-            expect(carouselRegion).toHaveTextContent('100');
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('100');
+            });
         });
     });
 });

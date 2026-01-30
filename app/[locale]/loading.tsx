@@ -14,9 +14,6 @@ export default function Loading() {
             {/* Stats Carousel Skeleton (Mobile) */}
             <div className="mb-8 flex flex-col gap-3 md:hidden">
                 <div className="flex items-center justify-between gap-2">
-                    {/* Previous button skeleton */}
-                    <div className="bg-muted h-9 w-14 animate-pulse rounded-md"></div>
-
                     {/* Card skeleton */}
                     <div className="bg-card w-full animate-pulse rounded-lg border p-4">
                         <div className="mb-2 flex items-center gap-2">
@@ -26,9 +23,6 @@ export default function Loading() {
                         <div className="bg-muted mb-2 h-8 w-16 animate-pulse rounded"></div>
                         <div className="bg-muted h-3 w-32 animate-pulse rounded"></div>
                     </div>
-
-                    {/* Next button skeleton */}
-                    <div className="bg-muted h-9 w-14 animate-pulse rounded-md"></div>
                 </div>
 
                 {/* Slide indicators skeleton */}
