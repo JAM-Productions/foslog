@@ -18,7 +18,8 @@ export default function Pagination({
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const [maxVisible, setMaxVisible] = React.useState(7);
+    // Start with a safe default that works for mobile to prevent hydration mismatch
+    const [maxVisible, setMaxVisible] = React.useState(3);
 
     React.useEffect(() => {
         const updateMaxVisible = () => {
@@ -73,7 +74,9 @@ export default function Pagination({
             // Always show first page
             pages.push(1);
 
-            if (currentPage > 3) {
+            // Calculate when to show leading ellipsis based on maxVisible
+            const ellipsisThreshold = Math.floor(maxVisible / 2) + 1;
+            if (currentPage > ellipsisThreshold) {
                 pages.push('...');
             }
 
@@ -85,7 +88,8 @@ export default function Pagination({
                 pages.push(i);
             }
 
-            if (currentPage < totalPages - 2) {
+            // Calculate when to show trailing ellipsis
+            if (currentPage < totalPages - ellipsisThreshold + 1) {
                 pages.push('...');
             }
 
@@ -113,7 +117,7 @@ export default function Pagination({
                 <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 sm:gap-2">
                 {getPageNumbers().map((page, index) => {
                     if (page === '...') {
                         return (
