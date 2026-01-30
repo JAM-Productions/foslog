@@ -22,6 +22,10 @@ vi.mock('@/lib/redis', () => ({
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
+    root: Element | null = null;
+    rootMargin: string = '';
+    thresholds: ReadonlyArray<number> = [];
+
     constructor() {}
     disconnect() {}
     observe() {}
@@ -29,4 +33,4 @@ global.IntersectionObserver = class IntersectionObserver {
         return [];
     }
     unobserve() {}
-};
+} as any;
