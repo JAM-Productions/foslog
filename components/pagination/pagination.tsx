@@ -18,25 +18,6 @@ export default function Pagination({
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
-    // Start with a safe default that works for mobile to prevent hydration mismatch
-    const [maxVisible, setMaxVisible] = React.useState(3);
-
-    React.useEffect(() => {
-        const updateMaxVisible = () => {
-            // Show 3 pages on small screens (< 640px), 5 on medium (< 768px), 7 on larger
-            if (window.innerWidth < 640) {
-                setMaxVisible(3);
-            } else if (window.innerWidth < 768) {
-                setMaxVisible(5);
-            } else {
-                setMaxVisible(7);
-            }
-        };
-
-        updateMaxVisible();
-        window.addEventListener('resize', updateMaxVisible);
-        return () => window.removeEventListener('resize', updateMaxVisible);
-    }, []);
 
     const handlePageChange = (page: number) => {
         if (page < 1 || page > totalPages) return;
@@ -64,8 +45,14 @@ export default function Pagination({
     // Generate page numbers to display
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
+        const maxVisible = 7; // Maximum on desktop
 
-        if (totalPages <= maxVisible) {
+        if (totalPages <= 3) {
+            // Show all pages if total is very small
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else if (totalPages <= maxVisible) {
             // Show all pages if total is small
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
@@ -74,9 +61,7 @@ export default function Pagination({
             // Always show first page
             pages.push(1);
 
-            // Calculate when to show leading ellipsis based on maxVisible
-            const ellipsisThreshold = Math.floor(maxVisible / 2) + 1;
-            if (currentPage > ellipsisThreshold) {
+            if (currentPage > 3) {
                 pages.push('...');
             }
 
@@ -88,8 +73,7 @@ export default function Pagination({
                 pages.push(i);
             }
 
-            // Calculate when to show trailing ellipsis
-            if (currentPage < totalPages - ellipsisThreshold + 1) {
+            if (currentPage < totalPages - 2) {
                 pages.push('...');
             }
 
@@ -114,7 +98,7 @@ export default function Pagination({
                 aria-label="Previous page"
                 className="h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"
             >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-5 w-5" />
             </Button>
 
             <div className="flex items-center gap-1 sm:gap-2">
@@ -132,6 +116,13 @@ export default function Pagination({
 
                     const pageNum = page as number;
                     const isActive = pageNum === currentPage;
+                    const isFirstOrLast = pageNum === 1 || pageNum === totalPages;
+                    const isAdjacentToCurrent =
+                        Math.abs(pageNum - currentPage) <= 1;
+
+                    // Hide middle pages on small screens (show only first, current±1, last)
+                    // On mobile: show if first/last, current, or adjacent to current
+                    const showOnMobile = isFirstOrLast || isAdjacentToCurrent;
 
                     return (
                         <Button
@@ -141,7 +132,7 @@ export default function Pagination({
                             onClick={() => handlePageChange(pageNum)}
                             aria-label={`Page ${pageNum}`}
                             aria-current={isActive ? 'page' : undefined}
-                            className="h-8 min-w-[2rem] px-2 text-sm sm:h-9 sm:min-w-[2.5rem] sm:px-3"
+                            className={`h-8 min-w-[2rem] px-2 text-sm sm:h-9 sm:min-w-[2.5rem] sm:px-3 ${!showOnMobile ? 'hidden sm:inline-flex' : ''}`}
                         >
                             {pageNum}
                         </Button>
@@ -157,7 +148,7 @@ export default function Pagination({
                 aria-label="Next page"
                 className="h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"
             >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-5 w-5" />
             </Button>
         </div>
     );
