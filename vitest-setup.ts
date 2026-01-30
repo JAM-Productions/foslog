@@ -19,3 +19,14 @@ vi.mock('@/lib/redis', () => ({
         incr: vi.fn(),
     },
 }));
+
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+    constructor() {}
+    disconnect() {}
+    observe() {}
+    takeRecords() {
+        return [];
+    }
+    unobserve() {}
+};

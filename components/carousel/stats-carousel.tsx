@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     TrendingUp,
     Clock,
@@ -27,6 +27,11 @@ export default function StatsCarousel({
 }) {
     const tStats = useTranslations('Stats');
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
+    const carouselRef = useRef<HTMLDivElement>(null);
+    const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const statsCards = [
         {
@@ -52,36 +57,131 @@ export default function StatsCarousel({
         },
     ];
 
+    const resetAutoAdvance = () => {
+        if (autoAdvanceTimerRef.current) {
+            clearInterval(autoAdvanceTimerRef.current);
+        }
+        // Restart the timer
+        autoAdvanceTimerRef.current = setInterval(() => {
+            setIsTransitioning(true);
+            setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
+            setTimeout(() => setIsTransitioning(false), 300);
+        }, 5000);
+    };
+
     const nextSlide = () => {
+        setIsTransitioning(true);
         setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
+        setTimeout(() => setIsTransitioning(false), 300);
+        resetAutoAdvance();
     };
 
     const prevSlide = () => {
+        setIsTransitioning(true);
         setActiveIndex((prevIndex) =>
             prevIndex === 0 ? statsCards.length - 1 : prevIndex - 1
         );
+        setTimeout(() => setIsTransitioning(false), 300);
+        resetAutoAdvance();
     };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+        resetAutoAdvance();
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        const swipeThreshold = 50;
+        const diff = touchStartX.current - touchEndX.current;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+
+        touchStartX.current = 0;
+        touchEndX.current = 0;
+    };
+
+    useEffect(() => {
+        const currentCarouselRef = carouselRef.current;
+
+        const autoAdvance = () => {
+            setIsTransitioning(true);
+            setActiveIndex((prevIndex) => (prevIndex + 1) % statsCards.length);
+            setTimeout(() => setIsTransitioning(false), 300);
+        };
+
+        const startTimer = () => {
+            if (autoAdvanceTimerRef.current) {
+                clearInterval(autoAdvanceTimerRef.current);
+            }
+            autoAdvanceTimerRef.current = setInterval(autoAdvance, 5000);
+        };
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        startTimer();
+                    } else {
+                        if (autoAdvanceTimerRef.current) {
+                            clearInterval(autoAdvanceTimerRef.current);
+                        }
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        if (currentCarouselRef) {
+            observer.observe(currentCarouselRef);
+        }
+
+        return () => {
+            if (autoAdvanceTimerRef.current) {
+                clearInterval(autoAdvanceTimerRef.current);
+            }
+            if (currentCarouselRef) {
+                observer.unobserve(currentCarouselRef);
+            }
+        };
+    }, [statsCards.length]);
 
     const Icon = statsCards[activeIndex].icon;
 
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" ref={carouselRef}>
             <div className="flex items-center justify-between gap-2">
                 <Button
                     onClick={prevSlide}
                     aria-label="previous"
                     size="sm"
                     variant="ghost"
+                    className="hidden md:flex"
                 >
                     <ChevronLeft className="h-5 w-5" />
                 </Button>
                 <div
                     id="stats-carousel-content"
-                    className="bg-card w-full rounded-lg border p-4"
+                    className="bg-card w-full rounded-lg border p-4 touch-pan-y select-none transition-opacity duration-300"
                     aria-live="polite"
                     aria-atomic="true"
                     role="region"
                     aria-label="Statistics carousel"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    style={{
+                        opacity: isTransitioning ? 0 : 1,
+                    }}
                 >
                     <div className="text-primary mb-2 flex items-center gap-2">
                         <Icon className="h-4 w-4" />
@@ -102,6 +202,7 @@ export default function StatsCarousel({
                     aria-label="next"
                     size="sm"
                     variant="ghost"
+                    className="hidden md:flex"
                 >
                     <ChevronRight className="h-5 w-5" />
                 </Button>
@@ -116,7 +217,10 @@ export default function StatsCarousel({
                 {statsCards.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => setActiveIndex(index)}
+                        onClick={() => {
+                            setActiveIndex(index);
+                            resetAutoAdvance();
+                        }}
                         className={`h-2 w-2 cursor-pointer rounded-full transition-all ${
                             index === activeIndex
                                 ? 'bg-primary'
