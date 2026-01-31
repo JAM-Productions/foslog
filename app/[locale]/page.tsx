@@ -38,6 +38,7 @@ export default async function HomePage({
             selectedMediaType={mediaType}
             searchQuery={searchQuery}
             globalStats={globalStats}
+            isMobile={isMobile}
         />
     );
 }
