@@ -61,26 +61,27 @@ describe('StatsCarousel', () => {
         expect(activeRegion).toHaveTextContent('4.5');
     });
 
-    it('loops back to the first slide from the last slide', () => {
+    it('stops at the last slide and disables next button', () => {
         renderCarousel();
-        fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the second slide
-        fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the third slide
-        fireEvent.click(screen.getByRole('button', { name: /next/i })); // Go to the first slide
+        const nextButton = screen.getByRole('button', { name: /next/i });
+
+        expect(nextButton).not.toBeDisabled();
+
+        fireEvent.click(nextButton); // Go to the second slide
+        fireEvent.click(nextButton); // Go to the third slide
+
         const activeRegion = screen.getByRole('region', { hidden: false });
-        expect(activeRegion).toHaveTextContent('4.5');
+        expect(activeRegion).toHaveTextContent('10');
+        expect(nextButton).toBeDisabled();
     });
 
-    it('loops to the last slide from the first slide when clicking previous', async () => {
+    it('disables previous button at the first slide', async () => {
         renderCarousel();
+        const prevButton = screen.getByRole('button', { name: /previous/i });
         const activeRegion = screen.getByRole('region', { hidden: false });
-        expect(activeRegion).toHaveTextContent('4.5');
 
-        fireEvent.click(screen.getByRole('button', { name: /previous/i }));
-        await waitFor(() => {
-            expect(
-                screen.getByRole('region', { hidden: false })
-            ).toHaveTextContent('10');
-        });
+        expect(activeRegion).toHaveTextContent('4.5');
+        expect(prevButton).toBeDisabled();
     });
 
     it('navigates to the correct slide when clicking on indicator dots', async () => {
@@ -200,6 +201,48 @@ describe('StatsCarousel', () => {
             });
         });
 
+        it('does not navigate past last slide on swipe left', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Navigate to last slide
+            fireEvent.click(screen.getByRole('button', { name: /next/i }));
+            fireEvent.click(screen.getByRole('button', { name: /next/i }));
+
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('10');
+            });
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate swipe left on last slide
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 200 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 100 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should stay on last slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('10');
+            });
+        });
+
         it('navigates to previous slide on swipe right', async () => {
             renderCarousel();
 
@@ -233,6 +276,43 @@ describe('StatsCarousel', () => {
             fireEvent.touchEnd(carousel!);
 
             // Should navigate to previous slide
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('region', { hidden: false })
+                ).toHaveTextContent('4.5');
+            });
+        });
+
+        it('does not navigate before first slide on swipe right', async () => {
+            renderCarousel();
+
+            const carousel = document.getElementById('stats-carousel');
+            expect(carousel).toBeInTheDocument();
+
+            // Initially on first slide
+            expect(
+                screen.getByRole('region', { hidden: false })
+            ).toHaveTextContent('4.5');
+
+            // Set carousel width for threshold calculation
+            Object.defineProperty(carousel, 'offsetWidth', {
+                writable: true,
+                configurable: true,
+                value: 300,
+            });
+
+            // Simulate swipe right on first slide
+            fireEvent.touchStart(carousel!, {
+                targetTouches: [{ clientX: 100 }],
+            });
+
+            fireEvent.touchMove(carousel!, {
+                targetTouches: [{ clientX: 200 }],
+            });
+
+            fireEvent.touchEnd(carousel!);
+
+            // Should stay on first slide
             await waitFor(() => {
                 expect(
                     screen.getByRole('region', { hidden: false })
@@ -373,13 +453,19 @@ describe('StatsCarousel', () => {
             });
             const nextButton = screen.getByRole('button', { name: /next/i });
 
-            // Tab to first button (previous)
-            await user.tab();
-            expect(prevButton).toHaveFocus();
+            // Previous button is disabled at first slide, so it's not focusable
+            expect(prevButton).toBeDisabled();
 
-            // Tab to second button (next)
+            // Next button should be focusable
             await user.tab();
             expect(nextButton).toHaveFocus();
+
+            // Navigate to second slide to enable both buttons
+            await user.click(nextButton);
+
+            // Now previous button should be enabled and focusable
+            expect(prevButton).not.toBeDisabled();
+            expect(prevButton).toBeEnabled();
         });
 
         it('activates buttons using Enter key', async () => {
@@ -508,16 +594,16 @@ describe('StatsCarousel', () => {
             vi.restoreAllMocks();
         });
 
-        it('automatically advances to the next slide after 15 seconds', async () => {
+        it('automatically advances to the next slide after 10 seconds', async () => {
             renderCarousel();
 
             // Initially on first slide
             const activeRegion = screen.getByRole('region', { hidden: false });
             expect(activeRegion).toHaveTextContent('4.5');
 
-            // Fast-forward 15 seconds + transition time
+            // Fast-forward 10 seconds + transition time
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
 
             // Should advance to second slide
@@ -526,7 +612,7 @@ describe('StatsCarousel', () => {
             ).toHaveTextContent('100');
         });
 
-        it('continues auto-playing through multiple slides', async () => {
+        it('continues auto-playing through multiple slides and loops back', async () => {
             renderCarousel();
 
             // Initially on first slide
@@ -534,25 +620,25 @@ describe('StatsCarousel', () => {
                 screen.getByRole('region', { hidden: false })
             ).toHaveTextContent('4.5');
 
-            // Advance to second slide (15 seconds + transition)
+            // Advance to second slide (10 seconds + transition)
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
             expect(
                 screen.getByRole('region', { hidden: false })
             ).toHaveTextContent('100');
 
-            // Advance to third slide (another 15 seconds + transition)
+            // Advance to third slide (another 10 seconds + transition)
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
             expect(
                 screen.getByRole('region', { hidden: false })
             ).toHaveTextContent('10');
 
-            // Loop back to first slide (another 15 seconds + transition)
+            // Loop back to first slide (another 10 seconds + transition)
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
             expect(
                 screen.getByRole('region', { hidden: false })
@@ -578,7 +664,7 @@ describe('StatsCarousel', () => {
             }
 
             // Advance time while touching - should not auto-play
-            vi.advanceTimersByTime(15000);
+            vi.advanceTimersByTime(10000);
 
             // Should still be on first slide
             expect(
@@ -607,7 +693,7 @@ describe('StatsCarousel', () => {
 
             // Advance time after touch ends - should resume auto-play
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
 
             expect(
@@ -635,7 +721,7 @@ describe('StatsCarousel', () => {
 
             // Advance time - should continue from current position
             await act(async () => {
-                vi.advanceTimersByTime(15300);
+                vi.advanceTimersByTime(10300);
             });
 
             expect(

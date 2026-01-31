@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     TrendingUp,
     Clock,
@@ -28,7 +28,7 @@ export default function StatsCarousel({
     isMobile: boolean;
 }) {
     const tStats = useTranslations('Stats');
-    const [activeIndex, setActiveIndex] = useState(1); // Start at 1 because we'll add clones
+    const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [dragOffset, setDragOffset] = useState(0);
@@ -58,55 +58,17 @@ export default function StatsCarousel({
         },
     ];
 
-    // Create extended array with clones for infinite loop effect
-    const extendedCards = [
-        statsCards[statsCards.length - 1], // Clone of last card at beginning
-        ...statsCards,
-        statsCards[0], // Clone of first card at end
-    ];
-
-    const nextSlide = useCallback(() => {
+    const nextSlide = () => {
         setIsTransitioning(true);
-        setActiveIndex((prevIndex) => prevIndex + 1);
-    }, []);
+        setActiveIndex((prevIndex) =>
+            Math.min(prevIndex + 1, statsCards.length - 1)
+        );
+    };
 
-    const prevSlide = useCallback(() => {
+    const prevSlide = () => {
         setIsTransitioning(true);
-        setActiveIndex((prevIndex) => prevIndex - 1);
-    }, []);
-
-    useEffect(() => {
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
-        if (activeIndex === 0) {
-            // We're at the cloned last card, jump to real last card
-            timeoutId = setTimeout(() => {
-                setIsTransitioning(false);
-                setActiveIndex(statsCards.length);
-            }, 300); // Match transition duration
-        } else if (activeIndex === statsCards.length + 1) {
-            // We're at the cloned first card, jump to real first card
-            timeoutId = setTimeout(() => {
-                setIsTransitioning(false);
-                setActiveIndex(1);
-            }, 300); // Match transition duration
-        }
-        return () => {
-            if (timeoutId !== undefined) {
-                clearTimeout(timeoutId);
-            }
-        };
-    }, [activeIndex, statsCards.length]);
-
-    useEffect(() => {
-        // Pause auto-play while the user is interacting via touch
-        if (touchStart !== null) {
-            return;
-        }
-        const timer = setInterval(() => {
-            nextSlide();
-        }, 15000); // 15 seconds
-        return () => clearInterval(timer);
-    }, [touchStart, nextSlide]);
+        setActiveIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+    };
 
     const onTouchStart = (e: React.TouchEvent) => {
         setIsTransitioning(false);
@@ -133,10 +95,15 @@ export default function StatsCarousel({
         const threshold = containerWidth * 0.1; // 10% threshold
 
         if (Math.abs(dragDistance) > threshold) {
-            if (dragDistance > 0) {
+            if (dragDistance > 0 && activeIndex > 0) {
                 prevSlide();
-            } else {
+            } else if (
+                dragDistance < 0 &&
+                activeIndex < statsCards.length - 1
+            ) {
                 nextSlide();
+            } else {
+                setIsTransitioning(true);
             }
         } else {
             setIsTransitioning(true);
@@ -145,6 +112,26 @@ export default function StatsCarousel({
         setTouchStart(null);
         setDragOffset(0);
     };
+
+    // Auto-play effect
+    useEffect(() => {
+        // Pause auto-play while the user is interacting via touch
+        if (touchStart !== null) {
+            return;
+        }
+        // Reset timer when activeIndex changes (including after manual swipes)
+        const timer = setInterval(() => {
+            setActiveIndex((prevIndex) => {
+                // Loop back to first slide when at the end
+                if (prevIndex >= statsCards.length - 1) {
+                    return 0;
+                }
+                return prevIndex + 1;
+            });
+            setIsTransitioning(true);
+        }, 10000); // 10 seconds
+        return () => clearInterval(timer);
+    }, [touchStart, activeIndex, statsCards.length]);
 
     return (
         <div className="flex flex-col gap-3">
@@ -155,6 +142,7 @@ export default function StatsCarousel({
                         aria-label="previous"
                         size="sm"
                         variant="ghost"
+                        disabled={activeIndex === 0}
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </Button>
@@ -173,19 +161,13 @@ export default function StatsCarousel({
                             transform: `translateX(calc(-${activeIndex * 100}% + ${dragOffset}%))`,
                         }}
                     >
-                        {extendedCards.map((card, index) => {
+                        {statsCards.map((card, index) => {
                             const CardIcon = card.icon;
                             const isActive = index === activeIndex;
 
                             return (
                                 <div
-                                    key={
-                                        index === 0
-                                            ? 'clone-start'
-                                            : index === extendedCards.length - 1
-                                              ? 'clone-end'
-                                              : `original-${index - 1}`
-                                    }
+                                    key={`card-${index}`}
                                     className="w-full flex-shrink-0 p-4"
                                     aria-live={isActive ? 'polite' : 'off'}
                                     aria-atomic="true"
@@ -216,6 +198,7 @@ export default function StatsCarousel({
                         aria-label="next"
                         size="sm"
                         variant="ghost"
+                        disabled={activeIndex === statsCards.length - 1}
                     >
                         <ChevronRight className="h-5 w-5" />
                     </Button>
@@ -229,27 +212,20 @@ export default function StatsCarousel({
                 aria-label="Slide navigation"
             >
                 {statsCards.map((_, index) => {
-                    const realActiveIndex =
-                        activeIndex === 0
-                            ? statsCards.length - 1
-                            : activeIndex === statsCards.length + 1
-                              ? 0
-                              : activeIndex - 1;
-
                     return (
                         <button
                             key={index}
                             onClick={() => {
                                 setIsTransitioning(true);
-                                setActiveIndex(index + 1);
+                                setActiveIndex(index);
                             }}
                             className={`h-2 w-2 cursor-pointer rounded-full transition-all ${
-                                index === realActiveIndex
+                                index === activeIndex
                                     ? 'bg-primary'
                                     : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
                             }`}
                             aria-label={`Go to slide ${index + 1}`}
-                            aria-selected={index === realActiveIndex}
+                            aria-selected={index === activeIndex}
                             aria-controls="stats-carousel"
                             role="tab"
                         />
