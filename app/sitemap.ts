@@ -1,28 +1,21 @@
 import type { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
-import { LOCALES } from '@/lib/constants';
+import { LOCALES, FOSLOG_URL } from '@/lib/constants';
 import { getAllBlogPosts } from '@/utils/blog-utils';
+import { logger } from '@/lib/axiom/server';
 
-const baseUrl = 'http://foslog.vercel.app';
+const baseUrl = FOSLOG_URL;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const sitemap: MetadataRoute.Sitemap = [];
 
     // Static routes for each locale
-    const staticRoutes = [
-        '',
-        '/blog',
-        '/login',
-        '/signup',
-        '/privacy-policy',
-        '/terms-of-service',
-    ];
+    const staticRoutes = ['', '/blog', '/privacy-policy', '/terms-of-service'];
 
     for (const locale of LOCALES) {
         for (const route of staticRoutes) {
             sitemap.push({
                 url: `${baseUrl}/${locale}${route}`,
-                lastModified: new Date(),
                 changeFrequency: route === '/blog' ? 'weekly' : 'monthly',
                 priority: route === '' ? 1.0 : 0.8,
             });
@@ -52,7 +45,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }
         }
     } catch (error) {
-        console.error('Error fetching media items for sitemap:', error);
+        logger.error('GET /sitemap', {
+            method: 'sitemap',
+            error,
+            section: 'media',
+        });
     }
 
     // Dynamic routes - Reviews
@@ -78,7 +75,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }
         }
     } catch (error) {
-        console.error('Error fetching reviews for sitemap:', error);
+        logger.error('GET /sitemap', {
+            method: 'sitemap',
+            error,
+            section: 'reviews',
+        });
     }
 
     // Dynamic routes - User profiles
@@ -104,7 +105,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }
         }
     } catch (error) {
-        console.error('Error fetching users for sitemap:', error);
+        logger.error('GET /sitemap', {
+            method: 'sitemap',
+            error,
+            section: 'users',
+        });
     }
 
     // Dynamic routes - Blog posts
@@ -121,10 +126,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 });
             }
         } catch (error) {
-            console.error(
-                `Error fetching blog posts for locale ${locale}:`,
-                error
-            );
+            logger.error('GET /sitemap', {
+                method: 'sitemap',
+                error,
+                section: 'blog',
+                locale,
+            });
         }
     }
 

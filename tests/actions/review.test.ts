@@ -296,7 +296,7 @@ describe('getReviewMetadata Server Action', () => {
         expect(result?.mediaTitle).toBe('Test Movie');
     });
 
-    it('returns null and logs error when database query fails', async () => {
+    it('returns null when database query fails', async () => {
         const dbError = new Error('Database connection failed');
         (
             prisma.review.findUnique as ReturnType<typeof vi.fn>

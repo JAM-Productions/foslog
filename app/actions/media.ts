@@ -100,7 +100,7 @@ export const getMedias = async (
 };
 
 /**
- * Lightweight function to fetch only media title and type for metadata generation
+ * Lightweight function to fetch only the media title for metadata generation
  * Avoids expensive review queries when only basic info is needed
  */
 export const getMediaMetadata = async (
