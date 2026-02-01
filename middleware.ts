@@ -14,7 +14,7 @@ const protectedRoutes = ['/dashboard', '/settings'];
 // Public routes that authenticated users shouldn't access
 const authRoutes = ['/login', '/signup'];
 
-export async function proxy(request: NextRequest, event: NextFetchEvent) {
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
     logger.info(...transformMiddlewareRequest(request));
     event.waitUntil(logger.flush());
 
