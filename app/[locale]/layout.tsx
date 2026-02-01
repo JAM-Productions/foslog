@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { Ubuntu_Mono } from 'next/font/google';
 import '../globals.css';
 import { ThemeProvider } from '@/components/theme/theme-provider';
@@ -21,38 +20,6 @@ const font = Ubuntu_Mono({
     display: 'swap',
 });
 
-export async function generateMetadata({
-    params,
-}: {
-    params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-    const { locale } = await params;
-    const t = await getTranslations({ locale, namespace: 'Metadata' });
-
-    return {
-        title: t('title'),
-        description: t('description'),
-        keywords: [
-            'reviews',
-            'films',
-            'books',
-            'games',
-            'music',
-            'series',
-            'media',
-            'tracking',
-        ],
-        icons: {
-            icon: [
-                { url: '/favicon.ico', sizes: '48x48' },
-                { url: '/favicon.svg', type: 'image/svg+xml' },
-            ],
-            shortcut: '/favicon.ico',
-            apple: '/apple-icon.png',
-        },
-    };
-}
-
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
 }
@@ -70,6 +37,8 @@ export default async function LocaleLayout({
         notFound();
     }
 
+    const t = await getTranslations({ locale, namespace: 'Metadata' });
+
     // Enable static rendering
     setRequestLocale(locale);
 
@@ -81,9 +50,40 @@ export default async function LocaleLayout({
             <WebVitals />
             <head>
                 <ThemeScript />
+                <title>{t('title')}</title>
                 <meta
-                    name="apple-mobile-web-app-title"
-                    content="Foslog"
+                    name="author"
+                    content="JAM Productions"
+                />
+                <meta
+                    name="description"
+                    content={t('description')}
+                />
+                <meta
+                    name="keywords"
+                    content="reviews, films, series, games, books, music, media"
+                />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
+                <link
+                    rel="icon"
+                    href="/favicon.ico"
+                    sizes="48x48"
+                />
+                <link
+                    rel="icon"
+                    href="/favicon.svg"
+                    type="image/svg+xml"
+                />
+                <link
+                    rel="shortcut icon"
+                    href="/favicon.ico"
+                />
+                <link
+                    rel="apple-touch-icon"
+                    href="/apple-icon.png"
                 />
             </head>
             <body

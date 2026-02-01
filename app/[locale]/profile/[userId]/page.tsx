@@ -14,20 +14,24 @@ import { getTranslations } from 'next-intl/server';
 export async function generateMetadata({
     params,
 }: {
-    params: Promise<{ userId: string }>;
+    params: Promise<{ userId: string; locale: string }>;
 }): Promise<Metadata> {
-    const { userId } = await params;
+    const { userId, locale } = await params;
     const user = await getUserProfile(userId);
+    const t = await getTranslations({
+        locale,
+        namespace: 'Metadata.ProfilePage',
+    });
 
     if (!user) {
         return {
-            title: 'User Not Found',
+            title: t('userNotFound'),
         };
     }
 
     return {
-        title: `${user.name} - Profile`,
-        description: `Check out ${user.name}'s profile and reviews on Foslog.`,
+        title: t('profileTitle', { name: user.name }),
+        description: t('profileDescription', { name: user.name }),
     };
 }
 

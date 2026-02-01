@@ -2,6 +2,38 @@ import * as React from 'react';
 import { ReviewClient } from './review-client';
 import { getReviewById } from '@/app/actions/review';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string; locale: string }>;
+}): Promise<Metadata> {
+    const { id, locale } = await params;
+    const reviewItem = await getReviewById(id, 1);
+    const t = await getTranslations({
+        locale,
+        namespace: 'Metadata.ReviewPage',
+    });
+
+    if (!reviewItem) {
+        return {
+            title: t('reviewNotFound'),
+        };
+    }
+
+    return {
+        title: t('reviewTitle', {
+            userName: reviewItem.user.name,
+            mediaTitle: reviewItem.media.title,
+        }),
+        description: t('reviewDescription', {
+            userName: reviewItem.user.name,
+            mediaTitle: reviewItem.media.title,
+        }),
+    };
+}
 
 export default async function ReviewPage({
     params,

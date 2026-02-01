@@ -4,6 +4,32 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string; locale: string }>;
+}): Promise<Metadata> {
+    const { id, locale } = await params;
+    const mediaItem = await getMediaById(id, 1);
+    const t = await getTranslations({
+        locale,
+        namespace: 'Metadata.MediaPage',
+    });
+
+    if (!mediaItem) {
+        return {
+            title: t('mediaNotFound'),
+        };
+    }
+
+    return {
+        title: t('mediaTitle', { title: mediaItem.title }),
+        description: t('mediaDescription', { title: mediaItem.title }),
+    };
+}
 
 export default async function MediaPage({
     params,

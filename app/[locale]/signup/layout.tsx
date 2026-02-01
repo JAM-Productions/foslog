@@ -1,4 +1,3 @@
-import LegalDocument from '@/components/legal/legal-document';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
@@ -10,25 +9,23 @@ export async function generateMetadata({
     const { locale } = await params;
     const t = await getTranslations({
         locale,
-        namespace: 'Metadata.TermsOfServicePage',
+        namespace: 'Metadata.SignupPage',
     });
 
     return {
         title: t('title'),
         description: t('description'),
+        robots: {
+            index: false,
+            follow: false,
+        },
     };
 }
 
-export default async function TermsOfServicePage({
-    params: paramsPromise,
+export default function SignupLayout({
+    children,
 }: {
-    params: Promise<{ locale: string }>;
+    children: React.ReactNode;
 }) {
-    const { locale } = await paramsPromise;
-    return (
-        <LegalDocument
-            docName="terms-of-service.md"
-            locale={locale}
-        />
-    );
+    return <>{children}</>;
 }

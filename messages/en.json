@@ -120,7 +120,47 @@
     },
     "Metadata": {
         "title": "Foslog - Your Media Review Journal",
-        "description": "Review and track films, series, books, games, and music. Discover new favorites and share your thoughts."
+        "description": "Review and track films, series, books, games, and music. Discover new favorites and share your thoughts.",
+        "ProfilePage": {
+            "userNotFound": "Foslog - User Not Found",
+            "profileTitle": "{name} - Foslog",
+            "profileDescription": "Check out {name}'s profile and reviews on Foslog."
+        },
+        "MediaPage": {
+            "mediaNotFound": "Foslog - Media Not Found",
+            "mediaTitle": "{title} - Foslog",
+            "mediaDescription": "Read reviews and ratings for {title} on Foslog."
+        },
+        "ReviewPage": {
+            "reviewNotFound": "Foslog - Review Not Found",
+            "reviewTitle": "{userName}'s review of {mediaTitle} - Foslog",
+            "reviewDescription": "Read {userName}'s review on {mediaTitle}."
+        },
+        "BlogPage": {
+            "title": "Blog - Foslog",
+            "description": "Read the latest news, releases, and articles about films, series, games, books, and music."
+        },
+        "BlogPostPage": {
+            "postNotFound": "Foslog - Blog Post Not Found",
+            "postTitle": "{title} - Foslog",
+            "postDescription": "{description}"
+        },
+        "LoginPage": {
+            "title": "Sign In - Foslog",
+            "description": "Sign in to your Foslog account to review and track your favorite media."
+        },
+        "SignupPage": {
+            "title": "Sign Up - Foslog",
+            "description": "Create a Foslog account to start reviewing and tracking your favorite films, series, games, books, and music."
+        },
+        "PrivacyPolicyPage": {
+            "title": "Privacy Policy - Foslog",
+            "description": "Read Foslog's privacy policy to understand how we collect, use, and protect your personal information."
+        },
+        "TermsOfServicePage": {
+            "title": "Terms of Service - Foslog",
+            "description": "Read Foslog's terms of service to understand the rules and guidelines for using our platform."
+        }
     },
     "Header": {
         "search": "Search media...",
