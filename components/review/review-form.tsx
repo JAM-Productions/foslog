@@ -142,7 +142,7 @@ export function ReviewForm({
             onSubmit={editProps ? handleSubmitPatch : handleSubmitPost}
         >
             <fieldset>
-                <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-base">
+                <legend className="text-foreground mb-2 block text-sm font-semibold">
                     {t('yourRating')}
                 </legend>
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -199,7 +199,7 @@ export function ReviewForm({
             <div>
                 <label
                     htmlFor="comment"
-                    className="text-foreground mb-2 block text-xs font-semibold sm:text-base"
+                    className="text-foreground mb-2 block text-sm font-semibold"
                 >
                     {t('yourReview')}
                 </label>
@@ -209,7 +209,7 @@ export function ReviewForm({
                     rows={4}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
+                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={isSubmitting}
                 />
             </div>
