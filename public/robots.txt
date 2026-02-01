@@ -1,0 +1,10 @@
+# Allow all user agents
+User-agent: *
+Allow: /
+
+# Disallow API routes and server actions
+Disallow: /api/
+Disallow: /actions/
+
+# Sitemap location
+Sitemap: https://foslog.vercel.app/sitemap.xml
