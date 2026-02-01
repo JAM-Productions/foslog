@@ -78,6 +78,8 @@ export default async function LocaleLayout({
         notFound();
     }
 
+    const t = await getTranslations({ locale, namespace: 'Metadata' });
+
     // Enable static rendering
     setRequestLocale(locale);
 
@@ -89,6 +91,10 @@ export default async function LocaleLayout({
             <WebVitals />
             <head>
                 <ThemeScript />
+                <meta
+                    name="description"
+                    content={t('description')}
+                />
             </head>
             <body
                 className={`${font.className} bg-background flex min-h-screen flex-col antialiased`}
