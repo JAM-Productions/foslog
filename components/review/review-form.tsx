@@ -142,7 +142,7 @@ export function ReviewForm({
             onSubmit={editProps ? handleSubmitPatch : handleSubmitPost}
         >
             <fieldset>
-                <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-sm">
+                <legend className="text-foreground mb-2 block text-xs font-semibold sm:text-base">
                     {t('yourRating')}
                 </legend>
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -199,7 +199,7 @@ export function ReviewForm({
             <div>
                 <label
                     htmlFor="comment"
-                    className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                    className="text-foreground mb-2 block text-xs font-semibold sm:text-base"
                 >
                     {t('yourReview')}
                 </label>

@@ -63,7 +63,7 @@ export function CommentForm({ reviewId }: CommentFormProps) {
             <div>
                 <label
                     htmlFor="comment"
-                    className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                    className="text-foreground mb-2 block text-xs font-semibold sm:text-base"
                 >
                     {tRP('yourComment')}
                 </label>
