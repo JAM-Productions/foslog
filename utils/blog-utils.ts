@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { cache } from 'react';
 
 export interface BlogPost {
     slug: string;
@@ -53,8 +54,9 @@ function parseFrontmatter(content: string): {
 
 /**
  * Reads a single blog post file and returns parsed content
+ * Internal function - not cached
  */
-export async function getBlogPost(
+async function getBlogPostInternal(
     locale: string,
     category: string,
     slug: string
@@ -86,6 +88,13 @@ export async function getBlogPost(
         return null;
     }
 }
+
+/**
+ * Reads a single blog post file and returns parsed content
+ * Cached to avoid reading the same file multiple times per request
+ * (e.g., in both generateMetadata and page component)
+ */
+export const getBlogPost = cache(getBlogPostInternal);
 
 /**
  * Lists all blog posts for a given locale
@@ -143,10 +152,7 @@ export async function getAllBlogPosts(
                     (post): post is BlogPostMetadata => post !== null
                 );
             } catch (error) {
-                console.error(
-                    `Failed to process category ${category}:`,
-                    error
-                );
+                console.error(`Failed to process category ${category}:`, error);
                 return [];
             }
         });

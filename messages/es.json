@@ -120,7 +120,47 @@
     },
     "Metadata": {
         "title": "Foslog - Tu Diario de Reseñas de Medios",
-        "description": "Reseña y rastrea películas, series, libros, juegos y música. Descubre nuevos favoritos y comparte tus pensamientos."
+        "description": "Reseña y rastrea películas, series, libros, juegos y música. Descubre nuevos favoritos y comparte tus pensamientos.",
+        "ProfilePage": {
+            "userNotFound": "Foslog - Usuario No Encontrado",
+            "profileTitle": "{name} - Foslog",
+            "profileDescription": "Consulta el perfil y las reseñas de {name} en Foslog."
+        },
+        "MediaPage": {
+            "mediaNotFound": "Foslog - Medio No Encontrado",
+            "mediaTitle": "{title} - Foslog",
+            "mediaDescription": "Lee reseñas y valoraciones de {title} en Foslog."
+        },
+        "ReviewPage": {
+            "reviewNotFound": "Foslog - Reseña No Encontrada",
+            "reviewTitle": "Reseña de {userName} sobre {mediaTitle} - Foslog",
+            "reviewDescription": "Lee la reseña de {userName} sobre {mediaTitle}."
+        },
+        "BlogPage": {
+            "title": "Blog - Foslog",
+            "description": "Lee las últimas noticias, lanzamientos y artículos sobre películas, series, juegos, libros y música."
+        },
+        "BlogPostPage": {
+            "postNotFound": "Foslog - Artículo No Encontrado",
+            "postTitle": "{title} - Foslog",
+            "postDescription": "{description}"
+        },
+        "LoginPage": {
+            "title": "Iniciar Sesión - Foslog",
+            "description": "Inicia sesión en tu cuenta de Foslog para reseñar y rastrear tus medios favoritos."
+        },
+        "SignupPage": {
+            "title": "Registrarse - Foslog",
+            "description": "Crea una cuenta de Foslog para comenzar a reseñar y rastrear tus películas, series, juegos, libros y música favoritos."
+        },
+        "PrivacyPolicyPage": {
+            "title": "Política de Privacidad - Foslog",
+            "description": "Lee la política de privacidad de Foslog para entender cómo recopilamos, usamos y protegemos tu información personal."
+        },
+        "TermsOfServicePage": {
+            "title": "Términos de Servicio - Foslog",
+            "description": "Lee los términos de servicio de Foslog para entender las reglas y pautas para usar nuestra plataforma."
+        }
     },
     "Header": {
         "search": "Buscar medios...",

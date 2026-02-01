@@ -5,6 +5,57 @@ import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeComment, SafeReviewWithMediaAndComments } from '@/lib/types';
 
+/**
+ * Lightweight function to fetch only user name and media title for metadata generation
+ * Avoids expensive comment queries when only basic info is needed
+ */
+export const getReviewMetadata = async (
+    id: string
+): Promise<{ userName: string; mediaTitle: string } | null> => {
+    try {
+        const review = await prisma.review.findUnique({
+            where: { id },
+            select: {
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+                media: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+        });
+
+        if (!review) {
+            logger.warn('GET /actions/review', {
+                method: 'getReviewMetadata',
+                warn: 'Review not found',
+                reviewId: id,
+            });
+            return null;
+        }
+
+        logger.info('GET /actions/review', {
+            method: 'getReviewMetadata',
+            reviewId: id,
+        });
+        return {
+            userName: review.user.name ?? 'Unknown User',
+            mediaTitle: review.media.title,
+        };
+    } catch (error) {
+        logger.error('GET /actions/review', {
+            method: 'getReviewMetadata',
+            error,
+            reviewId: id,
+        });
+        return null;
+    }
+};
+
 export const getReviewById = async (
     id: string,
     page: number = 1,

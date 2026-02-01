@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { Ubuntu_Mono } from 'next/font/google';
 import '../globals.css';
 import { ThemeProvider } from '@/components/theme/theme-provider';
@@ -14,12 +13,22 @@ import { setRequestLocale } from 'next-intl/server';
 import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
 import { ToastProvider } from '@/components/toast/toast-provider';
 import { WebVitals } from '@/lib/axiom/client';
+import { Metadata, Viewport } from 'next';
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
     subsets: ['latin'],
     display: 'swap',
 });
+
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+};
 
 export async function generateMetadata({
     params,
@@ -30,18 +39,21 @@ export async function generateMetadata({
     const t = await getTranslations({ locale, namespace: 'Metadata' });
 
     return {
-        title: t('title'),
+        title: {
+            default: t('title'),
+            template: '%s',
+        },
         description: t('description'),
         keywords: [
             'reviews',
             'films',
-            'books',
-            'games',
-            'music',
             'series',
+            'games',
+            'books',
+            'music',
             'media',
-            'tracking',
         ],
+        authors: [{ name: 'JAM Productions' }],
         icons: {
             icon: [
                 { url: '/favicon.ico', sizes: '48x48' },
@@ -51,10 +63,6 @@ export async function generateMetadata({
             apple: '/apple-icon.png',
         },
     };
-}
-
-export function generateStaticParams() {
-    return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
@@ -70,6 +78,8 @@ export default async function LocaleLayout({
         notFound();
     }
 
+    const t = await getTranslations({ locale, namespace: 'Metadata' });
+
     // Enable static rendering
     setRequestLocale(locale);
 
@@ -82,8 +92,8 @@ export default async function LocaleLayout({
             <head>
                 <ThemeScript />
                 <meta
-                    name="apple-mobile-web-app-title"
-                    content="Foslog"
+                    name="description"
+                    content={t('description')}
                 />
             </head>
             <body

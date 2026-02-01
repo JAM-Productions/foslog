@@ -120,7 +120,47 @@
     },
     "Metadata": {
         "title": "Foslog - El Teu Diari de Ressenyes de Mitjans",
-        "description": "Ressenya i rastreja pel·lícules, sèries, llibres, jocs i música. Descobreix nous favorits i comparteix els teus pensaments."
+        "description": "Ressenya i rastreja pel·lícules, sèries, llibres, jocs i música. Descobreix nous favorits i comparteix els teus pensaments.",
+        "ProfilePage": {
+            "userNotFound": "Foslog - Usuari No Trobat",
+            "profileTitle": "{name} - Foslog",
+            "profileDescription": "Consulta el perfil i les ressenyes de {name} a Foslog."
+        },
+        "MediaPage": {
+            "mediaNotFound": "Foslog - Contingut No Trobat",
+            "mediaTitle": "{title} - Foslog",
+            "mediaDescription": "Llegeix ressenyes i valoracions de {title} a Foslog."
+        },
+        "ReviewPage": {
+            "reviewNotFound": "Foslog - Ressenya No Trobada",
+            "reviewTitle": "Ressenya de {userName} sobre {mediaTitle} - Foslog",
+            "reviewDescription": "Llegeix la ressenya de {userName} sobre {mediaTitle}."
+        },
+        "BlogPage": {
+            "title": "Blog - Foslog",
+            "description": "Llegeix les últimes notícies, llançaments i articles sobre pel·lícules, sèries, jocs, llibres i música."
+        },
+        "BlogPostPage": {
+            "postNotFound": "Foslog - Article No Trobat",
+            "postTitle": "{title} - Foslog",
+            "postDescription": "{description}"
+        },
+        "LoginPage": {
+            "title": "Iniciar Sessió - Foslog",
+            "description": "Inicia sessió al teu compte de Foslog per ressenyar i rastrejar els teus mitjans favorits."
+        },
+        "SignupPage": {
+            "title": "Registrar-se - Foslog",
+            "description": "Crea un compte de Foslog per començar a ressenyar i rastrejar les teves pel·lícules, sèries, jocs, llibres i música favorits."
+        },
+        "PrivacyPolicyPage": {
+            "title": "Política de Privacitat - Foslog",
+            "description": "Llegeix la política de privacitat de Foslog per entendre com recopilem, utilitzem i protegim la teva informació personal."
+        },
+        "TermsOfServicePage": {
+            "title": "Termes de Servei - Foslog",
+            "description": "Llegeix els termes de servei de Foslog per entendre les regles i directrius per utilitzar la nostra plataforma."
+        }
     },
     "Header": {
         "search": "Cercar mitjans...",
