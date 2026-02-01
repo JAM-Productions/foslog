@@ -63,7 +63,7 @@ export function CommentForm({ reviewId }: CommentFormProps) {
             <div>
                 <label
                     htmlFor="comment"
-                    className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                    className="text-foreground mb-2 block text-sm font-semibold"
                 >
                     {tRP('yourComment')}
                 </label>
@@ -73,7 +73,7 @@ export function CommentForm({ reviewId }: CommentFormProps) {
                     rows={4}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
+                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={isSubmitting}
                     required
                 />
