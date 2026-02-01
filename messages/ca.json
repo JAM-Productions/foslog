@@ -122,7 +122,7 @@
         "title": "Foslog - El Teu Diari de Ressenyes de Mitjans",
         "description": "Ressenya i rastreja pel·lícules, sèries, llibres, jocs i música. Descobreix nous favorits i comparteix els teus pensaments.",
         "ProfilePage": {
-            "userNotFound": " Foslog - Usuari No Trobat",
+            "userNotFound": "Foslog - Usuari No Trobat",
             "profileTitle": "{name} - Foslog",
             "profileDescription": "Consulta el perfil i les ressenyes de {name} a Foslog."
         },

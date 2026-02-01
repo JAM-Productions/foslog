@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReviewClient } from './review-client';
-import { getReviewById } from '@/app/actions/review';
+import { getReviewById, getReviewMetadata } from '@/app/actions/review';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
@@ -11,7 +11,7 @@ export async function generateMetadata({
     params: Promise<{ id: string; locale: string }>;
 }): Promise<Metadata> {
     const { id, locale } = await params;
-    const reviewItem = await getReviewById(id, 1);
+    const reviewItem = await getReviewMetadata(id);
     const t = await getTranslations({
         locale,
         namespace: 'Metadata.ReviewPage',
@@ -25,12 +25,12 @@ export async function generateMetadata({
 
     return {
         title: t('reviewTitle', {
-            userName: reviewItem.user.name,
-            mediaTitle: reviewItem.media.title,
+            userName: reviewItem.userName,
+            mediaTitle: reviewItem.mediaTitle,
         }),
         description: t('reviewDescription', {
-            userName: reviewItem.user.name,
-            mediaTitle: reviewItem.media.title,
+            userName: reviewItem.userName,
+            mediaTitle: reviewItem.mediaTitle,
         }),
     };
 }

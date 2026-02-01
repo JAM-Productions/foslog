@@ -3,6 +3,7 @@ import {
     getMedias,
     getMediaById,
     getGlobalMediaStats,
+    getMediaMetadata,
 } from '@/app/actions/media';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/axiom/server';
@@ -638,5 +639,92 @@ describe('getGlobalMediaStats Server Action', () => {
         );
 
         loggerErrorSpy.mockRestore();
+    });
+});
+
+describe('getMediaMetadata Server Action', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('returns title when media exists', async () => {
+        const mockMedia = {
+            title: 'Test Movie',
+        };
+
+        (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockMedia);
+
+        const result = await getMediaMetadata('media1');
+
+        expect(result).toEqual({
+            title: 'Test Movie',
+        });
+        expect(prisma.mediaItem.findUnique).toHaveBeenCalledWith({
+            where: { id: 'media1' },
+            select: {
+                title: true,
+            },
+        });
+    });
+
+    it('returns null when media is not found', async () => {
+        (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(null);
+
+        const result = await getMediaMetadata('non-existent-id');
+
+        expect(result).toBeNull();
+        expect(prisma.mediaItem.findUnique).toHaveBeenCalledWith({
+            where: { id: 'non-existent-id' },
+            select: {
+                title: true,
+            },
+        });
+    });
+
+    it('logs error when database query fails', async () => {
+        const loggerErrorSpy = vi.spyOn(logger, 'error');
+        const dbError = new Error('Database connection failed');
+        (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mockRejectedValue(dbError);
+
+        const result = await getMediaMetadata('media1');
+
+        expect(result).toBeNull();
+        expect(loggerErrorSpy).toHaveBeenCalledWith(
+            'GET /actions/media',
+            expect.objectContaining({
+                method: 'getMediaMetadata',
+                error: dbError,
+                mediaId: 'media1',
+            })
+        );
+
+        loggerErrorSpy.mockRestore();
+    });
+
+    it('only queries title field (performance optimization)', async () => {
+        const mockMedia = {
+            title: 'Test Game',
+        };
+
+        (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockMedia);
+
+        await getMediaMetadata('media3');
+
+        const callArgs = (
+            prisma.mediaItem.findUnique as ReturnType<typeof vi.fn>
+        ).mock.calls[0][0];
+        expect(callArgs.select).toEqual({
+            title: true,
+        });
+        // Ensure no other fields are included
+        expect(Object.keys(callArgs.select)).toHaveLength(1);
     });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getReviewById } from '@/app/actions/review';
+import { getReviewById, getReviewMetadata } from '@/app/actions/review';
 import { prisma } from '@/lib/prisma';
 
 vi.mock('@/lib/prisma', () => ({
@@ -206,5 +206,138 @@ describe('getReviewById Server Action', () => {
         await expect(getReviewById('review1')).rejects.toThrow(
             'Could not fetch review.'
         );
+    });
+});
+
+describe('getReviewMetadata Server Action', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('returns user name and media title when review exists', async () => {
+        const mockReview = {
+            user: {
+                name: 'John Doe',
+            },
+            media: {
+                title: 'Test Movie',
+            },
+        };
+
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
+
+        const result = await getReviewMetadata('review1');
+
+        expect(result).toEqual({
+            userName: 'John Doe',
+            mediaTitle: 'Test Movie',
+        });
+        expect(prisma.review.findUnique).toHaveBeenCalledWith({
+            where: { id: 'review1' },
+            select: {
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+                media: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+        });
+    });
+
+    it('returns null when review is not found', async () => {
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(null);
+
+        const result = await getReviewMetadata('non-existent-id');
+
+        expect(result).toBeNull();
+        expect(prisma.review.findUnique).toHaveBeenCalledWith({
+            where: { id: 'non-existent-id' },
+            select: {
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+                media: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+        });
+    });
+
+    it('defaults to "Unknown User" when user name is null', async () => {
+        const mockReview = {
+            user: {
+                name: null,
+            },
+            media: {
+                title: 'Test Movie',
+            },
+        };
+
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
+
+        const result = await getReviewMetadata('review1');
+
+        expect(result?.userName).toBe('Unknown User');
+        expect(result?.mediaTitle).toBe('Test Movie');
+    });
+
+    it('returns null and logs error when database query fails', async () => {
+        const dbError = new Error('Database connection failed');
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockRejectedValue(dbError);
+
+        const result = await getReviewMetadata('review1');
+
+        expect(result).toBeNull();
+    });
+
+    it('only queries user name and media title fields (performance optimization)', async () => {
+        const mockReview = {
+            user: {
+                name: 'Jane Smith',
+            },
+            media: {
+                title: 'Another Movie',
+            },
+        };
+
+        (
+            prisma.review.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockReview);
+
+        await getReviewMetadata('review2');
+
+        const callArgs = (prisma.review.findUnique as ReturnType<typeof vi.fn>)
+            .mock.calls[0][0];
+        expect(callArgs.select).toEqual({
+            user: {
+                select: {
+                    name: true,
+                },
+            },
+            media: {
+                select: {
+                    title: true,
+                },
+            },
+        });
+        // Ensure no comments or other expensive fields are included
+        expect(callArgs.include).toBeUndefined();
     });
 });

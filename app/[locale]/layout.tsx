@@ -13,6 +13,7 @@ import { setRequestLocale } from 'next-intl/server';
 import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
 import { ToastProvider } from '@/components/toast/toast-provider';
 import { WebVitals } from '@/lib/axiom/client';
+import { Metadata, Viewport } from 'next';
 
 const font = Ubuntu_Mono({
     weight: ['400', '700'],
@@ -22,6 +23,46 @@ const font = Ubuntu_Mono({
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
+}
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+};
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'Metadata' });
+
+    return {
+        title: {
+            default: t('title'),
+            template: '%s',
+        },
+        description: t('description'),
+        keywords: [
+            'reviews',
+            'films',
+            'series',
+            'games',
+            'books',
+            'music',
+            'media',
+        ],
+        authors: [{ name: 'JAM Productions' }],
+        icons: {
+            icon: [
+                { url: '/favicon.ico', sizes: '48x48' },
+                { url: '/favicon.svg', type: 'image/svg+xml' },
+            ],
+            shortcut: '/favicon.ico',
+            apple: '/apple-icon.png',
+        },
+    };
 }
 
 export default async function LocaleLayout({
@@ -37,8 +78,6 @@ export default async function LocaleLayout({
         notFound();
     }
 
-    const t = await getTranslations({ locale, namespace: 'Metadata' });
-
     // Enable static rendering
     setRequestLocale(locale);
 
@@ -50,41 +89,6 @@ export default async function LocaleLayout({
             <WebVitals />
             <head>
                 <ThemeScript />
-                <title>{t('title')}</title>
-                <meta
-                    name="author"
-                    content="JAM Productions"
-                />
-                <meta
-                    name="description"
-                    content={t('description')}
-                />
-                <meta
-                    name="keywords"
-                    content="reviews, films, series, games, books, music, media"
-                />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
-                />
-                <link
-                    rel="icon"
-                    href="/favicon.ico"
-                    sizes="48x48"
-                />
-                <link
-                    rel="icon"
-                    href="/favicon.svg"
-                    type="image/svg+xml"
-                />
-                <link
-                    rel="shortcut icon"
-                    href="/favicon.ico"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/apple-icon.png"
-                />
             </head>
             <body
                 className={`${font.className} bg-background flex min-h-screen flex-col antialiased`}

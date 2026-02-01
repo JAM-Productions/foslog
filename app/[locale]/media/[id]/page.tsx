@@ -1,4 +1,4 @@
-import { getMediaById } from '@/app/actions/media';
+import { getMediaById, getMediaMetadata } from '@/app/actions/media';
 import { MediaClient } from './media-client';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
@@ -13,7 +13,7 @@ export async function generateMetadata({
     params: Promise<{ id: string; locale: string }>;
 }): Promise<Metadata> {
     const { id, locale } = await params;
-    const mediaItem = await getMediaById(id, 1);
+    const mediaItem = await getMediaMetadata(id);
     const t = await getTranslations({
         locale,
         namespace: 'Metadata.MediaPage',

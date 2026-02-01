@@ -99,6 +99,47 @@ export const getMedias = async (
     }
 };
 
+/**
+ * Lightweight function to fetch only media title and type for metadata generation
+ * Avoids expensive review queries when only basic info is needed
+ */
+export const getMediaMetadata = async (
+    id: string
+): Promise<{ title: string } | null> => {
+    try {
+        const mediaItem = await prisma.mediaItem.findUnique({
+            where: { id },
+            select: {
+                title: true,
+            },
+        });
+
+        if (!mediaItem) {
+            logger.warn('GET /actions/media', {
+                method: 'getMediaMetadata',
+                warn: 'Media not found',
+                mediaId: id,
+            });
+            return null;
+        }
+
+        logger.info('GET /actions/media', {
+            method: 'getMediaMetadata',
+            mediaId: id,
+        });
+        return {
+            title: mediaItem.title,
+        };
+    } catch (error) {
+        logger.error('GET /actions/media', {
+            method: 'getMediaMetadata',
+            error,
+            mediaId: id,
+        });
+        return null;
+    }
+};
+
 export const getMediaById = async (
     id: string,
     page: number = 1,
