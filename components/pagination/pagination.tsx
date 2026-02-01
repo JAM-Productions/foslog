@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/button/button';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 interface PaginationProps {
     currentPage: number;
@@ -18,6 +19,7 @@ export default function Pagination({
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
+    const isMobile = useMediaQuery('(max-width: 640px)');
 
     const handlePageChange = (page: number) => {
         if (page < 1 || page > totalPages) return;
@@ -45,7 +47,7 @@ export default function Pagination({
     // Generate page numbers to display
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
-        const maxVisible = 7; // Maximum number of page buttons to show
+        const maxVisible = isMobile ? 5 : 7; // Responsive number of page buttons
 
         if (totalPages <= maxVisible) {
             // Show all pages if total is small
@@ -84,7 +86,10 @@ export default function Pagination({
     }
 
     return (
-        <div className="flex items-center justify-center gap-2 py-8">
+        <div
+            className="flex items-center justify-center gap-2 py-8"
+            aria-label="pagination"
+        >
             <Button
                 variant="outline"
                 size="sm"

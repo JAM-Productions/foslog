@@ -19,3 +19,15 @@ vi.mock('@/lib/redis', () => ({
         incr: vi.fn(),
     },
 }));
+
+// Mock window.matchMedia
+const matchMediaMock = vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+}));
+
+vi.stubGlobal('matchMedia', matchMediaMock);
