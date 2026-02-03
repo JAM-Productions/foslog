@@ -55,22 +55,24 @@ export default function Pagination({
                 pages.push(i);
             }
         } else {
+            const neighbors = isMobile ? 0 : 1;
+
             // Always show first page
             pages.push(1);
 
-            if (currentPage > 3) {
+            if (currentPage > neighbors + 2) {
                 pages.push('...');
             }
 
             // Show pages around current page
-            const start = Math.max(2, currentPage - 1);
-            const end = Math.min(totalPages - 1, currentPage + 1);
+            const start = Math.max(2, currentPage - neighbors);
+            const end = Math.min(totalPages - 1, currentPage + neighbors);
 
             for (let i = start; i <= end; i++) {
                 pages.push(i);
             }
 
-            if (currentPage < totalPages - 2) {
+            if (currentPage < totalPages - (neighbors + 1)) {
                 pages.push('...');
             }
 
@@ -87,7 +89,7 @@ export default function Pagination({
 
     return (
         <div
-            className="flex items-center justify-center gap-2 py-8"
+            className="flex items-center justify-center gap-1 sm:gap-2 py-8"
             aria-label="pagination"
         >
             <Button
@@ -100,13 +102,13 @@ export default function Pagination({
                 <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 sm:gap-1">
                 {getPageNumbers().map((page, index) => {
                     if (page === '...') {
                         return (
                             <span
                                 key={`ellipsis-${index}`}
-                                className="text-muted-foreground px-2"
+                                className="text-muted-foreground px-1 sm:px-2"
                             >
                                 ...
                             </span>
@@ -124,7 +126,7 @@ export default function Pagination({
                             onClick={() => handlePageChange(pageNum)}
                             aria-label={`Page ${pageNum}`}
                             aria-current={isActive ? 'page' : undefined}
-                            className="min-w-[2.5rem]"
+                            className="min-w-[2rem] sm:min-w-[2.5rem] px-2"
                         >
                             {pageNum}
                         </Button>
