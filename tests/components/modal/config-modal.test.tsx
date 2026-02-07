@@ -94,7 +94,6 @@ describe('ConfigModal', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        
         // Reset the mock implementations
         mockConfigModalT.mockImplementation((key: string) => {
             const translations: Record<string, string> = {
