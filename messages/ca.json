@@ -266,7 +266,9 @@
         "commentCreated": "Comentari afegit correctament!",
         "commentCreateFailed": "Error en afegir el comentari. Si us plau, torna-ho a provar.",
         "commentDeleted": "Comentari eliminat correctament!",
-        "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar."
+        "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar.",
+        "accountDeleted": "Compte eliminat correctament. Adéu!",
+        "accountDeleteFailed": "Error en eliminar el compte. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -360,7 +362,10 @@
     "ConfigModal": {
         "settings": "Configuració",
         "language": "Idioma",
-        "theme": "Tema"
+        "theme": "Tema",
+        "deleteAccount": "Eliminar Compte",
+        "deleteAccountTitle": "Eliminar Compte",
+        "deleteAccountDescription": "Estàs segur que vols eliminar el teu compte? Aquesta acció no es pot desfer i totes les teves dades seran eliminades permanentment."
     },
     "ConsumedMoreThanOnce": {
         "film": "Ha vist aquesta pel·lícula més d'una vegada",

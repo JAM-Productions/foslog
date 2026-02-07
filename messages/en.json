@@ -266,7 +266,9 @@
         "commentCreated": "Comment added successfully!",
         "commentCreateFailed": "Failed to add comment. Please try again.",
         "commentDeleted": "Comment deleted successfully!",
-        "commentDeleteFailed": "Failed to delete comment. Please try again."
+        "commentDeleteFailed": "Failed to delete comment. Please try again.",
+        "accountDeleted": "Account deleted successfully. Goodbye!",
+        "accountDeleteFailed": "Failed to delete account. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -360,7 +362,10 @@
     "ConfigModal": {
         "settings": "Settings",
         "language": "Language",
-        "theme": "Theme"
+        "theme": "Theme",
+        "deleteAccount": "Delete Account",
+        "deleteAccountTitle": "Delete Account",
+        "deleteAccountDescription": "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
     },
     "ConsumedMoreThanOnce": {
         "film": "Has watched this film more than once",

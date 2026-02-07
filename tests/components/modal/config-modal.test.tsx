@@ -4,6 +4,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ConfigModal from '@/components/modal/config-modal';
 import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { useOptionsModalStore } from '@/lib/options-modal-store';
 
 // Mock dependencies
 vi.mock('@/lib/store', () => ({
@@ -12,6 +14,26 @@ vi.mock('@/lib/store', () => ({
 
 vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
+}));
+
+vi.mock('@/lib/auth/auth-provider', () => ({
+    useAuth: vi.fn(),
+}));
+
+vi.mock('@/lib/options-modal-store', () => ({
+    useOptionsModalStore: vi.fn(),
+}));
+
+vi.mock('@/i18n/routing', () => ({
+    useRouter: vi.fn(() => ({
+        push: vi.fn(),
+    })),
+}));
+
+vi.mock('@/lib/toast-store', () => ({
+    useToastStore: vi.fn(() => ({
+        showToast: vi.fn(),
+    })),
 }));
 
 vi.mock('@/components/modal/modal', () => ({
@@ -34,27 +56,105 @@ vi.mock('@/components/theme/theme-toggle', () => ({
 
 describe('ConfigModal', () => {
     const mockSetIsConfigModalOpen = vi.fn();
+    const mockShowModal = vi.fn();
+    const mockSetIsCTALoading = vi.fn();
+    const mockHideModal = vi.fn();
     const mockedUseAppStore = vi.mocked(useAppStore);
     const mockedUseTranslations = vi.mocked(useTranslations);
+    const mockedUseAuth = vi.mocked(useAuth);
+    const mockedUseOptionsModalStore = vi.mocked(useOptionsModalStore);
 
-    const mockT = vi.fn((key: string) => {
+    const mockConfigModalT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             settings: 'Settings',
             language: 'Language',
             theme: 'Theme',
+            deleteAccount: 'Delete Account',
+            deleteAccountTitle: 'Delete Account',
+            deleteAccountDescription:
+                'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.',
+        };
+        return translations[key] || key;
+    });
+
+    const mockCTAT = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            delete: 'Delete',
+        };
+        return translations[key] || key;
+    });
+
+    const mockToastT = vi.fn((key: string) => {
+        const translations: Record<string, string> = {
+            accountDeleted: 'Account deleted successfully. Goodbye!',
+            accountDeleteFailed: 'Failed to delete account. Please try again.',
         };
         return translations[key] || key;
     });
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockedUseTranslations.mockReturnValue(
-            mockT as unknown as ReturnType<typeof useTranslations>
-        );
+        
+        // Reset the mock implementations
+        mockConfigModalT.mockImplementation((key: string) => {
+            const translations: Record<string, string> = {
+                settings: 'Settings',
+                language: 'Language',
+                theme: 'Theme',
+                deleteAccount: 'Delete Account',
+                deleteAccountTitle: 'Delete Account',
+                deleteAccountDescription:
+                    'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.',
+            };
+            return translations[key] || key;
+        });
+        
+        mockCTAT.mockImplementation((key: string) => {
+            const translations: Record<string, string> = {
+                delete: 'Delete',
+            };
+            return translations[key] || key;
+        });
+        
+        mockToastT.mockImplementation((key: string) => {
+            const translations: Record<string, string> = {
+                accountDeleted: 'Account deleted successfully. Goodbye!',
+                accountDeleteFailed: 'Failed to delete account. Please try again.',
+            };
+            return translations[key] || key;
+        });
+        
+        mockedUseTranslations.mockImplementation((namespace: string) => {
+            if (namespace === 'ConfigModal') {
+                return mockConfigModalT as unknown as ReturnType<
+                    typeof useTranslations
+                >;
+            }
+            if (namespace === 'CTA') {
+                return mockCTAT as unknown as ReturnType<typeof useTranslations>;
+            }
+            if (namespace === 'Toast') {
+                return mockToastT as unknown as ReturnType<
+                    typeof useTranslations
+                >;
+            }
+            return vi.fn() as unknown as ReturnType<typeof useTranslations>;
+        });
         mockedUseAppStore.mockReturnValue({
             isConfigModalOpen: false,
             setIsConfigModalOpen: mockSetIsConfigModalOpen,
         } as unknown as ReturnType<typeof useAppStore>);
+        mockedUseAuth.mockReturnValue({
+            user: null,
+            session: null,
+            isLoading: false,
+            isAuthenticated: false,
+        });
+        mockedUseOptionsModalStore.mockReturnValue({
+            showModal: mockShowModal,
+            setIsCTALoading: mockSetIsCTALoading,
+            hideModal: mockHideModal,
+        } as unknown as ReturnType<typeof useOptionsModalStore>);
     });
 
     describe('when modal is closed', () => {
@@ -166,9 +266,9 @@ describe('ConfigModal', () => {
         it('calls translation function with correct keys', () => {
             render(<ConfigModal />);
 
-            expect(mockT).toHaveBeenCalledWith('settings');
-            expect(mockT).toHaveBeenCalledWith('language');
-            expect(mockT).toHaveBeenCalledWith('theme');
+            expect(mockConfigModalT).toHaveBeenCalledWith('settings');
+            expect(mockConfigModalT).toHaveBeenCalledWith('language');
+            expect(mockConfigModalT).toHaveBeenCalledWith('theme');
         });
 
         it('renders both LanguageSelector and ThemeToggle components', () => {
@@ -247,7 +347,7 @@ describe('ConfigModal', () => {
                 setIsConfigModalOpen: mockSetIsConfigModalOpen,
             } as unknown as ReturnType<typeof useAppStore>);
 
-            mockT.mockImplementation((key: string) => {
+            mockConfigModalT.mockImplementation((key: string) => {
                 if (key === 'settings') return 'Configuración';
                 if (key === 'language') return 'Language';
                 if (key === 'theme') return 'Theme';
@@ -267,7 +367,7 @@ describe('ConfigModal', () => {
                 setIsConfigModalOpen: mockSetIsConfigModalOpen,
             } as unknown as ReturnType<typeof useAppStore>);
 
-            mockT.mockImplementation((key: string) => {
+            mockConfigModalT.mockImplementation((key: string) => {
                 if (key === 'language') return 'Idioma';
                 if (key === 'settings') return 'Settings';
                 if (key === 'theme') return 'Theme';
@@ -285,7 +385,7 @@ describe('ConfigModal', () => {
                 setIsConfigModalOpen: mockSetIsConfigModalOpen,
             } as unknown as ReturnType<typeof useAppStore>);
 
-            mockT.mockImplementation((key: string) => {
+            mockConfigModalT.mockImplementation((key: string) => {
                 if (key === 'theme') return 'Tema';
                 if (key === 'settings') return 'Settings';
                 if (key === 'language') return 'Language';
@@ -295,6 +395,127 @@ describe('ConfigModal', () => {
             render(<ConfigModal />);
 
             expect(screen.getByText('Tema')).toBeInTheDocument();
+        });
+    });
+
+    describe('delete account functionality', () => {
+        describe('when user is not authenticated', () => {
+            beforeEach(() => {
+                mockedUseAppStore.mockReturnValue({
+                    isConfigModalOpen: true,
+                    setIsConfigModalOpen: mockSetIsConfigModalOpen,
+                } as unknown as ReturnType<typeof useAppStore>);
+                mockedUseAuth.mockReturnValue({
+                    user: null,
+                    session: null,
+                    isLoading: false,
+                    isAuthenticated: false,
+                });
+            });
+
+            it('does not render delete account section', () => {
+                render(<ConfigModal />);
+
+                expect(
+                    screen.queryByText('Delete Account')
+                ).not.toBeInTheDocument();
+            });
+
+            it('does not render delete button', () => {
+                render(<ConfigModal />);
+
+                const deleteButtons = screen
+                    .queryAllByRole('button')
+                    .filter((btn) => btn.textContent === 'Delete');
+                expect(deleteButtons).toHaveLength(0);
+            });
+        });
+
+        describe('when user is authenticated', () => {
+            beforeEach(() => {
+                mockedUseAppStore.mockReturnValue({
+                    isConfigModalOpen: true,
+                    setIsConfigModalOpen: mockSetIsConfigModalOpen,
+                } as unknown as ReturnType<typeof useAppStore>);
+                mockedUseAuth.mockReturnValue({
+                    user: {
+                        id: 'user-1',
+                        name: 'Test User',
+                        email: 'test@example.com',
+                    },
+                    session: { userId: 'user-1' },
+                    isLoading: false,
+                    isAuthenticated: true,
+                } as ReturnType<typeof useAuth>);
+            });
+
+            it('renders delete account section', () => {
+                render(<ConfigModal />);
+
+                expect(screen.getByText('Delete Account')).toBeInTheDocument();
+            });
+
+            it('renders delete button', () => {
+                render(<ConfigModal />);
+
+                const deleteButton = screen.getByRole('button', {
+                    name: /delete/i,
+                });
+                expect(deleteButton).toBeInTheDocument();
+            });
+
+            it('delete button has destructive variant', () => {
+                render(<ConfigModal />);
+
+                const deleteButton = screen.getByRole('button', {
+                    name: /delete/i,
+                });
+                expect(deleteButton).toHaveClass('bg-destructive');
+            });
+
+            it('delete account section has proper layout classes', () => {
+                render(<ConfigModal />);
+
+                const deleteAccountText = screen.getByText('Delete Account');
+                const deleteAccountSection = deleteAccountText.closest('div');
+                expect(deleteAccountSection).toHaveClass(
+                    'flex',
+                    'items-center',
+                    'justify-between',
+                    'border-b',
+                    'pb-2'
+                );
+            });
+
+            it('calls showModal with correct parameters when delete button is clicked', async () => {
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const deleteButton = screen.getByRole('button', {
+                    name: /delete/i,
+                });
+                await user.click(deleteButton);
+
+                expect(mockShowModal).toHaveBeenCalledWith(
+                    'Delete Account',
+                    'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.',
+                    'Delete',
+                    expect.any(Function)
+                );
+                expect(mockShowModal).toHaveBeenCalledTimes(1);
+            });
+
+            it('shows confirmation modal before deleting account', async () => {
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const deleteButton = screen.getByRole('button', {
+                    name: /delete/i,
+                });
+                await user.click(deleteButton);
+
+                expect(mockShowModal).toHaveBeenCalled();
+            });
         });
     });
 });

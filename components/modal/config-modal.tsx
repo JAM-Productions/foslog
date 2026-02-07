@@ -6,13 +6,57 @@ import LanguageSelector from '../header/language-selector';
 import ThemeToggle from '../theme/theme-toggle';
 import { useTranslations } from 'next-intl';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { useOptionsModalStore } from '@/lib/options-modal-store';
+import { useRouter } from '@/i18n/routing';
+import { useToastStore } from '@/lib/toast-store';
 
 export default function ConfigModal() {
     const tConfigModal = useTranslations('ConfigModal');
+    const tCTA = useTranslations('CTA');
+    const tToast = useTranslations('Toast');
 
     const { isConfigModalOpen, setIsConfigModalOpen } = useAppStore();
+    const { user } = useAuth();
+    const { showModal, setIsCTALoading, hideModal } = useOptionsModalStore();
+    const { showToast } = useToastStore();
+    const router = useRouter();
 
     useBodyScrollLock(isConfigModalOpen);
+
+    const handleDeleteAccount = async () => {
+        setIsCTALoading(true);
+        try {
+            const response = await fetch('/api/user', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete account');
+            }
+
+            showToast(tToast('accountDeleted'), 'success');
+            hideModal();
+            setIsConfigModalOpen(false);
+            router.push('/');
+        } catch (error) {
+            showToast(tToast('accountDeleteFailed'), 'error');
+        } finally {
+            setIsCTALoading(false);
+        }
+    };
+
+    const handleDeleteAccountClick = () => {
+        showModal(
+            tConfigModal('deleteAccountTitle'),
+            tConfigModal('deleteAccountDescription'),
+            tCTA('delete'),
+            handleDeleteAccount
+        );
+    };
 
     return (
         <Modal isModalOpen={isConfigModalOpen}>
@@ -43,6 +87,18 @@ export default function ConfigModal() {
                         <span>{tConfigModal('theme')}</span>
                         <ThemeToggle />
                     </div>
+                    {user && (
+                        <div className="flex items-center justify-between border-b pb-2">
+                            <span>{tConfigModal('deleteAccount')}</span>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={handleDeleteAccountClick}
+                            >
+                                {tCTA('delete')}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </Modal>
