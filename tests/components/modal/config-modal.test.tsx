@@ -24,7 +24,7 @@ vi.mock('@/lib/options-modal-store', () => ({
     useOptionsModalStore: vi.fn(),
 }));
 
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/navigation', () => ({
     useRouter: vi.fn(() => ({
         push: vi.fn(),
     })),

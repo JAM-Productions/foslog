@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useOptionsModalStore } from '@/lib/options-modal-store';
-import { useRouter } from '@/i18n/routing';
+import { useRouter } from '@/i18n/navigation';
 import { useToastStore } from '@/lib/toast-store';
 
 export default function ConfigModal() {
