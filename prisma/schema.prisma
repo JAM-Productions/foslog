@@ -19,8 +19,9 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
-  reviews       Review[]
   comments      Comment[]
+  reviewLikes   ReviewLike[]
+  reviews       Review[]
   sessions      Session[]
 
   @@map("users")
@@ -97,33 +98,49 @@ model MediaItem {
 }
 
 model Review {
-  id        String    @id @default(cuid())
-  rating    Int?
-  review    String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  mediaId   String
-  userId    String
-  liked     Boolean?
-  media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  consumedMoreThanOnce Boolean @default(false)
-  totalComments Int     @default(0)
-  comments  Comment[]
+  id                   String    @id @default(cuid())
+  rating               Int?
+  review               String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  mediaId              String
+  userId               String
+  liked                Boolean?
+  consumedMoreThanOnce Boolean   @default(false)
+  totalComments        Int       @default(0)
+  comments             Comment[]
+  totalLikes           Int       @default(0)
+  reviewLikes          ReviewLike[]
+  media                MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([mediaId])
   @@map("reviews")
 }
 
-model Comment {
-  id        String    @id @default(cuid())
-  comment    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model ReviewLike {
+  id        String   @id @default(cuid())
   reviewId  String
   userId    String
-  review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([userId])
+  @@index([reviewId])
+  @@map("review_likes")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviewId  String
+  userId    String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([reviewId])
   @@map("comments")

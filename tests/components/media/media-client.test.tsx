@@ -69,6 +69,7 @@ const mockMediaItem: SafeMediaItemWithReviews = {
             createdAt: new Date(),
             updatedAt: new Date(),
             totalComments: 0,
+            totalLikes: 10,
             user: {
                 id: '1',
                 name: 'John Doe',
@@ -85,6 +86,7 @@ const mockMediaItem: SafeMediaItemWithReviews = {
             createdAt: new Date(),
             updatedAt: new Date(),
             totalComments: 0,
+            totalLikes: 10,
             user: {
                 id: '2',
                 name: 'Jane Smith',

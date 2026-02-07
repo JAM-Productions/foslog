@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BackButton } from '@/components/button/back-button';
 
 // Mock next-intl
@@ -21,7 +21,6 @@ vi.mock('next/navigation', () => ({
         back: mockRouterBack,
     }),
 }));
-
 
 describe('BackButton', () => {
     beforeEach(() => {

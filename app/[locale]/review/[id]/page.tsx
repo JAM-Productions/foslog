@@ -1,9 +1,17 @@
 import * as React from 'react';
 import { ReviewClient } from './review-client';
-import { getReviewById, getReviewMetadata } from '@/app/actions/review';
+import {
+    getReviewByIdWithComments,
+    getReviewMetadata,
+    getUserLikedReview,
+} from '@/app/actions/review';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { getMediaById } from '@/app/actions/media';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth/auth';
 
 export async function generateMetadata({
     params,
@@ -48,11 +56,35 @@ export default async function ReviewPage({
         ? parseInt(resolvedSearchParams.page, 10)
         : 1;
     const page = Number.isNaN(parsedPage) ? 1 : Math.max(1, parsedPage);
-    const reviewItem = await getReviewById(resolvedParams.id, page);
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    const reviewItem = await getReviewByIdWithComments(resolvedParams.id, page);
 
     if (!reviewItem) {
         notFound();
     }
 
-    return <ReviewClient reviewItem={reviewItem} />;
+    const mediaItem = await getMediaById(reviewItem.mediaId);
+
+    if (!mediaItem) {
+        notFound();
+    }
+
+    let userLiked = false;
+    if (session?.user?.id) {
+        userLiked = await getUserLikedReview(
+            resolvedParams.id,
+            session.user.id
+        );
+    }
+
+    return (
+        <ReviewClient
+            mediaItem={mediaItem}
+            reviewItem={reviewItem}
+            userLiked={userLiked}
+        />
+    );
 }

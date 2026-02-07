@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getReviewById, getReviewMetadata } from '@/app/actions/review';
+import {
+    getReviewByIdWithComments,
+    getReviewMetadata,
+    getUserLikedReview,
+} from '@/app/actions/review';
 import { prisma } from '@/lib/prisma';
 
 vi.mock('@/lib/prisma', () => ({
@@ -7,10 +11,13 @@ vi.mock('@/lib/prisma', () => ({
         review: {
             findUnique: vi.fn(),
         },
+        reviewLike: {
+            findUnique: vi.fn(),
+        },
     },
 }));
 
-describe('getReviewById Server Action', () => {
+describe('getReviewByIdWithComments Server Action', () => {
     const mockDate = new Date('2023-01-01');
 
     const mockUser = {
@@ -46,7 +53,7 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockResolvedValue(null);
 
-        const result = await getReviewById('non-existent-id');
+        const result = await getReviewByIdWithComments('non-existent-id');
 
         expect(result).toBeNull();
         expect(prisma.review.findUnique).toHaveBeenCalledWith({
@@ -92,6 +99,7 @@ describe('getReviewById Server Action', () => {
             updatedAt: mockDate,
             consumedMoreThanOnce: false,
             totalComments: 0,
+            totalLikes: 10,
             user: mockUser,
             media: mockMedia,
             comments: [],
@@ -101,7 +109,7 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockResolvedValue(mockReview);
 
-        const result = await getReviewById('review1');
+        const result = await getReviewByIdWithComments('review1');
 
         expect(result).toEqual({
             id: 'review1',
@@ -114,28 +122,12 @@ describe('getReviewById Server Action', () => {
             updatedAt: mockDate,
             consumedMoreThanOnce: false,
             totalComments: 0,
+            totalLikes: 10,
             user: {
                 ...mockUser,
                 email: '',
                 bio: undefined,
                 joinedAt: expect.any(Date),
-            },
-            media: {
-                id: 'media1',
-                title: 'Test Movie',
-                type: 'film',
-                year: 2023,
-                director: 'Director 1',
-                author: undefined,
-                artist: undefined,
-                genre: ['Action'],
-                poster: 'poster.jpg',
-                cover: undefined,
-                description: 'Test description',
-                averageRating: 4.5,
-                totalReviews: 10,
-                totalLikes: 5,
-                totalDislikes: 1,
             },
             comments: [],
             totalPages: 0,
@@ -155,6 +147,7 @@ describe('getReviewById Server Action', () => {
             updatedAt: mockDate,
             consumedMoreThanOnce: false,
             totalComments: 0,
+            totalLikes: 5,
             user: mockUser,
             media: mockMedia,
             comments: [],
@@ -164,7 +157,7 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockResolvedValue(mockReview);
 
-        const result = await getReviewById('review2');
+        const result = await getReviewByIdWithComments('review2');
 
         expect(result?.rating).toBeUndefined();
         expect(result?.liked).toBe(true);
@@ -182,6 +175,7 @@ describe('getReviewById Server Action', () => {
             updatedAt: mockDate,
             consumedMoreThanOnce: false,
             totalComments: 0,
+            totalLikes: 2,
             user: mockUser,
             media: mockMedia,
             comments: [],
@@ -191,7 +185,7 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockResolvedValue(mockReview);
 
-        const result = await getReviewById('review3');
+        const result = await getReviewByIdWithComments('review3');
 
         expect(result?.rating).toBeUndefined();
         expect(result?.liked).toBe(false);
@@ -203,7 +197,7 @@ describe('getReviewById Server Action', () => {
             prisma.review.findUnique as ReturnType<typeof vi.fn>
         ).mockRejectedValue(dbError);
 
-        await expect(getReviewById('review1')).rejects.toThrow(
+        await expect(getReviewByIdWithComments('review1')).rejects.toThrow(
             'Could not fetch review.'
         );
     });
@@ -339,5 +333,80 @@ describe('getReviewMetadata Server Action', () => {
         });
         // Ensure no comments or other expensive fields are included
         expect(callArgs.include).toBeUndefined();
+    });
+});
+
+describe('getUserLikedReview Server Action', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('returns true when user has liked the review', async () => {
+        const mockLike = {
+            id: 'like1',
+            reviewId: 'review1',
+            userId: 'user1',
+            createdAt: new Date(),
+        };
+
+        (
+            prisma.reviewLike.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(mockLike);
+
+        const result = await getUserLikedReview('review1', 'user1');
+
+        expect(result).toBe(true);
+        expect(prisma.reviewLike.findUnique).toHaveBeenCalledWith({
+            where: {
+                reviewId_userId: {
+                    reviewId: 'review1',
+                    userId: 'user1',
+                },
+            },
+        });
+    });
+
+    it('returns false when user has not liked the review', async () => {
+        (
+            prisma.reviewLike.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(null);
+
+        const result = await getUserLikedReview('review1', 'user2');
+
+        expect(result).toBe(false);
+        expect(prisma.reviewLike.findUnique).toHaveBeenCalledWith({
+            where: {
+                reviewId_userId: {
+                    reviewId: 'review1',
+                    userId: 'user2',
+                },
+            },
+        });
+    });
+
+    it('handles database errors gracefully', async () => {
+        const dbError = new Error('Database connection failed');
+        (
+            prisma.reviewLike.findUnique as ReturnType<typeof vi.fn>
+        ).mockRejectedValue(dbError);
+
+        const result = await getUserLikedReview('review1', 'user1');
+        expect(result).toBe(false);
+    });
+
+    it('uses correct composite unique key for query', async () => {
+        (
+            prisma.reviewLike.findUnique as ReturnType<typeof vi.fn>
+        ).mockResolvedValue(null);
+
+        await getUserLikedReview('review123', 'user456');
+
+        const callArgs = (
+            prisma.reviewLike.findUnique as ReturnType<typeof vi.fn>
+        ).mock.calls[0][0];
+        expect(callArgs.where.reviewId_userId).toEqual({
+            reviewId: 'review123',
+            userId: 'user456',
+        });
     });
 });

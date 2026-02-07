@@ -3,7 +3,7 @@
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
-import { SafeComment, SafeReviewWithMediaAndComments } from '@/lib/types';
+import { SafeComment, SafeReviewWithComments } from '@/lib/types';
 
 /**
  * Lightweight function to fetch only user name and media title for metadata generation
@@ -56,11 +56,11 @@ export const getReviewMetadata = async (
     }
 };
 
-export const getReviewById = async (
+export const getReviewByIdWithComments = async (
     id: string,
     page: number = 1,
     pageSize: number = 12
-): Promise<SafeReviewWithMediaAndComments | null> => {
+): Promise<SafeReviewWithComments | null> => {
     try {
         const review = await prisma.review.findUnique({
             where: { id },
@@ -94,7 +94,7 @@ export const getReviewById = async (
 
         if (!review) {
             logger.warn('GET /actions/review', {
-                method: 'getReviewById',
+                method: 'getReviewByIdWithComments',
                 warn: 'Review not found',
                 reviewId: id,
             });
@@ -135,7 +135,7 @@ export const getReviewById = async (
         const totalPages = Math.ceil(totalComments / pageSize);
 
         logger.info('GET /actions/review', {
-            method: 'getReviewById',
+            method: 'getReviewByIdWithComments',
             reviewId: id,
         });
         return {
@@ -149,34 +149,44 @@ export const getReviewById = async (
             updatedAt: review.updatedAt,
             consumedMoreThanOnce: review.consumedMoreThanOnce,
             totalComments: review.totalComments,
+            totalLikes: review.totalLikes,
             user: safeUser,
-            media: {
-                id: review.media.id,
-                title: review.media.title,
-                type: review.media.type.toLowerCase() as MediaType,
-                year: review.media.year ?? undefined,
-                director: review.media.director ?? undefined,
-                author: review.media.author ?? undefined,
-                artist: review.media.artist ?? undefined,
-                genre: review.media.genre,
-                poster: review.media.poster ?? undefined,
-                cover: review.media.cover ?? undefined,
-                description: review.media.description,
-                averageRating: review.media.averageRating,
-                totalReviews: review.media.totalReviews,
-                totalLikes: review.media.totalLikes,
-                totalDislikes: review.media.totalDislikes,
-            },
             comments: safeComments,
             totalPages,
             currentPage: page,
         };
     } catch (error) {
         logger.error('GET /actions/review', {
-            method: 'getReviewById',
+            method: 'getReviewByIdWithComments',
             error,
             reviewId: id,
         });
         throw new Error('Could not fetch review.');
+    }
+};
+
+export const getUserLikedReview = async (
+    reviewId: string,
+    userId: string
+): Promise<boolean> => {
+    try {
+        const like = await prisma.reviewLike.findUnique({
+            where: { reviewId_userId: { reviewId, userId } },
+        });
+        logger.info('GET /actions/review', {
+            method: 'getUserLikedReview',
+            reviewId,
+            userId,
+            hasLiked: like ? true : false,
+        });
+        return like ? true : false;
+    } catch (error) {
+        logger.error('GET /actions/review', {
+            method: 'getUserLikedReview',
+            error,
+            reviewId,
+            userId,
+        });
+        return false;
     }
 };

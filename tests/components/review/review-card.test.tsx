@@ -31,6 +31,7 @@ const mockReview: SafeReview = {
     updatedAt: new Date(),
     consumedMoreThanOnce: false,
     totalComments: 0,
+    totalLikes: 10,
     user: {
         id: 'user1',
         name: 'John Doe',

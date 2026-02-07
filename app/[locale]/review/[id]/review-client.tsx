@@ -1,7 +1,7 @@
 'use client';
 
 import { BackButton } from '@/components/button/back-button';
-import { SafeReviewWithMediaAndComments } from '@/lib/types';
+import { SafeReviewWithComments, SafeMediaItem } from '@/lib/types';
 import { MediaContext } from '@/components/media/media-context';
 import { ReviewDetailCard } from '@/components/review/review-detail-card';
 import { ReviewOptions } from '@/components/review/review-options';
@@ -14,11 +14,15 @@ import Pagination from '@/components/pagination/pagination';
 import { CommentList } from '@/components/comment/comment-list';
 
 export function ReviewClient({
+    mediaItem,
     reviewItem,
+    userLiked,
 }: {
-    reviewItem: SafeReviewWithMediaAndComments;
+    mediaItem: SafeMediaItem;
+    reviewItem: SafeReviewWithComments;
+    userLiked: boolean;
 }) {
-    const { media } = reviewItem;
+    const { comments } = reviewItem;
 
     const { user: currentUser } = useAuth();
 
@@ -38,7 +42,7 @@ export function ReviewClient({
                 <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-12">
                     {/* Left Column - Media Context */}
                     <div className="md:col-span-4 lg:col-span-3">
-                        <MediaContext media={media} />
+                        <MediaContext media={mediaItem} />
                     </div>
 
                     {/* Center Column - Review Detail */}
@@ -52,8 +56,8 @@ export function ReviewClient({
                             {isEditingReview ? (
                                 <div className="bg-card border-border rounded-lg border p-4 sm:p-6 lg:p-8">
                                     <ReviewForm
-                                        mediaId={media.id}
-                                        mediaType={media.type}
+                                        mediaId={mediaItem.id}
+                                        mediaType={mediaItem.type}
                                         editProps={{
                                             review: reviewItem,
                                             setIsEditingReview,
@@ -63,7 +67,8 @@ export function ReviewClient({
                             ) : (
                                 <ReviewDetailCard
                                     review={reviewItem}
-                                    mediaType={media.type}
+                                    mediaType={mediaItem.type}
+                                    userLiked={userLiked}
                                 />
                             )}
 
@@ -92,11 +97,9 @@ export function ReviewClient({
                                         </span>
                                     </h2>
                                 </div>
-                                {reviewItem.comments.length > 0 ? (
+                                {comments.length > 0 ? (
                                     <>
-                                        <CommentList
-                                            comments={reviewItem.comments}
-                                        />
+                                        <CommentList comments={comments} />
                                         <Pagination
                                             currentPage={reviewItem.currentPage}
                                             totalPages={reviewItem.totalPages}

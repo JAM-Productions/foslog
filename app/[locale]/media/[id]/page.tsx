@@ -1,4 +1,4 @@
-import { getMediaById, getMediaMetadata } from '@/app/actions/media';
+import { getMediaByIdWithReviews, getMediaMetadata } from '@/app/actions/media';
 import { MediaClient } from './media-client';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
@@ -44,7 +44,7 @@ export default async function MediaPage({
         ? parseInt(resolvedSearchParams.page, 10)
         : 1;
     const page = Number.isNaN(parsedPage) ? 1 : Math.max(1, parsedPage);
-    const mediaItem = await getMediaById(resolvedParams.id, page);
+    const mediaItem = await getMediaByIdWithReviews(resolvedParams.id, page);
 
     if (!mediaItem) {
         notFound();

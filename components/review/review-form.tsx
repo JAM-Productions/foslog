@@ -8,11 +8,11 @@ import { useState } from 'react';
 import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
-import { SafeReviewWithMedia } from '@/lib/types';
+import { SafeReview } from '@/lib/types';
 import { Checkbox } from '@/components/input/checkbox';
 import { useRouter } from '@/i18n/navigation';
 interface EditProps {
-    review: SafeReviewWithMedia;
+    review: SafeReview;
     setIsEditingReview: (editing: boolean) => void;
 }
 interface ReviewFormProps {
