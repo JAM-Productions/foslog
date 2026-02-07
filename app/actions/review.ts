@@ -2,7 +2,7 @@
 
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
-import { MediaType, User } from '@/lib/store';
+import { User } from '@/lib/store';
 import { SafeComment, SafeReviewWithComments } from '@/lib/types';
 
 /**

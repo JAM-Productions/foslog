@@ -9,7 +9,6 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { getMediaById } from '@/app/actions/media';
-import { useAuth } from '@/lib/auth/auth-provider';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
 
