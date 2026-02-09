@@ -53,6 +53,14 @@ export function RatingInput({
         index: number
     ) => {
         if (readonly || !onChange) return;
+
+        // Check if it's a keyboard event or mouse click with 0 clientX
+        // In most browsers, keyboard Enter has clientX = 0
+        if (e.clientX === 0) {
+            onChange(index + 1);
+            return;
+        }
+
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const isHalf = x < rect.width / 2;

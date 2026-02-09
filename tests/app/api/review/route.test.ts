@@ -73,7 +73,7 @@ describe('POST /api/review', () => {
 
     expect(response.status).toBe(400);
     expect(data.code).toBe(ApiErrorType.VALIDATION_ERROR);
-    expect(data.error).toBe('Rating must be between 0.5 and 5');
+    expect(data.error).toBe('Rating must be between 0.5 and 5 in 0.5 increments');
   });
 
   it('should accept 0.5 as a valid rating', async () => {
