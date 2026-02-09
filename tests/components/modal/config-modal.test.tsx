@@ -515,6 +515,121 @@ describe('ConfigModal', () => {
 
                 expect(mockShowModal).toHaveBeenCalled();
             });
+
+            describe('handleDeleteAccount callback', () => {
+                beforeEach(() => {
+                    global.fetch = vi.fn();
+                });
+
+                it('successfully deletes account and shows success toast', async () => {
+                    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                        ok: true,
+                        json: async () => ({ message: 'User deleted successfully' }),
+                    });
+
+                    const user = userEvent.setup();
+                    render(<ConfigModal />);
+
+                    const deleteButton = screen.getByRole('button', {
+                        name: /delete/i,
+                    });
+                    await user.click(deleteButton);
+
+                    // Get the callback function passed to showModal
+                    const ctaAction = mockShowModal.mock.calls[0][3];
+                    expect(typeof ctaAction).toBe('function');
+
+                    // Execute the callback
+                    await ctaAction();
+
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(true);
+                    expect(global.fetch).toHaveBeenCalledWith('/api/user', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    expect(mockHideModal).toHaveBeenCalled();
+                    expect(mockSetIsConfigModalOpen).toHaveBeenCalledWith(false);
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
+                });
+
+                it('shows error toast on failed deletion', async () => {
+                    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                        ok: false,
+                        status: 500,
+                    });
+
+                    const user = userEvent.setup();
+                    render(<ConfigModal />);
+
+                    const deleteButton = screen.getByRole('button', {
+                        name: /delete/i,
+                    });
+                    await user.click(deleteButton);
+
+                    const ctaAction = mockShowModal.mock.calls[0][3];
+                    await ctaAction();
+
+                    expect(mockHideModal).not.toHaveBeenCalled();
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
+                });
+
+                it('shows error toast on network error', async () => {
+                    (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(
+                        new Error('Network error')
+                    );
+
+                    const user = userEvent.setup();
+                    render(<ConfigModal />);
+
+                    const deleteButton = screen.getByRole('button', {
+                        name: /delete/i,
+                    });
+                    await user.click(deleteButton);
+
+                    const ctaAction = mockShowModal.mock.calls[0][3];
+                    await ctaAction();
+
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
+                });
+
+                it('sets loading state correctly during deletion', async () => {
+                    let resolvePromise: (value: unknown) => void;
+                    const fetchPromise = new Promise((resolve) => {
+                        resolvePromise = resolve;
+                    });
+
+                    (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+                        fetchPromise
+                    );
+
+                    const user = userEvent.setup();
+                    render(<ConfigModal />);
+
+                    const deleteButton = screen.getByRole('button', {
+                        name: /delete/i,
+                    });
+                    await user.click(deleteButton);
+
+                    const ctaAction = mockShowModal.mock.calls[0][3];
+                    const deletePromise = ctaAction();
+
+                    // Loading should be set to true
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(true);
+
+                    // Resolve the fetch
+                    resolvePromise!({
+                        ok: true,
+                        json: async () => ({ message: 'User deleted successfully' }),
+                    });
+
+                    await deletePromise;
+
+                    // Loading should be set to false
+                    expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
+                });
+            });
         });
     });
 });

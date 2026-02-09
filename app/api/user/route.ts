@@ -16,17 +16,22 @@ export async function DELETE(request: NextRequest) {
 
         const userId = session.user.id;
 
+        // Sign out the user before deletion to avoid issues with cascading deletes
+        try {
+            await auth.api.signOut({
+                headers: request.headers,
+            });
+        } catch (signOutError) {
+            // Best-effort sign-out, continue with deletion even if it fails
+            logger.warn('Sign-out failed during user deletion', { signOutError });
+        }
+
         // Delete user - cascading deletes will handle related records
         await prisma.user.delete({
             where: { id: userId },
         });
 
         logger.info('User deleted', { userId });
-
-        // Sign out the user
-        await auth.api.signOut({
-            headers: request.headers,
-        });
 
         return NextResponse.json(
             { message: 'User deleted successfully' },
