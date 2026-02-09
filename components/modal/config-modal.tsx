@@ -44,6 +44,7 @@ export default function ConfigModal() {
             router.push('/');
         } catch (error) {
             showToast(tToast('accountDeleteFailed'), 'error');
+            console.error('Error deleting account:', error);
         } finally {
             setIsCTALoading(false);
         }

@@ -11,7 +11,9 @@ export async function DELETE(request: NextRequest) {
         });
 
         if (!session?.user) {
-            return unauthorized('Unauthorized. Please log in to delete account.');
+            return unauthorized(
+                'Unauthorized. Please log in to delete account.'
+            );
         }
 
         const userId = session.user.id;
@@ -23,7 +25,9 @@ export async function DELETE(request: NextRequest) {
             });
         } catch (signOutError) {
             // Best-effort sign-out, continue with deletion even if it fails
-            logger.warn('Sign-out failed during user deletion', { signOutError });
+            logger.warn('Sign-out failed during user deletion', {
+                signOutError,
+            });
         }
 
         // Delete user - cascading deletes will handle related records
