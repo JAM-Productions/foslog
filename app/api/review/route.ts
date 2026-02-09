@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (hasRating && (review.stars < 1 || review.stars > 5)) {
-            return validationError('Rating must be between 1 and 5');
+        if (hasRating && (review.stars < 0.5 || review.stars > 5)) {
+            return validationError('Rating must be between 0.5 and 5');
         }
 
         if (review.text && review.text.length > 5000) {
@@ -187,8 +187,8 @@ export async function PATCH(request: NextRequest) {
                 'Either rating (stars) or like/dislike must be provided'
             );
         }
-        if (hasRating && (review.stars < 1 || review.stars > 5)) {
-            return validationError('Rating must be between 1 and 5');
+        if (hasRating && (review.stars < 0.5 || review.stars > 5)) {
+            return validationError('Rating must be between 0.5 and 5');
         }
         if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');

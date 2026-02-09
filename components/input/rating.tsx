@@ -35,17 +35,28 @@ export function RatingInput({
 
     const currentRating = isHovering ? hoverRating : value;
 
-    const handleStarClick = (rating: number) => {
-        if (!readonly && onChange) {
-            onChange(rating);
-        }
+    const handleMouseMove = (
+        e: React.MouseEvent<HTMLButtonElement>,
+        index: number
+    ) => {
+        if (readonly) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const isHalf = x < rect.width / 2;
+        const newRating = index + (isHalf ? 0.5 : 1);
+        setHoverRating(newRating);
+        setIsHovering(true);
     };
 
-    const handleStarHover = (rating: number) => {
-        if (!readonly) {
-            setHoverRating(rating);
-            setIsHovering(true);
-        }
+    const handleStarClick = (
+        e: React.MouseEvent<HTMLButtonElement>,
+        index: number
+    ) => {
+        if (readonly || !onChange) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const isHalf = x < rect.width / 2;
+        onChange(index + (isHalf ? 0.5 : 1));
     };
 
     const handleMouseLeave = () => {
@@ -57,7 +68,9 @@ export function RatingInput({
         <div
             id={id}
             aria-labelledby={ariaLabelledby}
-            className={`flex items-center gap-1${className ? ` ${className}` : ''}`}
+            className={`flex items-center gap-1${
+                className ? ` ${className}` : ''
+            }`}
         >
             <div
                 className="flex items-center"
@@ -67,7 +80,6 @@ export function RatingInput({
                     const starValue = i + 1;
                     const isFilled = starValue <= currentRating;
                     const isHalfFilled =
-                        readonly &&
                         i === Math.floor(currentRating) &&
                         currentRating % 1 >= 0.5;
 
@@ -75,8 +87,8 @@ export function RatingInput({
                         <button
                             key={i}
                             type="button"
-                            onClick={() => handleStarClick(starValue)}
-                            onMouseEnter={() => handleStarHover(starValue)}
+                            onClick={(e) => handleStarClick(e, i)}
+                            onMouseMove={(e) => handleMouseMove(e, i)}
                             disabled={readonly}
                             className={[
                                 'rounded transition-colors focus:outline-none',

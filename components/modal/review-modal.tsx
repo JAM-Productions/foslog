@@ -402,7 +402,7 @@ export default function ReviewModal() {
                                 <Button
                                     disabled={
                                         !selectedMedia ||
-                                        (reviewStars < 1 &&
+                                        (reviewStars < 0.5 &&
                                             reviewLiked === null) ||
                                         isLoadingSubmit
                                     }
