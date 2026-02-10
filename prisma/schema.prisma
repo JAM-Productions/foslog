@@ -98,21 +98,21 @@ model MediaItem {
 }
 
 model Review {
-  id                   String    @id @default(cuid())
-  rating               Int?
-  review               String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  mediaId              String
-  userId               String
-  liked                Boolean?
-  consumedMoreThanOnce Boolean   @default(false)
-  totalComments        Int       @default(0)
-  comments             Comment[]
+  id        String    @id @default(cuid())
+  rating    Float?
+  review    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  mediaId   String
+  userId    String
+  liked     Boolean?
+  media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consumedMoreThanOnce Boolean @default(false)
+  totalComments Int     @default(0)
+  comments  Comment[]
   totalLikes           Int       @default(0)
   reviewLikes          ReviewLike[]
-  media                MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([mediaId])
   @@map("reviews")

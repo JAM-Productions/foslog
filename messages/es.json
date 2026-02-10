@@ -267,7 +267,9 @@
         "commentCreateFailed": "Error al agregar el comentario. Por favor inténtalo de nuevo.",
         "commentDeleted": "¡Comentario eliminado exitosamente!",
         "commentDeleteFailed": "Error al eliminar el comentario. Por favor inténtalo de nuevo.",
-        "toggleLikeFailed": "Error al actualizar tu me gusta. Por favor inténtalo de nuevo."
+        "toggleLikeFailed": "Error al actualizar tu me gusta. Por favor inténtalo de nuevo.",
+        "accountDeleted": "Cuenta eliminada exitosamente. ¡Adiós!",
+        "accountDeleteFailed": "Error al eliminar la cuenta. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -362,7 +364,10 @@
     "ConfigModal": {
         "settings": "Configuración",
         "language": "Idioma",
-        "theme": "Tema"
+        "theme": "Tema",
+        "deleteAccount": "Eliminar Cuenta",
+        "deleteAccountTitle": "Eliminar Cuenta",
+        "deleteAccountDescription": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y todos tus datos serán eliminados permanentemente."
     },
     "ConsumedMoreThanOnce": {
         "film": "Ha visto esta película más de una vez",
