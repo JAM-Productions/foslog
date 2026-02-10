@@ -27,6 +27,7 @@ vi.mock('@/lib/options-modal-store', () => ({
 vi.mock('@/i18n/navigation', () => ({
     useRouter: vi.fn(() => ({
         push: vi.fn(),
+        refresh: vi.fn(),
     })),
 }));
 
@@ -69,6 +70,8 @@ describe('ConfigModal', () => {
             settings: 'Settings',
             language: 'Language',
             theme: 'Theme',
+            updateName: 'Update Name',
+            namePlaceholder: 'Enter new name',
             deleteAccount: 'Delete Account',
             deleteAccountTitle: 'Delete Account',
             deleteAccountDescription:
@@ -80,6 +83,7 @@ describe('ConfigModal', () => {
     const mockCTAT = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             delete: 'Delete',
+            save: 'Save',
         };
         return translations[key] || key;
     });
@@ -88,6 +92,8 @@ describe('ConfigModal', () => {
         const translations: Record<string, string> = {
             accountDeleted: 'Account deleted successfully. Goodbye!',
             accountDeleteFailed: 'Failed to delete account. Please try again.',
+            nameUpdated: 'Name updated successfully!',
+            nameUpdateFailed: 'Failed to update name. Please try again.',
         };
         return translations[key] || key;
     });
@@ -100,6 +106,8 @@ describe('ConfigModal', () => {
                 settings: 'Settings',
                 language: 'Language',
                 theme: 'Theme',
+                updateName: 'Update Name',
+                namePlaceholder: 'Enter new name',
                 deleteAccount: 'Delete Account',
                 deleteAccountTitle: 'Delete Account',
                 deleteAccountDescription:
@@ -107,18 +115,22 @@ describe('ConfigModal', () => {
             };
             return translations[key] || key;
         });
-        
+
         mockCTAT.mockImplementation((key: string) => {
             const translations: Record<string, string> = {
                 delete: 'Delete',
+                save: 'Save',
             };
             return translations[key] || key;
         });
-        
+
         mockToastT.mockImplementation((key: string) => {
             const translations: Record<string, string> = {
                 accountDeleted: 'Account deleted successfully. Goodbye!',
-                accountDeleteFailed: 'Failed to delete account. Please try again.',
+                accountDeleteFailed:
+                    'Failed to delete account. Please try again.',
+                nameUpdated: 'Name updated successfully!',
+                nameUpdateFailed: 'Failed to update name. Please try again.',
             };
             return translations[key] || key;
         });
@@ -394,6 +406,137 @@ describe('ConfigModal', () => {
             render(<ConfigModal />);
 
             expect(screen.getByText('Tema')).toBeInTheDocument();
+        });
+    });
+
+    describe('update name functionality', () => {
+        describe('when user is not authenticated', () => {
+            beforeEach(() => {
+                mockedUseAppStore.mockReturnValue({
+                    isConfigModalOpen: true,
+                    setIsConfigModalOpen: mockSetIsConfigModalOpen,
+                } as unknown as ReturnType<typeof useAppStore>);
+                mockedUseAuth.mockReturnValue({
+                    user: null,
+                    session: null,
+                    isLoading: false,
+                    isAuthenticated: false,
+                });
+            });
+
+            it('does not render update name section', () => {
+                render(<ConfigModal />);
+
+                expect(screen.queryByText('Update Name')).not.toBeInTheDocument();
+            });
+        });
+
+        describe('when user is authenticated', () => {
+            beforeEach(() => {
+                mockedUseAppStore.mockReturnValue({
+                    isConfigModalOpen: true,
+                    setIsConfigModalOpen: mockSetIsConfigModalOpen,
+                } as unknown as ReturnType<typeof useAppStore>);
+                mockedUseAuth.mockReturnValue({
+                    user: {
+                        id: 'user-1',
+                        name: 'Test User',
+                        email: 'test@example.com',
+                    },
+                    session: { userId: 'user-1' },
+                    isLoading: false,
+                    isAuthenticated: true,
+                } as ReturnType<typeof useAuth>);
+                global.fetch = vi.fn();
+            });
+
+            it('renders update name section', () => {
+                render(<ConfigModal />);
+
+                expect(screen.getByText('Update Name')).toBeInTheDocument();
+                expect(
+                    screen.getByPlaceholderText('Enter new name')
+                ).toBeInTheDocument();
+                expect(screen.getByDisplayValue('Test User')).toBeInTheDocument();
+            });
+
+            it('save button is disabled initially', () => {
+                render(<ConfigModal />);
+
+                const saveButton = screen.getByRole('button', { name: /save/i });
+                expect(saveButton).toBeDisabled();
+            });
+
+            it('save button is enabled after name change', async () => {
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const input = screen.getByPlaceholderText('Enter new name');
+                await user.clear(input);
+                await user.type(input, 'New Name');
+
+                const saveButton = screen.getByRole('button', { name: /save/i });
+                expect(saveButton).not.toBeDisabled();
+            });
+
+            it('save button is disabled if name is too short', async () => {
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const input = screen.getByPlaceholderText('Enter new name');
+                await user.clear(input);
+                await user.type(input, 'A');
+
+                const saveButton = screen.getByRole('button', { name: /save/i });
+                expect(saveButton).toBeDisabled();
+            });
+
+            it('successfully updates name and shows success toast', async () => {
+                (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                    ok: true,
+                    json: async () => ({
+                        message: 'Name updated successfully',
+                        user: { id: 'user-1', name: 'New Name' },
+                    }),
+                });
+
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const input = screen.getByPlaceholderText('Enter new name');
+                await user.clear(input);
+                await user.type(input, 'New Name');
+
+                const saveButton = screen.getByRole('button', { name: /save/i });
+                await user.click(saveButton);
+
+                expect(global.fetch).toHaveBeenCalledWith('/api/user', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: 'New Name' }),
+                });
+            });
+
+            it('shows error toast on failed name update', async () => {
+                (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                    ok: false,
+                    status: 500,
+                });
+
+                const user = userEvent.setup();
+                render(<ConfigModal />);
+
+                const input = screen.getByPlaceholderText('Enter new name');
+                await user.clear(input);
+                await user.type(input, 'New Name');
+
+                const saveButton = screen.getByRole('button', { name: /save/i });
+                await user.click(saveButton);
+
+                expect(global.fetch).toHaveBeenCalled();
+            });
         });
     });
 
