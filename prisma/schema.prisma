@@ -98,7 +98,7 @@ model MediaItem {
 
 model Review {
   id        String    @id @default(cuid())
-  rating    Int?
+  rating    Float?
   review    String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

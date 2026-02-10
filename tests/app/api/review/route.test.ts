@@ -73,7 +73,27 @@ describe('POST /api/review', () => {
 
     expect(response.status).toBe(400);
     expect(data.code).toBe(ApiErrorType.VALIDATION_ERROR);
-    expect(data.error).toBe('Rating must be between 1 and 5');
+    expect(data.error).toBe('Rating must be between 0.5 and 5 in 0.5 increments');
+  });
+
+  it('should accept 0.5 as a valid rating', async () => {
+    (auth.api.getSession as unknown as Mock).mockResolvedValue({ user: { id: '1' } });
+    (prisma.mediaItem.findUnique as Mock).mockResolvedValue({ id: '1' });
+    (prisma.review.create as Mock).mockResolvedValue({ id: 'rev1' });
+
+    const req = mockRequest({ review: { stars: 0.5 }, mediaId: '1' });
+    const response = await POST(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(data.message).toBe('Review created successfully');
+    expect(prisma.review.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          rating: 0.5,
+        }),
+      })
+    );
   });
 
   it('should return 400 Validation Error for long review text', async () => {
