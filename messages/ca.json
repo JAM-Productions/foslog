@@ -266,7 +266,8 @@
         "commentCreated": "Comentari afegit correctament!",
         "commentCreateFailed": "Error en afegir el comentari. Si us plau, torna-ho a provar.",
         "commentDeleted": "Comentari eliminat correctament!",
-        "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar."
+        "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar.",
+        "toggleLikeFailed": "Error en actualitzar el teu m'agrada. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -303,7 +304,8 @@
         "atLeastOneRequired": "Si us plau, proporciona una valoració o m'agrada/no m'agrada",
         "noPoster": "No hi ha pòster",
         "updateReview": "Editar Ressenya",
-        "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada"
+        "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada",
+        "toggleLike": "Alternar Me gusta"
     },
     "BackButton": {
         "back": "Enrere"

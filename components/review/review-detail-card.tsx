@@ -10,7 +10,8 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from '@/i18n/navigation';
-import { useState } from 'react';
+import { startTransition, useOptimistic, useState } from 'react';
+import { useToastStore } from '@/lib/toast-store';
 
 export function ReviewDetailCard({
     review,
@@ -24,12 +25,14 @@ export function ReviewDetailCard({
     const { user } = review;
     const locale = useLocale();
     const t = useTranslations('MediaPage');
+    const tToast = useTranslations('Toast');
+    const { showToast } = useToastStore();
     const { user: currentUser } = useAuth();
     const router = useRouter();
     const [isLiking, setIsLiking] = useState(false);
-    const [optimisticLiked, setOptimisticLiked] = useState(userLiked);
-    const [optimisticTotalLikes, setOptimisticTotalLikes] = useState(
-        review.totalLikes
+    const [optimisticLiked, setOptimisticLiked] = useOptimistic(
+        userLiked,
+        (prev) => !prev
     );
 
     const toggleLikeButton = async () => {
@@ -37,39 +40,30 @@ export function ReviewDetailCard({
             return router.push('/login');
         }
 
-        if (isLiking) {
-            return;
-        }
+        if (isLiking) return;
 
         setIsLiking(true);
-        setOptimisticLiked(!userLiked);
-        setOptimisticTotalLikes(
-            userLiked ? review.totalLikes - 1 : review.totalLikes + 1
-        );
 
-        let response;
+        const method = optimisticLiked ? 'DELETE' : 'POST';
 
-        try {
-            if (userLiked) {
-                response = await fetch(`/api/review/${review.id}/like`, {
-                    method: 'DELETE',
+        startTransition(async () => {
+            try {
+                setOptimisticLiked(optimisticLiked);
+                const response = await fetch(`/api/review/${review.id}/like`, {
+                    method,
                 });
-                if (response.ok) {
-                    router.refresh();
+
+                if (!response.ok) {
+                    throw new Error('Toggle like failed');
                 }
-            } else {
-                response = await fetch(`/api/review/${review.id}/like`, {
-                    method: 'POST',
-                });
-                if (response.ok) {
-                    router.refresh();
-                }
-            }
-        } finally {
-            setTimeout(() => {
+
+                router.refresh();
+            } catch {
+                showToast(tToast('toggleLikeFailed'), 'error');
+            } finally {
                 setIsLiking(false);
-            }, 1000);
-        }
+            }
+        });
     };
 
     const formatDate = (date: Date | string) => {
@@ -89,13 +83,12 @@ export function ReviewDetailCard({
         <Card className="p-4 sm:p-6">
             <div className="relative flex flex-row items-center justify-between gap-3">
                 <div className="absolute top-0.5 right-0 flex items-center gap-1.5">
-                    <p className="text-muted-foreground text-sm">
-                        {optimisticTotalLikes}
-                    </p>
                     <button
-                        className="cursor-pointer disabled:opacity-50"
+                        className="cursor-pointer disabled:opacity-70"
                         onClick={() => toggleLikeButton()}
                         disabled={isLiking}
+                        type="button"
+                        aria-label={t('toggleLike')}
                     >
                         <Heart
                             className={`${optimisticLiked ? 'fill-red-500 text-red-500' : 'text-red-500 hover:fill-red-500'} h-5 w-5 transition-all`}

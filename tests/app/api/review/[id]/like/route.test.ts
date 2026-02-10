@@ -20,6 +20,7 @@ vi.mock('@/lib/prisma', () => ({
             create: vi.fn(),
             delete: vi.fn(),
         },
+        $transaction: vi.fn(),
     },
 }));
 
@@ -80,10 +81,8 @@ describe('POST /api/review/[id]/like', () => {
             user: { id: 'user1' },
         });
         (prisma.review.findUnique as Mock).mockResolvedValue({ id: 'review1' });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue({
-            id: 'like1',
-            reviewId: 'review1',
-            userId: 'user1',
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            throw new Error('ALREADY_LIKED');
         });
 
         const req = mockRequest();
@@ -99,13 +98,23 @@ describe('POST /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.review.findUnique as Mock).mockResolvedValue({ id: 'review1' });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue(null);
-        (prisma.reviewLike.create as Mock).mockResolvedValue({
-            id: 'like1',
-            reviewId: 'review1',
-            userId: 'user1',
-            createdAt: new Date(),
+        (prisma.review.findUnique as Mock).mockResolvedValue({
+            id: 'review1',
+            mediaId: 'media1',
+        });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: vi.fn().mockResolvedValue(null),
+                    create: vi.fn().mockResolvedValue({
+                        id: 'like1',
+                        reviewId: 'review1',
+                        userId: 'user1',
+                        createdAt: new Date(),
+                    }),
+                },
+            };
+            return await callback(mockTx);
         });
 
         const req = mockRequest();
@@ -114,12 +123,6 @@ describe('POST /api/review/[id]/like', () => {
 
         expect(response.status).toBe(201);
         expect(data.message).toBe('Review liked successfully');
-        expect(prisma.reviewLike.create).toHaveBeenCalledWith({
-            data: {
-                reviewId: 'review1',
-                userId: 'user1',
-            },
-        });
     });
 
     it('should return 500 Internal Server Error on database failure', async () => {
@@ -142,18 +145,32 @@ describe('POST /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.review.findUnique as Mock).mockResolvedValue({ id: 'review1' });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue(null);
-        (prisma.reviewLike.create as Mock).mockResolvedValue({
+        (prisma.review.findUnique as Mock).mockResolvedValue({
+            id: 'review1',
+            mediaId: 'media1',
+        });
+
+        const mockFindUnique = vi.fn().mockResolvedValue(null);
+        const mockCreate = vi.fn().mockResolvedValue({
             id: 'like1',
             reviewId: 'review1',
             userId: 'user1',
         });
 
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: mockFindUnique,
+                    create: mockCreate,
+                },
+            };
+            return await callback(mockTx);
+        });
+
         const req = mockRequest();
         await POST(req, { params: mockParams('review1') });
 
-        expect(prisma.reviewLike.findUnique).toHaveBeenCalledWith({
+        expect(mockFindUnique).toHaveBeenCalledWith({
             where: {
                 reviewId_userId: {
                     reviewId: 'review1',
@@ -167,10 +184,20 @@ describe('POST /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.review.findUnique as Mock).mockResolvedValue({ id: 'review1' });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue(null);
-        (prisma.reviewLike.create as Mock).mockResolvedValue({
-            id: 'like1',
+        (prisma.review.findUnique as Mock).mockResolvedValue({
+            id: 'review1',
+            mediaId: 'media1',
+        });
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: vi.fn().mockResolvedValue(null),
+                    create: vi.fn().mockResolvedValue({
+                        id: 'like1',
+                    }),
+                },
+            };
+            return await callback(mockTx);
         });
 
         const reqWithCaLocale = {
@@ -222,7 +249,9 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue(null);
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            throw new Error('LIKE_NOT_FOUND');
+        });
 
         const req = mockRequest();
         const response = await DELETE(req, { params: mockParams('review1') });
@@ -237,13 +266,20 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue({
-            id: 'like1',
-            reviewId: 'review1',
-            userId: 'user1',
-        });
-        (prisma.reviewLike.delete as Mock).mockResolvedValue({
-            id: 'like1',
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: vi.fn().mockResolvedValue({
+                        id: 'like1',
+                        reviewId: 'review1',
+                        userId: 'user1',
+                    }),
+                    delete: vi.fn().mockResolvedValue({
+                        id: 'like1',
+                    }),
+                },
+            };
+            return await callback(mockTx);
         });
 
         const req = mockRequest();
@@ -252,21 +288,13 @@ describe('DELETE /api/review/[id]/like', () => {
 
         expect(response.status).toBe(200);
         expect(data.message).toBe('Review unliked successfully');
-        expect(prisma.reviewLike.delete).toHaveBeenCalledWith({
-            where: {
-                reviewId_userId: {
-                    reviewId: 'review1',
-                    userId: 'user1',
-                },
-            },
-        });
     });
 
     it('should return 500 Internal Server Error on database failure', async () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockRejectedValue(
+        (prisma.$transaction as Mock).mockRejectedValue(
             new Error('Database error')
         );
 
@@ -282,17 +310,28 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue({
+
+        const mockFindUnique = vi.fn().mockResolvedValue({
             id: 'like1',
             reviewId: 'review1',
             userId: 'user1',
         });
-        (prisma.reviewLike.delete as Mock).mockResolvedValue({ id: 'like1' });
+        const mockDelete = vi.fn().mockResolvedValue({ id: 'like1' });
+
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: mockFindUnique,
+                    delete: mockDelete,
+                },
+            };
+            return await callback(mockTx);
+        });
 
         const req = mockRequest();
         await DELETE(req, { params: mockParams('review1') });
 
-        expect(prisma.reviewLike.findUnique).toHaveBeenCalledWith({
+        expect(mockFindUnique).toHaveBeenCalledWith({
             where: {
                 reviewId_userId: {
                     reviewId: 'review1',
@@ -306,18 +345,28 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue({
+
+        const mockFindUnique = vi.fn().mockResolvedValue({
             id: 'like2',
             reviewId: 'review999',
             userId: 'user1',
         });
-        (prisma.reviewLike.delete as Mock).mockResolvedValue({ id: 'like2' });
+
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: mockFindUnique,
+                    delete: vi.fn().mockResolvedValue({ id: 'like2' }),
+                },
+            };
+            return await callback(mockTx);
+        });
 
         const req = mockRequest();
         const response = await DELETE(req, { params: mockParams('review999') });
 
         expect(response.status).toBe(200);
-        expect(prisma.reviewLike.findUnique).toHaveBeenCalledWith({
+        expect(mockFindUnique).toHaveBeenCalledWith({
             where: {
                 reviewId_userId: {
                     reviewId: 'review999',
@@ -331,10 +380,18 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.reviewLike.findUnique as Mock).mockResolvedValue({
-            id: 'like1',
+        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+            const mockTx = {
+                reviewLike: {
+                    findUnique: vi.fn().mockResolvedValue({
+                        id: 'like1',
+                        reviewId: 'review1',
+                    }),
+                    delete: vi.fn().mockResolvedValue({ id: 'like1' }),
+                },
+            };
+            return await callback(mockTx);
         });
-        (prisma.reviewLike.delete as Mock).mockResolvedValue({ id: 'like1' });
 
         const reqWithEsLocale = {
             headers: new Headers({

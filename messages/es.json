@@ -266,7 +266,8 @@
         "commentCreated": "¡Comentario agregado exitosamente!",
         "commentCreateFailed": "Error al agregar el comentario. Por favor inténtalo de nuevo.",
         "commentDeleted": "¡Comentario eliminado exitosamente!",
-        "commentDeleteFailed": "Error al eliminar el comentario. Por favor inténtalo de nuevo."
+        "commentDeleteFailed": "Error al eliminar el comentario. Por favor inténtalo de nuevo.",
+        "toggleLikeFailed": "Error al actualizar tu me gusta. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -303,7 +304,8 @@
         "atLeastOneRequired": "Por favor proporciona una valoración o me gusta/no me gusta",
         "noPoster": "No hay póster",
         "updateReview": "Editar Reseña",
-        "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez"
+        "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez",
+        "toggleLike": "Alternar Me gusta"
     },
     "BackButton": {
         "back": "Atrás"
