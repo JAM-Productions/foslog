@@ -140,6 +140,7 @@ export default function ConfigModal() {
                                             'namePlaceholder'
                                         )}
                                         inputSize="sm"
+                                        className="h-9"
                                     />
                                     <Button
                                         size="sm"
