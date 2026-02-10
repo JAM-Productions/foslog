@@ -81,7 +81,7 @@ describe('POST /api/review/[id]/like', () => {
             user: { id: 'user1' },
         });
         (prisma.review.findUnique as Mock).mockResolvedValue({ id: 'review1' });
-        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+        (prisma.$transaction as Mock).mockImplementation(async () => {
             throw new Error('ALREADY_LIKED');
         });
 
@@ -249,7 +249,7 @@ describe('DELETE /api/review/[id]/like', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
-        (prisma.$transaction as Mock).mockImplementation(async (callback) => {
+        (prisma.$transaction as Mock).mockImplementation(async () => {
             throw new Error('LIKE_NOT_FOUND');
         });
 
