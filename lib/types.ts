@@ -12,7 +12,7 @@ export type SafeReviewWithMedia = SafeReview & {
     media: SafeMediaItem;
 };
 
-export type SafeReviewWithMediaAndComments = SafeReviewWithMedia & {
+export type SafeReviewWithComments = SafeReview & {
     comments: SafeComment[];
     totalPages: number;
     currentPage: number;

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
     getMedias,
-    getMediaById,
+    getMediaByIdWithReviews,
     getGlobalMediaStats,
     getMediaMetadata,
 } from '@/app/actions/media';
@@ -501,7 +501,7 @@ describe('getMedias Server Action', () => {
     });
 });
 
-describe('getMediaById Server Action', () => {
+describe('getMediaByIdWithReviews Server Action', () => {
     const mockMediaItem = {
         id: '1',
         title: 'Test Movie',
@@ -526,7 +526,7 @@ describe('getMediaById Server Action', () => {
     });
 
     it('fetches reviews for the first page', async () => {
-        await getMediaById('1', 1, 5);
+        await getMediaByIdWithReviews('1', 1, 5);
         expect(prisma.review.findMany).toHaveBeenCalledWith({
             where: { mediaId: '1' },
             include: { user: true },
@@ -537,7 +537,7 @@ describe('getMediaById Server Action', () => {
     });
 
     it('fetches reviews for a specific page', async () => {
-        await getMediaById('1', 3, 5);
+        await getMediaByIdWithReviews('1', 3, 5);
         expect(prisma.review.findMany).toHaveBeenCalledWith({
             where: { mediaId: '1' },
             include: { user: true },
@@ -548,12 +548,12 @@ describe('getMediaById Server Action', () => {
     });
 
     it('calculates totalPages correctly', async () => {
-        const result = await getMediaById('1', 1, 5);
+        const result = await getMediaByIdWithReviews('1', 1, 5);
         expect(result?.totalPages).toBe(3);
     });
 
     it('handles default page and pageSize', async () => {
-        await getMediaById('1');
+        await getMediaByIdWithReviews('1');
         expect(prisma.review.findMany).toHaveBeenCalledWith({
             where: { mediaId: '1' },
             include: { user: true },
@@ -564,7 +564,7 @@ describe('getMediaById Server Action', () => {
     });
 
     it('returns the correct currentPage', async () => {
-        const result = await getMediaById('1', 2, 5);
+        const result = await getMediaByIdWithReviews('1', 2, 5);
         expect(result?.currentPage).toBe(2);
     });
 });

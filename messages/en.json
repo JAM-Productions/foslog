@@ -267,6 +267,7 @@
         "commentCreateFailed": "Failed to add comment. Please try again.",
         "commentDeleted": "Comment deleted successfully!",
         "commentDeleteFailed": "Failed to delete comment. Please try again.",
+        "toggleLikeFailed": "Failed to update your like. Please try again.",
         "accountDeleted": "Account deleted successfully. Goodbye!",
         "accountDeleteFailed": "Failed to delete account. Please try again."
     },
@@ -305,7 +306,8 @@
         "atLeastOneRequired": "Please provide either a rating or like/dislike",
         "noPoster": "No Poster",
         "updateReview": "Update Review",
-        "consumedMoreThanOnce": "I have watched/played/read this more than once"
+        "consumedMoreThanOnce": "I have watched/played/read this more than once",
+        "toggleLike": "Toggle Like"
     },
     "BackButton": {
         "back": "Back"

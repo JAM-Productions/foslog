@@ -39,6 +39,7 @@ const mockReviews: (Review & { user: User })[] = [
         createdAt: new Date(),
         updatedAt: new Date(),
         totalComments: 0,
+        totalLikes: 10,
         user: mockUser,
     },
 ];

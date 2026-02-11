@@ -141,6 +141,54 @@ export const getMediaMetadata = async (
 };
 
 export const getMediaById = async (
+    id: string
+): Promise<SafeMediaItem | null> => {
+    try {
+        const mediaItem = await prisma.mediaItem.findUnique({
+            where: { id },
+        });
+
+        if (!mediaItem) {
+            logger.warn('GET /actions/media', {
+                method: 'getMediaById',
+                warn: 'Media not found',
+                mediaId: id,
+            });
+            return null;
+        }
+
+        logger.info('GET /actions/media', {
+            method: 'getMediaById',
+            mediaId: id,
+        });
+        return {
+            id: mediaItem.id,
+            title: mediaItem.title,
+            type: mediaItem.type.toLowerCase() as MediaType,
+            year: mediaItem.year ?? undefined,
+            director: mediaItem.director ?? undefined,
+            author: mediaItem.author ?? undefined,
+            artist: mediaItem.artist ?? undefined,
+            genre: mediaItem.genre,
+            poster: mediaItem.poster ?? undefined,
+            cover: mediaItem.cover ?? undefined,
+            description: mediaItem.description,
+            averageRating: mediaItem.averageRating,
+            totalReviews: mediaItem.totalReviews,
+            totalLikes: mediaItem.totalLikes,
+            totalDislikes: mediaItem.totalDislikes,
+        };
+    } catch (error) {
+        logger.error('GET /actions/media', {
+            method: 'getMediaById',
+            error,
+            mediaId: id,
+        });
+        throw new Error('Could not fetch media item.');
+    }
+};
+
+export const getMediaByIdWithReviews = async (
     id: string,
     page: number = 1,
     pageSize: number = 5
@@ -154,7 +202,7 @@ export const getMediaById = async (
 
         if (!mediaItem) {
             logger.warn('GET /actions/media', {
-                method: 'getMediaById',
+                method: 'getMediaByIdWithReviews',
                 warn: 'Media not found',
                 mediaId: id,
             });
@@ -192,6 +240,7 @@ export const getMediaById = async (
                 updatedAt: restOfReview.updatedAt,
                 consumedMoreThanOnce: restOfReview.consumedMoreThanOnce,
                 totalComments: restOfReview.totalComments,
+                totalLikes: restOfReview.totalLikes,
                 user: safeUser,
             };
         });
@@ -199,7 +248,7 @@ export const getMediaById = async (
         const totalPages = Math.ceil(mediaItem.totalReviews / pageSize);
 
         logger.info('GET /actions/media', {
-            method: 'getMediaById',
+            method: 'getMediaByIdWithReviews',
             mediaId: id,
         });
         return {
@@ -224,7 +273,7 @@ export const getMediaById = async (
         };
     } catch (error) {
         logger.error('GET /actions/media', {
-            method: 'getMediaById',
+            method: 'getMediaByIdWithReviews',
             error,
             mediaId: id,
         });
