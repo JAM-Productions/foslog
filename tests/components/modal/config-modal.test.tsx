@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ConfigModal from '@/components/modal/config-modal';
 import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
@@ -24,10 +24,12 @@ vi.mock('@/lib/options-modal-store', () => ({
     useOptionsModalStore: vi.fn(),
 }));
 
+const mockPush = vi.fn();
+const mockRefresh = vi.fn();
 vi.mock('@/i18n/navigation', () => ({
     useRouter: vi.fn(() => ({
-        push: vi.fn(),
-        refresh: vi.fn(),
+        push: mockPush,
+        refresh: mockRefresh,
     })),
 }));
 
@@ -56,18 +58,6 @@ vi.mock('@/components/theme/theme-toggle', () => ({
 }));
 
 describe('ConfigModal', () => {
-    const originalLocation = window.location;
-
-    beforeAll(() => {
-        // @ts-ignore
-        delete window.location;
-        window.location = { ...originalLocation, reload: vi.fn() };
-    });
-
-    afterAll(() => {
-        window.location = originalLocation;
-    });
-
     const mockSetIsConfigModalOpen = vi.fn();
     const mockShowModal = vi.fn();
     const mockSetIsCTALoading = vi.fn();
@@ -529,6 +519,8 @@ describe('ConfigModal', () => {
                     },
                     body: JSON.stringify({ name: 'New Name' }),
                 });
+
+                expect(mockRefresh).toHaveBeenCalled();
             });
 
             it('shows error toast on failed name update', async () => {
@@ -707,6 +699,7 @@ describe('ConfigModal', () => {
                     expect(mockHideModal).toHaveBeenCalled();
                     expect(mockSetIsConfigModalOpen).toHaveBeenCalledWith(false);
                     expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
+                    expect(mockPush).toHaveBeenCalledWith('/');
                 });
 
                 it('shows error toast on failed deletion', async () => {
