@@ -17,7 +17,6 @@ export const getMedias = async (
     mediaType?: string,
     searchQuery?: string
 ): Promise<{ items: SafeMediaItem[]; total: number }> => {
-    return { items: [], total: 0 };
     try {
         const skip = (page - 1) * pageSize;
 
@@ -237,7 +236,6 @@ export const getGlobalMediaStats = async (): Promise<{
     topRated: number;
     recentlyAdded: number;
 }> => {
-    return { topRated: 0, recentlyAdded: 0 };
     const CACHE_KEY = 'global:media:stats';
     const CACHE_TTL = 86400; // 1 day
 

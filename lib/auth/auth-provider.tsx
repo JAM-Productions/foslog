@@ -21,10 +21,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [isPending]);
 
     const value = {
-        session: { user: { id: 'user-1', name: 'Test User', email: 'test@example.com' } } as any,
-        user: { id: 'user-1', name: 'Test User', email: 'test@example.com' } as any,
-        isLoading: false,
-        isAuthenticated: true,
+        session: session || null,
+        user: session?.user || null,
+        isLoading,
+        isAuthenticated: !!session?.user,
     };
 
     return (
