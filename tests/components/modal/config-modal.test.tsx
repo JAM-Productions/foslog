@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
 import ConfigModal from '@/components/modal/config-modal';
 import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
@@ -56,6 +56,18 @@ vi.mock('@/components/theme/theme-toggle', () => ({
 }));
 
 describe('ConfigModal', () => {
+    const originalLocation = window.location;
+
+    beforeAll(() => {
+        // @ts-ignore
+        delete window.location;
+        window.location = { ...originalLocation, reload: vi.fn() };
+    });
+
+    afterAll(() => {
+        window.location = originalLocation;
+    });
+
     const mockSetIsConfigModalOpen = vi.fn();
     const mockShowModal = vi.fn();
     const mockSetIsCTALoading = vi.fn();

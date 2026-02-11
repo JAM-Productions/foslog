@@ -79,7 +79,7 @@ export default function ConfigModal() {
             }
 
             showToast(tToast('nameUpdated'), 'success');
-            router.refresh();
+            window.location.reload();
         } catch (error) {
             showToast(tToast('nameUpdateFailed'), 'error');
             console.error('Error updating name:', error);
