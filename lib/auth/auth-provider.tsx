@@ -26,9 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user: session?.user || null,
         isLoading,
         isAuthenticated: !!session?.user,
-        reFetch: async () => {
-            await reFetch();
-        },
+        reFetch,
     };
 
     return (
