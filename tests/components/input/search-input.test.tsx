@@ -122,7 +122,7 @@ describe('SearchInput', () => {
         );
 
         const input = screen.getByPlaceholderText('Search...');
-        expect(input).toHaveClass('h-8', 'px-2', 'py-1', 'text-sm');
+        expect(input).toHaveClass('h-8', 'px-2', 'py-1', 'text-base');
     });
 
     it('renders with large size', () => {

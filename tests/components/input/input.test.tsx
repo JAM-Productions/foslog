@@ -50,7 +50,7 @@ describe('Input', () => {
             />
         );
         const input = screen.getByPlaceholderText('Small input');
-        expect(input).toHaveClass('h-8', 'px-2', 'py-1', 'text-sm');
+        expect(input).toHaveClass('h-8', 'px-2', 'py-1', 'text-base');
     });
 
     it('renders with large size', () => {
