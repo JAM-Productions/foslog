@@ -28,9 +28,7 @@ export default function ConfigModal() {
     const [isUpdatingName, setIsUpdatingName] = useState(false);
 
     useEffect(() => {
-        if (user?.name) {
-            setName(user.name);
-        }
+        setName(user?.name ?? '');
     }, [user?.name]);
 
     useBodyScrollLock(isConfigModalOpen);
@@ -129,9 +127,12 @@ export default function ConfigModal() {
                     {user && (
                         <>
                             <div className="flex flex-col gap-2 border-b pb-4">
-                                <span>{tConfigModal('updateName')}</span>
+                                <label htmlFor="update-name-input">
+                                    {tConfigModal('updateName')}
+                                </label>
                                 <div className="flex gap-2">
                                     <Input
+                                        id="update-name-input"
                                         value={name}
                                         onChange={(e) =>
                                             setName(e.target.value)

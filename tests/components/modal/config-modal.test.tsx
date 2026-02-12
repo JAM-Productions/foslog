@@ -1,13 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import ConfigModal from '@/components/modal/config-modal';
 import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useOptionsModalStore } from '@/lib/options-modal-store';
 
-// Mock dependencies
 vi.mock('@/lib/store', () => ({
     useAppStore: vi.fn(),
 }));
@@ -136,8 +135,8 @@ describe('ConfigModal', () => {
             };
             return translations[key] || key;
         });
-        
-        mockedUseTranslations.mockImplementation((namespace: string) => {
+
+        mockedUseTranslations.mockImplementation((namespace?: string) => {
             if (namespace === 'ConfigModal') {
                 return mockConfigModalT as unknown as ReturnType<
                     typeof useTranslations
@@ -448,8 +447,12 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
-                } as ReturnType<typeof useAuth>);
-                global.fetch = vi.fn();
+                } as unknown as ReturnType<typeof useAuth>);
+                vi.stubGlobal('fetch', vi.fn());
+            });
+
+            afterEach(() => {
+                vi.unstubAllGlobals();
             });
 
             it('renders update name section', () => {
@@ -592,7 +595,7 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
-                } as ReturnType<typeof useAuth>);
+                } as unknown as ReturnType<typeof useAuth>);
             });
 
             it('renders delete account section', () => {
