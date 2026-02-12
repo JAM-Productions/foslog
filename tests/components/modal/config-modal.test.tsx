@@ -61,6 +61,7 @@ describe('ConfigModal', () => {
     const mockShowModal = vi.fn();
     const mockSetIsCTALoading = vi.fn();
     const mockHideModal = vi.fn();
+    const mockReFetch = vi.fn();
     const mockedUseAppStore = vi.mocked(useAppStore);
     const mockedUseTranslations = vi.mocked(useTranslations);
     const mockedUseAuth = vi.mocked(useAuth);
@@ -161,6 +162,7 @@ describe('ConfigModal', () => {
             session: null,
             isLoading: false,
             isAuthenticated: false,
+            reFetch: mockReFetch,
         });
         mockedUseOptionsModalStore.mockReturnValue({
             showModal: mockShowModal,
@@ -422,6 +424,7 @@ describe('ConfigModal', () => {
                     session: null,
                     isLoading: false,
                     isAuthenticated: false,
+                    reFetch: mockReFetch,
                 });
             });
 
@@ -447,6 +450,7 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
+                    reFetch: mockReFetch,
                 } as unknown as ReturnType<typeof useAuth>);
                 vi.stubGlobal('fetch', vi.fn());
             });
@@ -496,7 +500,7 @@ describe('ConfigModal', () => {
                 expect(saveButton).toBeDisabled();
             });
 
-            it('successfully updates name and shows success toast', async () => {
+            it('successfully updates name and re-fetches session', async () => {
                 (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
                     ok: true,
                     json: async () => ({
@@ -523,6 +527,7 @@ describe('ConfigModal', () => {
                     body: JSON.stringify({ name: 'New Name' }),
                 });
 
+                expect(mockReFetch).toHaveBeenCalled();
                 expect(mockRefresh).toHaveBeenCalled();
             });
 
@@ -559,6 +564,7 @@ describe('ConfigModal', () => {
                     session: null,
                     isLoading: false,
                     isAuthenticated: false,
+                    reFetch: mockReFetch,
                 });
             });
 
@@ -595,6 +601,7 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
+                    reFetch: mockReFetch,
                 } as unknown as ReturnType<typeof useAuth>);
             });
 

@@ -19,7 +19,7 @@ export default function ConfigModal() {
     const tToast = useTranslations('Toast');
 
     const { isConfigModalOpen, setIsConfigModalOpen } = useAppStore();
-    const { user } = useAuth();
+    const { user, reFetch } = useAuth();
     const { showModal, setIsCTALoading, hideModal } = useOptionsModalStore();
     const { showToast } = useToastStore();
     const router = useRouter();
@@ -77,6 +77,7 @@ export default function ConfigModal() {
             }
 
             showToast(tToast('nameUpdated'), 'success');
+            await reFetch();
             router.refresh();
         } catch (error) {
             showToast(tToast('nameUpdateFailed'), 'error');
