@@ -244,6 +244,7 @@
         "next": "Next",
         "settings": "Settings",
         "edit": "Edit",
+        "save": "Save",
         "delete": "Delete",
         "share": "Share",
         "myProfile": "My Profile",
@@ -270,7 +271,9 @@
         "toggleLikeFailed": "Failed to update your like. Please try again.",
         "accountDeleted": "Account deleted successfully. Goodbye!",
         "accountDeleteFailed": "Failed to delete account. Please try again.",
-        "toggleFollowFailed": "Failed to update your follow. Please try again."
+        "toggleFollowFailed": "Failed to update your follow. Please try again.",
+        "nameUpdated": "Name updated successfully!",
+        "nameUpdateFailed": "Failed to update name. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -368,6 +371,8 @@
         "settings": "Settings",
         "language": "Language",
         "theme": "Theme",
+        "updateName": "Update Name",
+        "namePlaceholder": "Enter new name",
         "deleteAccount": "Delete Account",
         "deleteAccountTitle": "Delete Account",
         "deleteAccountDescription": "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."

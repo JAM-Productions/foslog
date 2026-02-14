@@ -1,12 +1,3 @@
-# Database Triggers
-
-To improve performance and scalability, we use PostgreSQL triggers to handle metadata updates (like counters and averages) instead of calculating them in the application layer.
-
-## Instructions
-
-Run the following SQL commands in your Supabase SQL Editor (or your database client) to create the necessary functions and triggers.
-
-```sql
 -- Function to update media stats (Average Rating, Total Reviews, Likes, Dislikes)
 CREATE OR REPLACE FUNCTION update_media_stats()
 RETURNS TRIGGER AS $$
@@ -22,7 +13,7 @@ BEGIN
     -- Robustness: Skip if target_media_id is NULL (avoids wasted subqueries)
     IF target_media_id IS NULL THEN
         RETURN NULL;
-  END IF;
+    END IF;
 
     -- If it's an UPDATE and mediaId changed, we also need to update the OLD media
     IF (TG_OP = 'UPDATE' AND OLD."mediaId" IS DISTINCT FROM NEW."mediaId" AND OLD."mediaId" IS NOT NULL) THEN
@@ -122,4 +113,3 @@ CREATE TRIGGER update_review_like_count_trigger
 AFTER INSERT OR DELETE ON review_likes
 FOR EACH ROW
 EXECUTE FUNCTION update_review_like_count();
-```
