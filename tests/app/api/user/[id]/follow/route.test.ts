@@ -13,6 +13,9 @@ vi.mock('next/cache', () => ({
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
+        user: {
+            findUnique: vi.fn(),
+        },
         follow: {
             create: vi.fn(),
             delete: vi.fn(),
@@ -84,6 +87,9 @@ describe('POST /api/user/[id]/follow', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
+        });
         (prisma.follow.create as Mock).mockResolvedValue({
             id: 'follow1',
             followerId: 'user1',
@@ -110,6 +116,9 @@ describe('POST /api/user/[id]/follow', () => {
     it('should return 409 Conflict if user already follows the target user', async () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
+        });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
         });
 
         const prismaError = new Prisma.PrismaClientKnownRequestError(
@@ -156,6 +165,9 @@ describe('POST /api/user/[id]/follow', () => {
         const { revalidatePath } = await import('next/cache');
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
+        });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
         });
         (prisma.follow.create as Mock).mockResolvedValue({
             id: 'follow1',
@@ -230,6 +242,9 @@ describe('DELETE /api/user/[id]/follow', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
+        });
         (prisma.follow.delete as Mock).mockResolvedValue({
             id: 'follow1',
             followerId: 'user1',
@@ -259,6 +274,9 @@ describe('DELETE /api/user/[id]/follow', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
+        });
 
         const prismaError = new Prisma.PrismaClientKnownRequestError(
             'Record not found',
@@ -285,6 +303,9 @@ describe('DELETE /api/user/[id]/follow', () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
         });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
+        });
         (prisma.follow.delete as Mock).mockRejectedValue(
             new Error('Database error')
         );
@@ -304,6 +325,9 @@ describe('DELETE /api/user/[id]/follow', () => {
         const { revalidatePath } = await import('next/cache');
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
+        });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
         });
         (prisma.follow.delete as Mock).mockResolvedValue({
             id: 'follow1',
@@ -331,6 +355,9 @@ describe('DELETE /api/user/[id]/follow', () => {
         const { revalidatePath } = await import('next/cache');
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: 'user1' },
+        });
+        (prisma.user.findUnique as Mock).mockResolvedValue({
+            id: 'target-user',
         });
         (prisma.follow.delete as Mock).mockResolvedValue({
             id: 'follow1',

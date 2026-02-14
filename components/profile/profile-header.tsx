@@ -3,7 +3,7 @@
 import { User } from '@/lib/store';
 import { UserStats } from '@/app/actions/user';
 import { RatingDistribution } from './rating-distribution';
-import { UserIcon, UserPlus } from 'lucide-react';
+import { UserIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Button } from '../button/button';
@@ -24,6 +24,7 @@ export function ProfileHeader({
     isUserFollowing,
 }: ProfileHeaderProps) {
     const t = useTranslations('ProfilePage');
+    const tToast = useTranslations('Toast');
     const tGenres = useTranslations('MediaGenres');
     const { user: currentUser } = useAuth();
     const router = useRouter();
@@ -33,6 +34,13 @@ export function ProfileHeader({
         (prev) => !prev
     );
     const { showToast } = useToastStore();
+
+    const optimisticTotalFollowers =
+        isUserFollowing === optimisticFollowing
+            ? user.totalFollowers
+            : optimisticFollowing
+              ? user.totalFollowers + 1
+              : user.totalFollowers - 1;
 
     const toggleFollowButton = async () => {
         if (!currentUser) {
@@ -58,7 +66,7 @@ export function ProfileHeader({
 
                 router.refresh();
             } catch (error) {
-                showToast(t('toggleFollowFailed'), 'error');
+                showToast(tToast('toggleFollowFailed'), 'error');
             } finally {
                 setIsFollowing(false);
             }
@@ -102,7 +110,7 @@ export function ProfileHeader({
                             <div className="mt-3 flex gap-4">
                                 <div className="flex items-center gap-1">
                                     <span className="font-bold">
-                                        {user.totalFollowers}
+                                        {optimisticTotalFollowers}
                                     </span>
                                     <span className="text-muted-foreground text-sm">
                                         {t('totalFollowers')}

@@ -1,7 +1,12 @@
 import { auth } from '@/lib/auth/auth';
 import { logger } from '@/lib/axiom/server';
 import { LOCALES } from '@/lib/constants';
-import { conflict, internalServerError, unauthorized } from '@/lib/errors';
+import {
+    conflict,
+    internalServerError,
+    notFound,
+    unauthorized,
+} from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
@@ -27,6 +32,15 @@ export async function POST(
 
         if (currentUserId === targetUserId) {
             return conflict('You cannot follow yourself.');
+        }
+
+        const targetUser = await prisma.user.findUnique({
+            where: { id: targetUserId },
+            select: { id: true },
+        });
+
+        if (!targetUser) {
+            return notFound('User not found.');
         }
 
         await prisma.follow.create({
@@ -81,6 +95,15 @@ export async function DELETE(
 
         if (currentUserId === targetUserId) {
             return conflict('You cannot unfollow yourself.');
+        }
+
+        const targetUser = await prisma.user.findUnique({
+            where: { id: targetUserId },
+            select: { id: true },
+        });
+
+        if (!targetUser) {
+            return notFound('User not found.');
         }
 
         await prisma.follow.delete({
