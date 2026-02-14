@@ -287,6 +287,8 @@
         "totalReviews": "Total de Ressenyes",
         "averageRating": "Valoració Mitjana",
         "totalLikesReceived": "Total de M'agrada Rebuts",
+        "totalFollowers": "Seguidors",
+        "totalFollowing": "Seguint",
         "noReviews": "Encara no hi ha ressenyes.",
         "follow": "Seguir",
         "unfollow": "Deixar de Seguir"

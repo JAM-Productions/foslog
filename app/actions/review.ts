@@ -65,23 +65,11 @@ export const getReviewByIdWithComments = async (
         const review = await prisma.review.findUnique({
             where: { id },
             include: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
+                user: true,
                 media: true,
                 comments: {
                     include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                image: true,
-                            },
-                        },
+                        user: true,
                     },
                     orderBy: {
                         createdAt: 'desc',
@@ -107,7 +95,9 @@ export const getReviewByIdWithComments = async (
             email: '',
             image: review.user.image ?? undefined,
             bio: undefined,
-            joinedAt: new Date(),
+            joinedAt: review.user.createdAt,
+            totalFollowers: review.user.totalFollowers,
+            totalFollowing: review.user.totalFollowing,
         };
 
         const safeComments: SafeComment[] = review.comments.map((comment) => {
@@ -117,7 +107,9 @@ export const getReviewByIdWithComments = async (
                 email: '',
                 image: comment.user.image ?? undefined,
                 bio: undefined,
-                joinedAt: new Date(),
+                joinedAt: comment.user.createdAt,
+                totalFollowers: comment.user.totalFollowers,
+                totalFollowing: comment.user.totalFollowing,
             };
 
             return {

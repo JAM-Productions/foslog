@@ -99,6 +99,25 @@ export function ProfileHeader({
                                 })}
                             </p>
 
+                            <div className="mt-3 flex gap-4">
+                                <div className="flex items-center gap-1">
+                                    <span className="font-bold">
+                                        {user.totalFollowers}
+                                    </span>
+                                    <span className="text-muted-foreground text-sm">
+                                        {t('totalFollowers')}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span className="font-bold">
+                                        {user.totalFollowing}
+                                    </span>
+                                    <span className="text-muted-foreground text-sm">
+                                        {t('totalFollowing')}
+                                    </span>
+                                </div>
+                            </div>
+
                             {user.bio && (
                                 <p className="mt-4 max-w-lg text-sm leading-relaxed">
                                     {user.bio}

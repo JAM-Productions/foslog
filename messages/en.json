@@ -287,6 +287,8 @@
         "totalReviews": "Total Reviews",
         "averageRating": "Average Rating",
         "totalLikesReceived": "Total Likes Received",
+        "totalFollowers": "Followers",
+        "totalFollowing": "Following",
         "noReviews": "No reviews yet.",
         "follow": "Follow",
         "unfollow": "Unfollow"

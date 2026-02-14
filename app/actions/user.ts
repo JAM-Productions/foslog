@@ -33,6 +33,8 @@ export const getUserProfile = async (userId: string): Promise<User | null> => {
             image: user.image ?? undefined,
             bio: user.bio ?? undefined,
             joinedAt: user.createdAt,
+            totalFollowers: user.totalFollowers,
+            totalFollowing: user.totalFollowing,
         };
     } catch (error) {
         logger.error('GET /actions/user', {
@@ -94,6 +96,8 @@ export const getUserReviews = async (
                 image: review.user.image ?? undefined,
                 bio: review.user.bio ?? undefined,
                 joinedAt: review.user.createdAt,
+                totalFollowers: review.user.totalFollowers,
+                totalFollowing: review.user.totalFollowing,
             },
             media: {
                 id: review.media.id,

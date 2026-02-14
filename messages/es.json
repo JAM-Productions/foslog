@@ -287,6 +287,8 @@
         "totalReviews": "Total de Reseñas",
         "averageRating": "Valoración Media",
         "totalLikesReceived": "Total de Me gusta Recibidos",
+        "totalFollowers": "Seguidores",
+        "totalFollowing": "Siguiendo",
         "noReviews": "Aún no hay reseñas.",
         "follow": "Seguir",
         "unfollow": "Dejar de Seguir"
