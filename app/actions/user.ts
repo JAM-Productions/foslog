@@ -1,9 +1,11 @@
 'use server';
 
+import { auth } from '@/lib/auth/auth';
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
+import { headers } from 'next/headers';
 
 export const getUserProfile = async (userId: string): Promise<User | null> => {
     try {
@@ -205,5 +207,49 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
             userId,
         });
         throw new Error('Could not fetch user stats.');
+    }
+};
+
+export const isUserFollowingThisID = async (
+    targetUserId: string
+): Promise<boolean> => {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        const currentUserId = session?.user?.id;
+
+        if (!currentUserId) {
+            logger.warn('GET /actions/user', {
+                method: 'isUserFollowingThisID',
+                warn: 'No authenticated user',
+                targetUserId,
+            });
+            return false;
+        }
+
+        const follow = await prisma.follow.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: currentUserId,
+                    followingId: targetUserId,
+                },
+            },
+        });
+
+        logger.info('GET /actions/user', {
+            method: 'isUserFollowingThisID',
+            currentUserId,
+            targetUserId,
+            isFollowing: !!follow,
+        });
+        return !!follow;
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'isUserFollowingThisID',
+            error,
+            targetUserId,
+        });
+        throw new Error('Could not determine follow status.');
     }
 };

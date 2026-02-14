@@ -269,7 +269,8 @@
         "commentDeleteFailed": "Error en eliminar el comentari. Si us plau, torna-ho a provar.",
         "toggleLikeFailed": "Error en actualitzar el teu m'agrada. Si us plau, torna-ho a provar.",
         "accountDeleted": "Compte eliminat correctament. Adeu!",
-        "accountDeleteFailed": "Error en eliminar el compte. Si us plau, torna-ho a provar."
+        "accountDeleteFailed": "Error en eliminar el compte. Si us plau, torna-ho a provar.",
+        "toggleFollowFailed": "Error en actualitzar el teu seguiment. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -283,7 +284,9 @@
         "totalReviews": "Total de Ressenyes",
         "averageRating": "Valoració Mitjana",
         "totalLikesReceived": "Total de M'agrada Rebuts",
-        "noReviews": "Encara no hi ha ressenyes."
+        "noReviews": "Encara no hi ha ressenyes.",
+        "follow": "Seguir",
+        "unfollow": "Deixar de Seguir"
     },
     "MediaPage": {
         "reviews": "Ressenyes",
