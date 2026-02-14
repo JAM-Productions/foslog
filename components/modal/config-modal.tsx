@@ -61,7 +61,6 @@ export default function ConfigModal() {
 
     const handleUpdateName = async () => {
         if (!name || name.trim().length < 2) return;
-
         setIsUpdatingName(true);
         try {
             const response = await fetch('/api/user', {
@@ -71,11 +70,9 @@ export default function ConfigModal() {
                 },
                 body: JSON.stringify({ name: name.trim() }),
             });
-
             if (!response.ok) {
                 throw new Error('Failed to update name');
             }
-
             showToast(tToast('nameUpdated'), 'success');
             await Promise.all([refetchSession(), router.refresh()]);
         } catch (error) {
