@@ -77,7 +77,7 @@ export default function ConfigModal() {
             }
 
             showToast(tToast('nameUpdated'), 'success');
-            await refetchSession();
+            refetchSession();
             router.refresh();
         } catch (error) {
             showToast(tToast('nameUpdateFailed'), 'error');
