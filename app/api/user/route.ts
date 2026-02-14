@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { logger } from '@/lib/axiom/server';
 import { internalServerError, unauthorized, badRequest } from '@/lib/errors';
+import { LOCALES } from '@/lib/constants';
+import { revalidatePath } from 'next/cache';
 
 export async function DELETE(request: NextRequest) {
     try {
@@ -68,7 +70,10 @@ export async function PATCH(request: NextRequest) {
             data: { name: name.trim() },
             select: { id: true, name: true },
         });
-
+        const referer = request.headers.get('referer') || '';
+        const locale =
+            LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
+        revalidatePath(`/${locale}/profile/${updatedUser.id}`, 'page');
         logger.info('User name updated', { userId, newName: updatedUser.name });
 
         return NextResponse.json(
