@@ -8,12 +8,13 @@ interface AuthContextType {
     user: User | null;
     isLoading: boolean;
     isAuthenticated: boolean;
+    refetchSession: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const { data: session, isPending } = useSession();
+    const { data: session, isPending, refetch } = useSession();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -25,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user: session?.user || null,
         isLoading,
         isAuthenticated: !!session?.user,
+        refetchSession: refetch,
     };
 
     return (
