@@ -65,7 +65,7 @@ export function ProfileHeader({
                 }
 
                 router.refresh();
-            } catch (error) {
+            } catch {
                 showToast(tToast('toggleFollowFailed'), 'error');
             } finally {
                 setIsFollowing(false);
