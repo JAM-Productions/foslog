@@ -227,6 +227,8 @@ export const getMediaByIdWithReviews = async (
                 image: user.image ?? undefined,
                 bio: user.bio ?? undefined,
                 joinedAt: user.createdAt,
+                totalFollowers: user.totalFollowers,
+                totalFollowing: user.totalFollowing,
             };
 
             return {

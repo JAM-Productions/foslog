@@ -51,6 +51,8 @@ export interface User {
     image?: string;
     bio?: string;
     joinedAt: Date;
+    totalFollowers: number;
+    totalFollowing: number;
 }
 
 interface AppState {

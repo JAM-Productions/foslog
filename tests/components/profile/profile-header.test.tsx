@@ -27,6 +27,26 @@ vi.mock('@/components/profile/rating-distribution', () => ({
     RatingDistribution: () => <div data-testid="rating-distribution" />,
 }));
 
+// Mock auth provider
+vi.mock('@/lib/auth/auth-provider', () => ({
+    useAuth: () => ({ user: null }),
+}));
+
+// Mock navigation
+vi.mock('@/i18n/navigation', () => ({
+    useRouter: () => ({
+        push: vi.fn(),
+        refresh: vi.fn(),
+    }),
+}));
+
+// Mock toast store
+vi.mock('@/lib/toast-store', () => ({
+    useToastStore: () => ({
+        showToast: vi.fn(),
+    }),
+}));
+
 describe('ProfileHeader', () => {
     const mockUser = {
         id: 'user1',
@@ -35,6 +55,8 @@ describe('ProfileHeader', () => {
         image: '/avatar.jpg',
         bio: 'Test Bio',
         joinedAt: new Date('2024-01-01'),
+        totalFollowers: 100,
+        totalFollowing: 50,
     };
 
     const mockStats = {
@@ -50,6 +72,7 @@ describe('ProfileHeader', () => {
             <ProfileHeader
                 user={mockUser}
                 stats={mockStats}
+                isUserFollowing={false}
             />
         );
 
@@ -67,12 +90,19 @@ describe('ProfileHeader', () => {
             <ProfileHeader
                 user={mockUser}
                 stats={mockStats}
+                isUserFollowing={false}
             />
         );
 
+        // Check for followers and following
+        expect(screen.getByText('100')).toBeInTheDocument(); // totalFollowers
+        expect(screen.getByText('totalFollowers')).toBeInTheDocument();
+        expect(screen.getAllByText('50').length).toBeGreaterThanOrEqual(2); // totalFollowing and totalLikesReceived
+        expect(screen.getByText('totalFollowing')).toBeInTheDocument();
+
+        // Check for review stats
         expect(screen.getByText('10')).toBeInTheDocument(); // totalReviews
         expect(screen.getByText('totalReviews')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument(); // totalLikesReceived
         expect(screen.getByText('totalLikesReceived')).toBeInTheDocument();
         expect(screen.getByText('4.5')).toBeInTheDocument(); // averageRating
         expect(screen.getByText('averageRating')).toBeInTheDocument();
@@ -83,6 +113,7 @@ describe('ProfileHeader', () => {
             <ProfileHeader
                 user={mockUser}
                 stats={mockStats}
+                isUserFollowing={false}
             />
         );
 
@@ -96,6 +127,7 @@ describe('ProfileHeader', () => {
             <ProfileHeader
                 user={userWithoutImage}
                 stats={mockStats}
+                isUserFollowing={false}
             />
         );
 

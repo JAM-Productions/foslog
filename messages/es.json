@@ -270,7 +270,8 @@
         "commentDeleteFailed": "Error al eliminar el comentario. Por favor inténtalo de nuevo.",
         "toggleLikeFailed": "Error al actualizar tu me gusta. Por favor inténtalo de nuevo.",
         "accountDeleted": "Cuenta eliminada exitosamente. ¡Adiós!",
-        "accountDeleteFailed": "Error al eliminar la cuenta. Por favor, inténtalo de nuevo.",
+        "accountDeleteFailed": "Error al eliminar la cuenta. Por favor inténtalo de nuevo.",
+        "toggleFollowFailed": "Error al actualizar tu seguimiento. Por favor inténtalo de nuevo.",
         "nameUpdated": "¡Nombre actualizado correctamente!",
         "nameUpdateFailed": "Error al actualizar el nombre. Por favor, inténtalo de nuevo."
     },
@@ -286,7 +287,11 @@
         "totalReviews": "Total de Reseñas",
         "averageRating": "Valoración Media",
         "totalLikesReceived": "Total de Me gusta Recibidos",
-        "noReviews": "Aún no hay reseñas."
+        "totalFollowers": "Seguidores",
+        "totalFollowing": "Siguiendo",
+        "noReviews": "Aún no hay reseñas.",
+        "follow": "Seguir",
+        "unfollow": "Dejar de Seguir"
     },
     "MediaPage": {
         "reviews": "Reseñas",

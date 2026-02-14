@@ -271,6 +271,7 @@
         "toggleLikeFailed": "Failed to update your like. Please try again.",
         "accountDeleted": "Account deleted successfully. Goodbye!",
         "accountDeleteFailed": "Failed to delete account. Please try again.",
+        "toggleFollowFailed": "Failed to update your follow. Please try again.",
         "nameUpdated": "Name updated successfully!",
         "nameUpdateFailed": "Failed to update name. Please try again."
     },
@@ -286,7 +287,11 @@
         "totalReviews": "Total Reviews",
         "averageRating": "Average Rating",
         "totalLikesReceived": "Total Likes Received",
-        "noReviews": "No reviews yet."
+        "totalFollowers": "Followers",
+        "totalFollowing": "Following",
+        "noReviews": "No reviews yet.",
+        "follow": "Follow",
+        "unfollow": "Unfollow"
     },
     "MediaPage": {
         "reviews": "Reviews",
