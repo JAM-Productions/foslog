@@ -520,6 +520,7 @@ describe('ConfigModal', () => {
                         user: { id: 'user-1', name: 'New Name' },
                     }),
                 });
+                mockRefetchSession.mockResolvedValue(undefined);
 
                 const user = userEvent.setup();
                 render(<ConfigModal />);
@@ -540,7 +541,7 @@ describe('ConfigModal', () => {
                     },
                     body: JSON.stringify({ name: 'New Name' }),
                 });
-
+                expect(mockRefetchSession).toHaveBeenCalledTimes(1);
                 expect(mockRefresh).toHaveBeenCalled();
             });
 
@@ -563,6 +564,7 @@ describe('ConfigModal', () => {
                 await user.click(saveButton);
 
                 expect(global.fetch).toHaveBeenCalled();
+                expect(mockRefetchSession).not.toHaveBeenCalled();
             });
         });
     });
