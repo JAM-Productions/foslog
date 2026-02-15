@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth/auth';
 import { toNextJsHandler } from 'better-auth/next-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { FOSLOG_URL } from '@/lib/constants';
 
 const handler = toNextJsHandler(auth);
 
@@ -12,10 +13,7 @@ const getCorsHeaders = (request: NextRequest) => {
         'Access-Control-Allow-Credentials': 'true',
     };
     const origin = request.headers.get('Origin');
-    const allowedOrigins = [
-        'http://localhost:3000',
-        'https://foslog.vercel.app',
-    ];
+    const allowedOrigins = ['http://localhost:3000', FOSLOG_URL];
 
     if (origin) {
         const isAllowed =
