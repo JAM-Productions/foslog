@@ -21,7 +21,7 @@ jobs:
               run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
             - name: Deploy Project Artifacts to Vercel
               id: deploy_vercel
-              run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+              run: echo "url=$(vercel deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
             - name: Comment PR
               uses: actions/github-script@v7
               with:
