@@ -11,7 +11,7 @@ export default function Loading() {
                         <div className="flex md:flex-col">
                             <div className="bg-muted relative aspect-[2/3] w-32 shrink-0 animate-pulse rounded-l-lg rounded-r-none md:w-full md:rounded-t-lg md:rounded-b-none"></div>
 
-                            <div className="bg-card flex w-full flex-col rounded-l-none rounded-r-lg border-l-0 shadow-sm md:rounded-t-none md:rounded-b-lg md:border-t-0 md:border-l">
+                            <div className="bg-card flex w-full flex-col rounded-l-none rounded-r-lg border border-l-0 shadow-sm md:rounded-t-none md:rounded-b-lg md:border-t-0 md:border-l">
                                 <div className="flex flex-1 flex-col gap-2 p-4 sm:gap-3 sm:p-5">
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-2">
