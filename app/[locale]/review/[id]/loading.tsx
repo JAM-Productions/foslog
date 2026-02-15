@@ -6,24 +6,37 @@ export default function Loading() {
                     <div className="bg-card h-10 w-24 animate-pulse rounded-lg"></div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:gap-6">
-                    <div className="sm:col-span-3">
-                        <div className="flex gap-3 sm:flex-col">
-                            <div className="bg-muted relative aspect-[2/3] w-32 shrink-0 animate-pulse rounded-lg sm:w-full"></div>
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-12">
+                    <div className="md:col-span-4 lg:col-span-3">
+                        <div className="flex md:flex-col">
+                            <div className="bg-muted relative aspect-[2/3] w-32 shrink-0 animate-pulse rounded-l-lg rounded-r-none md:w-full md:rounded-t-lg md:rounded-b-none"></div>
 
-                            <div className="bg-card w-full rounded-lg border shadow-sm">
-                                <div className="flex flex-col gap-2 p-4 sm:gap-3 sm:p-5">
-                                    <div className="space-y-1">
-                                        <div className="bg-muted h-3 w-20 animate-pulse rounded sm:h-4"></div>
+                            <div className="bg-card flex w-full flex-col rounded-l-none rounded-r-lg border-l-0 shadow-sm md:rounded-t-none md:rounded-b-lg md:border-t-0 md:border-l">
+                                <div className="flex flex-1 flex-col gap-2 p-4 sm:gap-3 sm:p-5">
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-2">
+                                            <div className="from-primary/0 via-primary/50 to-primary/0 h-px flex-1 bg-gradient-to-r" />
+                                            <div className="bg-muted h-3 w-16 animate-pulse rounded"></div>
+                                            <div className="from-primary/0 via-primary/50 to-primary/0 h-px flex-1 bg-gradient-to-r" />
+                                        </div>
                                         <div className="bg-muted h-5 w-full animate-pulse rounded sm:h-6"></div>
                                     </div>
-                                    <div className="bg-muted h-6 w-16 animate-pulse rounded"></div>
+
+                                    <div className="flex flex-wrap gap-1">
+                                        <div className="bg-muted h-5 w-12 animate-pulse rounded"></div>
+                                        <div className="bg-muted h-5 w-16 animate-pulse rounded"></div>
+                                    </div>
+
+                                    <div className="mt-auto flex items-center gap-3">
+                                        <div className="bg-muted h-4 w-12 animate-pulse rounded"></div>
+                                        <div className="bg-muted ml-auto h-4 w-16 animate-pulse rounded"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="sm:col-span-9 lg:col-span-7">
+                    <div className="md:col-span-8 lg:col-span-7">
                         <div className="flex flex-col gap-4 sm:gap-6">
                             <div className="bg-muted h-8 w-32 animate-pulse rounded sm:h-9"></div>
 
