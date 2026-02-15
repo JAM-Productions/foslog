@@ -13,10 +13,7 @@ const getCorsHeaders = (request: NextRequest) => {
         'Access-Control-Allow-Credentials': 'true',
     };
     const origin = request.headers.get('Origin');
-    const allowedOrigins = [
-        'http://localhost:3000',
-        FOSLOG_URL,
-    ];
+    const allowedOrigins = ['http://localhost:3000', FOSLOG_URL];
 
     if (origin) {
         const isAllowed =
