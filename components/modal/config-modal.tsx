@@ -19,7 +19,7 @@ export default function ConfigModal() {
     const tToast = useTranslations('Toast');
 
     const { isConfigModalOpen, setIsConfigModalOpen } = useAppStore();
-    const { user } = useAuth();
+    const { user, refetchSession } = useAuth();
     const { showModal, setIsCTALoading, hideModal } = useOptionsModalStore();
     const { showToast } = useToastStore();
     const router = useRouter();
@@ -61,7 +61,6 @@ export default function ConfigModal() {
 
     const handleUpdateName = async () => {
         if (!name || name.trim().length < 2) return;
-
         setIsUpdatingName(true);
         try {
             const response = await fetch('/api/user', {
@@ -71,13 +70,11 @@ export default function ConfigModal() {
                 },
                 body: JSON.stringify({ name: name.trim() }),
             });
-
             if (!response.ok) {
                 throw new Error('Failed to update name');
             }
-
             showToast(tToast('nameUpdated'), 'success');
-            router.refresh();
+            await Promise.all([refetchSession(), router.refresh()]);
         } catch (error) {
             showToast(tToast('nameUpdateFailed'), 'error');
             console.error('Error updating name:', error);

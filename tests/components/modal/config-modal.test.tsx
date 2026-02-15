@@ -61,6 +61,7 @@ describe('ConfigModal', () => {
     const mockShowModal = vi.fn();
     const mockSetIsCTALoading = vi.fn();
     const mockHideModal = vi.fn();
+    const mockRefetchSession = vi.fn();
     const mockedUseAppStore = vi.mocked(useAppStore);
     const mockedUseTranslations = vi.mocked(useTranslations);
     const mockedUseAuth = vi.mocked(useAuth);
@@ -143,7 +144,9 @@ describe('ConfigModal', () => {
                 >;
             }
             if (namespace === 'CTA') {
-                return mockCTAT as unknown as ReturnType<typeof useTranslations>;
+                return mockCTAT as unknown as ReturnType<
+                    typeof useTranslations
+                >;
             }
             if (namespace === 'Toast') {
                 return mockToastT as unknown as ReturnType<
@@ -161,6 +164,7 @@ describe('ConfigModal', () => {
             session: null,
             isLoading: false,
             isAuthenticated: false,
+            refetchSession: mockRefetchSession,
         });
         mockedUseOptionsModalStore.mockReturnValue({
             showModal: mockShowModal,
@@ -422,13 +426,16 @@ describe('ConfigModal', () => {
                     session: null,
                     isLoading: false,
                     isAuthenticated: false,
+                    refetchSession: mockRefetchSession,
                 });
             });
 
             it('does not render update name section', () => {
                 render(<ConfigModal />);
 
-                expect(screen.queryByText('Update Name')).not.toBeInTheDocument();
+                expect(
+                    screen.queryByText('Update Name')
+                ).not.toBeInTheDocument();
             });
         });
 
@@ -447,6 +454,7 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
+                    refetchSession: mockRefetchSession,
                 } as unknown as ReturnType<typeof useAuth>);
                 vi.stubGlobal('fetch', vi.fn());
             });
@@ -462,13 +470,17 @@ describe('ConfigModal', () => {
                 expect(
                     screen.getByPlaceholderText('Enter new name')
                 ).toBeInTheDocument();
-                expect(screen.getByDisplayValue('Test User')).toBeInTheDocument();
+                expect(
+                    screen.getByDisplayValue('Test User')
+                ).toBeInTheDocument();
             });
 
             it('save button is disabled initially', () => {
                 render(<ConfigModal />);
 
-                const saveButton = screen.getByRole('button', { name: /save/i });
+                const saveButton = screen.getByRole('button', {
+                    name: /save/i,
+                });
                 expect(saveButton).toBeDisabled();
             });
 
@@ -480,7 +492,9 @@ describe('ConfigModal', () => {
                 await user.clear(input);
                 await user.type(input, 'New Name');
 
-                const saveButton = screen.getByRole('button', { name: /save/i });
+                const saveButton = screen.getByRole('button', {
+                    name: /save/i,
+                });
                 expect(saveButton).not.toBeDisabled();
             });
 
@@ -492,7 +506,9 @@ describe('ConfigModal', () => {
                 await user.clear(input);
                 await user.type(input, 'A');
 
-                const saveButton = screen.getByRole('button', { name: /save/i });
+                const saveButton = screen.getByRole('button', {
+                    name: /save/i,
+                });
                 expect(saveButton).toBeDisabled();
             });
 
@@ -504,6 +520,7 @@ describe('ConfigModal', () => {
                         user: { id: 'user-1', name: 'New Name' },
                     }),
                 });
+                mockRefetchSession.mockResolvedValue(undefined);
 
                 const user = userEvent.setup();
                 render(<ConfigModal />);
@@ -512,7 +529,9 @@ describe('ConfigModal', () => {
                 await user.clear(input);
                 await user.type(input, 'New Name');
 
-                const saveButton = screen.getByRole('button', { name: /save/i });
+                const saveButton = screen.getByRole('button', {
+                    name: /save/i,
+                });
                 await user.click(saveButton);
 
                 expect(global.fetch).toHaveBeenCalledWith('/api/user', {
@@ -522,7 +541,7 @@ describe('ConfigModal', () => {
                     },
                     body: JSON.stringify({ name: 'New Name' }),
                 });
-
+                expect(mockRefetchSession).toHaveBeenCalledTimes(1);
                 expect(mockRefresh).toHaveBeenCalled();
             });
 
@@ -539,10 +558,13 @@ describe('ConfigModal', () => {
                 await user.clear(input);
                 await user.type(input, 'New Name');
 
-                const saveButton = screen.getByRole('button', { name: /save/i });
+                const saveButton = screen.getByRole('button', {
+                    name: /save/i,
+                });
                 await user.click(saveButton);
 
                 expect(global.fetch).toHaveBeenCalled();
+                expect(mockRefetchSession).not.toHaveBeenCalled();
             });
         });
     });
@@ -559,6 +581,7 @@ describe('ConfigModal', () => {
                     session: null,
                     isLoading: false,
                     isAuthenticated: false,
+                    refetchSession: mockRefetchSession,
                 });
             });
 
@@ -595,6 +618,7 @@ describe('ConfigModal', () => {
                     session: { userId: 'user-1' },
                     isLoading: false,
                     isAuthenticated: true,
+                    refetchSession: mockRefetchSession,
                 } as unknown as ReturnType<typeof useAuth>);
             });
 
@@ -672,9 +696,13 @@ describe('ConfigModal', () => {
                 });
 
                 it('successfully deletes account and shows success toast', async () => {
-                    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                    (
+                        global.fetch as ReturnType<typeof vi.fn>
+                    ).mockResolvedValue({
                         ok: true,
-                        json: async () => ({ message: 'User deleted successfully' }),
+                        json: async () => ({
+                            message: 'User deleted successfully',
+                        }),
                     });
 
                     const user = userEvent.setup();
@@ -700,13 +728,17 @@ describe('ConfigModal', () => {
                         },
                     });
                     expect(mockHideModal).toHaveBeenCalled();
-                    expect(mockSetIsConfigModalOpen).toHaveBeenCalledWith(false);
+                    expect(mockSetIsConfigModalOpen).toHaveBeenCalledWith(
+                        false
+                    );
                     expect(mockSetIsCTALoading).toHaveBeenCalledWith(false);
                     expect(mockPush).toHaveBeenCalledWith('/');
                 });
 
                 it('shows error toast on failed deletion', async () => {
-                    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                    (
+                        global.fetch as ReturnType<typeof vi.fn>
+                    ).mockResolvedValue({
                         ok: false,
                         status: 500,
                     });
@@ -727,9 +759,9 @@ describe('ConfigModal', () => {
                 });
 
                 it('shows error toast on network error', async () => {
-                    (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(
-                        new Error('Network error')
-                    );
+                    (
+                        global.fetch as ReturnType<typeof vi.fn>
+                    ).mockRejectedValue(new Error('Network error'));
 
                     const user = userEvent.setup();
                     render(<ConfigModal />);
@@ -772,7 +804,9 @@ describe('ConfigModal', () => {
                     // Resolve the fetch
                     resolvePromise!({
                         ok: true,
-                        json: async () => ({ message: 'User deleted successfully' }),
+                        json: async () => ({
+                            message: 'User deleted successfully',
+                        }),
                     });
 
                     await deletePromise;
