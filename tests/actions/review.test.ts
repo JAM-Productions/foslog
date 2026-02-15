@@ -59,23 +59,11 @@ describe('getReviewByIdWithComments Server Action', () => {
         expect(prisma.review.findUnique).toHaveBeenCalledWith({
             where: { id: 'non-existent-id' },
             include: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
+                user: true,
                 media: true,
                 comments: {
                     include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                image: true,
-                            },
-                        },
+                        user: true,
                     },
                     orderBy: {
                         createdAt: 'desc',
@@ -100,7 +88,12 @@ describe('getReviewByIdWithComments Server Action', () => {
             consumedMoreThanOnce: false,
             totalComments: 0,
             totalLikes: 10,
-            user: mockUser,
+            user: {
+                ...mockUser,
+                createdAt: mockDate,
+                totalFollowers: 10,
+                totalFollowing: 5,
+            },
             media: mockMedia,
             comments: [],
         };
@@ -127,7 +120,9 @@ describe('getReviewByIdWithComments Server Action', () => {
                 ...mockUser,
                 email: '',
                 bio: undefined,
-                joinedAt: expect.any(Date),
+                joinedAt: mockDate,
+                totalFollowers: 10,
+                totalFollowing: 5,
             },
             comments: [],
             totalPages: 0,
@@ -148,7 +143,12 @@ describe('getReviewByIdWithComments Server Action', () => {
             consumedMoreThanOnce: false,
             totalComments: 0,
             totalLikes: 5,
-            user: mockUser,
+            user: {
+                ...mockUser,
+                createdAt: mockDate,
+                totalFollowers: 10,
+                totalFollowing: 5,
+            },
             media: mockMedia,
             comments: [],
         };
@@ -176,7 +176,12 @@ describe('getReviewByIdWithComments Server Action', () => {
             consumedMoreThanOnce: false,
             totalComments: 0,
             totalLikes: 2,
-            user: mockUser,
+            user: {
+                ...mockUser,
+                createdAt: mockDate,
+                totalFollowers: 10,
+                totalFollowing: 5,
+            },
             media: mockMedia,
             comments: [],
         };

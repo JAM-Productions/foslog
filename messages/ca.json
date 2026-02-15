@@ -271,6 +271,7 @@
         "toggleLikeFailed": "Error en actualitzar el teu m'agrada. Si us plau, torna-ho a provar.",
         "accountDeleted": "Compte eliminat correctament. Adeu!",
         "accountDeleteFailed": "Error en eliminar el compte. Si us plau, torna-ho a provar.",
+        "toggleFollowFailed": "Error en actualitzar el teu seguiment. Si us plau, torna-ho a provar.",
         "nameUpdated": "Nom actualitzat correctament!",
         "nameUpdateFailed": "Error en actualitzar el nom. Si us plau, torna-ho a provar."
     },
@@ -286,7 +287,11 @@
         "totalReviews": "Total de Ressenyes",
         "averageRating": "Valoració Mitjana",
         "totalLikesReceived": "Total de M'agrada Rebuts",
-        "noReviews": "Encara no hi ha ressenyes."
+        "totalFollowers": "Seguidors",
+        "totalFollowing": "Seguint",
+        "noReviews": "Encara no hi ha ressenyes.",
+        "follow": "Seguir",
+        "unfollow": "Deixar de Seguir"
     },
     "MediaPage": {
         "reviews": "Ressenyes",

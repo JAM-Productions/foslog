@@ -2,6 +2,7 @@ import {
     getUserProfile,
     getUserReviews,
     getUserStats,
+    isFollowedByCurrentUser,
 } from '@/app/actions/user';
 import { ProfileHeader } from '@/components/profile/profile-header';
 import { ProfileReviewList } from '@/components/profile/profile-review-list';
@@ -49,12 +50,14 @@ export default async function ProfilePage({
 
     let user: Awaited<ReturnType<typeof getUserProfile>>,
         reviewsData: Awaited<ReturnType<typeof getUserReviews>>,
-        stats: Awaited<ReturnType<typeof getUserStats>>;
+        stats: Awaited<ReturnType<typeof getUserStats>>,
+        isUserFollowing: Awaited<ReturnType<typeof isFollowedByCurrentUser>>;
     try {
-        [user, reviewsData, stats] = await Promise.all([
+        [user, reviewsData, stats, isUserFollowing] = await Promise.all([
             getUserProfile(userId),
             getUserReviews(userId, currentPage, pageSize),
             getUserStats(userId),
+            isFollowedByCurrentUser(userId),
         ]);
     } catch (error) {
         console.error(
@@ -86,6 +89,7 @@ export default async function ProfilePage({
                 <ProfileHeader
                     user={user}
                     stats={stats}
+                    isUserFollowing={isUserFollowing}
                 />
 
                 <div className="mb-6 flex items-center justify-between border-b">
