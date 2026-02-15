@@ -2,7 +2,7 @@
 
 ## Deployed on Vercel
 
-- **Frontend**: https://foslog.vercel.app/
+- **Frontend**: https://www.foslog.com/
 
 ---
 
