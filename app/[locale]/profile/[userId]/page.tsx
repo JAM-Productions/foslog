@@ -2,7 +2,7 @@ import {
     getUserProfile,
     getUserReviews,
     getUserStats,
-    isUserFollowingThisID,
+    isFollowedByCurrentUser,
 } from '@/app/actions/user';
 import { ProfileHeader } from '@/components/profile/profile-header';
 import { ProfileReviewList } from '@/components/profile/profile-review-list';
@@ -51,13 +51,13 @@ export default async function ProfilePage({
     let user: Awaited<ReturnType<typeof getUserProfile>>,
         reviewsData: Awaited<ReturnType<typeof getUserReviews>>,
         stats: Awaited<ReturnType<typeof getUserStats>>,
-        isUserFollowing: Awaited<ReturnType<typeof isUserFollowingThisID>>;
+        isUserFollowing: Awaited<ReturnType<typeof isFollowedByCurrentUser>>;
     try {
         [user, reviewsData, stats, isUserFollowing] = await Promise.all([
             getUserProfile(userId),
             getUserReviews(userId, currentPage, pageSize),
             getUserStats(userId),
-            isUserFollowingThisID(userId),
+            isFollowedByCurrentUser(userId),
         ]);
     } catch (error) {
         console.error(

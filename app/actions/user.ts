@@ -214,7 +214,7 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
     }
 };
 
-export const isUserFollowingThisID = async (
+export const isFollowedByCurrentUser = async (
     targetUserId: string
 ): Promise<boolean> => {
     try {
@@ -225,7 +225,7 @@ export const isUserFollowingThisID = async (
 
         if (!currentUserId) {
             logger.warn('GET /actions/user', {
-                method: 'isUserFollowingThisID',
+                method: 'isFollowedByCurrentUser',
                 warn: 'No authenticated user',
                 targetUserId,
             });
@@ -242,7 +242,7 @@ export const isUserFollowingThisID = async (
         });
 
         logger.info('GET /actions/user', {
-            method: 'isUserFollowingThisID',
+            method: 'isFollowedByCurrentUser',
             currentUserId,
             targetUserId,
             isFollowing: !!follow,
@@ -250,7 +250,7 @@ export const isUserFollowingThisID = async (
         return !!follow;
     } catch (error) {
         logger.error('GET /actions/user', {
-            method: 'isUserFollowingThisID',
+            method: 'isFollowedByCurrentUser',
             error,
             targetUserId,
         });

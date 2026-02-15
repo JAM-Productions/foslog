@@ -2,7 +2,7 @@ import {
     getUserProfile,
     getUserReviews,
     getUserStats,
-    isUserFollowingThisID,
+    isFollowedByCurrentUser,
 } from '@/app/actions/user';
 import { prisma } from '@/lib/prisma';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -186,12 +186,12 @@ describe('User Actions', () => {
         });
     });
 
-    describe('isUserFollowingThisID', () => {
+    describe('isFollowedByCurrentUser', () => {
         test('should return false when user is not authenticated', async () => {
             const { auth } = await import('@/lib/auth/auth');
             vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
-            const result = await isUserFollowingThisID('targetUser');
+            const result = await isFollowedByCurrentUser('targetUser');
 
             expect(result).toBe(false);
             expect(auth.api.getSession).toHaveBeenCalled();
@@ -215,7 +215,7 @@ describe('User Actions', () => {
                 mockFollow as any
             );
 
-            const result = await isUserFollowingThisID('targetUser');
+            const result = await isFollowedByCurrentUser('targetUser');
 
             expect(result).toBe(true);
             expect(prisma.follow.findUnique).toHaveBeenCalledWith({
@@ -237,7 +237,7 @@ describe('User Actions', () => {
 
             vi.mocked(prisma.follow.findUnique).mockResolvedValue(null);
 
-            const result = await isUserFollowingThisID('targetUser');
+            const result = await isFollowedByCurrentUser('targetUser');
 
             expect(result).toBe(false);
             expect(prisma.follow.findUnique).toHaveBeenCalledWith({
@@ -261,7 +261,7 @@ describe('User Actions', () => {
                 new Error('Database error')
             );
 
-            await expect(isUserFollowingThisID('targetUser')).rejects.toThrow(
+            await expect(isFollowedByCurrentUser('targetUser')).rejects.toThrow(
                 'Could not determine follow status.'
             );
         });
