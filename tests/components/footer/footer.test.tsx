@@ -17,6 +17,11 @@ const messages = {
     },
 };
 
+vi.mock('next/image', () => ({
+    __esModule: true,
+    default: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
+}));
+
 describe('Footer', () => {
     it('renders the footer with correct content', () => {
         render(
