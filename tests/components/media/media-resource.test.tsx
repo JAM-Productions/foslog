@@ -27,6 +27,8 @@ const mockUser: User = {
     email: 'john@doe.com',
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
     joinedAt: new Date(),
+    totalFollowers: 0,
+    totalFollowing: 0,
 };
 
 const mockReviews: (Review & { user: User })[] = [

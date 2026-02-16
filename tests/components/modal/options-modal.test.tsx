@@ -24,7 +24,7 @@ vi.mock('@/components/modal/modal', () => ({
     }) => (isModalOpen ? <div data-testid="modal">{children}</div> : null),
 }));
 
-vi.mock('@/hooks/useBodyScrollLock', () => ({
+vi.mock('@/hooks/use-body-scroll-lock', () => ({
     useBodyScrollLock: vi.fn(),
 }));
 

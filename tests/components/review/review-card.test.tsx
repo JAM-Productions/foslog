@@ -38,6 +38,8 @@ const mockReview: SafeReview = {
         email: 'john@example.com',
         joinedAt: new Date(),
         image: '/avatar.jpg',
+        totalFollowers: 0,
+        totalFollowing: 0,
     },
 };
 

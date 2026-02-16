@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getBookGenreByIdGoogle } from '@/utils/mediaUtils';
+import { getBookGenreByIdGoogle } from '@/utils/media-utils';
 import enMessages from '@/messages/en.json';
 
 describe('Media Utilities', () => {

@@ -7,7 +7,7 @@ import {
     getMovieGenreByIdTMDB,
     getSerieGenreByIdTMDB,
     getBookGenreByIdGoogle,
-} from '@/utils/mediaUtils';
+} from '@/utils/media-utils';
 
 interface TMDBDataMovie {
     title: string;

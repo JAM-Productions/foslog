@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { Sun, Moon, Monitor, ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useTheme } from '@/components/theme/theme-provider';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { useTranslations } from 'next-intl';
 
 const ThemeToggle = () => {

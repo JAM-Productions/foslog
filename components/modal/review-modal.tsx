@@ -5,7 +5,7 @@ import { Button } from '@/components/button/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from '@/components/input/select';
 import { useState, useCallback } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { X, LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { RatingInput } from '@/components/input/rating';
 import Image from 'next/image';

@@ -1,7 +1,7 @@
 import Modal from './modal';
 import { Button } from '../button/button';
 import { useTranslations } from 'next-intl';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { useOptionsModalStore } from '@/lib/options-modal-store';
 import { LoaderCircle } from 'lucide-react';
 
