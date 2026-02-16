@@ -273,7 +273,9 @@
         "accountDeleteFailed": "Error al eliminar la cuenta. Por favor inténtalo de nuevo.",
         "toggleFollowFailed": "Error al actualizar tu seguimiento. Por favor inténtalo de nuevo.",
         "nameUpdated": "¡Nombre actualizado correctamente!",
-        "nameUpdateFailed": "Error al actualizar el nombre. Por favor, inténtalo de nuevo."
+        "nameUpdateFailed": "Fallo al actualizar el nombre. Por favor inténtalo de nuevo.",
+        "imageUpdated": "Foto de perfil actualizada correctamente!",
+        "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -375,6 +377,9 @@
         "theme": "Tema",
         "updateName": "Actualizar nombre",
         "namePlaceholder": "Introduce el nuevo nombre",
+        "profilePicture": "Foto de Perfil",
+        "upload": "Subir",
+        "remove": "Eliminar",
         "deleteAccount": "Eliminar Cuenta",
         "deleteAccountTitle": "Eliminar Cuenta",
         "deleteAccountDescription": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y todos tus datos serán eliminados permanentemente."

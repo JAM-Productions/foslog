@@ -96,6 +96,9 @@ describe('ConfigModal', () => {
             accountDeleteFailed: 'Failed to delete account. Please try again.',
             nameUpdated: 'Name updated successfully!',
             nameUpdateFailed: 'Failed to update name. Please try again.',
+            imageUpdated: 'Profile picture updated successfully!',
+            imageUpdateFailed:
+                'Failed to update profile picture. Please try again.',
         };
         return translations[key] || key;
     });
@@ -114,6 +117,9 @@ describe('ConfigModal', () => {
                 deleteAccountTitle: 'Delete Account',
                 deleteAccountDescription:
                     'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.',
+                profilePicture: 'Profile Picture',
+                upload: 'Upload',
+                remove: 'Remove',
             };
             return translations[key] || key;
         });
@@ -133,6 +139,9 @@ describe('ConfigModal', () => {
                     'Failed to delete account. Please try again.',
                 nameUpdated: 'Name updated successfully!',
                 nameUpdateFailed: 'Failed to update name. Please try again.',
+                imageUpdated: 'Profile picture updated successfully!',
+                imageUpdateFailed:
+                    'Failed to update profile picture. Please try again.',
             };
             return translations[key] || key;
         });
@@ -566,6 +575,150 @@ describe('ConfigModal', () => {
                 expect(global.fetch).toHaveBeenCalled();
                 expect(mockRefetchSession).not.toHaveBeenCalled();
             });
+        });
+    });
+
+    describe('image upload functionality', () => {
+        beforeEach(() => {
+            mockedUseAppStore.mockReturnValue({
+                isConfigModalOpen: true,
+                setIsConfigModalOpen: mockSetIsConfigModalOpen,
+            } as unknown as ReturnType<typeof useAppStore>);
+            mockedUseAuth.mockReturnValue({
+                user: {
+                    id: 'user-1',
+                    name: 'Test User',
+                    email: 'test@example.com',
+                    image: 'https://example.com/avatar.jpg',
+                },
+                session: { userId: 'user-1' },
+                isLoading: false,
+                isAuthenticated: true,
+                refetchSession: mockRefetchSession,
+            } as unknown as ReturnType<typeof useAuth>);
+            vi.stubGlobal('fetch', vi.fn());
+
+            // Mock FileReader
+            class MockFileReader {
+                onload: ((e: ProgressEvent<FileReader>) => void) | null = null;
+                readAsDataURL() {
+                    if (this.onload) {
+                        this.onload({
+                            target: { result: 'data:image/png;base64,fake-image-data' },
+                        } as unknown as ProgressEvent<FileReader>);
+                    }
+                }
+            }
+            vi.stubGlobal('FileReader', MockFileReader);
+
+            // Mock Image
+            class MockImage {
+                onload: (() => void) | null = null;
+                width = 500;
+                height = 500;
+                src = '';
+                constructor() {
+                    setTimeout(() => this.onload?.(), 0);
+                }
+            }
+            vi.stubGlobal('Image', MockImage);
+
+            // Mock Canvas
+            const mockContext = {
+                drawImage: vi.fn(),
+            };
+            const mockCanvas = {
+                width: 0,
+                height: 0,
+                getContext: vi.fn(() => mockContext),
+                toDataURL: vi.fn(() => 'data:image/jpeg;base64,resized-image-data'),
+            };
+
+            const originalCreateElement = document.createElement.bind(document);
+            vi.spyOn(document, 'createElement').mockImplementation((tagName: string, options?: ElementCreationOptions) => {
+                if (tagName === 'canvas') return mockCanvas as unknown as HTMLCanvasElement;
+                return originalCreateElement(tagName, options);
+            });
+        });
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
+            vi.restoreAllMocks();
+        });
+
+        it('renders image upload section', () => {
+            render(<ConfigModal />);
+            expect(screen.getByText('Profile Picture')).toBeInTheDocument();
+            expect(screen.getByText('Upload')).toBeInTheDocument();
+            expect(screen.getByText('Remove')).toBeInTheDocument();
+        });
+
+        it('handles image upload successfully', async () => {
+            (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                ok: true,
+                json: async () => ({
+                    message: 'User updated successfully',
+                }),
+            });
+            mockRefetchSession.mockResolvedValue(undefined);
+
+            const user = userEvent.setup();
+            render(<ConfigModal />);
+
+            const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
+            // We use a hidden input, so we need to find it by selector or label if possible.
+            // In the component: <input type="file" ... className="hidden" />
+            // Testing Library can upload to hidden inputs if we select them properly.
+            // Since it's hidden and has no label, we can select by container or just get by selector.
+            // However, `userEvent.upload` requires an input element.
+            // Let's use `container.querySelector` or look for label if we added one (we did not add `htmlFor` to a label for file input, just a button that clicks it).
+            // Actually, we can get it by `container` query.
+            const { container } = render(<ConfigModal />);
+            const input = container.querySelector('input[type="file"]');
+
+            // Re-render to access container is not ideal, let's just do it in the first render
+        });
+
+        it('uploads image when file is selected', async () => {
+            (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                ok: true,
+            });
+            mockRefetchSession.mockResolvedValue(undefined);
+
+            const { container } = render(<ConfigModal />);
+            const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+            const file = new File(['valid image'], 'test.png', { type: 'image/png' });
+
+            await userEvent.upload(input, file);
+
+            // Wait for async operations (FileReader, Image.onload, Canvas)
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            expect(global.fetch).toHaveBeenCalledWith('/api/user', expect.objectContaining({
+                method: 'PATCH',
+                body: JSON.stringify({ image: 'data:image/jpeg;base64,resized-image-data' }),
+            }));
+            expect(mockRefetchSession).toHaveBeenCalled();
+            expect(mockRefresh).toHaveBeenCalled();
+        });
+
+        it('removes image successfully', async () => {
+            (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+                ok: true,
+            });
+            mockRefetchSession.mockResolvedValue(undefined);
+
+            const user = userEvent.setup();
+            render(<ConfigModal />);
+
+            const removeButton = screen.getByText('Remove');
+            await user.click(removeButton);
+
+            expect(global.fetch).toHaveBeenCalledWith('/api/user', expect.objectContaining({
+                method: 'PATCH',
+                body: JSON.stringify({ image: null }),
+            }));
+            expect(mockRefetchSession).toHaveBeenCalled();
         });
     });
 

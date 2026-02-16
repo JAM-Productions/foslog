@@ -273,7 +273,9 @@
         "accountDeleteFailed": "Error en eliminar el compte. Si us plau, torna-ho a provar.",
         "toggleFollowFailed": "Error en actualitzar el teu seguiment. Si us plau, torna-ho a provar.",
         "nameUpdated": "Nom actualitzat correctament!",
-        "nameUpdateFailed": "Error en actualitzar el nom. Si us plau, torna-ho a provar."
+        "nameUpdateFailed": "Error al actualitzar el nom. Si us plau intenta-ho de nou.",
+        "imageUpdated": "Foto de perfil actualitzada correctament!",
+        "imageUpdateFailed": "Error al actualitzar la foto de perfil. Si us plau intenta-ho de nou."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -375,6 +377,9 @@
         "theme": "Tema",
         "updateName": "Actualitzar Nom",
         "namePlaceholder": "Introdueix el nou nom",
+        "profilePicture": "Foto de Perfil",
+        "upload": "Pujar",
+        "remove": "Eliminar",
         "deleteAccount": "Eliminar Compte",
         "deleteAccountTitle": "Eliminar Compte",
         "deleteAccountDescription": "Estàs segur que vols eliminar el teu compte? Aquesta acció no es pot desfer i totes les teves dades seran eliminades permanentment."
