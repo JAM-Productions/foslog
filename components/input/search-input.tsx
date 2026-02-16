@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { MediaType } from '@prisma/client';
 import { LoaderCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import Select, { SelectOption } from '@/components/input/select';
 
-vi.mock('@/hooks/useClickOutside', () => ({
+vi.mock('@/hooks/use-click-outside', () => ({
     useClickOutside: vi.fn(),
 }));
 

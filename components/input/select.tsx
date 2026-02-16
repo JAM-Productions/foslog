@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/button/button';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { useTranslations } from 'next-intl';
 
 export interface SelectOption {

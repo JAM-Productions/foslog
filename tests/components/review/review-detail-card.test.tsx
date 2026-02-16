@@ -11,6 +11,8 @@ const mockUser: User = {
     email: 'john@doe.com',
     image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
     joinedAt: new Date(),
+    totalFollowers: 0,
+    totalFollowing: 0,
 };
 
 const mockPush = vi.fn();
@@ -65,6 +67,8 @@ const mockReview: SafeReview = {
         email: 'jane@example.com',
         joinedAt: new Date(),
         image: '/avatar.jpg',
+        totalFollowers: 0,
+        totalFollowing: 0,
     },
 };
 

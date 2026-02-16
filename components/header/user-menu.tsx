@@ -5,7 +5,7 @@ import { User, LogOut, Settings, CircleUser } from 'lucide-react';
 import { Button } from '@/components/button/button';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { signOut } from '@/lib/auth/auth-client';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import UserMenuSkeleton from './user-menu-skeleton';

@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UserMenu from '@/components/header/user-menu';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { signOut } from '@/lib/auth/auth-client';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAppStore } from '@/lib/store';
@@ -19,7 +19,7 @@ vi.mock('@/lib/auth/auth-client', () => ({
     signOut: vi.fn(),
 }));
 
-vi.mock('@/hooks/useClickOutside', () => ({
+vi.mock('@/hooks/use-click-outside', () => ({
     useClickOutside: vi.fn(),
 }));
 
@@ -91,6 +91,7 @@ describe('UserMenu', () => {
                 session: null,
                 isLoading: false,
                 isAuthenticated: false,
+                refetchSession: vi.fn(),
             });
         });
 
@@ -225,6 +226,7 @@ describe('UserMenu', () => {
                 session: mockSession,
                 isLoading: false,
                 isAuthenticated: true,
+                refetchSession: vi.fn(),
             });
         });
 
@@ -249,6 +251,7 @@ describe('UserMenu', () => {
                 session: { user: userWithoutImage } as Session,
                 isLoading: false,
                 isAuthenticated: true,
+                refetchSession: vi.fn(),
             });
 
             render(<UserMenu />);
@@ -432,6 +435,7 @@ describe('UserMenu', () => {
                 session: null,
                 isLoading: false,
                 isAuthenticated: false,
+                refetchSession: vi.fn(),
             });
         });
 
@@ -460,6 +464,7 @@ describe('UserMenu', () => {
                 session: { user: mockUser } as Session,
                 isLoading: false,
                 isAuthenticated: true,
+                refetchSession: vi.fn(),
             });
 
             render(<UserMenu />);
@@ -495,6 +500,7 @@ describe('UserMenu', () => {
                 session: { user: mockUser } as Session,
                 isLoading: false,
                 isAuthenticated: true,
+                refetchSession: vi.fn(),
             });
 
             const user = userEvent.setup();

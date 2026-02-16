@@ -26,6 +26,8 @@ describe('CommentList', () => {
                 image: '/avatar.jpg',
                 bio: '',
                 joinedAt: new Date('2024-01-01'),
+                totalFollowers: 0,
+                totalFollowing: 0,
             },
         },
         {
@@ -42,6 +44,8 @@ describe('CommentList', () => {
                 image: undefined,
                 bio: '',
                 joinedAt: new Date('2024-01-02'),
+                totalFollowers: 0,
+                totalFollowing: 0,
             },
         },
         {
@@ -58,6 +62,8 @@ describe('CommentList', () => {
                 image: '/avatar3.jpg',
                 bio: '',
                 joinedAt: new Date('2024-01-03'),
+                totalFollowers: 0,
+                totalFollowing: 0,
             },
         },
     ];

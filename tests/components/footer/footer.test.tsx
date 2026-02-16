@@ -7,7 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 // Mock the next/link component
 vi.mock('next/link', () => ({
     __esModule: true,
-    default: ({ href, children }) => <a href={href}>{children}</a>,
+    default: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a>,
 }));
 
 const messages = {
