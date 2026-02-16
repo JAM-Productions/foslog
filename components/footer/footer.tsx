@@ -49,23 +49,15 @@ const Footer = () => {
                         href="https://github.com/JAM-Productions"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Visit JAM Productions GitHub profile (opens in new tab)"
+                        className="flex items-center gap-2 hover:underline"
                     >
                         <Image
                             src="/jam-productions-logo.png"
-                            alt=""
+                            alt="JAM Productions Logo"
                             width={23}
                             height={23}
                             className="inline-block rounded-sm"
                         />
-                    </a>
-                    <a
-                        href="https://github.com/JAM-Productions"
-                        className="ml-2 hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Visit JAM Productions GitHub profile (opens in new tab)"
-                    >
                         JAM Productions
                     </a>
                 </div>
