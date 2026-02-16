@@ -59,25 +59,42 @@ export async function PATCH(request: NextRequest) {
         }
 
         const userId = session.user.id;
-        const { name } = await request.json();
+        const { name, image } = await request.json();
 
-        if (!name || typeof name !== 'string' || name.trim().length < 2) {
+        if (name && (typeof name !== 'string' || name.trim().length < 2)) {
             return badRequest('Name must be at least 2 characters long');
         }
 
+        if (
+            image !== undefined &&
+            image !== null &&
+            typeof image !== 'string'
+        ) {
+            return badRequest('Invalid image format');
+        }
+
+        const dataToUpdate: { name?: string; image?: string | null } = {};
+        if (name) dataToUpdate.name = name.trim();
+        if (image !== undefined) dataToUpdate.image = image;
+
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { name: name.trim() },
-            select: { id: true, name: true },
+            data: dataToUpdate,
+            select: { id: true, name: true, image: true },
         });
         const referer = request.headers.get('referer') || '';
         const locale =
             LOCALES.find((loc) => referer.includes(`/${loc}/`)) || 'en';
         revalidatePath(`/${locale}/profile/${updatedUser.id}`, 'page');
-        logger.info('User name updated', { userId, newName: updatedUser.name });
+        if (name)
+            logger.info('User name updated', {
+                userId,
+                newName: updatedUser.name,
+            });
+        if (image !== undefined) logger.info('User image updated', { userId });
 
         return NextResponse.json(
-            { message: 'Name updated successfully', user: updatedUser },
+            { message: 'User updated successfully', user: updatedUser },
             { status: 200 }
         );
     } catch (error) {

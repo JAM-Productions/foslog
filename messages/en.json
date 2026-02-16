@@ -273,7 +273,9 @@
         "accountDeleteFailed": "Failed to delete account. Please try again.",
         "toggleFollowFailed": "Failed to update your follow. Please try again.",
         "nameUpdated": "Name updated successfully!",
-        "nameUpdateFailed": "Failed to update name. Please try again."
+        "nameUpdateFailed": "Failed to update name. Please try again.",
+        "imageUpdated": "Profile picture updated successfully!",
+        "imageUpdateFailed": "Failed to update profile picture. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -375,6 +377,9 @@
         "theme": "Theme",
         "updateName": "Update Name",
         "namePlaceholder": "Enter new name",
+        "profilePicture": "Profile Picture",
+        "upload": "Upload",
+        "remove": "Remove",
         "deleteAccount": "Delete Account",
         "deleteAccountTitle": "Delete Account",
         "deleteAccountDescription": "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
