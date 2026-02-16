@@ -14,7 +14,7 @@ vi.mock('@/i18n/navigation', () => ({
 }));
 
 // Mock useToast
-vi.mock('@/hooks/useToast', () => ({
+vi.mock('@/hooks/use-toast', () => ({
     useToast: vi.fn(() => ({
         toast: { isVisible: false, message: '', type: 'success' },
         showToast: vi.fn(),

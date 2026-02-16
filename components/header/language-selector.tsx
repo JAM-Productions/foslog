@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { Button } from '@/components/button/button';
 import { ChevronDownIcon, GlobeIcon } from 'lucide-react';
 

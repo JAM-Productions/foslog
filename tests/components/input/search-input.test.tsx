@@ -11,7 +11,7 @@ vi.mock('next-intl', () => ({
 }));
 
 // Mock the useClickOutside hook - implement a simple version that does nothing
-vi.mock('@/hooks/useClickOutside', () => ({
+vi.mock('@/hooks/use-click-outside', () => ({
     useClickOutside: vi.fn(() => {
         // Simple mock that doesn't do anything
     }),

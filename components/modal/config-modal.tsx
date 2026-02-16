@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import LanguageSelector from '../header/language-selector';
 import ThemeToggle from '../theme/theme-toggle';
 import { useTranslations } from 'next-intl';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useOptionsModalStore } from '@/lib/options-modal-store';
 import { useRouter } from '@/i18n/navigation';

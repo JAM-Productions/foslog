@@ -7,7 +7,7 @@ import {
 } from '@/app/api/search/utils/parsers';
 import { MediaType } from '@prisma/client';
 
-vi.mock('@/utils/mediaUtils', () => ({
+vi.mock('@/utils/media-utils', () => ({
     getMovieGenreByIdTMDB: (id: number) => `MovieGenre${id}`,
     getSerieGenreByIdTMDB: (id: number) => `SerieGenre${id}`,
     getGameGenreByIdIGDB: (id: number) => `GameGenre${id}`,

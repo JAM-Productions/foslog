@@ -24,7 +24,7 @@ vi.mock('@/i18n/navigation', () => ({
     }),
 }));
 
-vi.mock('@/hooks/useBodyScrollLock', () => ({
+vi.mock('@/hooks/use-body-scroll-lock', () => ({
     useBodyScrollLock: vi.fn(),
 }));
 

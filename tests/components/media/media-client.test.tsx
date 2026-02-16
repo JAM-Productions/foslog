@@ -75,6 +75,8 @@ const mockMediaItem: SafeMediaItemWithReviews = {
                 name: 'John Doe',
                 email: 'john@doe.com',
                 joinedAt: new Date(),
+                totalFollowers: 0,
+                totalFollowing: 0,
             },
         },
         {
@@ -92,6 +94,8 @@ const mockMediaItem: SafeMediaItemWithReviews = {
                 name: 'Jane Smith',
                 email: 'jane@smith.com',
                 joinedAt: new Date(),
+                totalFollowers: 0,
+                totalFollowing: 0,
             },
         },
     ],

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ThemeToggle from '@/components/theme/theme-toggle';
 import { useTheme } from '@/components/theme/theme-provider';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/hooks/use-click-outside';
 import { useTranslations } from 'next-intl';
 
 // Mock next-intl
@@ -16,7 +16,7 @@ vi.mock('@/components/theme/theme-provider', () => ({
     useTheme: vi.fn(),
 }));
 
-vi.mock('@/hooks/useClickOutside', () => ({
+vi.mock('@/hooks/use-click-outside', () => ({
     useClickOutside: vi.fn(),
 }));
 

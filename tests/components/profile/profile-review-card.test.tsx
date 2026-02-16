@@ -68,6 +68,8 @@ describe('ProfileReviewCard', () => {
             name: 'User 1',
             email: '',
             joinedAt: new Date(),
+            totalFollowers: 0,
+            totalFollowing: 0,
         },
     };
 

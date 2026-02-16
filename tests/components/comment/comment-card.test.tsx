@@ -101,6 +101,8 @@ describe('CommentCard', () => {
             image: '/avatar.jpg',
             bio: '',
             joinedAt: new Date('2024-01-01'),
+            totalFollowers: 0,
+            totalFollowing: 0,
         },
     };
 
