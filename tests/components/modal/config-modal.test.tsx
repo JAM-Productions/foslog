@@ -653,32 +653,6 @@ describe('ConfigModal', () => {
             expect(screen.getByText('Remove')).toBeInTheDocument();
         });
 
-        it('handles image upload successfully', async () => {
-            (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-                ok: true,
-                json: async () => ({
-                    message: 'User updated successfully',
-                }),
-            });
-            mockRefetchSession.mockResolvedValue(undefined);
-
-            const user = userEvent.setup();
-            render(<ConfigModal />);
-
-            const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
-            // We use a hidden input, so we need to find it by selector or label if possible.
-            // In the component: <input type="file" ... className="hidden" />
-            // Testing Library can upload to hidden inputs if we select them properly.
-            // Since it's hidden and has no label, we can select by container or just get by selector.
-            // However, `userEvent.upload` requires an input element.
-            // Let's use `container.querySelector` or look for label if we added one (we did not add `htmlFor` to a label for file input, just a button that clicks it).
-            // Actually, we can get it by `container` query.
-            const { container } = render(<ConfigModal />);
-            const input = container.querySelector('input[type="file"]');
-
-            // Re-render to access container is not ideal, let's just do it in the first render
-        });
-
         it('uploads image when file is selected', async () => {
             (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
                 ok: true,
