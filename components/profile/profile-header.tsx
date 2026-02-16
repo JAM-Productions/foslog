@@ -85,11 +85,11 @@ export function ProfileHeader({
                                     alt={user.name}
                                     width={120}
                                     height={120}
-                                    className="h-24 w-24 rounded-full border-4 border-white shadow-md sm:h-32 sm:w-32 dark:border-gray-800"
+                                    className="h-24 w-24 rounded-full border-4 border-card shadow-md sm:h-32 sm:w-32"
                                     unoptimized
                                 />
                             ) : (
-                                <div className="bg-muted flex h-24 w-24 items-center justify-center rounded-full border-4 border-white shadow-md sm:h-32 sm:w-32 dark:border-gray-800">
+                                <div className="bg-muted flex h-24 w-24 items-center justify-center rounded-full border-4 border-card shadow-md sm:h-32 sm:w-32">
                                     <UserIcon className="h-12 w-12 text-gray-400 sm:h-16 sm:w-16" />
                                 </div>
                             )}

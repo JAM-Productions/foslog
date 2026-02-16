@@ -21,7 +21,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
 
     return (
         <Card
-            className="h-full cursor-pointer overflow-hidden transition-all hover:border-gray-400 dark:hover:border-gray-600"
+            className="hover:border-accent h-full cursor-pointer overflow-hidden transition-all"
             onClick={() => router.push(`/review/${review.id}`)}
         >
             <div className="flex h-full flex-col sm:flex-row">

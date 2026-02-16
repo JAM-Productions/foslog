@@ -35,7 +35,7 @@ export default function BlogPost({
                     <h1 className="text-4xl font-bold">{title}</h1>
                 </header>
 
-                <div className="prose prose-neutral dark:prose-invert max-w-none">
+                <div className="prose prose-neutral max-w-none">
                     <ReactMarkdown
                         components={{
                             h1: ({ ...props }) => (
