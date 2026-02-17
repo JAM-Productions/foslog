@@ -198,7 +198,7 @@ export default function ConfigModal() {
                                         {tConfigModal('profilePicture')}
                                     </label>
                                     <div className="flex items-center gap-4">
-                                        <div className="relative h-16 w-16 overflow-hidden rounded-full border">
+                                        <div className="relative h-16 w-16 overflow-hidden rounded-full border shadow-sm">
                                             {user.image ? (
                                                 <Image
                                                     src={user.image}
@@ -208,7 +208,7 @@ export default function ConfigModal() {
                                                     unoptimized
                                                 />
                                             ) : (
-                                                <div className="bg-muted flex h-full w-full items-center justify-center">
+                                                <div className="bg-muted border-card flex h-full w-full items-center justify-center rounded-full border-1 shadow-md">
                                                     <UserIcon className="h-8 w-8 text-gray-400" />
                                                 </div>
                                             )}
