@@ -17,6 +17,15 @@ vi.mock('@/hooks/use-click-outside', () => ({
     }),
 }));
 
+// Mock next/image
+vi.mock('next/image', () => ({
+    __esModule: true,
+    default: ({ src, alt, ...props }: any) => {
+        // eslint-disable-next-line @next/next/no-img-element
+        return <img src={src} alt={alt} {...props} />;
+    },
+}));
+
 describe('SearchInput', () => {
     const mockSetSelectedMedia = vi.fn();
     const mockSetMediaTitle = vi.fn();
@@ -541,5 +550,93 @@ describe('SearchInput', () => {
 
         const input = screen.getByPlaceholderText('Search...');
         expect(input).toBeDisabled();
+    });
+
+    it('filters out duplicate suggestions', async () => {
+        const duplicates: Suggestion[] = [
+            {
+                title: 'The Matrix',
+                type: 'MOVIE' as MediaType,
+                year: 1999,
+                poster: 'https://example.com/matrix.jpg',
+                description: 'A sci-fi masterpiece',
+                genre: ['Sci-Fi'],
+            },
+            {
+                title: 'The Matrix',
+                type: 'MOVIE' as MediaType,
+                year: 1999,
+                poster: 'https://example.com/matrix.jpg',
+                description: 'A duplicate entry',
+                genre: ['Sci-Fi'],
+            },
+            {
+                title: 'The Matrix Reloaded',
+                type: 'MOVIE' as MediaType,
+                year: 2003,
+                poster: 'https://example.com/matrix2.jpg',
+                description: 'The sequel',
+                genre: ['Sci-Fi'],
+            },
+        ];
+
+        const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => duplicates,
+        });
+        global.fetch = mockFetch;
+
+        const user = userEvent.setup();
+        render(
+            <SearchInput
+                value="Matrix"
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        const input = screen.getByPlaceholderText('Search...');
+        await user.click(input);
+
+        await waitFor(() => {
+            expect(screen.getAllByText('1999')).toHaveLength(1);
+            expect(screen.getAllByText('2003')).toHaveLength(1);
+        });
+    });
+
+    it('renders poster and year in suggestions', async () => {
+        const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => mockSuggestions,
+        });
+        global.fetch = mockFetch;
+
+        const user = userEvent.setup();
+        render(
+            <SearchInput
+                value="Matrix"
+                placeholder="Search..."
+                selectedMediaType="all"
+                setSelectedMedia={mockSetSelectedMedia}
+                setMediaTitle={mockSetMediaTitle}
+                onChange={vi.fn()}
+            />
+        );
+
+        const input = screen.getByPlaceholderText('Search...');
+        await user.click(input);
+
+        await waitFor(() => {
+            expect(screen.getByText('1999')).toBeInTheDocument();
+            const img = screen.getByAltText('The Matrix');
+            expect(img).toBeInTheDocument();
+            expect(img).toHaveAttribute(
+                'src',
+                'https://example.com/matrix.jpg'
+            );
+        });
     });
 });
