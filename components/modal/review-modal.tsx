@@ -48,6 +48,7 @@ export default function ReviewModal() {
     const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
+    const [mediaId, setMediaId] = useState<string | null>(null);
     const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
 
     const [error, setError] = useState<string | null>(null);
@@ -67,6 +68,7 @@ export default function ReviewModal() {
         setMediaTitle('');
         setSelectedMediaType('');
         setSelectedMedia(null);
+        setMediaId(null);
         setReviewStars(0);
         setReviewLiked(null);
 
@@ -115,6 +117,7 @@ export default function ReviewModal() {
             }
 
             const data = await response.json();
+            setMediaId(data.media.id);
 
             if (data.hasReviewed) {
                 setHasReviewed(true);
@@ -137,30 +140,14 @@ export default function ReviewModal() {
     };
 
     const submitReview = async () => {
+        if (!mediaId) {
+            setError('Media ID is missing');
+            return;
+        }
+
         try {
             setIsLoadingSubmit(true);
             setError(null);
-            const responseMedia = await fetch('/api/media', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    selectedMedia,
-                }),
-            });
-
-            if (!responseMedia.ok) {
-                const errorData = await responseMedia.json();
-                setError(errorData.error);
-                return;
-            }
-
-            const data = await responseMedia.json();
-
-            // We don't need to set hasReviewed/consumedMoreThanOnce here
-            // because handleNext already did it, and the user hasn't successfully posted
-            // *this* review yet.
 
             const review: Review = {
                 stars: reviewStars > 0 ? reviewStars : undefined,
@@ -175,13 +162,13 @@ export default function ReviewModal() {
                 },
                 body: JSON.stringify({
                     review,
-                    mediaId: data.media.id,
+                    mediaId: mediaId,
                 }),
             });
 
             if (responseReview.ok) {
                 closeModal();
-                router.push(`/media/${data.media.id}`);
+                router.push(`/media/${mediaId}`);
             } else {
                 const errorData = await responseReview.json();
                 setError(errorData.error);
