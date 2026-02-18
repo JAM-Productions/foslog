@@ -126,10 +126,12 @@ describe('ReviewModal', () => {
 
         // 5. Verify API Call
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/media', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining('"title":"Test Movie"'),
-            }));
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('/api/media?title=Test+Movie&type=film&year=2023'),
+                expect.objectContaining({
+                    method: 'GET',
+                })
+            );
         });
 
         // 6. Verify Step 2 rendered

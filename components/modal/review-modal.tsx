@@ -98,14 +98,15 @@ export default function ReviewModal() {
         setError(null);
 
         try {
-            const response = await fetch('/api/media', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    selectedMedia,
-                }),
+            const url = new URL('/api/media', window.location.origin);
+            url.searchParams.append('title', selectedMedia.title);
+            url.searchParams.append('type', selectedMedia.type);
+            if (selectedMedia.year) {
+                url.searchParams.append('year', selectedMedia.year.toString());
+            }
+
+            const response = await fetch(url.toString(), {
+                method: 'GET',
             });
 
             if (!response.ok) {

@@ -10,6 +10,51 @@ import {
 } from '@/lib/errors';
 import { logger } from '@/lib/axiom/server';
 
+export async function GET(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const title = searchParams.get('title');
+        const type = searchParams.get('type');
+        const yearStr = searchParams.get('year');
+        const year = yearStr ? parseInt(yearStr, 10) : null;
+
+        if (!title || !type) {
+            return validationError('Title and type are required');
+        }
+
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        const existingMedia = await prisma.mediaItem.findFirst({
+            where: {
+                title,
+                type: type as any,
+                year,
+            },
+        });
+
+        let hasReviewed = false;
+        if (existingMedia && session) {
+            const reviewCount = await prisma.review.count({
+                where: {
+                    mediaId: existingMedia.id,
+                    userId: session.user.id,
+                },
+            });
+            hasReviewed = reviewCount > 0;
+        }
+
+        return NextResponse.json({
+            media: existingMedia,
+            hasReviewed,
+        });
+    } catch (error) {
+        logger.error('GET /api/media', { error });
+        return internalServerError();
+    }
+}
+
 export async function POST(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
