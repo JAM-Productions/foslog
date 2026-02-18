@@ -1,7 +1,15 @@
 import * as React from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { MediaType } from '@prisma/client';
-import { LoaderCircle } from 'lucide-react';
+import {
+    LoaderCircle,
+    Tv,
+    Gamepad2,
+    Book,
+    Music,
+    StickyNote,
+    Clapperboard,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
@@ -27,6 +35,23 @@ export interface SearchInputProps
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const getMediaTypeIcon = (type: MediaType) => {
+    switch (type) {
+        case 'FILM':
+            return Clapperboard;
+        case 'SERIES':
+            return Tv;
+        case 'GAME':
+            return Gamepad2;
+        case 'BOOK':
+            return Book;
+        case 'MUSIC':
+            return Music;
+        default:
+            return StickyNote;
+    }
+};
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     (
@@ -186,9 +211,9 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                         </span>
                                     </div>
                                 ) : suggestions.length > 0 ? (
-                                    suggestions.map((option, index) => (
+                                    suggestions.map((option) => (
                                         <div
-                                            key={index}
+                                            key={`${option.title}-${option.year}-${option.type}`}
                                             className="hover:bg-muted flex cursor-pointer items-center gap-3 rounded p-2"
                                             onClick={() => handleSelect(option)}
                                         >
@@ -202,7 +227,17 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                                         className="h-full w-full object-cover"
                                                     />
                                                 ) : (
-                                                    <div className="bg-muted flex h-full w-full items-center justify-center" />
+                                                    <div className="bg-muted flex h-full w-full items-center justify-center">
+                                                        {React.createElement(
+                                                            getMediaTypeIcon(
+                                                                option.type
+                                                            ),
+                                                            {
+                                                                className:
+                                                                    'text-muted-foreground h-4.5 w-4.5',
+                                                            }
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
                                             <div className="flex flex-col overflow-hidden">
