@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ReviewModal from '@/components/modal/review-modal';
 import { useAppStore } from '@/lib/store';
+import { useRouter } from '@/i18n/navigation';
 
 // Mock dependencies
 const mockSetIsReviewModalOpen = vi.fn();
@@ -18,10 +19,10 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('@/i18n/navigation', () => ({
-    useRouter: () => ({
+    useRouter: vi.fn(() => ({
         push: vi.fn(),
         refresh: vi.fn(),
-    }),
+    })),
 }));
 
 vi.mock('@/hooks/use-body-scroll-lock', () => ({
@@ -116,7 +117,10 @@ describe('ReviewModal', () => {
         // 3. Mock API response for existing review (hasReviewed = true)
         (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
             ok: true,
-            json: async () => ({ hasReviewed: true }),
+            json: async () => ({
+                hasReviewed: true,
+                media: { id: 'test-media-id' },
+            }),
         });
 
         // 4. Click Next
@@ -153,7 +157,10 @@ describe('ReviewModal', () => {
         // 2. Mock API (hasReviewed = false)
         (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
             ok: true,
-            json: async () => ({ hasReviewed: false }),
+            json: async () => ({
+                hasReviewed: false,
+                media: { id: 'test-media-id' },
+            }),
         });
 
         // 3. Next
@@ -175,7 +182,10 @@ describe('ReviewModal', () => {
         fireEvent.keyDown(screen.getByTestId('search-input'), { key: 'Enter' });
 
         // 2. Mock API
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: true, json: async () => ({}) });
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ media: { id: 'test-media-id' } }),
+        });
 
         // 3. Next
         fireEvent.click(screen.getByText('Next'));
@@ -183,6 +193,65 @@ describe('ReviewModal', () => {
         // 4. Verify Label
         await waitFor(() => {
             expect(screen.getByText('Consumed film')).toBeInTheDocument();
+        });
+    });
+
+    it('submitReview makes only one API call to /api/review', async () => {
+        const mockRouterPush = vi.fn();
+        vi.mocked(useRouter).mockReturnValue({
+            push: mockRouterPush,
+            refresh: vi.fn(),
+        });
+
+        render(<ReviewModal />);
+
+        // 1. Setup to get to step 2
+        fireEvent.click(screen.getByText('films'));
+        fireEvent.keyDown(screen.getByTestId('search-input'), { key: 'Enter' });
+
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                hasReviewed: false,
+                media: { id: 'test-media-id' },
+            }),
+        });
+
+        fireEvent.click(screen.getByText('Next'));
+
+        await waitFor(() => {
+            expect(screen.getByText('yourRating')).toBeInTheDocument();
+        });
+
+        // 2. Mock API for submit review
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ success: true }),
+        });
+
+        // 3. Fill review and submit
+        fireEvent.click(screen.getAllByRole('button', { name: 'like' })[0]);
+        fireEvent.click(screen.getByText('submitReview'));
+
+        // 4. Verify API calls
+        await waitFor(() => {
+            // First call was to /api/media (in handleNext)
+            // Second call should be to /api/review
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+            expect(global.fetch).toHaveBeenLastCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining('"mediaId":"test-media-id"'),
+                })
+            );
+        });
+
+        // 5. Verify redirect
+        await waitFor(() => {
+            expect(mockRouterPush).toHaveBeenCalledWith(
+                '/media/test-media-id'
+            );
         });
     });
 });
