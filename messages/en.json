@@ -387,6 +387,7 @@
     "ConsumedMoreThanOnce": {
         "film": "Has watched this film more than once",
         "series": "Has watched this series more than once",
+        "serie": "Has watched this series more than once",
         "book": "Has read this book more than once",
         "game": "Has played this game more than once",
         "music": "Has listened to this music more than once",
