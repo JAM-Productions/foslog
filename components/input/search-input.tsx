@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { MediaType } from '@prisma/client';
-import { LoaderCircle } from 'lucide-react';
+import {
+    LoaderCircle,
+    Tv,
+    Gamepad2,
+    Book,
+    Music,
+    StickyNote,
+    Clapperboard,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 export interface Suggestion {
     title: string;
@@ -26,6 +35,23 @@ export interface SearchInputProps
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const getMediaTypeIcon = (type: MediaType) => {
+    switch (type) {
+        case 'FILM':
+            return Clapperboard;
+        case 'SERIES':
+            return Tv;
+        case 'GAME':
+            return Gamepad2;
+        case 'BOOK':
+            return Book;
+        case 'MUSIC':
+            return Music;
+        default:
+            return StickyNote;
+    }
+};
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     (
@@ -93,9 +119,19 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                         const data = await response.json();
 
                         if (Array.isArray(data)) {
-                            setSuggestions(data);
-                            if (isMediaTitleInData(data)) {
-                                setSelectedMedia(getMediaInData(data));
+                            const uniqueData = data.filter(
+                                (item, index, self) =>
+                                    index ===
+                                    self.findIndex(
+                                        (t) =>
+                                            t.title === item.title &&
+                                            t.year === item.year &&
+                                            t.type === item.type
+                                    )
+                            );
+                            setSuggestions(uniqueData);
+                            if (isMediaTitleInData(uniqueData)) {
+                                setSelectedMedia(getMediaInData(uniqueData));
                             } else {
                                 setSelectedMedia(null);
                             }
@@ -175,14 +211,46 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                         </span>
                                     </div>
                                 ) : suggestions.length > 0 ? (
-                                    suggestions.map((option, index) => (
-                                        <p
-                                            key={index}
-                                            className="hover:bg-muted cursor-pointer rounded p-2"
+                                    suggestions.map((option) => (
+                                        <div
+                                            key={`${option.title}-${option.year}-${option.type}`}
+                                            className="hover:bg-muted flex cursor-pointer items-center gap-3 rounded p-2"
                                             onClick={() => handleSelect(option)}
                                         >
-                                            {option.title}
-                                        </p>
+                                            <div className="bg-muted flex h-12 w-8 shrink-0 items-center justify-center overflow-hidden rounded">
+                                                {option.poster ? (
+                                                    <Image
+                                                        src={option.poster}
+                                                        alt={option.title}
+                                                        width={32}
+                                                        height={48}
+                                                        className="h-full w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="bg-muted flex h-full w-full items-center justify-center">
+                                                        {React.createElement(
+                                                            getMediaTypeIcon(
+                                                                option.type
+                                                            ),
+                                                            {
+                                                                className:
+                                                                    'text-muted-foreground h-4.5 w-4.5',
+                                                            }
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden">
+                                                <span className="truncate font-medium">
+                                                    {option.title}
+                                                </span>
+                                                {option.year && (
+                                                    <span className="text-muted-foreground text-sm">
+                                                        {option.year}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     ))
                                 ) : (
                                     <div className="text-muted-foreground p-3 text-center">
