@@ -3,6 +3,7 @@ import { useClickOutside } from '@/hooks/use-click-outside';
 import { MediaType } from '@prisma/client';
 import { LoaderCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 export interface Suggestion {
     title: string;
@@ -93,9 +94,19 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                         const data = await response.json();
 
                         if (Array.isArray(data)) {
-                            setSuggestions(data);
-                            if (isMediaTitleInData(data)) {
-                                setSelectedMedia(getMediaInData(data));
+                            const uniqueData = data.filter(
+                                (item, index, self) =>
+                                    index ===
+                                    self.findIndex(
+                                        (t) =>
+                                            t.title === item.title &&
+                                            t.year === item.year &&
+                                            t.type === item.type
+                                    )
+                            );
+                            setSuggestions(uniqueData);
+                            if (isMediaTitleInData(uniqueData)) {
+                                setSelectedMedia(getMediaInData(uniqueData));
                             } else {
                                 setSelectedMedia(null);
                             }
@@ -176,13 +187,35 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                                     </div>
                                 ) : suggestions.length > 0 ? (
                                     suggestions.map((option, index) => (
-                                        <p
+                                        <div
                                             key={index}
-                                            className="hover:bg-muted cursor-pointer rounded p-2"
+                                            className="hover:bg-muted flex cursor-pointer items-center gap-3 rounded p-2"
                                             onClick={() => handleSelect(option)}
                                         >
-                                            {option.title}
-                                        </p>
+                                            <div className="bg-muted flex h-12 w-8 shrink-0 items-center justify-center overflow-hidden rounded">
+                                                {option.poster ? (
+                                                    <Image
+                                                        src={option.poster}
+                                                        alt={option.title}
+                                                        width={32}
+                                                        height={48}
+                                                        className="h-full w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="bg-muted flex h-full w-full items-center justify-center" />
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden">
+                                                <span className="truncate font-medium">
+                                                    {option.title}
+                                                </span>
+                                                {option.year && (
+                                                    <span className="text-muted-foreground text-sm">
+                                                        {option.year}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     ))
                                 ) : (
                                     <div className="text-muted-foreground p-3 text-center">
