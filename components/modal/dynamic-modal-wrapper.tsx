@@ -14,12 +14,17 @@ const OptionsModal = dynamic(() => import('./options-modal'), {
     ssr: false,
 });
 
+const FollowsModal = dynamic(() => import('./follows-modal'), {
+    ssr: false,
+});
+
 export default function DynamicModalWrapper() {
     return (
         <>
             <ConfigModal />
             <ReviewModal />
             <OptionsModal />
+            <FollowsModal />
         </>
     );
 }

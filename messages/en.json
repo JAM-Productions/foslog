@@ -392,5 +392,12 @@
         "game": "Has played this game more than once",
         "music": "Has listened to this music more than once",
         "default": "Has consumed this more than once"
+    },
+    "FollowsModal": {
+        "followers": "Followers",
+        "following": "Following",
+        "noFollowers": "No followers to show",
+        "noFollowing": "No following to show",
+        "follow": "Follow"
     }
 }

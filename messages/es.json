@@ -392,5 +392,12 @@
         "game": "Ha jugado a este juego más de una vez",
         "music": "Ha escuchado esta música más de una vez",
         "default": "Ha consumido esto más de una vez"
+    },
+    "FollowsModal": {
+        "followers": "Seguidores",
+        "following": "Siguiendo",
+        "noFollowers": "No hay seguidores para mostrar",
+        "noFollowing": "No hay usuarios seguidos para mostrar",
+        "follow": "Seguir"
     }
 }

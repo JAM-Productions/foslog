@@ -137,3 +137,85 @@ export async function DELETE(
         return internalServerError('Failed to unfollow user');
     }
 }
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session?.user) {
+            return unauthorized(
+                'Unauthorized. Please log in to view followers and following.'
+            );
+        }
+
+        const currentUserId = session.user.id;
+        const { id: targetUserId } = await params;
+
+        if (!targetUserId) {
+            return notFound('User ID is required.');
+        }
+
+        const currentUserFollowing = await prisma.follow.findMany({
+            where: { followerId: currentUserId },
+            select: { followingId: true },
+        });
+
+        const followingIds = new Set(
+            currentUserFollowing.map((f) => f.followingId)
+        );
+
+        const followers = await prisma.follow.findMany({
+            where: { followingId: targetUserId },
+            select: {
+                follower: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+            },
+        });
+
+        const following = await prisma.follow.findMany({
+            where: { followerId: targetUserId },
+            select: {
+                following: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+            },
+        });
+
+        logger.info('GET /api/user/[id]/follow', {
+            targetUserId,
+            followersCount: followers.length,
+            followingCount: following.length,
+        });
+
+        return NextResponse.json(
+            {
+                followers: followers.map((f) => ({
+                    ...f.follower,
+                    isFollowing: followingIds.has(f.follower.id),
+                })),
+                following: following.map((f) => ({
+                    ...f.following,
+                    isFollowing: followingIds.has(f.following.id),
+                })),
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        logger.error('GET /api/user/[id]/follow', { error });
+        return internalServerError('Failed to fetch followers and following');
+    }
+}
