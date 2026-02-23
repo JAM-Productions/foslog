@@ -6,7 +6,6 @@ import { useFollowsModalStore } from '@/lib/follows-modal-store';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
 import { useRouter } from '@/i18n/navigation';
-import { email } from 'better-auth';
 
 // Mock dependencies
 vi.mock('@/lib/follows-modal-store', () => ({
