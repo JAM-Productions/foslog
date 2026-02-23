@@ -275,7 +275,8 @@
         "nameUpdated": "Name updated successfully!",
         "nameUpdateFailed": "Failed to update name. Please try again.",
         "imageUpdated": "Profile picture updated successfully!",
-        "imageUpdateFailed": "Failed to update profile picture. Please try again."
+        "imageUpdateFailed": "Failed to update profile picture. Please try again.",
+        "fetchUsersFailed": "Failed to fetch users. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",

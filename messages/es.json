@@ -275,7 +275,8 @@
         "nameUpdated": "¡Nombre actualizado correctamente!",
         "nameUpdateFailed": "Fallo al actualizar el nombre. Por favor inténtalo de nuevo.",
         "imageUpdated": "Foto de perfil actualizada correctamente!",
-        "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo."
+        "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo.",
+        "fetchUsersFailed": "Error al obtener usuarios. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",

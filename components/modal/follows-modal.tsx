@@ -19,15 +19,16 @@ interface UserWithFollowStatus extends User {
 }
 
 export default function FollowsModal() {
+    const { user: currentUser } = useAuth();
     const { modal, setBehavior, hideModal } = useFollowsModalStore();
     const { showToast } = useToastStore();
     const tFollowsModal = useTranslations('FollowsModal');
     const tToast = useTranslations('Toast');
     const router = useRouter();
-    const { user: currentUser } = useAuth();
 
     const [followers, setFollowers] = useState<UserWithFollowStatus[]>([]);
     const [following, setFollowing] = useState<UserWithFollowStatus[]>([]);
+
     const [isLoading, setIsLoading] = useState(true);
     const [pendingUserId, setPendingUserId] = useState<string | null>(null);
 
@@ -94,11 +95,14 @@ export default function FollowsModal() {
                 const response = await fetch(
                     `/api/user/${modal.userId}/follow`
                 );
+                if (!response.ok) {
+                    throw new Error('Failed to fetch follow data');
+                }
                 const data = await response.json();
                 setFollowers(data.followers);
                 setFollowing(data.following);
-            } catch (error) {
-                console.error('Error fetching follow data:', error);
+            } catch {
+                showToast(tToast('fetchUsersFailed'), 'error');
             } finally {
                 setIsLoading(false);
             }
@@ -138,7 +142,7 @@ export default function FollowsModal() {
                         <Button
                             variant="ghost"
                             size="lg"
-                            className="w-full rounded-b-none"
+                            className={`w-full rounded-b-none ${modal.behavior === 'followers' ? '' : 'text-muted-foreground'}`}
                             onClick={() => setBehavior('followers')}
                         >
                             {tFollowsModal('followers')}
@@ -151,7 +155,7 @@ export default function FollowsModal() {
                         <Button
                             variant="ghost"
                             size="lg"
-                            className="w-full rounded-b-none"
+                            className={`w-full rounded-b-none ${modal.behavior === 'following' ? '' : 'text-muted-foreground'}`}
                             onClick={() => setBehavior('following')}
                         >
                             {tFollowsModal('following')}
@@ -174,8 +178,8 @@ export default function FollowsModal() {
 
                             {usersList.map((user) => (
                                 <div key={user.id}>
-                                    <div className="flex items-center justify-between border-b pb-2">
-                                        <div className="flex items-center gap-4">
+                                    <div className="flex items-center justify-between gap-2 border-b pb-2">
+                                        <div className="flex min-w-0 flex-1 items-center gap-4">
                                             <div
                                                 onClick={() => {
                                                     hideModal();
@@ -183,7 +187,7 @@ export default function FollowsModal() {
                                                         `/profile/${user.id}`
                                                     );
                                                 }}
-                                                className="cursor-pointer transition-opacity hover:opacity-80"
+                                                className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80"
                                             >
                                                 {user.image ? (
                                                     <Image
@@ -207,7 +211,7 @@ export default function FollowsModal() {
                                                         `/profile/${user.id}`
                                                     );
                                                 }}
-                                                className="cursor-pointer hover:underline"
+                                                className="cursor-pointer truncate hover:underline"
                                             >
                                                 {user.name}
                                             </a>

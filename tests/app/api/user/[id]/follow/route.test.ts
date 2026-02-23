@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { POST, DELETE } from '@/app/api/user/[id]/follow/route';
+import { POST, DELETE, GET } from '@/app/api/user/[id]/follow/route';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { NextRequest } from 'next/server';
@@ -19,6 +19,7 @@ vi.mock('@/lib/prisma', () => ({
         follow: {
             create: vi.fn(),
             delete: vi.fn(),
+            findMany: vi.fn(),
         },
     },
 }));
@@ -378,5 +379,258 @@ describe('DELETE /api/user/[id]/follow', () => {
             '/en/profile/target-user',
             'page'
         );
+    });
+});
+
+describe('GET /api/user/[id]/follow', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    const mockRequest = () => {
+        return {
+            headers: new Headers({
+                'Content-Type': 'application/json',
+            }),
+        } as unknown as NextRequest;
+    };
+
+    const mockParams = (id: string) => Promise.resolve({ id });
+
+    it('should return 401 Unauthorized if user is not authenticated', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue(null);
+        const req = mockRequest();
+        const response = await GET(req, { params: mockParams('target-user') });
+        const data = await response.json();
+
+        expect(response.status).toBe(401);
+        expect(data.code).toBe(ApiErrorType.UNAUTHORIZED);
+        expect(data.error).toBe(
+            'Unauthorized. Please log in to view followers and following.'
+        );
+        expect(prisma.follow.findMany).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 Not Found if user ID is missing', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'user1' },
+        });
+        const req = mockRequest();
+        const response = await GET(req, { params: mockParams('') });
+        const data = await response.json();
+
+        expect(response.status).toBe(404);
+        expect(data.code).toBe(ApiErrorType.NOT_FOUND);
+        expect(data.error).toBe('User ID is required.');
+    });
+
+    it('should return followers and following lists with correct isFollowing status', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'current-user' },
+        });
+
+        // Mock current user's following
+        (prisma.follow.findMany as Mock)
+            .mockResolvedValueOnce([
+                { followingId: 'user2' },
+                { followingId: 'user3' },
+            ])
+            // Mock target user's followers
+            .mockResolvedValueOnce([
+                {
+                    follower: {
+                        id: 'user2',
+                        name: 'User 2',
+                        image: '/user2.jpg',
+                    },
+                },
+                {
+                    follower: {
+                        id: 'user4',
+                        name: 'User 4',
+                        image: null,
+                    },
+                },
+            ])
+            // Mock target user's following
+            .mockResolvedValueOnce([
+                {
+                    following: {
+                        id: 'user3',
+                        name: 'User 3',
+                        image: '/user3.jpg',
+                    },
+                },
+                {
+                    following: {
+                        id: 'user5',
+                        name: 'User 5',
+                        image: null,
+                    },
+                },
+            ]);
+
+        const req = mockRequest();
+        const response = await GET(req, {
+            params: mockParams('target-user'),
+        });
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect(data.followers).toHaveLength(2);
+        expect(data.following).toHaveLength(2);
+
+        // Check followers with isFollowing status
+        expect(data.followers[0]).toEqual({
+            id: 'user2',
+            name: 'User 2',
+            image: '/user2.jpg',
+            isFollowing: true, // current-user follows user2
+        });
+        expect(data.followers[1]).toEqual({
+            id: 'user4',
+            name: 'User 4',
+            image: null,
+            isFollowing: false, // current-user doesn't follow user4
+        });
+
+        // Check following with isFollowing status
+        expect(data.following[0]).toEqual({
+            id: 'user3',
+            name: 'User 3',
+            image: '/user3.jpg',
+            isFollowing: true, // current-user follows user3
+        });
+        expect(data.following[1]).toEqual({
+            id: 'user5',
+            name: 'User 5',
+            image: null,
+            isFollowing: false, // current-user doesn't follow user5
+        });
+    });
+
+    it('should return empty lists when user has no followers or following', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'current-user' },
+        });
+
+        (prisma.follow.findMany as Mock)
+            .mockResolvedValueOnce([]) // current user following
+            .mockResolvedValueOnce([]) // target user followers
+            .mockResolvedValueOnce([]); // target user following
+
+        const req = mockRequest();
+        const response = await GET(req, {
+            params: mockParams('target-user'),
+        });
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect(data.followers).toEqual([]);
+        expect(data.following).toEqual([]);
+    });
+
+    it('should handle when current user is not following anyone', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'current-user' },
+        });
+
+        (prisma.follow.findMany as Mock)
+            .mockResolvedValueOnce([]) // current user following (empty)
+            .mockResolvedValueOnce([
+                {
+                    follower: {
+                        id: 'user2',
+                        name: 'User 2',
+                        image: '/user2.jpg',
+                    },
+                },
+            ])
+            .mockResolvedValueOnce([
+                {
+                    following: {
+                        id: 'user3',
+                        name: 'User 3',
+                        image: '/user3.jpg',
+                    },
+                },
+            ]);
+
+        const req = mockRequest();
+        const response = await GET(req, {
+            params: mockParams('target-user'),
+        });
+        const data = await response.json();
+
+        expect(response.status).toBe(200);
+        expect(data.followers[0].isFollowing).toBe(false);
+        expect(data.following[0].isFollowing).toBe(false);
+    });
+
+    it('should return 500 Internal Server Error on database failure', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'current-user' },
+        });
+        (prisma.follow.findMany as Mock).mockRejectedValue(
+            new Error('Database error')
+        );
+
+        const req = mockRequest();
+        const response = await GET(req, {
+            params: mockParams('target-user'),
+        });
+        const data = await response.json();
+
+        expect(response.status).toBe(500);
+        expect(data.code).toBe(ApiErrorType.INTERNAL_SERVER_ERROR);
+        expect(data.error).toBe('Failed to fetch followers and following');
+    });
+
+    it('should call prisma.follow.findMany with correct parameters', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: 'current-user' },
+        });
+
+        (prisma.follow.findMany as Mock)
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([])
+            .mockResolvedValueOnce([]);
+
+        const req = mockRequest();
+        await GET(req, { params: mockParams('target-user') });
+
+        // First call: get current user's following
+        expect(prisma.follow.findMany).toHaveBeenNthCalledWith(1, {
+            where: { followerId: 'current-user' },
+            select: { followingId: true },
+        });
+
+        // Second call: get target user's followers
+        expect(prisma.follow.findMany).toHaveBeenNthCalledWith(2, {
+            where: { followingId: 'target-user' },
+            select: {
+                follower: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+            },
+        });
+
+        // Third call: get target user's following
+        expect(prisma.follow.findMany).toHaveBeenNthCalledWith(3, {
+            where: { followerId: 'target-user' },
+            select: {
+                following: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+            },
+        });
     });
 });

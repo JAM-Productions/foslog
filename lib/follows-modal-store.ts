@@ -1,4 +1,3 @@
-import { User } from 'better-auth';
 import { create } from 'zustand';
 
 export interface FollowsModalState {
