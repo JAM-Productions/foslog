@@ -278,6 +278,7 @@
         "imageUpdateFailed": "Failed to update profile picture. Please try again."
     },
     "ProfilePage": {
+        "loadError": "An error occurred while loading the profile. Please try again later.",
         "joined": "Joined {date}",
         "latestReviews": "Latest Reviews",
         "reviews": "Reviews",

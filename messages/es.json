@@ -278,6 +278,7 @@
         "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
+        "loadError": "Se produjo un error al cargar el perfil. Por favor, inténtelo de nuevo más tarde.",
         "joined": "Se unió en {date}",
         "latestReviews": "Últimas Reseñas",
         "reviews": "Reseñas",

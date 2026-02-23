@@ -47,6 +47,7 @@ export default async function ProfilePage({
     const { page } = await searchParams;
     const currentPage = Number(page) || 1;
     const pageSize = 12;
+    const t = await getTranslations('ProfilePage');
 
     let user: Awaited<ReturnType<typeof getUserProfile>>,
         reviewsData: Awaited<ReturnType<typeof getUserReviews>>,
@@ -67,8 +68,7 @@ export default async function ProfilePage({
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="text-center text-red-500">
-                    An error occurred while loading the profile. Please try
-                    again later.
+                    {t('loadError')}
                 </div>
             </div>
         );
@@ -77,8 +77,6 @@ export default async function ProfilePage({
     if (!user) {
         notFound();
     }
-
-    const t = await getTranslations('ProfilePage');
 
     return (
         <div className="container mx-auto px-4 py-8">
