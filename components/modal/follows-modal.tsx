@@ -38,6 +38,17 @@ export default function FollowsModal() {
             ? tFollowsModal('noFollowers')
             : tFollowsModal('noFollowing');
 
+    const updateFollowStatus = (
+        users: UserWithFollowStatus[],
+        targetUserId: string
+    ) => {
+        return users.map((user) =>
+            user.id === targetUserId
+                ? { ...user, isFollowing: !user.isFollowing }
+                : user
+        );
+    };
+
     const toggleFollowButton = async (
         targetUserId: string,
         isCurrentlyFollowing: boolean
@@ -53,21 +64,8 @@ export default function FollowsModal() {
         const prevFollowers = followers;
         const prevFollowing = following;
 
-        setFollowers((prev) =>
-            prev.map((user) =>
-                user.id === targetUserId
-                    ? { ...user, isFollowing: !user.isFollowing }
-                    : user
-            )
-        );
-
-        setFollowing((prev) =>
-            prev.map((user) =>
-                user.id === targetUserId
-                    ? { ...user, isFollowing: !user.isFollowing }
-                    : user
-            )
-        );
+        setFollowers((prev) => updateFollowStatus(prev, targetUserId));
+        setFollowing((prev) => updateFollowStatus(prev, targetUserId));
 
         try {
             const method = isCurrentlyFollowing ? 'DELETE' : 'POST';
