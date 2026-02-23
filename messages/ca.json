@@ -278,7 +278,7 @@
         "imageUpdateFailed": "Error al actualitzar la foto de perfil. Si us plau intenta-ho de nou."
     },
     "ProfilePage": {
-        "loadError": "S'ha produït un error en carregar el perfil. Torneu-ho a provar més tard.",
+        "loadError": "S'ha produït un error en carregar el perfil. Si us plau, torna-ho a provar més tard.",
         "joined": "S'ha unit el {date}",
         "latestReviews": "Últimes Ressenyes",
         "reviews": "Ressenyes",
