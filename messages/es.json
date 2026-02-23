@@ -294,7 +294,9 @@
         "totalFollowing": "Siguiendo",
         "noReviews": "Aún no hay reseñas.",
         "follow": "Seguir",
-        "unfollow": "Dejar de Seguir"
+        "unfollow": "Dejar de Seguir",
+        "seeFollowers": "Ver Seguidores",
+        "seeFollowing": "Ver Siguiendo"
     },
     "MediaPage": {
         "reviews": "Reseñas",

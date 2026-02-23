@@ -88,6 +88,13 @@ export default function FollowsModal() {
         }
     };
 
+    const clearStates = () => {
+        setFollowers([]);
+        setFollowing([]);
+        setIsLoading(true);
+        setPendingUserId(null);
+    };
+
     useEffect(() => {
         const fetchFollowData = async () => {
             try {
@@ -110,8 +117,10 @@ export default function FollowsModal() {
 
         if (modal.isOpen && modal.userId && currentUser) {
             fetchFollowData();
+        } else {
+            setIsLoading(false);
         }
-    }, [modal.isOpen, modal.userId, currentUser]);
+    }, [modal.isOpen]);
 
     useBodyScrollLock(modal.isOpen);
 
@@ -131,6 +140,7 @@ export default function FollowsModal() {
                         size="sm"
                         aria-label="Close"
                         onClick={() => {
+                            clearStates();
                             hideModal();
                         }}
                     >
@@ -180,41 +190,36 @@ export default function FollowsModal() {
                                 <div key={user.id}>
                                     <div className="flex items-center justify-between gap-2 border-b pb-2">
                                         <div className="flex min-w-0 flex-1 items-center gap-4">
-                                            <div
+                                            <button
+                                                type="button"
                                                 onClick={() => {
                                                     hideModal();
                                                     router.push(
                                                         `/profile/${user.id}`
                                                     );
                                                 }}
-                                                className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80"
+                                                className="flex min-w-0 flex-1 items-center gap-4 text-left"
                                             >
-                                                {user.image ? (
-                                                    <Image
-                                                        src={user.image}
-                                                        alt={user.name}
-                                                        width={40}
-                                                        height={40}
-                                                        className="h-10 w-10 rounded-full shadow-sm"
-                                                        unoptimized
-                                                    />
-                                                ) : (
-                                                    <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border shadow-sm">
-                                                        <UserIcon className="h-7 w-7" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <a
-                                                onClick={() => {
-                                                    hideModal();
-                                                    router.push(
-                                                        `/profile/${user.id}`
-                                                    );
-                                                }}
-                                                className="cursor-pointer truncate hover:underline"
-                                            >
-                                                {user.name}
-                                            </a>
+                                                <div className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80">
+                                                    {user.image ? (
+                                                        <Image
+                                                            src={user.image}
+                                                            alt={user.name}
+                                                            width={40}
+                                                            height={40}
+                                                            className="h-10 w-10 rounded-full shadow-sm"
+                                                            unoptimized
+                                                        />
+                                                    ) : (
+                                                        <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-full border shadow-sm">
+                                                            <UserIcon className="h-7 w-7" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <span className="cursor-pointer truncate hover:underline">
+                                                    {user.name}
+                                                </span>
+                                            </button>
                                         </div>
                                         {currentUser?.id !== user.id && (
                                             <Button

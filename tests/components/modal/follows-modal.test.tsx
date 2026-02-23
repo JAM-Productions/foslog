@@ -31,8 +31,8 @@ vi.mock('next-intl', () => ({
                 followers: 'Followers',
                 following: 'Following',
                 follow: 'Follow',
-                noFollowers: 'No followers yet',
-                noFollowing: 'Not following anyone yet',
+                noFollowers: 'No followers to show',
+                noFollowing: 'No following to show',
             },
             Toast: {
                 toggleFollowFailed: 'Failed to update follow status',
@@ -341,7 +341,7 @@ describe('FollowsModal', () => {
 
             await waitFor(() => {
                 expect(
-                    screen.getByText('No followers yet')
+                    screen.getByText('No followers to show')
                 ).toBeInTheDocument();
             });
         });
@@ -445,7 +445,7 @@ describe('FollowsModal', () => {
 
             await waitFor(() => {
                 expect(
-                    screen.getByText('Not following anyone yet')
+                    screen.getByText('No following to show')
                 ).toBeInTheDocument();
             });
         });

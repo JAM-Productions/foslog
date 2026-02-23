@@ -110,7 +110,9 @@ export function ProfileHeader({
                             </p>
 
                             <div className="mt-3 flex gap-4">
-                                <div
+                                <button
+                                    type="button"
+                                    aria-label={t('seeFollowers')}
                                     className="flex cursor-pointer items-center gap-1"
                                     onClick={() =>
                                         !currentUser
@@ -128,8 +130,10 @@ export function ProfileHeader({
                                     <span className="text-muted-foreground text-sm">
                                         {t('totalFollowers')}
                                     </span>
-                                </div>
-                                <div
+                                </button>
+                                <button
+                                    type="button"
+                                    aria-label={t('seeFollowing')}
                                     className="flex cursor-pointer items-center gap-1"
                                     onClick={() =>
                                         !currentUser
@@ -147,7 +151,7 @@ export function ProfileHeader({
                                     <span className="text-muted-foreground text-sm">
                                         {t('totalFollowing')}
                                     </span>
-                                </div>
+                                </button>
                             </div>
 
                             {user.bio && (
