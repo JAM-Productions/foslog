@@ -194,6 +194,7 @@ export default function FollowsModal() {
                                             <div className="flex min-w-0 flex-1 items-center gap-4 text-left">
                                                 <button
                                                     type="button"
+                                                    aria-label={user.name}
                                                     onClick={() => {
                                                         hideModal();
                                                         router.push(
