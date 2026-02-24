@@ -140,6 +140,9 @@ export default function FollowsModal() {
                         onClick={() => {
                             clearStates();
                             hideModal();
+                            if (currentUser?.id === modal.userId) {
+                                router.refresh();
+                            }
                         }}
                     >
                         <X className="h-5 w-5" />
@@ -188,17 +191,17 @@ export default function FollowsModal() {
                                 <div key={user.id}>
                                     <div className="flex items-center justify-between gap-2 border-b pb-2">
                                         <div className="flex min-w-0 flex-1 items-center gap-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    hideModal();
-                                                    router.push(
-                                                        `/profile/${user.id}`
-                                                    );
-                                                }}
-                                                className="flex min-w-0 flex-1 items-center gap-4 text-left"
-                                            >
-                                                <div className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80">
+                                            <div className="flex min-w-0 flex-1 items-center gap-4 text-left">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        hideModal();
+                                                        router.push(
+                                                            `/profile/${user.id}`
+                                                        );
+                                                    }}
+                                                    className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80"
+                                                >
                                                     {user.image ? (
                                                         <Image
                                                             src={user.image}
@@ -213,11 +216,11 @@ export default function FollowsModal() {
                                                             <UserIcon className="h-7 w-7" />
                                                         </div>
                                                     )}
-                                                </div>
+                                                </button>
                                                 <span className="cursor-pointer truncate hover:underline">
                                                     {user.name}
                                                 </span>
-                                            </button>
+                                            </div>
                                         </div>
                                         {currentUser?.id !== user.id && (
                                             <Button
