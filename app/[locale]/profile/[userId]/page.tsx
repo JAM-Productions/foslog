@@ -67,9 +67,7 @@ export default async function ProfilePage({
         );
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="text-center text-red-500">
-                    {t('loadError')}
-                </div>
+                <div className="text-center text-red-500">{t('loadError')}</div>
             </div>
         );
     }
