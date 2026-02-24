@@ -275,7 +275,8 @@
         "nameUpdated": "Name updated successfully!",
         "nameUpdateFailed": "Failed to update name. Please try again.",
         "imageUpdated": "Profile picture updated successfully!",
-        "imageUpdateFailed": "Failed to update profile picture. Please try again."
+        "imageUpdateFailed": "Failed to update profile picture. Please try again.",
+        "fetchUsersFailed": "Failed to fetch users. Please try again."
     },
     "ProfilePage": {
         "joined": "Joined {date}",
@@ -293,7 +294,9 @@
         "totalFollowing": "Following",
         "noReviews": "No reviews yet.",
         "follow": "Follow",
-        "unfollow": "Unfollow"
+        "unfollow": "Unfollow",
+        "seeFollowers": "See Followers",
+        "seeFollowing": "See Following"
     },
     "MediaPage": {
         "reviews": "Reviews",
@@ -392,5 +395,12 @@
         "game": "Has played this game more than once",
         "music": "Has listened to this music more than once",
         "default": "Has consumed this more than once"
+    },
+    "FollowsModal": {
+        "followers": "Followers",
+        "following": "Following",
+        "noFollowers": "No followers to show",
+        "noFollowing": "No following to show",
+        "follow": "Follow"
     }
 }

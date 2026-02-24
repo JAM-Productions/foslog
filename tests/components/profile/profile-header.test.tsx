@@ -1,6 +1,13 @@
 import { ProfileHeader } from '@/components/profile/profile-header';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, test, vi, beforeEach } from 'vitest';
+
+const mockPush = vi.fn();
+const mockRefresh = vi.fn();
+const mockShowToast = vi.fn();
+const mockShowModal = vi.fn();
+const mockUseAuth = vi.fn();
 
 // Mock translations
 vi.mock('next-intl', () => ({
@@ -29,21 +36,28 @@ vi.mock('@/components/profile/rating-distribution', () => ({
 
 // Mock auth provider
 vi.mock('@/lib/auth/auth-provider', () => ({
-    useAuth: () => ({ user: null }),
+    useAuth: () => mockUseAuth(),
 }));
 
 // Mock navigation
 vi.mock('@/i18n/navigation', () => ({
     useRouter: () => ({
-        push: vi.fn(),
-        refresh: vi.fn(),
+        push: mockPush,
+        refresh: mockRefresh,
     }),
 }));
 
 // Mock toast store
 vi.mock('@/lib/toast-store', () => ({
     useToastStore: () => ({
-        showToast: vi.fn(),
+        showToast: mockShowToast,
+    }),
+}));
+
+// Mock follows modal store
+vi.mock('@/lib/follows-modal-store', () => ({
+    useFollowsModalStore: () => ({
+        showModal: mockShowModal,
     }),
 }));
 
@@ -66,6 +80,11 @@ describe('ProfileHeader', () => {
         ratingDistribution: { 5: 10 },
         favoriteGenres: [{ genre: 'Action', count: 5 }],
     };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        mockUseAuth.mockReturnValue({ user: null });
+    });
 
     test('renders user information correctly', () => {
         render(
@@ -134,5 +153,105 @@ describe('ProfileHeader', () => {
         // Instead of looking for a specific icon which might be hidden or SVG,
         // we check that the image is NOT rendered.
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    });
+
+    test('redirects to login when clicking followers count without authentication', async () => {
+        const user = userEvent.setup();
+        mockUseAuth.mockReturnValue({ user: null });
+
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+                isUserFollowing={false}
+            />
+        );
+
+        const followersElement =
+            screen.getByText('totalFollowers').parentElement;
+        if (followersElement) {
+            await user.click(followersElement);
+        }
+
+        expect(mockPush).toHaveBeenCalledWith('/login');
+        expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    test('opens followers modal when clicking followers count with authentication', async () => {
+        const user = userEvent.setup();
+        mockUseAuth.mockReturnValue({
+            user: { id: 'current-user', name: 'Current User' },
+        });
+
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+                isUserFollowing={false}
+            />
+        );
+
+        const followersElement =
+            screen.getByText('totalFollowers').parentElement;
+        if (followersElement) {
+            await user.click(followersElement);
+        }
+
+        expect(mockShowModal).toHaveBeenCalledWith(
+            'user1',
+            'Test User',
+            'followers'
+        );
+        expect(mockPush).not.toHaveBeenCalledWith('/login');
+    });
+
+    test('redirects to login when clicking following count without authentication', async () => {
+        const user = userEvent.setup();
+        mockUseAuth.mockReturnValue({ user: null });
+
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+                isUserFollowing={false}
+            />
+        );
+
+        const followingElement =
+            screen.getByText('totalFollowing').parentElement;
+        if (followingElement) {
+            await user.click(followingElement);
+        }
+
+        expect(mockPush).toHaveBeenCalledWith('/login');
+        expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    test('opens following modal when clicking following count with authentication', async () => {
+        const user = userEvent.setup();
+        mockUseAuth.mockReturnValue({
+            user: { id: 'current-user', name: 'Current User' },
+        });
+
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+                isUserFollowing={false}
+            />
+        );
+
+        const followingElement =
+            screen.getByText('totalFollowing').parentElement;
+        if (followingElement) {
+            await user.click(followingElement);
+        }
+
+        expect(mockShowModal).toHaveBeenCalledWith(
+            'user1',
+            'Test User',
+            'following'
+        );
+        expect(mockPush).not.toHaveBeenCalledWith('/login');
     });
 });

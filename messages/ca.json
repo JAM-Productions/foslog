@@ -275,7 +275,8 @@
         "nameUpdated": "Nom actualitzat correctament!",
         "nameUpdateFailed": "Error al actualitzar el nom. Si us plau intenta-ho de nou.",
         "imageUpdated": "Foto de perfil actualitzada correctament!",
-        "imageUpdateFailed": "Error al actualitzar la foto de perfil. Si us plau intenta-ho de nou."
+        "imageUpdateFailed": "Error al actualitzar la foto de perfil. Si us plau intenta-ho de nou.",
+        "fetchUsersFailed": "Error al obtenir els usuaris. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
         "joined": "S'ha unit el {date}",
@@ -293,7 +294,9 @@
         "totalFollowing": "Seguint",
         "noReviews": "Encara no hi ha ressenyes.",
         "follow": "Seguir",
-        "unfollow": "Deixar de Seguir"
+        "unfollow": "Deixar de Seguir",
+        "seeFollowers": "Veure Seguidors",
+        "seeFollowing": "Veure Seguits"
     },
     "MediaPage": {
         "reviews": "Ressenyes",
@@ -392,5 +395,12 @@
         "game": "Ha jugat a aquest joc més d'una vegada",
         "music": "Ha escoltat aquesta música més d'una vegada",
         "default": "Ha consumit això més d'una vegada"
+    },
+    "FollowsModal": {
+        "followers": "Seguidors",
+        "following": "Seguint",
+        "noFollowers": "No hi ha seguidors per mostrar",
+        "noFollowing": "No hi ha usuaris seguits per mostrar",
+        "follow": "Seguir"
     }
 }

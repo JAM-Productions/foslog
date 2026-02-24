@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from '@/i18n/navigation';
 import { startTransition, useOptimistic, useState } from 'react';
 import { useToastStore } from '@/lib/toast-store';
+import { useFollowsModalStore } from '@/lib/follows-modal-store';
 
 interface ProfileHeaderProps {
     user: User;
@@ -34,6 +35,7 @@ export function ProfileHeader({
         (prev) => !prev
     );
     const { showToast } = useToastStore();
+    const { showModal } = useFollowsModalStore();
 
     const optimisticTotalFollowers =
         isUserFollowing === optimisticFollowing
@@ -108,22 +110,48 @@ export function ProfileHeader({
                             </p>
 
                             <div className="mt-3 flex gap-4">
-                                <div className="flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    aria-label={t('seeFollowers')}
+                                    className="flex cursor-pointer items-center gap-1"
+                                    onClick={() =>
+                                        !currentUser
+                                            ? router.push('/login')
+                                            : showModal(
+                                                  user.id,
+                                                  user.name,
+                                                  'followers'
+                                              )
+                                    }
+                                >
                                     <span className="font-bold">
                                         {optimisticTotalFollowers}
                                     </span>
                                     <span className="text-muted-foreground text-sm">
                                         {t('totalFollowers')}
                                     </span>
-                                </div>
-                                <div className="flex items-center gap-1">
+                                </button>
+                                <button
+                                    type="button"
+                                    aria-label={t('seeFollowing')}
+                                    className="flex cursor-pointer items-center gap-1"
+                                    onClick={() =>
+                                        !currentUser
+                                            ? router.push('/login')
+                                            : showModal(
+                                                  user.id,
+                                                  user.name,
+                                                  'following'
+                                              )
+                                    }
+                                >
                                     <span className="font-bold">
                                         {user.totalFollowing}
                                     </span>
                                     <span className="text-muted-foreground text-sm">
                                         {t('totalFollowing')}
                                     </span>
-                                </div>
+                                </button>
                             </div>
 
                             {user.bio && (

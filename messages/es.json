@@ -275,7 +275,8 @@
         "nameUpdated": "¡Nombre actualizado correctamente!",
         "nameUpdateFailed": "Fallo al actualizar el nombre. Por favor inténtalo de nuevo.",
         "imageUpdated": "Foto de perfil actualizada correctamente!",
-        "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo."
+        "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo.",
+        "fetchUsersFailed": "Error al obtener usuarios. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "joined": "Se unió en {date}",
@@ -293,7 +294,9 @@
         "totalFollowing": "Siguiendo",
         "noReviews": "Aún no hay reseñas.",
         "follow": "Seguir",
-        "unfollow": "Dejar de Seguir"
+        "unfollow": "Dejar de Seguir",
+        "seeFollowers": "Ver Seguidores",
+        "seeFollowing": "Ver Siguiendo"
     },
     "MediaPage": {
         "reviews": "Reseñas",
@@ -392,5 +395,12 @@
         "game": "Ha jugado a este juego más de una vez",
         "music": "Ha escuchado esta música más de una vez",
         "default": "Ha consumido esto más de una vez"
+    },
+    "FollowsModal": {
+        "followers": "Seguidores",
+        "following": "Siguiendo",
+        "noFollowers": "No hay seguidores para mostrar",
+        "noFollowing": "No hay usuarios seguidos para mostrar",
+        "follow": "Seguir"
     }
 }
