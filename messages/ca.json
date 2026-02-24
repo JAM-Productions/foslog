@@ -279,6 +279,7 @@
         "fetchUsersFailed": "Error al obtenir els usuaris. Si us plau, torna-ho a provar."
     },
     "ProfilePage": {
+        "loadError": "S'ha produït un error en carregar el perfil. Si us plau, torna-ho a provar més tard.",
         "joined": "S'ha unit el {date}",
         "latestReviews": "Últimes Ressenyes",
         "reviews": "Ressenyes",
