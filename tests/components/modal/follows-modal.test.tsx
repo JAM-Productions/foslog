@@ -178,7 +178,7 @@ describe('FollowsModal', () => {
             });
         });
 
-        it('renders the modal', () => {
+        it('renders the modal', async () => {
             (global.fetch as any).mockResolvedValueOnce({
                 ok: true,
                 json: async () => ({
@@ -190,9 +190,16 @@ describe('FollowsModal', () => {
             render(<FollowsModal />);
 
             expect(screen.getByTestId('modal')).toBeInTheDocument();
+
+            // Wait for fetch to complete
+            await waitFor(() => {
+                expect(
+                    screen.queryByTestId('user-list-skeleton')
+                ).not.toBeInTheDocument();
+            });
         });
 
-        it('displays the user name', () => {
+        it('displays the user name', async () => {
             (global.fetch as any).mockResolvedValueOnce({
                 ok: true,
                 json: async () => ({
@@ -205,9 +212,16 @@ describe('FollowsModal', () => {
 
             const heading = screen.getByRole('heading', { level: 1 });
             expect(heading).toHaveTextContent('John Doe');
+
+            // Wait for fetch to complete
+            await waitFor(() => {
+                expect(
+                    screen.queryByTestId('user-list-skeleton')
+                ).not.toBeInTheDocument();
+            });
         });
 
-        it('displays followers and following tabs', () => {
+        it('displays followers and following tabs', async () => {
             (global.fetch as any).mockResolvedValueOnce({
                 ok: true,
                 json: async () => ({
@@ -224,9 +238,16 @@ describe('FollowsModal', () => {
             expect(
                 screen.getByRole('button', { name: 'Following' })
             ).toBeInTheDocument();
+
+            // Wait for fetch to complete
+            await waitFor(() => {
+                expect(
+                    screen.queryByTestId('user-list-skeleton')
+                ).not.toBeInTheDocument();
+            });
         });
 
-        it('displays close button', () => {
+        it('displays close button', async () => {
             (global.fetch as any).mockResolvedValueOnce({
                 ok: true,
                 json: async () => ({
@@ -240,6 +261,13 @@ describe('FollowsModal', () => {
             expect(
                 screen.getByRole('button', { name: 'Close' })
             ).toBeInTheDocument();
+
+            // Wait for fetch to complete
+            await waitFor(() => {
+                expect(
+                    screen.queryByTestId('user-list-skeleton')
+                ).not.toBeInTheDocument();
+            });
         });
 
         it('closes modal when close button is clicked', async () => {

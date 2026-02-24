@@ -217,9 +217,18 @@ export default function FollowsModal() {
                                                         </div>
                                                     )}
                                                 </button>
-                                                <span className="cursor-pointer truncate hover:underline">
+                                                <button
+                                                    type="button"
+                                                    className="cursor-pointer truncate hover:underline"
+                                                    onClick={() => {
+                                                        hideModal();
+                                                        router.push(
+                                                            `/profile/${user.id}`
+                                                        );
+                                                    }}
+                                                >
                                                     {user.name}
-                                                </span>
+                                                </button>
                                             </div>
                                         </div>
                                         {currentUser?.id !== user.id && (
