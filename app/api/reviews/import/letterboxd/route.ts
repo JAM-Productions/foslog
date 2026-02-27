@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import {
-    badGateway,
     internalServerError,
     unauthorized,
     validationError,
@@ -27,15 +26,7 @@ export async function POST(request: NextRequest) {
         console.log('--- DB IMPORT ATTEMPT START ---');
         console.log(body);
 
-        const {
-            Name,
-            Year,
-            Rating,
-            Rewatch,
-            Review: ReviewText,
-            Tags,
-            Date: WatchDate,
-        } = body;
+        const { Name, Year, Rating, Rewatch, Review: ReviewText } = body;
 
         if (!Name || !Year) {
             console.log('FAILED: Missing Name or Year');

@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { NextRequest } from 'next/server';
 import { ApiErrorType } from '@/lib/errors';
-import { logger } from '@/lib/axiom/server';
 
 // Mock dependencies
 vi.mock('@/lib/prisma', () => ({
@@ -141,7 +140,7 @@ describe('POST /api/reviews/import/letterboxd', () => {
         });
 
         const response = await POST(req);
-        const data = await response.json();
+        await response.json();
 
         expect(response.status).toBe(201);
         expect(prisma.mediaItem.create).toHaveBeenCalled();

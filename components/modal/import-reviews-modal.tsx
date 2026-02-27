@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import Modal from './modal';
-import { useToastStore } from '@/lib/toast-store';
 import { useRouter } from '@/i18n/navigation';
 import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
@@ -15,9 +14,7 @@ type TabType = 'letterboxd' | 'steam' | 'goodreads';
 
 export default function ImportReviewsModal() {
     const t = useTranslations('ImportReviewsModal');
-    const tToast = useTranslations('Toast');
     const router = useRouter();
-    const { showToast } = useToastStore();
     const { isModalOpen, hideModal } = useImportReviewsModalStore();
     const [activeTab, setActiveTab] = useState<TabType>('letterboxd');
 
@@ -95,7 +92,6 @@ export default function ImportReviewsModal() {
                 setProgress({ current: 0, total: rows.length });
 
                 // Process sequentially
-                let successCount = 0;
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i] as any;
 
@@ -111,9 +107,7 @@ export default function ImportReviewsModal() {
                             }
                         );
 
-                        if (response.ok) {
-                            successCount++;
-                        } else {
+                        if (!response.ok) {
                             const errorData = await response.json();
                             console.error(
                                 'Error importing row',
