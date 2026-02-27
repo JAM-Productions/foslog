@@ -18,6 +18,10 @@ const FollowsModal = dynamic(() => import('./follows-modal'), {
     ssr: false,
 });
 
+const ImportReviewsModal = dynamic(() => import('./import-reviews-modal'), {
+    ssr: false,
+});
+
 export default function DynamicModalWrapper() {
     return (
         <>
@@ -25,6 +29,7 @@ export default function DynamicModalWrapper() {
             <ReviewModal />
             <OptionsModal />
             <FollowsModal />
+            <ImportReviewsModal />
         </>
     );
 }

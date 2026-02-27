@@ -403,5 +403,30 @@
         "noFollowers": "No hay seguidores para mostrar",
         "noFollowing": "No hay usuarios seguidos para mostrar",
         "follow": "Seguir"
+    },
+    "ImportReviewsModal": {
+        "title": "Importar Reseñas",
+        "description": "Selecciona la plataforma desde la que importar tus reseñas. Actualmente solo soportamos importar desde archivo CSV de Letterboxd.",
+        "tabs": {
+            "letterboxd": "Letterboxd",
+            "steam": "Steam",
+            "goodreads": "Goodreads"
+        },
+        "comingSoon": "¡Pronto disponible!",
+        "letterboxd": {
+            "instructionsTitle": "Cómo exportar tus datos de Letterboxd:",
+            "step1": "Ve a Configuración de la cuenta > Datos > Exportar Datos",
+            "step2": "Haz clic en Descargar un ZIP",
+            "step3": "Descomprime el archivo y busca el archivo reviews.csv",
+            "step4": "Selecciona el archivo reviews.csv y deja que la magia ocurra",
+            "dragAndDrop": "Arrastra y suelta tu archivo reviews.csv aquí, o haz clic para seleccionarlo",
+            "uploading": "Importando... {current} de {total}",
+            "completed": "¡Importación completada con éxito!",
+            "error": "Error al importar la fila {current}: {message}",
+            "noValidRows": "No se encontraron reseñas válidas en el CSV. Asegúrate de haber seleccionado el archivo correcto.",
+            "importing": "Importando...",
+            "estimatedTime": "Tiempo estimado: {time}"
+        },
+        "importProfileButton": "Importar Reseñas"
     }
 }
