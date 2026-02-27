@@ -148,7 +148,7 @@ export default function ImportReviewsModal() {
                 : `${remainingSeconds}s`;
 
         return (
-            <div className="animate-in fade-in zoom-in-95 flex flex-col gap-6 duration-200">
+            <div className="animate-in fade-in zoom-in-95 flex h-full flex-1 flex-col gap-6 duration-200">
                 <div className="bg-muted/50 rounded-lg p-4 text-sm">
                     <h4 className="mb-2 font-semibold">
                         {t('letterboxd.instructionsTitle')}
@@ -162,7 +162,7 @@ export default function ImportReviewsModal() {
                 </div>
 
                 {!importSuccess && (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-1 flex-col gap-4">
                         <label
                             htmlFor="csv-upload"
                             onDragOver={handleDragOver}
@@ -202,15 +202,17 @@ export default function ImportReviewsModal() {
                             </p>
                         )}
 
-                        <Button
-                            className="w-full"
-                            disabled={!file || isParsing || isImporting}
-                            onClick={processCSV}
-                        >
-                            {isImporting || isParsing
-                                ? t('letterboxd.importing')
-                                : t('importProfileButton')}
-                        </Button>
+                        <div className="mt-auto w-full pt-4">
+                            <Button
+                                className="w-full"
+                                disabled={!file || isParsing || isImporting}
+                                onClick={processCSV}
+                            >
+                                {isImporting || isParsing
+                                    ? t('letterboxd.importing')
+                                    : t('importProfileButton')}
+                            </Button>
+                        </div>
                     </div>
                 )}
 
@@ -278,24 +280,30 @@ export default function ImportReviewsModal() {
 
     return (
         <Modal isModalOpen={isModalOpen}>
-            <div className="bg-card w-full max-w-lg rounded-xl border shadow-lg outline-none">
-                <div className="flex items-center justify-between border-b px-6 py-4">
-                    <div>
-                        <h2 className="text-lg font-semibold">{t('title')}</h2>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                            {t('description')}
-                        </p>
-                    </div>
-                    <button
+            <div className="flex h-full w-full flex-col">
+                <div className="relative mb-6 flex w-full flex-col items-center justify-between text-center">
+                    <h1
+                        id="modal-title"
+                        className="text-2xl font-semibold"
+                    >
+                        {t('title')}
+                    </h1>
+                    <p className="text-muted-foreground mx-auto mt-2 max-w-[90%] text-sm">
+                        {t('description')}
+                    </p>
+                    <Button
+                        className="absolute right-0"
+                        variant="ghost"
+                        size="sm"
                         onClick={handleClose}
                         disabled={isImporting}
-                        className={`text-muted-foreground hover:bg-muted hover:text-foreground rounded-full p-2 transition-colors ${isImporting ? 'cursor-not-allowed opacity-50' : ''}`}
+                        aria-label="Close"
                     >
                         <XIcon className="h-5 w-5" />
-                    </button>
+                    </Button>
                 </div>
 
-                <div className="p-6">
+                <div className="mb-2 flex flex-1 flex-col">
                     <div className="mb-6 flex h-10 w-full items-center justify-start rounded-none border-b bg-transparent p-0">
                         {(
                             ['letterboxd', 'goodreads', 'steam'] as TabType[]
@@ -320,7 +328,7 @@ export default function ImportReviewsModal() {
                         ))}
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-6 flex flex-1 flex-col">
                         {activeTab === 'letterboxd' && renderLetterboxdTab()}
                         {activeTab === 'steam' && renderComingSoonTab('steam')}
                         {activeTab === 'goodreads' &&
