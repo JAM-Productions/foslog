@@ -141,14 +141,16 @@ const UserMenu = () => {
                 ) : (
                     <User className="h-4 w-4" />
                 )}
-                <span className="hidden sm:inline">{user.name}</span>
+                <span className="hidden max-w-[100px] truncate sm:inline sm:max-w-[150px]">
+                    {user.name}
+                </span>
             </Button>
 
             {isUserOpen && (
                 <div className="bg-card absolute top-12 right-0 z-50 w-48 rounded-lg border shadow-lg">
                     <div className="border-b p-3">
-                        <p className="font-medium">{user.name}</p>
-                        <p className="text-muted-foreground text-sm">
+                        <p className="truncate font-medium">{user.name}</p>
+                        <p className="text-muted-foreground truncate text-sm">
                             {user.email}
                         </p>
                     </div>

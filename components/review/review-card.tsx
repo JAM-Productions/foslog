@@ -54,10 +54,10 @@ export function ReviewCard({
                         </div>
                     )}
                 </div>
-                <div className="relative flex-1">
-                    <div className="flex">
+                <div className="relative flex-1 min-w-0">
+                    <div className="flex pr-16">
                         <p
-                            className="text-base font-bold hover:underline"
+                            className="truncate text-base font-bold hover:underline"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/profile/${user.id}`);

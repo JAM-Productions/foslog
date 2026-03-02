@@ -95,10 +95,10 @@ export function ReviewDetailCard({
                         />
                     </button>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                     <Link
                         href={`/profile/${user.id}`}
-                        className="group relative"
+                        className="group relative flex-shrink-0"
                     >
                         {user.image ? (
                             <Image
@@ -115,13 +115,13 @@ export function ReviewDetailCard({
                             </div>
                         )}
                     </Link>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0 pr-8">
                         <div className="flex">
                             <Link
                                 href={`/profile/${user.id}`}
-                                className="hover:underline"
+                                className="hover:underline truncate"
                             >
-                                <p className="text-base font-bold">
+                                <p className="truncate text-base font-bold">
                                     {user.name}
                                 </p>
                             </Link>

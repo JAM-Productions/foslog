@@ -79,8 +79,8 @@ export function ProfileHeader({
         <div className="mb-8 grid items-start gap-6 lg:grid-cols-3">
             <div className="flex flex-col gap-6 lg:col-span-2">
                 <div className="flex flex-col gap-3">
-                    <div className="bg-card text-card-foreground flex h-fit min-h-[206px] flex-col items-center rounded-lg border p-6 shadow-sm sm:flex-row sm:gap-8">
-                        <div className="mb-4 sm:mb-0">
+                    <div className="bg-card text-card-foreground flex h-fit min-h-[206px] flex-col items-center rounded-lg border p-6 shadow-sm sm:flex-row sm:gap-8 overflow-hidden">
+                        <div className="mb-4 sm:mb-0 flex-shrink-0">
                             {user.image ? (
                                 <Image
                                     src={user.image}
@@ -97,8 +97,8 @@ export function ProfileHeader({
                             )}
                         </div>
 
-                        <div className="flex flex-1 flex-col items-center text-center sm:items-start sm:text-left">
-                            <h1 className="text-2xl font-bold sm:text-3xl">
+                        <div className="flex flex-1 flex-col items-center text-center sm:items-start sm:text-left min-w-0">
+                            <h1 className="text-2xl font-bold sm:text-3xl truncate w-full">
                                 {user.name}
                             </h1>
                             <p className="text-muted-foreground mt-1 text-sm">
@@ -155,7 +155,7 @@ export function ProfileHeader({
                             </div>
 
                             {user.bio && (
-                                <p className="mt-4 max-w-lg text-sm leading-relaxed">
+                                <p className="mt-4 max-w-lg text-sm leading-relaxed break-words">
                                     {user.bio}
                                 </p>
                             )}
