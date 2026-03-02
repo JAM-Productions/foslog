@@ -493,11 +493,11 @@ describe('User Actions', () => {
 
             expect(prisma.list.findMany).toHaveBeenCalledWith({
                 where: { userId: 'user1' },
-                include: {
-                    mediaItems: {
-                        include: { media: true },
-                        orderBy: { createdAt: 'asc' },
-                    },
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    type: true,
                 },
             });
             expect(result).toHaveLength(2);
@@ -532,11 +532,11 @@ describe('User Actions', () => {
 
             expect(prisma.list.findMany).toHaveBeenCalledWith({
                 where: { userId: 'otherUser', type: 'LIST' },
-                include: {
-                    mediaItems: {
-                        include: { media: true },
-                        orderBy: { createdAt: 'asc' },
-                    },
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    type: true,
                 },
             });
             expect(result).toHaveLength(1);
@@ -707,7 +707,17 @@ describe('User Actions', () => {
 
             expect(prisma.list.findUnique).toHaveBeenCalledWith({
                 where: { id: 'list1' },
-                include: { user: { select: { name: true } } },
+                select: {
+                    id: true,
+                    name: true,
+                    type: true,
+                    userId: true,
+                    user: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                },
             });
             expect(result).toEqual({
                 id: 'list1',

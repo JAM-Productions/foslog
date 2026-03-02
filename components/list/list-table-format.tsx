@@ -100,7 +100,8 @@ export function ListTableFormat({
                                         )}
                                     </button>
                                     <div className="max-w-xs">
-                                        <p
+                                        <button
+                                            type="button"
                                             className="line-clamp-1 cursor-pointer font-semibold hover:underline"
                                             onClick={() => {
                                                 router.push(
@@ -109,7 +110,7 @@ export function ListTableFormat({
                                             }}
                                         >
                                             {media.title}
-                                        </p>
+                                        </button>
                                     </div>
                                 </div>
                             </td>

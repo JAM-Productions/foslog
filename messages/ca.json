@@ -311,7 +311,8 @@
         "userLibrary": "Biblioteca",
         "noLists": "{user} cap llista encara.",
         "you": "No tens",
-        "thisUser": "Aquest usuari no té"
+        "thisUser": "Aquest usuari no té",
+        "viewProfile": "Veure perfil de {name}"
     },
     "MediaPage": {
         "loadError": "S'ha produït un error en carregar el mitjà. Si us plau, torna-ho a provar més tard.",
@@ -336,7 +337,9 @@
         "noPoster": "No hi ha pòster",
         "updateReview": "Editar Ressenya",
         "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada",
-        "toggleLike": "Alternar Me gusta"
+        "toggleLike": "Alternar Me gusta",
+        "bookmark": "Marcar",
+        "unbookmark": "Desmarcar"
     },
     "BackButton": {
         "back": "Enrere"
@@ -420,7 +423,7 @@
         "follow": "Seguir"
     },
     "ListPage": {
-        "loadError": "S'ha producido un error al cargar la lista. Por favor, inténtalo de nuevo más tarde.",
+        "loadError": "S'ha produït un error en carregar la llista. Si us plau, torna-ho a intentar més tard.",
         "itemsAdded": "{count} elements afegits",
         "addedDate": "Afegit el {date}",
         "dateAdded": "Data d'afegit",

@@ -109,9 +109,7 @@ describe('UserMediaLists', () => {
         );
 
         expect(screen.getByText('Bookmarked')).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: 'Bookmarked' })
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('bookmark-list-button')).toBeInTheDocument();
     });
 
     it('hides bookmark list for other users', () => {
@@ -153,7 +151,7 @@ describe('UserMediaLists', () => {
             />
         );
 
-        const button = screen.getByRole('button', { name: 'Bookmarked' });
+        const button = screen.getByTestId('bookmark-list-button');
         await userEvent.click(button);
 
         expect(push).toHaveBeenCalledWith('/profile/user1/list/bookmark1');
@@ -174,7 +172,7 @@ describe('UserMediaLists', () => {
             />
         );
 
-        const textElement = screen.getByText('Bookmarked').closest('span');
+        const textElement = screen.getByText('Bookmarked').closest('button');
         if (textElement) {
             await userEvent.click(textElement);
         }
@@ -237,7 +235,7 @@ describe('UserMediaLists', () => {
             />
         );
 
-        const button = screen.getByRole('button', { name: 'Bookmarked' });
+        const button = screen.getByTestId('bookmark-list-button');
         expect(button).toHaveClass('bg-green-700');
     });
 
@@ -332,7 +330,7 @@ describe('UserMediaLists', () => {
 
         // Should still render the bookmark button with aria-label
         expect(
-            screen.getByRole('button', { name: 'Bookmarked' })
+            screen.getByTestId('bookmark-list-name-button')
         ).toBeInTheDocument();
     });
 
@@ -353,7 +351,7 @@ describe('UserMediaLists', () => {
             />
         );
 
-        const button = screen.getByRole('button', { name: 'Bookmarked' });
+        const button = screen.getByTestId('bookmark-list-button');
         await userEvent.click(button);
 
         expect(push).toHaveBeenCalledWith(

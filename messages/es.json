@@ -311,7 +311,8 @@
         "userLibrary": "Biblioteca",
         "noLists": "{user} listas todavía.",
         "you": "No tienes",
-        "thisUser": "Este usuario no tiene"
+        "thisUser": "Este usuario no tiene",
+        "viewProfile": "Ver perfil de {name}"
     },
     "MediaPage": {
         "loadError": "Se produjo un error al cargar el medio. Por favor, inténtalo de nuevo más tarde.",
@@ -336,7 +337,9 @@
         "noPoster": "No hay póster",
         "updateReview": "Editar Reseña",
         "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez",
-        "toggleLike": "Alternar Me gusta"
+        "toggleLike": "Alternar Me gusta",
+        "bookmark": "Marcar",
+        "unbookmark": "Desmarcar"
     },
     "BackButton": {
         "back": "Atrás"

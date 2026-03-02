@@ -30,7 +30,7 @@ export default function Loading() {
                             key={i}
                             className="flex animate-pulse items-center gap-3"
                         >
-                            <div className="bg-muted h-28 w-19 rounded-sm" />
+                            <div className="bg-muted h-28 w-[4.75rem] rounded-sm" />
                             <div className="flex-1 space-y-2">
                                 <div className="bg-muted h-4 w-3/4 rounded" />
                                 <div className="bg-muted h-3 w-1/4 rounded" />

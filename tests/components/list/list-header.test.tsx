@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ListHeader, ListHeaderProps } from '@/components/list/list-header.tsx';
+import { ListHeader, ListHeaderProps } from '@/components/list/list-header';
 import { ListType } from '@prisma/client';
 
 // translations mock

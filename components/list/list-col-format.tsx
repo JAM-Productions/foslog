@@ -59,10 +59,10 @@ export function ListColFormat({
                         <img
                             src={media.poster}
                             alt={media.title}
-                            className="h-28 w-19 rounded-sm object-cover"
+                            className="h-28 w-[76px] rounded-sm object-cover"
                         />
                     ) : (
-                        <div className="bg-muted flex h-28 w-19 items-center justify-center rounded-sm">
+                        <div className="bg-muted flex h-28 w-[76px] items-center justify-center rounded-sm">
                             <span className="text-foreground text-sm font-bold">
                                 {media.title.charAt(0).toUpperCase()}
                             </span>

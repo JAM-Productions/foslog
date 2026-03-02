@@ -78,7 +78,7 @@ export async function DELETE(request: NextRequest) {
             'page'
         );
 
-        logger.info('DELETE /api/media/[id]/list', {
+        logger.info('DELETE /api/list', {
             userId: currentUserId,
             mediaId,
             listId,
@@ -89,7 +89,7 @@ export async function DELETE(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        logger.error('DELETE /api/media/[id]/list', { error });
+        logger.error('DELETE /api/list', { error });
         return internalServerError('Failed to remove item from list');
     }
 }

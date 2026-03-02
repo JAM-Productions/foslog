@@ -351,15 +351,11 @@ export const getUserMediaLists = async (userId: string) => {
 
         const lists = await prisma.list.findMany({
             where: whereClause,
-            include: {
-                mediaItems: {
-                    include: {
-                        media: true,
-                    },
-                    orderBy: {
-                        createdAt: 'asc',
-                    },
-                },
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                type: true,
             },
         });
 
@@ -473,9 +469,18 @@ export const getUserMediaListData = async (userId: string, listId: string) => {
 
 export const getUserListMetadata = async (listId: string) => {
     try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        const currentUserId = session?.user?.id;
+
         const list = await prisma.list.findUnique({
             where: { id: listId },
-            include: {
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                userId: true,
                 user: {
                     select: {
                         name: true,
@@ -489,6 +494,16 @@ export const getUserListMetadata = async (listId: string) => {
                 method: 'getUserListMetadata',
                 warn: 'List not found',
                 listId,
+            });
+            return null;
+        }
+
+        if (list.type === ListType.BOOKMARK && currentUserId !== list.userId) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserListMetadata',
+                warn: 'Cannot access other users bookmark metadata',
+                listId,
+                currentUserId,
             });
             return null;
         }

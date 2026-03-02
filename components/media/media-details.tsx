@@ -69,10 +69,12 @@ export function MediaDetails({
 
         setIsBookmarking(true);
 
+        const prevState = optimisticBookmarked;
         const method = optimisticBookmarked ? 'DELETE' : 'POST';
         startTransition(async () => {
+            setOptimisticBookmarked(!prevState);
+
             try {
-                setOptimisticBookmarked(optimisticBookmarked);
                 const response = await fetch(
                     `/api/media/${media.id}/bookmark`,
                     {
@@ -86,6 +88,7 @@ export function MediaDetails({
 
                 router.refresh();
             } catch {
+                setOptimisticBookmarked(prevState);
                 showToast(tToast('toggleBookmarkFailed'), 'error');
             } finally {
                 setIsBookmarking(false);
@@ -115,7 +118,12 @@ export function MediaDetails({
                                 {media.title}
                                 <button
                                     className="ml-3 inline-flex flex-shrink-0 cursor-pointer items-center align-middle transition-colors disabled:opacity-70"
-                                    aria-label="Bookmark"
+                                    data-testid="bookmark-button"
+                                    aria-label={
+                                        optimisticBookmarked
+                                            ? tMP('unbookmark')
+                                            : tMP('bookmark')
+                                    }
                                     disabled={isBookmarking}
                                     onClick={() => bookmarkMedia()}
                                 >

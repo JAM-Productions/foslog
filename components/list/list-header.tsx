@@ -45,11 +45,13 @@ export function ListHeader({
                     </h1>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div
+                    <button
+                        type="button"
                         onClick={() => {
                             router.push(`/profile/${listUser.id}`);
                         }}
                         className="cursor-pointer transition-opacity hover:opacity-80"
+                        aria-label={t('viewProfile', { name: listUser.name })}
                     >
                         {listUser.image ? (
                             <Image
@@ -65,7 +67,7 @@ export function ListHeader({
                                 <User className="h-4 w-4" />
                             </div>
                         )}
-                    </div>
+                    </button>
                     <p
                         className="cursor-pointer text-sm hover:underline"
                         onClick={() => {

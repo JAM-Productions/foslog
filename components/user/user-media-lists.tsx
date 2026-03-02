@@ -56,6 +56,7 @@ export function UserMediaLists({
                                         <button
                                             className="cursor-pointer rounded-lg bg-green-700 p-4 sm:p-6 lg:p-8"
                                             aria-label={t('bookmarked')}
+                                            data-testid="bookmark-list-button"
                                             onClick={() =>
                                                 router.push(
                                                     `/profile/${userId}/list/${list.id}`
@@ -64,7 +65,9 @@ export function UserMediaLists({
                                         >
                                             <Bookmark className="h-5 w-5 fill-green-500 text-green-500 sm:h-7 sm:w-7" />
                                         </button>
-                                        <span
+                                        <button
+                                            type="button"
+                                            data-testid="bookmark-list-name-button"
                                             className="text-foreground cursor-pointer hover:underline sm:text-sm"
                                             onClick={() =>
                                                 router.push(
@@ -73,7 +76,7 @@ export function UserMediaLists({
                                             }
                                         >
                                             {t('bookmarked')}
-                                        </span>
+                                        </button>
                                     </div>
                                 )}
                         </div>

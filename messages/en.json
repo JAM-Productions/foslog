@@ -311,7 +311,8 @@
         "userLibrary": "Library",
         "noLists": "{user} have any lists yet.",
         "you": "You don't",
-        "thisUser": "This user doesn't"
+        "thisUser": "This user doesn't",
+        "viewProfile": "View {name}'s profile"
     },
     "MediaPage": {
         "loadError": "An error occurred while loading the media. Please try again later.",
@@ -336,7 +337,9 @@
         "noPoster": "No Poster",
         "updateReview": "Update Review",
         "consumedMoreThanOnce": "I have watched/played/read this more than once",
-        "toggleLike": "Toggle Like"
+        "toggleLike": "Toggle Like",
+        "bookmark": "Bookmark",
+        "unbookmark": "Unbookmark"
     },
     "BackButton": {
         "back": "Back"

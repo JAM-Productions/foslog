@@ -5,6 +5,8 @@ import { MediaDetails } from '@/components/media/media-details';
 import { MediaItem } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 
+const originalFetch = global.fetch;
+
 // Mock next-intl
 vi.mock('next-intl', () => ({
     useTranslations: vi.fn(),
@@ -482,9 +484,8 @@ describe('MediaDetails', () => {
             />
         );
 
-        // Should NOT render the rating display if rating is 0
-        // Instead of checking all buttons, check that the rating section is not present
-        expect(screen.queryByText('0 Reviews')).not.toBeInTheDocument();
+        // Since RatingDisplay is mocked to render the numeric rating, ensure that output is absent
+        expect(screen.queryByText('0')).not.toBeInTheDocument();
     });
 
     it('handles decimal ratings correctly', () => {
@@ -614,7 +615,8 @@ describe('MediaDetails - bookmarkMedia', () => {
     });
 
     afterEach(() => {
-        global.fetch = vi.fn();
+        global.fetch = originalFetch;
+        vi.restoreAllMocks();
     });
 
     it('renders bookmark button with correct label', () => {
@@ -624,7 +626,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
         expect(bookmarkButton).toBeInTheDocument();
     });
 
@@ -635,7 +637,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={true}
             />
         );
-        const bookmarkBtn = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkBtn = screen.getByTestId('bookmark-button');
         const icon = bookmarkBtn.querySelector('svg');
         // When bookmarked, it should have fill-green-600 class
         expect(icon?.className.baseVal.includes('fill-green-600')).toBeTruthy();
@@ -648,7 +650,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkBtn = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkBtn = screen.getByTestId('bookmark-button');
         const icon = bookmarkBtn.querySelector('svg');
         // When not bookmarked, it should not have fill initially visible
         expect(icon).toBeInTheDocument();
@@ -663,7 +665,7 @@ describe('MediaDetails - bookmarkMedia', () => {
             />
         );
 
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
         await userEvent.click(bookmarkButton);
 
         expect(push).toHaveBeenCalledWith('/login');
@@ -679,7 +681,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -700,7 +702,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={true}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -721,7 +723,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -739,7 +741,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -760,7 +762,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -783,7 +785,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -801,7 +803,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
         await userEvent.click(bookmarkButton); // second click while first is pending
@@ -818,7 +820,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -836,7 +838,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -854,7 +856,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 
@@ -873,7 +875,7 @@ describe('MediaDetails - bookmarkMedia', () => {
                 hasBookmarked={false}
             />
         );
-        const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
+        const bookmarkButton = screen.getByTestId('bookmark-button');
 
         await userEvent.click(bookmarkButton);
 

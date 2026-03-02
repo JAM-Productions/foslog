@@ -2,9 +2,10 @@ import { getUserListMetadata, getUserMediaListData } from '@/app/actions/user';
 import { BackButton } from '@/components/button/back-button';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { ListHeader } from '@/components/list/list-header.tsx';
+
 import { ListMediaContent } from '@/components/list/list-media-content';
 import { Metadata } from 'next';
+import { ListHeader } from '@/components/list/list-header';
 
 export async function generateMetadata({
     params,
