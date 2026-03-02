@@ -45,7 +45,6 @@ const mockedToast = vi.mocked(useToastStore);
 
 // mock child components
 import { ListColFormat } from '@/components/list/list-col-format';
-import { ListTableFormat } from '@/components/list/list-table-format';
 vi.mock('@/components/list/list-col-format', () => ({
     ListColFormat: vi.fn(() => <div data-testid="col-format" />),
 }));

@@ -230,7 +230,7 @@ describe('UserMediaLists', () => {
                 type: ListType.BOOKMARK,
             },
         ];
-        const { container } = render(
+        render(
             <UserMediaLists
                 mediaLists={lists}
                 userId="user1"
@@ -243,7 +243,7 @@ describe('UserMediaLists', () => {
 
     it('applies correct border styling to header', () => {
         const lists: MediaList[] = [];
-        const { container } = render(
+        render(
             <UserMediaLists
                 mediaLists={lists}
                 userId="user1"

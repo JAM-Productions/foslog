@@ -572,7 +572,7 @@ describe('MediaDetails - bookmarkMedia', () => {
         totalDislikes: 20,
     };
 
-    const mockTMP = vi.fn((key: string, params?: Record<string, unknown>) => {
+    const mockTMP = vi.fn((key: string) => {
         const translations: Record<string, string> = {
             toggleBookmarkFailed: 'toggleBookmarkFailed',
         };
@@ -629,7 +629,7 @@ describe('MediaDetails - bookmarkMedia', () => {
     });
 
     it('shows filled bookmark icon when hasBookmarked is true', () => {
-        const { container } = render(
+        render(
             <MediaDetails
                 media={mockMedia}
                 hasBookmarked={true}
@@ -642,7 +642,7 @@ describe('MediaDetails - bookmarkMedia', () => {
     });
 
     it('shows outline bookmark icon when hasBookmarked is false', () => {
-        const { container } = render(
+        render(
             <MediaDetails
                 media={mockMedia}
                 hasBookmarked={false}
@@ -848,14 +848,13 @@ describe('MediaDetails - bookmarkMedia', () => {
     it('updates bookmark state optimistically', async () => {
         (global.fetch as vi.Mock).mockResolvedValue({ ok: true });
 
-        const { rerender } = render(
+        render(
             <MediaDetails
                 media={mockMedia}
                 hasBookmarked={false}
             />
         );
         const bookmarkButton = screen.getByRole('button', { name: 'Bookmark' });
-        const initialIcon = bookmarkButton.querySelector('svg');
 
         await userEvent.click(bookmarkButton);
 

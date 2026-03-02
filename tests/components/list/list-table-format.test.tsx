@@ -1,15 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    ListTableFormat,
-    ListTableFormatProps,
-} from '@/components/list/list-table-format';
+import { ListTableFormat } from '@/components/list/list-table-format';
 import { MediaType } from '@/lib/store';
 
 // mock translations
 vi.mock('next-intl', () => ({
-    useTranslations: () => (key: string, params?: any) => {
+    useTranslations: () => (key: string) => {
         if (key === 'unknown') return 'unknown';
         return key;
     },

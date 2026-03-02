@@ -2,11 +2,9 @@
 
 import { useRouter } from '@/i18n/navigation';
 import { MediaType } from '@/lib/store';
-import { Bookmark, Trash2, User } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { Button } from '../button/button';
-import { useAuth } from '@/lib/auth/auth-provider';
 
 export interface ListTableFormatProps {
     mediaItems: {
@@ -33,7 +31,6 @@ export function ListTableFormat({
     const tLP = useTranslations('ListPage');
     const tMediaType = useTranslations('MediaTypes');
     const router = useRouter();
-    const { user: currentUser } = useAuth();
 
     return (
         <table className="w-full">

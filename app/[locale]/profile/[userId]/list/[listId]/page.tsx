@@ -46,7 +46,7 @@ export default async function ListPage({
 
     let listData: Awaited<ReturnType<typeof getUserMediaListData>>;
     try {
-        [listData] = await Promise.all([getUserMediaListData(userId, listId)]);
+        listData = await getUserMediaListData(userId, listId);
     } catch (error) {
         console.error(
             `[ListPage] Failed to load list data for userId: ${userId}, listId: ${listId}`,
