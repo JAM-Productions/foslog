@@ -412,6 +412,7 @@
             "steam": "Steam",
             "goodreads": "Goodreads"
         },
+        "close": "Close",
         "comingSoon": "Coming soon!",
         "letterboxd": {
             "instructionsTitle": "How to export your data from Letterboxd:",
@@ -422,7 +423,9 @@
             "dragAndDrop": "Drag & drop your reviews.csv file here, or click to select",
             "uploading": "Importing... {current} of {total}",
             "completed": "Import completed successfully!",
+            "completedWithErrors": "Import completed, but {failed} rows failed to import.",
             "error": "Error importing row {current}: {message}",
+            "parseError": "Failed to parse CSV: {message}",
             "noValidRows": "No valid reviews found in the CSV. Please make sure you selected the correct file.",
             "importing": "Importing...",
             "estimatedTime": "Estimated time: {time}"

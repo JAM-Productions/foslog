@@ -67,6 +67,9 @@ describe('ImportReviewsModal', () => {
             'importProfileButton': 'Import Reviews',
             'letterboxd.importing': 'Importing...',
             'letterboxd.completed': 'Completed!',
+            'letterboxd.completedWithErrors': 'Import completed, but {failed} rows failed to import.',
+            'letterboxd.parseError': 'Failed to parse CSV: {message}',
+            'close': 'Close',
             'comingSoon': 'Coming Soon',
         };
         return translations[key] || key;
@@ -95,7 +98,7 @@ describe('ImportReviewsModal', () => {
         expect(screen.getByRole('heading', { name: 'Import Reviews' })).toBeInTheDocument();
     });
 
-    it('displays lettersboxd tab by default', () => {
+    it('displays letterboxd tab by default', () => {
         render(<ImportReviewsModal />);
         expect(screen.getByText('Instructions')).toBeInTheDocument();
         expect(screen.getByText('Drag & Drop')).toBeInTheDocument();

@@ -23,13 +23,9 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        console.log('--- DB IMPORT ATTEMPT START ---');
-        console.log(body);
-
         const { Name, Year, Rating, Rewatch, Review: ReviewText } = body;
 
         if (!Name || !Year) {
-            console.log('FAILED: Missing Name or Year');
             return validationError(
                 'Name and Year are required to import a review from Letterboxd.'
             );
@@ -37,7 +33,6 @@ export async function POST(request: NextRequest) {
 
         const parsedYear = parseInt(Year, 10);
         if (isNaN(parsedYear)) {
-            console.log('FAILED: Invalid year format', Year);
             return validationError('Invalid year format');
         }
 
@@ -104,9 +99,6 @@ export async function POST(request: NextRequest) {
         }
 
         // 2. Check if the user already has a review for this media
-        console.log(
-            `Checking for existing review for user ${session.user.id} and media ${mediaItem.id}`
-        );
         const existingReview = await prisma.review.findFirst({
             where: {
                 mediaId: mediaItem.id,
@@ -121,7 +113,6 @@ export async function POST(request: NextRequest) {
 
         if (existingReview) {
             // If it exists, update it if it's a rewatch or if the existing one has less info
-            console.log('Found existing review. Updating...');
             await prisma.review.update({
                 where: { id: existingReview.id },
                 data: {
@@ -159,8 +150,6 @@ export async function POST(request: NextRequest) {
             reviewId: newReview.id,
             imported: true,
         });
-
-        console.log(`Created new review: ${newReview.id}`);
 
         return NextResponse.json(
             {

@@ -26,6 +26,7 @@ export default function ImportReviewsModal() {
     const [progress, setProgress] = useState({ current: 0, total: 0 });
     const [importError, setImportError] = useState<string | null>(null);
     const [importSuccess, setImportSuccess] = useState(false);
+    const [failedRows, setFailedRows] = useState(0);
 
     useBodyScrollLock(isModalOpen);
 
@@ -41,6 +42,7 @@ export default function ImportReviewsModal() {
             setProgress({ current: 0, total: 0 });
             setImportError(null);
             setImportSuccess(false);
+            setFailedRows(0);
         }, 300);
     };
 
@@ -90,6 +92,9 @@ export default function ImportReviewsModal() {
 
                 setIsImporting(true);
                 setProgress({ current: 0, total: rows.length });
+                setFailedRows(0);
+
+                let currentFailedRows = 0;
 
                 // Process sequentially
                 for (let i = 0; i < rows.length; i++) {
@@ -108,6 +113,7 @@ export default function ImportReviewsModal() {
                         );
 
                         if (!response.ok) {
+                            currentFailedRows++;
                             const errorData = await response.json();
                             console.error(
                                 'Error importing row',
@@ -116,19 +122,23 @@ export default function ImportReviewsModal() {
                             );
                         }
                     } catch (error) {
+                        currentFailedRows++;
                         console.error('Network error importing row', i, error);
                     }
 
                     setProgress({ current: i + 1, total: rows.length });
                 }
 
+                setFailedRows(currentFailedRows);
                 setIsImporting(false);
                 setImportSuccess(true);
                 router.refresh();
             },
             error: (error) => {
                 setIsParsing(false);
-                setImportError(`Failed to parse CSV: ${error.message}`);
+                setImportError(
+                    t('letterboxd.parseError', { message: error.message })
+                );
             },
         });
     };
@@ -243,16 +253,22 @@ export default function ImportReviewsModal() {
                 )}
 
                 {importSuccess && (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 rounded-lg bg-green-500/10 p-4 text-center text-green-600 dark:text-green-400">
+                    <div
+                        className={`animate-in fade-in slide-in-from-bottom-2 rounded-lg p-4 text-center ${failedRows > 0 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400' : 'bg-green-500/10 text-green-600 dark:text-green-400'}`}
+                    >
                         <p className="font-medium">
-                            {t('letterboxd.completed')}
+                            {failedRows > 0
+                                ? t('letterboxd.completedWithErrors', {
+                                      failed: failedRows,
+                                  })
+                                : t('letterboxd.completed')}
                         </p>
                         <Button
                             variant="outline"
                             className="mt-4 w-full"
                             onClick={handleClose}
                         >
-                            Close
+                            {t('close')}
                         </Button>
                     </div>
                 )}

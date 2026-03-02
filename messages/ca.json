@@ -412,6 +412,7 @@
             "steam": "Steam",
             "goodreads": "Goodreads"
         },
+        "close": "Tancar",
         "comingSoon": "Aviat disponible!",
         "letterboxd": {
             "instructionsTitle": "Com exportar les teves dades de Letterboxd:",
@@ -422,7 +423,9 @@
             "dragAndDrop": "Arrossega i deixa anar el teu arxiu reviews.csv aquí, o fes clic per seleccionar-lo",
             "uploading": "Important... {current} de {total}",
             "completed": "Importació completada amb èxit!",
+            "completedWithErrors": "Importació completada, però han fallat {failed} files.",
             "error": "Error a l'importar la fila {current}: {message}",
+            "parseError": "Error a l'analitzar el CSV: {message}",
             "noValidRows": "No s'han trobat ressenyes vàlides al CSV. Assegura't d'haver seleccionat l'arxiu correcte.",
             "importing": "Important...",
             "estimatedTime": "Temps estimat: {time}"
