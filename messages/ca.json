@@ -160,6 +160,11 @@
         "TermsOfServicePage": {
             "title": "Termes de Servei - Foslog",
             "description": "Llegeix els termes de servei de Foslog per entendre les regles i directrius per utilitzar la nostra plataforma."
+        },
+        "ListPage": {
+            "listNotFound": "Llista No Trobada - Foslog",
+            "listTitle": "{title} - Foslog",
+            "listDescription": "Consulta la llista {title} creada per {user} a Foslog."
         }
     },
     "Header": {
@@ -276,7 +281,10 @@
         "nameUpdateFailed": "Error al actualitzar el nom. Si us plau intenta-ho de nou.",
         "imageUpdated": "Foto de perfil actualitzada correctament!",
         "imageUpdateFailed": "Error al actualitzar la foto de perfil. Si us plau intenta-ho de nou.",
-        "fetchUsersFailed": "Error al obtenir els usuaris. Si us plau, torna-ho a provar."
+        "fetchUsersFailed": "Error al obtenir els usuaris. Si us plau, torna-ho a provar.",
+        "toggleBookmarkFailed": "Error al actualitzar el teu marcador. Si us plau, torna-ho a provar.",
+        "mediaRemovedFromList": "Mitjà eliminat de la llista amb èxit!",
+        "mediaRemoveFromListFailed": "Error al eliminar el mitjà de la llista. Si us plau, torna-ho a intentar."
     },
     "ProfilePage": {
         "loadError": "S'ha produït un error en carregar el perfil. Si us plau, torna-ho a provar més tard.",
@@ -297,9 +305,16 @@
         "follow": "Seguir",
         "unfollow": "Deixar de Seguir",
         "seeFollowers": "Veure Seguidors",
-        "seeFollowing": "Veure Seguits"
+        "seeFollowing": "Veure Seguits",
+        "yourLibrary": "La Teva Biblioteca",
+        "bookmarked": "Guardats",
+        "userLibrary": "Biblioteca",
+        "noLists": "{user} cap llista encara.",
+        "you": "No tens",
+        "thisUser": "Aquest usuari no té"
     },
     "MediaPage": {
+        "loadError": "S'ha produït un error en carregar el mitjà. Si us plau, torna-ho a provar més tard.",
         "reviews": "Ressenyes",
         "review": "Ressenya",
         "leaveReview": "Deixar una ressenya",
@@ -403,5 +418,20 @@
         "noFollowers": "No hi ha seguidors per mostrar",
         "noFollowing": "No hi ha usuaris seguits per mostrar",
         "follow": "Seguir"
+    },
+    "ListPage": {
+        "loadError": "S'ha producido un error al cargar la lista. Por favor, inténtalo de nuevo más tarde.",
+        "itemsAdded": "{count} elements afegits",
+        "addedDate": "Afegit el {date}",
+        "dateAdded": "Data d'afegit",
+        "type": "Tipus de mitjà",
+        "name": "Nom del mitjà",
+        "yearReleased": "Any de llançament",
+        "unknown": "Desconegut",
+        "deleteMediaFromListTitle": "Eliminar {title} de la llista",
+        "deleteMediaFromListDescription": "Estàs segur que vols eliminar aquest mitjà de la llista? Aquesta acció no es pot desfer.",
+        "emptyList": "Aquesta llista encara no té elements afegits.",
+        "searchMedia": "Buscar mitjans",
+        "list": "Llista"
     }
 }

@@ -1,4 +1,5 @@
 import {
+    getUserMediaLists,
     getUserProfile,
     getUserReviews,
     getUserStats,
@@ -11,6 +12,7 @@ import Pagination from '@/components/pagination/pagination';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { UserMediaLists } from '@/components/user/user-media-lists';
 
 export async function generateMetadata({
     params,
@@ -52,14 +54,17 @@ export default async function ProfilePage({
     let user: Awaited<ReturnType<typeof getUserProfile>>,
         reviewsData: Awaited<ReturnType<typeof getUserReviews>>,
         stats: Awaited<ReturnType<typeof getUserStats>>,
-        isUserFollowing: Awaited<ReturnType<typeof isFollowedByCurrentUser>>;
+        isUserFollowing: Awaited<ReturnType<typeof isFollowedByCurrentUser>>,
+        mediaLists: Awaited<ReturnType<typeof getUserMediaLists>>;
     try {
-        [user, reviewsData, stats, isUserFollowing] = await Promise.all([
-            getUserProfile(userId),
-            getUserReviews(userId, currentPage, pageSize),
-            getUserStats(userId),
-            isFollowedByCurrentUser(userId),
-        ]);
+        [user, reviewsData, stats, isUserFollowing, mediaLists] =
+            await Promise.all([
+                getUserProfile(userId),
+                getUserReviews(userId, currentPage, pageSize),
+                getUserStats(userId),
+                isFollowedByCurrentUser(userId),
+                getUserMediaLists(userId),
+            ]);
     } catch (error) {
         console.error(
             `[ProfilePage] Failed to load profile for userId: ${userId}`,
@@ -86,6 +91,11 @@ export default async function ProfilePage({
                     user={user}
                     stats={stats}
                     isUserFollowing={isUserFollowing}
+                />
+
+                <UserMediaLists
+                    mediaLists={mediaLists}
+                    userId={userId}
                 />
 
                 <div className="mb-6 flex items-center justify-between border-b">

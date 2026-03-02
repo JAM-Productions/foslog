@@ -27,6 +27,7 @@ model User {
   followers     Follow[]  @relation("UserFollowers")
   totalFollowers Int @default(0)
   totalFollowing Int @default(0)
+  lists         List[]
 
   @@map("users")
 }
@@ -97,6 +98,7 @@ model MediaItem {
   totalDislikes Int       @default(0)
   totalLikes    Int       @default(0)
   reviews       Review[]
+  listItems     ListMediaItem[]
 
   @@map("media_items")
 }
@@ -164,6 +166,36 @@ model Follow {
   @@map("follows")
 }
 
+model List {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  image       String?
+  userId      String
+  type        ListType @default(LIST)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaItems  ListMediaItem[]
+
+  @@index([userId])
+  @@map("lists")
+}
+
+model ListMediaItem {
+  id        String    @id @default(cuid())
+  listId    String
+  mediaId   String
+  createdAt DateTime  @default(now())
+  list      List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, mediaId])
+  @@index([listId])
+  @@index([mediaId])
+  @@map("list_media_items")
+}
+
 model ApiToken {
   id        String   @id @default(cuid())
   token     String   @unique
@@ -184,4 +216,11 @@ enum MediaType {
   MUSIC
 
   @@map("media_type")
+}
+
+enum ListType {
+  BOOKMARK
+  LIST
+
+  @@map("list_type")
 }
