@@ -12,6 +12,8 @@ import { useRouter } from '@/i18n/navigation';
 import { startTransition, useOptimistic, useState } from 'react';
 import { useToastStore } from '@/lib/toast-store';
 import { useFollowsModalStore } from '@/lib/follows-modal-store';
+import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
+import { DownloadIcon } from 'lucide-react';
 
 interface ProfileHeaderProps {
     user: User;
@@ -27,6 +29,7 @@ export function ProfileHeader({
     const t = useTranslations('ProfilePage');
     const tToast = useTranslations('Toast');
     const tGenres = useTranslations('MediaGenres');
+    const tImport = useTranslations('ImportReviewsModal');
     const { user: currentUser } = useAuth();
     const router = useRouter();
     const [isFollowing, setIsFollowing] = useState(false);
@@ -36,6 +39,7 @@ export function ProfileHeader({
     );
     const { showToast } = useToastStore();
     const { showModal } = useFollowsModalStore();
+    const { showModal: showImportModal } = useImportReviewsModalStore();
 
     const optimisticTotalFollowers =
         isUserFollowing === optimisticFollowing
@@ -186,6 +190,21 @@ export function ProfileHeader({
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Import Reviews Section */}
+                            {currentUser?.id === user.id && (
+                                <div className="mt-6">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={showImportModal}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <DownloadIcon className="h-4 w-4" />
+                                        {tImport('importProfileButton')}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {currentUser && currentUser.id !== user.id && (
