@@ -328,7 +328,11 @@ export default function ImportReviewsModal() {
                                     activeTab === tab
                                         ? 'text-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
-                                } ${isImporting ? 'cursor-not-allowed opacity-50' : ''} `}
+                                } ${
+                                    isImporting
+                                        ? 'cursor-not-allowed opacity-50'
+                                        : 'cursor-pointer'
+                                } `}
                             >
                                 {t(`tabs.${tab}`)}
                                 {activeTab === tab && (
