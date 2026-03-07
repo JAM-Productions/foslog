@@ -282,6 +282,8 @@
         "imageUpdated": "Foto de perfil actualizada correctamente!",
         "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo.",
         "fetchUsersFailed": "Error al obtener usuarios. Por favor inténtalo de nuevo.",
+        "bookmarkAdded": "¡Contenido guardado exitosamente!",
+        "bookmarkRemoved": "¡Contenido eliminado de guardados!",
         "toggleBookmarkFailed": "Error al actualizar tu marcador. Por favor inténtalo de nuevo.",
         "mediaRemovedFromList": "Medio eliminado de la lista exitosamente!",
         "mediaRemoveFromListFailed": "Error al eliminar el medio de la lista. Por favor inténtalo de nuevo."

@@ -714,7 +714,7 @@ describe('MediaDetails - bookmarkMedia', () => {
         });
     });
 
-    it('calls router.refresh() on successful bookmark', async () => {
+    it('calls router.refresh() and shows success toast on successful bookmark', async () => {
         (global.fetch as vi.Mock).mockResolvedValue({ ok: true });
 
         render(
@@ -729,6 +729,26 @@ describe('MediaDetails - bookmarkMedia', () => {
 
         await waitFor(() => {
             expect(refresh).toHaveBeenCalled();
+            expect(showToast).toHaveBeenCalledWith('bookmarkAdded', 'success');
+        });
+    });
+
+    it('calls router.refresh() and shows success toast on successful unbookmark', async () => {
+        (global.fetch as vi.Mock).mockResolvedValue({ ok: true });
+
+        render(
+            <MediaDetails
+                media={mockMedia}
+                hasBookmarked={true}
+            />
+        );
+        const bookmarkButton = screen.getByTestId('bookmark-button');
+
+        await userEvent.click(bookmarkButton);
+
+        await waitFor(() => {
+            expect(refresh).toHaveBeenCalled();
+            expect(showToast).toHaveBeenCalledWith('bookmarkRemoved', 'success');
         });
     });
 
