@@ -40,6 +40,7 @@ export function CommentForm({ reviewId }: CommentFormProps) {
                 body: JSON.stringify({ reviewId, comment }),
             });
             if (response.ok) {
+                setComment('');
                 showToast(tToast('commentCreated'), 'success');
                 router.refresh();
             } else {
@@ -93,7 +94,7 @@ export function CommentForm({ reviewId }: CommentFormProps) {
                     className={`w-full cursor-pointer sm:w-auto ${
                         isSubmitting ? 'text-transparent' : ''
                     }`}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !comment.trim()}
                 >
                     {tRP('sendComment')}
                 </Button>
