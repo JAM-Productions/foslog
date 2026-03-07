@@ -47,30 +47,29 @@ export const getMedias = async (
             ];
         }
 
-        let orderBy: Prisma.MediaItemOrderByWithRelationInput[] = [
-            { averageRating: 'desc' },
-            { totalReviews: 'desc' },
-            { id: 'asc' },
-        ];
+        const orderBy: Prisma.MediaItemOrderByWithRelationInput[] = [];
 
-        if (sort === 'top-rated') {
-            orderBy = [
-                { averageRating: 'desc' },
-                { totalReviews: 'desc' },
-                { id: 'asc' },
-            ];
-        } else if (sort === 'newest') {
-            orderBy = [{ createdAt: 'desc' }, { id: 'asc' }];
-        } else if (sort === 'most-reviewed') {
-            orderBy = [{ totalReviews: 'desc' }, { id: 'asc' }];
-        } else if (sort === 'trending' || !sort) {
-            // Default: Trending (recently updated/active)
-            orderBy = [
-                { updatedAt: 'desc' },
-                { totalReviews: 'desc' },
-                { id: 'asc' },
-            ];
+        switch (sort) {
+            case 'top-rated':
+                orderBy.push(
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' }
+                );
+                break;
+            case 'newest':
+                orderBy.push({ createdAt: 'desc' });
+                break;
+            case 'most-reviewed':
+                orderBy.push({ totalReviews: 'desc' });
+                break;
+            case 'trending':
+            default:
+                orderBy.push({ updatedAt: 'desc' }, { totalReviews: 'desc' });
+                break;
         }
+
+        // Always add id as a stable tiebreaker for pagination
+        orderBy.push({ id: 'asc' });
 
         const [mediaItems, total] = await prisma.$transaction([
             prisma.mediaItem.findMany({
