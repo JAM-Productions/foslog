@@ -5,12 +5,18 @@ import { headers } from 'next/headers';
 export default async function HomePage({
     searchParams,
 }: {
-    searchParams: Promise<{ page?: string; type?: string; search?: string }>;
+    searchParams: Promise<{
+        page?: string;
+        type?: string;
+        search?: string;
+        sort?: string;
+    }>;
 }) {
     const params = await searchParams;
     const page = Number(params.page) || 1;
     const mediaType = params.type || 'all';
     const searchQuery = params.search || '';
+    const sort = params.sort || 'trending';
 
     const headersList = await headers();
     const userAgent = headersList.get('user-agent') || '';
@@ -24,7 +30,8 @@ export default async function HomePage({
         page,
         pageSize,
         mediaType,
-        searchQuery
+        searchQuery,
+        sort
     );
 
     const globalStats = await getGlobalMediaStats();
@@ -37,6 +44,7 @@ export default async function HomePage({
             pageSize={pageSize}
             selectedMediaType={mediaType}
             searchQuery={searchQuery}
+            selectedSort={sort}
             globalStats={globalStats}
             isMobile={isMobile}
         />

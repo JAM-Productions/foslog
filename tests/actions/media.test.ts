@@ -90,7 +90,7 @@ describe('getMedias Server Action', () => {
                 skip: 0,
                 take: 12,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],
@@ -115,7 +115,7 @@ describe('getMedias Server Action', () => {
                 skip: 12,
                 take: 12,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],
@@ -137,7 +137,7 @@ describe('getMedias Server Action', () => {
                 skip: 20,
                 take: 10,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],
@@ -159,7 +159,7 @@ describe('getMedias Server Action', () => {
                 skip: 0,
                 take: 12,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],
@@ -181,7 +181,7 @@ describe('getMedias Server Action', () => {
                 skip: 0,
                 take: 12,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],
@@ -190,7 +190,7 @@ describe('getMedias Server Action', () => {
     });
 
     describe('Sorting', () => {
-        it('orders by averageRating descending, then totalReviews descending, then id ascending', async () => {
+        it('orders by updatedAt descending, then totalReviews descending, then id ascending by default (trending)', async () => {
             (
                 prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
             ).mockResolvedValue(mockMediaItems);
@@ -203,10 +203,65 @@ describe('getMedias Server Action', () => {
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
                     orderBy: [
+                        { updatedAt: 'desc' },
+                        { totalReviews: 'desc' },
+                        { id: 'asc' },
+                    ],
+                })
+            );
+        });
+
+        it('orders by averageRating descending, then totalReviews descending, then id ascending when sort is top-rated', async () => {
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
+
+            await getMedias(1, 12, 'all', '', 'top-rated');
+
+            expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderBy: [
                         { averageRating: 'desc' },
                         { totalReviews: 'desc' },
                         { id: 'asc' },
                     ],
+                })
+            );
+        });
+
+        it('orders by createdAt descending, then id ascending when sort is newest', async () => {
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
+
+            await getMedias(1, 12, 'all', '', 'newest');
+
+            expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+                })
+            );
+        });
+
+        it('orders by totalReviews descending, then id ascending when sort is most-reviewed', async () => {
+            (
+                prisma.mediaItem.findMany as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(mockMediaItems);
+            (
+                prisma.mediaItem.count as ReturnType<typeof vi.fn>
+            ).mockResolvedValue(2);
+
+            await getMedias(1, 12, 'all', '', 'most-reviewed');
+
+            expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderBy: [{ totalReviews: 'desc' }, { id: 'asc' }],
                 })
             );
         });
@@ -280,7 +335,7 @@ describe('getMedias Server Action', () => {
                 prisma.mediaItem.count as ReturnType<typeof vi.fn>
             ).mockResolvedValue(3);
 
-            await getMedias(1, 12, 'game');
+            await getMedias(1, 12, 'game', '', 'top-rated');
 
             // Verify that the orderBy has the exact structure with id as the final tiebreaker
             expect(prisma.mediaItem.findMany).toHaveBeenCalledWith(
@@ -413,7 +468,7 @@ describe('getMedias Server Action', () => {
                 skip: 0,
                 take: 6,
                 orderBy: [
-                    { averageRating: 'desc' },
+                    { updatedAt: 'desc' },
                     { totalReviews: 'desc' },
                     { id: 'asc' },
                 ],

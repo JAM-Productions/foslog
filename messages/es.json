@@ -437,6 +437,13 @@
         "searchMedia": "Buscar medios",
         "list": "Lista"
     },
+    "Sort": {
+        "sortBy": "Ordenar por",
+        "trending": "Tendencia",
+        "topRated": "Mejor valorados",
+        "newest": "Más recientes",
+        "mostReviewed": "Con más reseñas"
+    },
     "ImportReviewsModal": {
         "title": "Importar Reseñas",
         "description": "Selecciona la plataforma desde la que importar tus reseñas. Actualmente solo soportamos importar desde archivo CSV de Letterboxd.",

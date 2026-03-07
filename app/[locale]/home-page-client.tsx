@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { SafeMediaItem } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
+import Select from '@/components/input/select';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
@@ -19,6 +20,7 @@ export default function HomePageClient({
     pageSize,
     selectedMediaType,
     searchQuery,
+    selectedSort,
     globalStats,
     isMobile,
 }: {
@@ -28,6 +30,7 @@ export default function HomePageClient({
     pageSize: number;
     selectedMediaType: string;
     searchQuery: string;
+    selectedSort: string;
     globalStats: {
         topRated: number;
         recentlyAdded: number;
@@ -39,6 +42,7 @@ export default function HomePageClient({
     const tStats = useTranslations('Stats');
     const tSearch = useTranslations('Search');
     const tCTA = useTranslations('CTA');
+    const tSort = useTranslations('Sort');
     const router = useRouter();
     const { setIsReviewModalOpen } = useAppStore();
     const { user } = useAuth();
@@ -69,14 +73,48 @@ export default function HomePageClient({
         subtitle: string;
         icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     }) => (
-        <div className="mb-6 flex items-center gap-3">
-            <div className="bg-primary/10 rounded-lg p-2">
-                <Icon className="text-primary h-5 w-5" />
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-3">
+                <div className="bg-primary/10 rounded-lg p-2">
+                    <Icon className="text-primary h-5 w-5" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        {title}
+                    </h2>
+                    <p className="text-muted-foreground">{subtitle}</p>
+                </div>
             </div>
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
-                <p className="text-muted-foreground">{subtitle}</p>
-            </div>
+            {!searchQuery && (
+                <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground hidden text-sm whitespace-nowrap md:inline">
+                        {tSort('sortBy')}:
+                    </span>
+                    <Select
+                        className="w-full sm:w-48"
+                        value={selectedSort}
+                        options={[
+                            { value: 'trending', label: tSort('trending') },
+                            { value: 'top-rated', label: tSort('topRated') },
+                            { value: 'newest', label: tSort('newest') },
+                            {
+                                value: 'most-reviewed',
+                                label: tSort('mostReviewed'),
+                            },
+                        ]}
+                        onChange={(value) => {
+                            const params = new URLSearchParams();
+                            if (selectedMediaType !== 'all') {
+                                params.set('type', selectedMediaType);
+                            }
+                            if (value !== 'trending') {
+                                params.set('sort', value);
+                            }
+                            router.push(`/?${params.toString()}`);
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 

@@ -437,6 +437,13 @@
         "searchMedia": "Search for media",
         "list": "List"
     },
+    "Sort": {
+        "sortBy": "Sort by",
+        "trending": "Trending",
+        "topRated": "Top Rated",
+        "newest": "Newest",
+        "mostReviewed": "Most Reviewed"
+    },
     "ImportReviewsModal": {
         "title": "Import Reviews",
         "description": "Select the platform to import your reviews from. Currently, we only support Letterboxd CSV imports.",
