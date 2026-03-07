@@ -28,11 +28,18 @@ export default function FollowsModal() {
 
     const [followers, setFollowers] = useState<UserWithFollowStatus[]>([]);
     const [following, setFollowing] = useState<UserWithFollowStatus[]>([]);
+    const [followersPage, setFollowersPage] = useState(1);
+    const [followingPage, setFollowingPage] = useState(1);
+    const [hasMoreFollowers, setHasMoreFollowers] = useState(false);
+    const [hasMoreFollowing, setHasMoreFollowing] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [pendingUserId, setPendingUserId] = useState<string | null>(null);
 
     const usersList = modal.behavior === 'followers' ? followers : following;
+    const hasMore =
+        modal.behavior === 'followers' ? hasMoreFollowers : hasMoreFollowing;
     const emptyMessage =
         modal.behavior === 'followers'
             ? tFollowsModal('noFollowers')
@@ -89,36 +96,80 @@ export default function FollowsModal() {
     const clearStates = () => {
         setFollowers([]);
         setFollowing([]);
+        setFollowersPage(1);
+        setFollowingPage(1);
+        setHasMoreFollowers(false);
+        setHasMoreFollowing(false);
         setIsLoading(true);
+        setIsFetchingMore(false);
         setPendingUserId(null);
     };
 
-    useEffect(() => {
-        const fetchFollowData = async () => {
-            try {
+    const fetchFollowData = async (
+        type?: 'followers' | 'following',
+        page: number = 1
+    ) => {
+        try {
+            if (page === 1) {
                 setIsLoading(true);
-                const response = await fetch(
-                    `/api/user/${modal.userId}/follow`
-                );
-                if (!response.ok) {
-                    throw new Error('Failed to fetch follow data');
-                }
-                const data = await response.json();
-                setFollowers(data.followers);
-                setFollowing(data.following);
-            } catch {
-                showToast(tToast('fetchUsersFailed'), 'error');
-            } finally {
-                setIsLoading(false);
+            } else {
+                setIsFetchingMore(true);
             }
-        };
 
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                pageSize: '50',
+            });
+            if (type) queryParams.append('type', type);
+
+            const response = await fetch(
+                `/api/user/${modal.userId}/follow?${queryParams.toString()}`
+            );
+            if (!response.ok) {
+                throw new Error('Failed to fetch follow data');
+            }
+            const data = await response.json();
+
+            if (!type || type === 'followers') {
+                setFollowers((prev) =>
+                    page === 1 ? data.followers : [...prev, ...data.followers]
+                );
+                setHasMoreFollowers(data.hasMoreFollowers);
+            }
+            if (!type || type === 'following') {
+                setFollowing((prev) =>
+                    page === 1 ? data.following : [...prev, ...data.following]
+                );
+                setHasMoreFollowing(data.hasMoreFollowing);
+            }
+        } catch {
+            showToast(tToast('fetchUsersFailed'), 'error');
+        } finally {
+            setIsLoading(false);
+            setIsFetchingMore(false);
+        }
+    };
+
+    useEffect(() => {
         if (modal.isOpen && modal.userId && currentUser) {
             fetchFollowData();
         } else {
             setIsLoading(false);
         }
-    }, [modal.isOpen]);
+    }, [modal.isOpen, modal.userId, currentUser]);
+
+    const handleLoadMore = () => {
+        const nextPage =
+            modal.behavior === 'followers'
+                ? followersPage + 1
+                : followingPage + 1;
+        if (modal.behavior === 'followers') {
+            setFollowersPage(nextPage);
+        } else {
+            setFollowingPage(nextPage);
+        }
+        fetchFollowData(modal.behavior, nextPage);
+    };
 
     useBodyScrollLock(modal.isOpen);
 
@@ -258,6 +309,21 @@ export default function FollowsModal() {
                                     </div>
                                 </div>
                             ))}
+
+                            {hasMore && (
+                                <div className="mt-4 flex justify-center">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleLoadMore}
+                                        disabled={isFetchingMore}
+                                    >
+                                        {isFetchingMore
+                                            ? tFollowsModal('loading')
+                                            : tFollowsModal('loadMore')}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

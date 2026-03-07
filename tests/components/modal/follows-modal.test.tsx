@@ -33,6 +33,8 @@ vi.mock('next-intl', () => ({
                 follow: 'Follow',
                 noFollowers: 'No followers to show',
                 noFollowing: 'No following to show',
+                loadMore: 'Load More',
+                loading: 'Loading...',
             },
             Toast: {
                 toggleFollowFailed: 'Failed to update follow status',
@@ -949,9 +951,80 @@ describe('FollowsModal', () => {
 
             await waitFor(() => {
                 expect(global.fetch).toHaveBeenCalledWith(
-                    '/api/user/user-123/follow'
+                    expect.stringContaining('/api/user/user-123/follow')
                 );
             });
+        });
+
+        it('shows load more button when there is more data', async () => {
+            (global.fetch as any).mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({
+                    followers: mockFollowers,
+                    following: mockFollowing,
+                    hasMoreFollowers: true,
+                    hasMoreFollowing: false,
+                }),
+            });
+
+            render(<FollowsModal />);
+
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('button', { name: 'Load More' })
+                ).toBeInTheDocument();
+            });
+        });
+
+        it('fetches more data when load more button is clicked', async () => {
+            (global.fetch as any)
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        followers: mockFollowers,
+                        following: mockFollowing,
+                        hasMoreFollowers: true,
+                        hasMoreFollowing: false,
+                    }),
+                })
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: async () => ({
+                        followers: [
+                            {
+                                id: 'follower-3',
+                                name: 'Follower Three',
+                                email: 'follower3@example.com',
+                                image: null,
+                                isFollowing: false,
+                            },
+                        ],
+                        following: [],
+                        hasMoreFollowers: false,
+                        hasMoreFollowing: false,
+                    }),
+                });
+
+            const user = userEvent.setup();
+            render(<FollowsModal />);
+
+            await waitFor(() => {
+                expect(
+                    screen.getByRole('button', { name: 'Load More' })
+                ).toBeInTheDocument();
+            });
+
+            await user.click(screen.getByRole('button', { name: 'Load More' }));
+
+            await waitFor(() => {
+                expect(screen.getByText('Follower Three')).toBeInTheDocument();
+                expect(screen.getByText('Follower One')).toBeInTheDocument(); // Previous data should still be there
+            });
+
+            const fetchCalls = (global.fetch as any).mock.calls;
+            const secondFetchCall = fetchCalls[1];
+            expect(secondFetchCall[0]).toContain('page=2');
+            expect(secondFetchCall[0]).toContain('type=followers');
         });
 
         it('does not fetch data when modal is closed', () => {
