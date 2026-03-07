@@ -436,5 +436,33 @@
         "emptyList": "This list doesn't have any media items yet.",
         "searchMedia": "Search for media",
         "list": "List"
+    },
+    "ImportReviewsModal": {
+        "title": "Import Reviews",
+        "description": "Select the platform to import your reviews from. Currently, we only support Letterboxd CSV imports.",
+        "tabs": {
+            "letterboxd": "Letterboxd",
+            "steam": "Steam",
+            "goodreads": "Goodreads"
+        },
+        "close": "Close",
+        "comingSoon": "Coming soon!",
+        "letterboxd": {
+            "instructionsTitle": "How to export your data from Letterboxd:",
+            "step1": "Go to Account settings > Data > Export Data",
+            "step2": "Tap on Download a ZIP",
+            "step3": "Unzip the file and look for the reviews.csv file",
+            "step4": "Select the reviews.csv file and let the magic happen!",
+            "dragAndDrop": "Drag & drop your reviews.csv file here, or click to select",
+            "uploading": "Importing... {current} of {total}",
+            "completed": "Import completed successfully!",
+            "completedWithErrors": "Import completed, but {failed} rows failed to import.",
+            "error": "Error importing row {current}: {message}",
+            "parseError": "Failed to parse CSV: {message}",
+            "noValidRows": "No valid reviews found in the CSV. Please make sure you selected the correct file.",
+            "importing": "Importing...",
+            "estimatedTime": "Estimated time: {time}"
+        },
+        "importProfileButton": "Import Reviews"
     }
 }

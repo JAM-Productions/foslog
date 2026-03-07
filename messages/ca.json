@@ -436,5 +436,33 @@
         "emptyList": "Aquesta llista encara no té elements afegits.",
         "searchMedia": "Buscar mitjans",
         "list": "Llista"
+    },
+    "ImportReviewsModal": {
+        "title": "Importar Ressenyes",
+        "description": "Selecciona la plataforma des de la qual importar les teves ressenyes. Actualment només suportem importar des d'arxiu CSV de Letterboxd.",
+        "tabs": {
+            "letterboxd": "Letterboxd",
+            "steam": "Steam",
+            "goodreads": "Goodreads"
+        },
+        "close": "Tancar",
+        "comingSoon": "Aviat disponible!",
+        "letterboxd": {
+            "instructionsTitle": "Com exportar les teves dades de Letterboxd:",
+            "step1": "Ves a Configuració del compte > Dades > Exportar Dades",
+            "step2": "Fes clic a Descarregar un ZIP",
+            "step3": "Descomprimeix l'arxiu i busca l'arxiu reviews.csv",
+            "step4": "Selecciona l'arxiu reviews.csv i deixa que la màgia passi",
+            "dragAndDrop": "Arrossega i deixa anar el teu arxiu reviews.csv aquí, o fes clic per seleccionar-lo",
+            "uploading": "Important... {current} de {total}",
+            "completed": "Importació completada amb èxit!",
+            "completedWithErrors": "Importació completada, però han fallat {failed} files.",
+            "error": "Error a l'importar la fila {current}: {message}",
+            "parseError": "Error a l'analitzar el CSV: {message}",
+            "noValidRows": "No s'han trobat ressenyes vàlides al CSV. Assegura't d'haver seleccionat l'arxiu correcte.",
+            "importing": "Important...",
+            "estimatedTime": "Temps estimat: {time}"
+        },
+        "importProfileButton": "Importar Ressenyes"
     }
 }
