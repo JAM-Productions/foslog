@@ -53,7 +53,7 @@ export default function ConfigModal() {
             showToast(tToast('accountDeleted'), 'success');
             hideModal();
             setIsConfigModalOpen(false);
-            router.push('/');
+            await Promise.all([refetchSession(), router.push('/')]);
         } catch (error) {
             showToast(tToast('accountDeleteFailed'), 'error');
             console.error('Error deleting account:', error);
