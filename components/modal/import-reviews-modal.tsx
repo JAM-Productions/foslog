@@ -3,19 +3,20 @@
 import { useTranslations } from 'next-intl';
 import Modal from './modal';
 import { useRouter } from '@/i18n/navigation';
-import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { useState } from 'react';
 import { Button } from '../button/button';
 import { XIcon, UploadCloudIcon } from 'lucide-react';
 import Papa from 'papaparse';
+import { useAppStore } from '@/lib/store';
 
 type TabType = 'letterboxd' | 'steam' | 'goodreads';
 
 export default function ImportReviewsModal() {
     const t = useTranslations('ImportReviewsModal');
     const router = useRouter();
-    const { isModalOpen, hideModal } = useImportReviewsModalStore();
+    const { isImportReviewsModalOpen, setIsImportReviewsModalOpen } =
+        useAppStore();
     const [activeTab, setActiveTab] = useState<TabType>('letterboxd');
 
     // Feature state
@@ -28,11 +29,11 @@ export default function ImportReviewsModal() {
     const [importSuccess, setImportSuccess] = useState(false);
     const [failedRows, setFailedRows] = useState(0);
 
-    useBodyScrollLock(isModalOpen);
+    useBodyScrollLock(isImportReviewsModalOpen);
 
     const handleClose = () => {
         if (isImporting) return; // Prevent closing while importing
-        hideModal();
+        setIsImportReviewsModalOpen(false);
         // Reset state after a short delay so the animation finishes first
         setTimeout(() => {
             setActiveTab('letterboxd');
@@ -289,7 +290,7 @@ export default function ImportReviewsModal() {
     );
 
     return (
-        <Modal isModalOpen={isModalOpen}>
+        <Modal isModalOpen={isImportReviewsModalOpen}>
             <div className="flex h-full w-full flex-col">
                 <div className="relative mb-6 flex w-full flex-col items-center justify-between text-center">
                     <h1

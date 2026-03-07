@@ -2,12 +2,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import ImportReviewsModal from '@/components/modal/import-reviews-modal';
-import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
+import { useAppStore } from '@/lib/store';
 import { useTranslations } from 'next-intl';
 import Papa from 'papaparse';
 
-vi.mock('@/lib/import-reviews-modal-store', () => ({
-    useImportReviewsModalStore: vi.fn(),
+vi.mock('@/lib/store', () => ({
+    useAppStore: vi.fn(),
 }));
 
 vi.mock('next-intl', () => ({
@@ -50,9 +50,8 @@ vi.mock('@/components/modal/modal', () => ({
 }));
 
 describe('ImportReviewsModal', () => {
-    const mockShowModal = vi.fn();
     const mockHideModal = vi.fn();
-    const mockedUseImportReviewsModalStore = vi.mocked(useImportReviewsModalStore);
+    const mockedUseAppStore = vi.mocked(useAppStore);
     const mockedUseTranslations = vi.mocked(useTranslations);
 
     const mockT = vi.fn((key: string) => {
@@ -81,11 +80,10 @@ describe('ImportReviewsModal', () => {
 
         mockedUseTranslations.mockReturnValue(mockT as unknown as ReturnType<typeof useTranslations>);
 
-        mockedUseImportReviewsModalStore.mockReturnValue({
-            isModalOpen: true,
-            showModal: mockShowModal,
-            hideModal: mockHideModal,
-        } as unknown as ReturnType<typeof useImportReviewsModalStore>);
+        mockedUseAppStore.mockReturnValue({
+            isImportReviewsModalOpen: true,
+            setIsImportReviewsModalOpen: mockHideModal,
+        } as unknown as ReturnType<typeof useAppStore>);
     });
 
     afterEach(() => {

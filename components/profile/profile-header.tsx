@@ -1,6 +1,6 @@
 'use client';
 
-import { User } from '@/lib/store';
+import { useAppStore, User } from '@/lib/store';
 import { UserStats } from '@/app/actions/user';
 import { RatingDistribution } from './rating-distribution';
 import { UserIcon } from 'lucide-react';
@@ -12,7 +12,6 @@ import { useRouter } from '@/i18n/navigation';
 import { startTransition, useOptimistic, useState } from 'react';
 import { useToastStore } from '@/lib/toast-store';
 import { useFollowsModalStore } from '@/lib/follows-modal-store';
-import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
 import { DownloadIcon } from 'lucide-react';
 
 interface ProfileHeaderProps {
@@ -39,7 +38,7 @@ export function ProfileHeader({
     );
     const { showToast } = useToastStore();
     const { showModal } = useFollowsModalStore();
-    const { showModal: showImportModal } = useImportReviewsModalStore();
+    const { setIsImportReviewsModalOpen } = useAppStore();
 
     const optimisticTotalFollowers =
         isUserFollowing === optimisticFollowing
@@ -197,7 +196,9 @@ export function ProfileHeader({
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={showImportModal}
+                                        onClick={() =>
+                                            setIsImportReviewsModalOpen(true)
+                                        }
                                         className="flex items-center gap-2"
                                     >
                                         <DownloadIcon className="h-4 w-4" />
