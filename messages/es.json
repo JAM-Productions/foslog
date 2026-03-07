@@ -160,6 +160,11 @@
         "TermsOfServicePage": {
             "title": "Términos de Servicio - Foslog",
             "description": "Lee los términos de servicio de Foslog para entender las reglas y pautas para usar nuestra plataforma."
+        },
+        "ListPage": {
+            "listNotFound": "Lista No Encontrada - Foslog",
+            "listTitle": "{title} - Foslog",
+            "listDescription": "Ver los elementos añadidos a {title} por {user} en Foslog."
         }
     },
     "Header": {
@@ -276,7 +281,10 @@
         "nameUpdateFailed": "Fallo al actualizar el nombre. Por favor inténtalo de nuevo.",
         "imageUpdated": "Foto de perfil actualizada correctamente!",
         "imageUpdateFailed": "Fallo al actualizar la foto de perfil. Por favor inténtalo de nuevo.",
-        "fetchUsersFailed": "Error al obtener usuarios. Por favor inténtalo de nuevo."
+        "fetchUsersFailed": "Error al obtener usuarios. Por favor inténtalo de nuevo.",
+        "toggleBookmarkFailed": "Error al actualizar tu marcador. Por favor inténtalo de nuevo.",
+        "mediaRemovedFromList": "Medio eliminado de la lista exitosamente!",
+        "mediaRemoveFromListFailed": "Error al eliminar el medio de la lista. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "loadError": "Se produjo un error al cargar el perfil. Por favor, inténtalo de nuevo más tarde.",
@@ -297,9 +305,17 @@
         "follow": "Seguir",
         "unfollow": "Dejar de Seguir",
         "seeFollowers": "Ver Seguidores",
-        "seeFollowing": "Ver Siguiendo"
+        "seeFollowing": "Ver Siguiendo",
+        "yourLibrary": "Tu Biblioteca",
+        "bookmarked": "Guardados",
+        "userLibrary": "Biblioteca",
+        "noLists": "{user} listas todavía.",
+        "you": "No tienes",
+        "thisUser": "Este usuario no tiene",
+        "viewProfile": "Ver perfil de {name}"
     },
     "MediaPage": {
+        "loadError": "Se produjo un error al cargar el medio. Por favor, inténtalo de nuevo más tarde.",
         "reviews": "Reseñas",
         "review": "Reseña",
         "leaveReview": "Dejar una reseña",
@@ -321,7 +337,9 @@
         "noPoster": "No hay póster",
         "updateReview": "Editar Reseña",
         "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez",
-        "toggleLike": "Alternar Me gusta"
+        "toggleLike": "Alternar Me gusta",
+        "bookmark": "Marcar",
+        "unbookmark": "Desmarcar"
     },
     "BackButton": {
         "back": "Atrás"
@@ -403,6 +421,21 @@
         "noFollowers": "No hay seguidores para mostrar",
         "noFollowing": "No hay usuarios seguidos para mostrar",
         "follow": "Seguir"
+    },
+    "ListPage": {
+        "loadError": "Se produjo un error al cargar la lista. Por favor, inténtalo de nuevo más tarde.",
+        "itemsAdded": "{count} elementos añadidos",
+        "addedDate": "Añadido el {date}",
+        "dateAdded": "Fecha en que se añadió",
+        "type": "Tipo de medio",
+        "name": "Nombre del medio",
+        "yearReleased": "Fecha de lanzamiento",
+        "unknown": "Desconocido",
+        "deleteMediaFromListTitle": "Eliminar {title} de la lista",
+        "deleteMediaFromListDescription": "¿Estás seguro de que deseas eliminar este medio de la lista? Esta acción no se puede deshacer.",
+        "emptyList": "Esta lista todavía no tiene elementos añadidos.",
+        "searchMedia": "Buscar medios",
+        "list": "Lista"
     },
     "ImportReviewsModal": {
         "title": "Importar Reseñas",

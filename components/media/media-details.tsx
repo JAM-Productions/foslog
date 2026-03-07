@@ -14,15 +14,28 @@ import {
     Tv,
     ThumbsUp,
     ThumbsDown,
+    Bookmark,
 } from 'lucide-react';
 import { AITranslateText } from '@/components/ai-translate-text';
+import { startTransition, useOptimistic, useState } from 'react';
+import { useAuth } from '@/lib/auth/auth-provider';
+import { useRouter } from '@/i18n/navigation';
+import { useToastStore } from '@/lib/toast-store';
 
-export function MediaDetails({ media }: { media: MediaItem }) {
+export function MediaDetails({
+    media,
+    hasBookmarked,
+}: {
+    media: MediaItem;
+    hasBookmarked: boolean;
+}) {
     const imageUrl = media.poster || media.cover;
     const tMP = useTranslations('MediaPage');
     const tMT = useTranslations('MediaTypes');
     const tGenres = useTranslations('MediaGenres');
+    const tToast = useTranslations('Toast');
     const locale = useLocale();
+    const { showToast } = useToastStore();
 
     const mediaTypes = [
         { value: 'film', Icon: Clapperboard },
@@ -38,6 +51,50 @@ export function MediaDetails({ media }: { media: MediaItem }) {
     };
 
     const MediaIcon = getMediaIcon();
+
+    const router = useRouter();
+    const { user: currentUser } = useAuth();
+    const [isBookmarking, setIsBookmarking] = useState(false);
+    const [optimisticBookmarked, setOptimisticBookmarked] = useOptimistic(
+        hasBookmarked,
+        (prev) => !prev
+    );
+
+    const bookmarkMedia = () => {
+        if (!currentUser) {
+            return router.push('/login');
+        }
+
+        if (isBookmarking) return;
+
+        setIsBookmarking(true);
+
+        const prevState = optimisticBookmarked;
+        const method = optimisticBookmarked ? 'DELETE' : 'POST';
+        startTransition(async () => {
+            setOptimisticBookmarked(!prevState);
+
+            try {
+                const response = await fetch(
+                    `/api/media/${media.id}/bookmark`,
+                    {
+                        method,
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Toggle bookmark failed');
+                }
+
+                router.refresh();
+            } catch {
+                setOptimisticBookmarked(prevState);
+                showToast(tToast('toggleBookmarkFailed'), 'error');
+            } finally {
+                setIsBookmarking(false);
+            }
+        });
+    };
 
     return (
         <div className="flex flex-col items-center gap-7 md:grid md:grid-cols-[1fr_auto] md:items-start">
@@ -59,7 +116,23 @@ export function MediaDetails({ media }: { media: MediaItem }) {
                         <div className="flex flex-col gap-2 sm:gap-3">
                             <h1 className="text-foreground text-3xl leading-tight font-bold lg:text-4xl">
                                 {media.title}
+                                <button
+                                    className="ml-3 inline-flex flex-shrink-0 cursor-pointer items-center align-middle transition-colors disabled:opacity-70"
+                                    data-testid="bookmark-button"
+                                    aria-label={
+                                        optimisticBookmarked
+                                            ? tMP('unbookmark')
+                                            : tMP('bookmark')
+                                    }
+                                    disabled={isBookmarking}
+                                    onClick={() => bookmarkMedia()}
+                                >
+                                    <Bookmark
+                                        className={`${optimisticBookmarked ? 'fill-green-600 text-green-600' : 'text-green-600 hover:fill-green-600'} h-6 w-6 transition-all lg:h-7 lg:w-7`}
+                                    />
+                                </button>
                             </h1>
+
                             <div className="flex flex-wrap gap-1">
                                 <span className="bg-secondary text-secondary-foreground flex items-center gap-1 rounded px-1.5 py-0.5 text-sm">
                                     <MediaIcon className="h-3.5 w-3.5" />

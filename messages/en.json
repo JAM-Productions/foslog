@@ -160,6 +160,11 @@
         "TermsOfServicePage": {
             "title": "Terms of Service - Foslog",
             "description": "Read Foslog's terms of service to understand the rules and guidelines for using our platform."
+        },
+        "ListPage": {
+            "listNotFound": "List Not Found - Foslog",
+            "listTitle": "{title} - Foslog",
+            "listDescription": "See the media items added to {title} by {user} on Foslog."
         }
     },
     "Header": {
@@ -276,7 +281,10 @@
         "nameUpdateFailed": "Failed to update name. Please try again.",
         "imageUpdated": "Profile picture updated successfully!",
         "imageUpdateFailed": "Failed to update profile picture. Please try again.",
-        "fetchUsersFailed": "Failed to fetch users. Please try again."
+        "fetchUsersFailed": "Failed to fetch users. Please try again.",
+        "toggleBookmarkFailed": "Failed to update your bookmark. Please try again.",
+        "mediaRemovedFromList": "Media removed from list successfully!",
+        "mediaRemoveFromListFailed": "Failed to remove media from list. Please try again."
     },
     "ProfilePage": {
         "loadError": "An error occurred while loading the profile. Please try again later.",
@@ -297,9 +305,17 @@
         "follow": "Follow",
         "unfollow": "Unfollow",
         "seeFollowers": "See Followers",
-        "seeFollowing": "See Following"
+        "seeFollowing": "See Following",
+        "yourLibrary": "Your Library",
+        "bookmarked": "Bookmarked",
+        "userLibrary": "Library",
+        "noLists": "{user} have any lists yet.",
+        "you": "You don't",
+        "thisUser": "This user doesn't",
+        "viewProfile": "View {name}'s profile"
     },
     "MediaPage": {
+        "loadError": "An error occurred while loading the media. Please try again later.",
         "reviews": "Reviews",
         "review": "Review",
         "leaveReview": "Leave a review",
@@ -321,7 +337,9 @@
         "noPoster": "No Poster",
         "updateReview": "Update Review",
         "consumedMoreThanOnce": "I have watched/played/read this more than once",
-        "toggleLike": "Toggle Like"
+        "toggleLike": "Toggle Like",
+        "bookmark": "Bookmark",
+        "unbookmark": "Unbookmark"
     },
     "BackButton": {
         "back": "Back"
@@ -403,6 +421,21 @@
         "noFollowers": "No followers to show",
         "noFollowing": "No following to show",
         "follow": "Follow"
+    },
+    "ListPage": {
+        "loadError": "An error occurred while loading the list. Please try again later.",
+        "itemsAdded": "{count} items added",
+        "addedDate": "Added on {date}",
+        "dateAdded": "Date added",
+        "type": "Media type",
+        "name": "Media name",
+        "yearReleased": "Year released",
+        "unknown": "Unknown",
+        "deleteMediaFromListTitle": "Delete {title} from list",
+        "deleteMediaFromListDescription": "Are you sure you want to delete this media from the list? This action cannot be undone.",
+        "emptyList": "This list doesn't have any media items yet.",
+        "searchMedia": "Search for media",
+        "list": "List"
     },
     "ImportReviewsModal": {
         "title": "Import Reviews",

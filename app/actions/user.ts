@@ -5,7 +5,9 @@ import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
 import { MediaType, User } from '@/lib/store';
 import { SafeReviewWithMedia } from '@/lib/types';
+import { ListType } from '@prisma/client';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const getUserProfile = async (userId: string): Promise<User | null> => {
     try {
@@ -255,5 +257,274 @@ export const isFollowedByCurrentUser = async (
             targetUserId,
         });
         throw new Error('Could not determine follow status.');
+    }
+};
+
+export const hasUserReviewed = async (
+    mediaId: string,
+    userId?: string
+): Promise<boolean> => {
+    try {
+        const currentUserId =
+            userId ??
+            (await auth.api.getSession({ headers: await headers() }))?.user?.id;
+
+        if (!currentUserId) return false;
+
+        const count = await prisma.review.count({
+            where: { mediaId, userId: currentUserId },
+        });
+
+        logger.info('GET /actions/user', {
+            method: 'hasUserReviewed',
+            mediaId,
+            userId: currentUserId,
+            hasReviewed: count > 0,
+        });
+
+        return count > 0;
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'hasUserReviewed',
+            error,
+            mediaId,
+        });
+        throw new Error('Could not determine review status.');
+    }
+};
+
+export const hasUserBookmarked = async (
+    mediaId: string,
+    userId?: string
+): Promise<boolean> => {
+    try {
+        const currentUserId =
+            userId ??
+            (await auth.api.getSession({ headers: await headers() }))?.user?.id;
+
+        if (!currentUserId) return false;
+
+        const bookmarkList = await prisma.list.findFirst({
+            where: { userId: currentUserId, type: ListType.BOOKMARK },
+        });
+
+        if (!bookmarkList) return false;
+
+        const bookmark = await prisma.listMediaItem.findUnique({
+            where: {
+                listId_mediaId: {
+                    listId: bookmarkList.id,
+                    mediaId,
+                },
+            },
+        });
+
+        logger.info('GET /actions/user', {
+            method: 'hasUserBookmarked',
+            mediaId,
+            userId: currentUserId,
+            hasBookmarked: !!bookmark,
+        });
+
+        return !!bookmark;
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'hasUserBookmarked',
+            error,
+            mediaId,
+        });
+        throw new Error('Could not determine bookmark status.');
+    }
+};
+
+export const getUserMediaLists = async (userId: string) => {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        const currentUserId = session?.user?.id;
+
+        const whereClause =
+            currentUserId === userId
+                ? { userId }
+                : { userId, type: ListType.LIST };
+
+        const lists = await prisma.list.findMany({
+            where: whereClause,
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                type: true,
+            },
+        });
+
+        logger.info('GET /actions/user', {
+            method: 'getUserMediaLists',
+            userId,
+            listCount: lists.length,
+        });
+        return lists.map((list) => ({
+            id: list.id,
+            name: list.name,
+            image: list.image ?? undefined,
+            type: list.type,
+        }));
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'getUserMediaLists',
+            error,
+            userId,
+        });
+        throw new Error('Could not fetch user media lists.');
+    }
+};
+
+export const getUserMediaListData = async (userId: string, listId: string) => {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        const currentUserId = session?.user?.id;
+
+        const list = await prisma.list.findFirst({
+            where: {
+                id: listId,
+                userId,
+            },
+            include: {
+                user: true,
+                mediaItems: {
+                    include: {
+                        media: true,
+                    },
+                    orderBy: {
+                        createdAt: 'desc',
+                    },
+                },
+            },
+        });
+
+        if (!list) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserMediaListData',
+                warn: 'List not found',
+                userId,
+                listId,
+            });
+            return null;
+        }
+
+        if (list.type === ListType.BOOKMARK && currentUserId !== userId) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserMediaListData',
+                warn: 'Cannot access other users bookmark list',
+                userId,
+                listId,
+                currentUserId,
+            });
+            redirect(`/profile/${userId}`);
+        }
+
+        logger.info('GET /actions/user', {
+            method: 'getUserMediaListData',
+            userId,
+            listId,
+            mediaCount: list.mediaItems.length,
+        });
+        return {
+            id: list.id,
+            name: list.name,
+            image: list.image ?? undefined,
+            type: list.type,
+            user: {
+                id: list.user.id,
+                name: list.user.name ?? 'Unknown User',
+                image: list.user.image ?? undefined,
+            },
+            mediaItems: list.mediaItems.map((item) => ({
+                id: item.id,
+                mediaId: item.mediaId,
+                createdAt: item.createdAt,
+                media: {
+                    id: item.media.id,
+                    title: item.media.title,
+                    type: item.media.type.toLowerCase() as MediaType,
+                    year: item.media.year ?? undefined,
+                    poster: item.media.poster ?? undefined,
+                },
+            })),
+        };
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'getUserMediaListData',
+            error,
+            userId,
+            listId,
+        });
+
+        throw new Error('Could not fetch user media list data.');
+    }
+};
+
+export const getUserListMetadata = async (listId: string) => {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        const currentUserId = session?.user?.id;
+
+        const list = await prisma.list.findUnique({
+            where: { id: listId },
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                userId: true,
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+        });
+
+        if (!list) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserListMetadata',
+                warn: 'List not found',
+                listId,
+            });
+            return null;
+        }
+
+        if (list.type === ListType.BOOKMARK && currentUserId !== list.userId) {
+            logger.warn('GET /actions/user', {
+                method: 'getUserListMetadata',
+                warn: 'Cannot access other users bookmark metadata',
+                listId,
+                currentUserId,
+            });
+            return null;
+        }
+
+        logger.info('GET /actions/user', {
+            method: 'getUserListMetadata',
+            listId,
+        });
+        return {
+            id: list.id,
+            name: list.name,
+            user: {
+                name: list.user.name ?? 'Unknown User',
+            },
+        };
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'getUserListMetadata',
+            error,
+            listId,
+        });
+        return null;
     }
 };
