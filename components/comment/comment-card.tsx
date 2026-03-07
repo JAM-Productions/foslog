@@ -56,7 +56,7 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                         e.stopPropagation();
                         router.push(`/profile/${user.id}`);
                     }}
-                    className="cursor-pointer flex-shrink-0 transition-opacity hover:opacity-80"
+                    className="flex-shrink-0 cursor-pointer transition-opacity hover:opacity-80"
                 >
                     {user.image ? (
                         <Image
@@ -73,7 +73,7 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                         </div>
                     )}
                 </div>
-                <div className="relative flex-1 min-w-0">
+                <div className="relative min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                         <p
                             className="cursor-pointer truncate text-base font-bold hover:underline"
@@ -88,7 +88,7 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="ml-2 p-0 flex-shrink-0"
+                                className="ml-2 flex-shrink-0 p-0"
                                 onClick={() =>
                                     showModal(
                                         t('deleteCommentTitle'),
@@ -105,7 +105,7 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                 </div>
             </div>
             <div className="flex-1">
-                <p className="mt-3 text-base leading-relaxed sm:mt-4 break-words">
+                <p className="mt-3 text-base leading-relaxed break-words sm:mt-4">
                     {comment.comment}
                 </p>
             </div>

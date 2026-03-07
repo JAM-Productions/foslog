@@ -95,7 +95,7 @@ export function ReviewDetailCard({
                         />
                     </button>
                 </div>
-                <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
                     <Link
                         href={`/profile/${user.id}`}
                         className="group relative flex-shrink-0"
@@ -115,11 +115,11 @@ export function ReviewDetailCard({
                             </div>
                         )}
                     </Link>
-                    <div className="flex-1 min-w-0 pr-8">
+                    <div className="min-w-0 flex-1 pr-8">
                         <div className="flex">
                             <Link
                                 href={`/profile/${user.id}`}
-                                className="hover:underline truncate"
+                                className="truncate hover:underline"
                             >
                                 <p className="truncate text-base font-bold">
                                     {user.name}

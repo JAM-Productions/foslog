@@ -54,7 +54,7 @@ export function ReviewCard({
                         </div>
                     )}
                 </div>
-                <div className="relative flex-1 min-w-0">
+                <div className="relative min-w-0 flex-1">
                     <div className="flex pr-16">
                         <p
                             className="truncate text-base font-bold hover:underline"
