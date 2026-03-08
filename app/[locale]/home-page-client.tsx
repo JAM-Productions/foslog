@@ -75,19 +75,21 @@ export default function HomePageClient({
     }) => (
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
-                <div className="bg-primary/10 rounded-lg p-2">
+                <div className="bg-primary/10 hidden rounded-lg p-2 sm:flex">
                     <Icon className="text-primary h-5 w-5" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">
+                    <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
                         {title}
                     </h2>
-                    <p className="text-muted-foreground">{subtitle}</p>
+                    <p className="text-muted-foreground hidden sm:block">
+                        {subtitle}
+                    </p>
                 </div>
             </div>
             {!searchQuery && (
                 <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground hidden text-sm whitespace-nowrap md:inline">
+                    <span className="text-muted-foreground text-sm whitespace-nowrap">
                         {tSort('sortBy')}:
                     </span>
                     <Select
