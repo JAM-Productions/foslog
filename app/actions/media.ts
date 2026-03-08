@@ -15,7 +15,8 @@ export const getMedias = async (
     page: number = 1,
     pageSize: number = 12,
     mediaType?: string,
-    searchQuery?: string
+    searchQuery?: string,
+    sort?: string
 ): Promise<{ items: SafeMediaItem[]; total: number }> => {
     try {
         const skip = (page - 1) * pageSize;
@@ -46,16 +47,36 @@ export const getMedias = async (
             ];
         }
 
+        const orderBy: Prisma.MediaItemOrderByWithRelationInput[] = [];
+
+        switch (sort) {
+            case 'top-rated':
+                orderBy.push(
+                    { averageRating: 'desc' },
+                    { totalReviews: 'desc' }
+                );
+                break;
+            case 'newest':
+                orderBy.push({ createdAt: 'desc' });
+                break;
+            case 'most-reviewed':
+                orderBy.push({ totalReviews: 'desc' });
+                break;
+            case 'trending':
+            default:
+                orderBy.push({ updatedAt: 'desc' }, { totalReviews: 'desc' });
+                break;
+        }
+
+        // Always add id as a stable tiebreaker for pagination
+        orderBy.push({ id: 'asc' });
+
         const [mediaItems, total] = await prisma.$transaction([
             prisma.mediaItem.findMany({
                 where,
                 skip,
                 take: pageSize,
-                orderBy: [
-                    { averageRating: 'desc' },
-                    { totalReviews: 'desc' },
-                    { id: 'asc' },
-                ],
+                orderBy,
             }),
             prisma.mediaItem.count({ where }),
         ]);

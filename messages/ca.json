@@ -439,6 +439,13 @@
         "searchMedia": "Buscar mitjans",
         "list": "Llista"
     },
+    "Sort": {
+        "sortBy": "Ordenar per",
+        "trending": "Tendència",
+        "topRated": "Millor valorats",
+        "newest": "Més recents",
+        "mostReviewed": "Amb més ressenyes"
+    },
     "ImportReviewsModal": {
         "title": "Importar Ressenyes",
         "description": "Selecciona la plataforma des de la qual importar les teves ressenyes. Actualment només suportem importar des d'arxiu CSV de Letterboxd.",
