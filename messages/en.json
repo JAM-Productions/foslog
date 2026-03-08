@@ -282,6 +282,8 @@
         "imageUpdated": "Profile picture updated successfully!",
         "imageUpdateFailed": "Failed to update profile picture. Please try again.",
         "fetchUsersFailed": "Failed to fetch users. Please try again.",
+        "bookmarkAdded": "Media bookmarked successfully!",
+        "bookmarkRemoved": "Media removed from bookmarks!",
         "toggleBookmarkFailed": "Failed to update your bookmark. Please try again.",
         "mediaRemovedFromList": "Media removed from list successfully!",
         "mediaRemoveFromListFailed": "Failed to remove media from list. Please try again."

@@ -87,6 +87,10 @@ export function MediaDetails({
                 }
 
                 router.refresh();
+                showToast(
+                    tToast(prevState ? 'bookmarkRemoved' : 'bookmarkAdded'),
+                    'success'
+                );
             } catch {
                 setOptimisticBookmarked(prevState);
                 showToast(tToast('toggleBookmarkFailed'), 'error');
