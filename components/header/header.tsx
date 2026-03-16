@@ -4,6 +4,7 @@ import Image from 'next/image';
 import MediaTypeFilter from '@/components/media/media-type-filter';
 import MediaTypeFilterSkeleton from '@/components/media/media-type-filter-skeleton';
 import UserMenu from '@/components/header/user-menu';
+import { CreateReviewButton } from '@/components/review/create-review-button';
 import SearchBar from '@/components/header/search-bar';
 import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
 import { useState, Suspense } from 'react';
@@ -72,6 +73,7 @@ export default function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
+                        <CreateReviewButton variant="nav" />
                         <UserMenu />
                     </div>
                 </div>
