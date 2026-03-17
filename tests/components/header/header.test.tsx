@@ -99,6 +99,9 @@ describe('Header', () => {
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
+        expect(
+            screen.getByTestId('create-review-button')
+        ).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
 

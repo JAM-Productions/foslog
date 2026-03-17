@@ -73,7 +73,6 @@ export default async function LocaleLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    // Ensure that the incoming `locale` is valid
     const { locale } = await params;
     if (!hasLocale(routing.locales, locale)) {
         notFound();
@@ -81,7 +80,6 @@ export default async function LocaleLayout({
 
     const t = await getTranslations({ locale, namespace: 'Metadata' });
 
-    // Enable static rendering
     setRequestLocale(locale);
 
     return (
@@ -106,7 +104,6 @@ export default async function LocaleLayout({
                             <Header />
                             <main className="flex-1">{children}</main>
                             <Footer />
-                            <CreateReviewButton variant="fab" />
                             <DynamicModalWrapper />
                             <ToastProvider />
                         </AuthProvider>
