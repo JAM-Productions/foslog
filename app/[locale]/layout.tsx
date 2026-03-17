@@ -11,7 +11,6 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
 import DynamicModalWrapper from '@/components/modal/dynamic-modal-wrapper';
-import { CreateReviewButton } from '@/components/review/create-review-button';
 import { ToastProvider } from '@/components/toast/toast-provider';
 import { WebVitals } from '@/lib/axiom/client';
 import { Metadata, Viewport } from 'next';
