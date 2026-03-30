@@ -422,7 +422,9 @@
         "following": "Following",
         "noFollowers": "No followers to show",
         "noFollowing": "No following to show",
-        "follow": "Follow"
+        "follow": "Follow",
+        "loadMore": "Load More",
+        "loading": "Loading..."
     },
     "ListPage": {
         "loadError": "An error occurred while loading the list. Please try again later.",
