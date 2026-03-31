@@ -25,7 +25,6 @@ export function ReviewDetailCard({
     const { user } = review;
     const locale = useLocale();
     const t = useTranslations('MediaPage');
-    const tConsumedDate = useTranslations('ConsumedDate');
     const tToast = useTranslations('Toast');
     const { showToast } = useToastStore();
     const { user: currentUser } = useAuth();

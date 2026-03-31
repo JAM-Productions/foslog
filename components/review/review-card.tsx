@@ -25,7 +25,6 @@ export function ReviewCard({
     const { user } = review;
     const router = useRouter();
     const t = useTranslations('MediaPage');
-    const tConsumedDate = useTranslations('ConsumedDate');
 
     return (
         <Card

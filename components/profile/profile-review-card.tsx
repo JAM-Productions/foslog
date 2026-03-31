@@ -17,7 +17,6 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
     const { media } = review;
     const t = useTranslations('MediaPage');
     const tTypes = useTranslations('MediaTypes');
-    const tConsumedDate = useTranslations('ConsumedDate');
     const router = useRouter();
 
     return (
