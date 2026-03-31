@@ -147,8 +147,8 @@ describe('ReviewModal', () => {
         expect(checkbox).toBeChecked();
         expect(checkbox).toBeDisabled();
 
-        // 8. Verify the Date input is not shown because hasReviewed=true
-        expect(screen.queryByLabelText('Date consumed film')).not.toBeInTheDocument();
+        // 8. Verify the Date input continues to be shown (because we removed !hasReviewed wrapper)
+        expect(screen.getByLabelText('Date consumed film')).toBeInTheDocument();
     });
 
     it('handleNext sets checkbox unchecked if not reviewed', async () => {

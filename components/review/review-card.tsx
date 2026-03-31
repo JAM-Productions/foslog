@@ -68,22 +68,9 @@ export function ReviewCard({
                         </p>
                         <span className="text-muted-foreground text-xs">
                             {review.consumedDate
-                                ? tConsumedDate(
-                                      [
-                                          'film',
-                                          'serie',
-                                          'book',
-                                          'game',
-                                          'music',
-                                      ].includes(mediaType?.toLowerCase() ?? '')
-                                          ? (mediaType?.toLowerCase() as any)
-                                          : 'default',
-                                      {
-                                          date: new Date(
-                                              review.consumedDate
-                                          ).toLocaleDateString(),
-                                      }
-                                  )
+                                ? new Date(
+                                      review.consumedDate
+                                  ).toLocaleDateString()
                                 : new Date(
                                       review.createdAt
                                   ).toLocaleDateString()}

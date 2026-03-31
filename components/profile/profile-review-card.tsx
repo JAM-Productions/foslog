@@ -69,22 +69,9 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         </div>
                         <span className="text-muted-foreground text-right text-xs">
                             {review.consumedDate
-                                ? tConsumedDate(
-                                      [
-                                          'film',
-                                          'serie',
-                                          'book',
-                                          'game',
-                                          'music',
-                                      ].includes(media.type.toLowerCase())
-                                          ? media.type.toLowerCase()
-                                          : 'default',
-                                      {
-                                          date: new Date(
-                                              review.consumedDate
-                                          ).toLocaleDateString(),
-                                      }
-                                  )
+                                ? new Date(
+                                      review.consumedDate
+                                  ).toLocaleDateString()
                                 : new Date(
                                       review.createdAt
                                   ).toLocaleDateString()}
