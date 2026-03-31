@@ -18,6 +18,9 @@ vi.mock('next-intl', () => ({
         if (namespace === 'ConsumedMoreThanOnce') {
             return `Consumed ${key}`;
         }
+        if (namespace === 'ConsumedDateInput') {
+            return `Date consumed ${key}`;
+        }
         return key;
     },
 }));
@@ -50,6 +53,7 @@ describe('ReviewForm', () => {
     it('renders the form correctly', () => {
         render(<ReviewForm {...defaultProps} />);
         expect(screen.getByText('yourRating')).toBeInTheDocument();
+        expect(screen.getByText('Date consumed film')).toBeInTheDocument();
         expect(screen.getByText('Consumed film')).toBeInTheDocument();
     });
 
@@ -79,6 +83,14 @@ describe('ReviewForm', () => {
                     body: expect.stringContaining(
                         '"consumedMoreThanOnce":true'
                     ),
+                })
+            );
+            // Additionally check that consumedDate was passed
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining('"consumedDate":'),
                 })
             );
         });

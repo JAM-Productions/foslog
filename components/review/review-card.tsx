@@ -25,6 +25,7 @@ export function ReviewCard({
     const { user } = review;
     const router = useRouter();
     const t = useTranslations('MediaPage');
+    const tConsumedDate = useTranslations('ConsumedDate');
 
     return (
         <Card
@@ -55,7 +56,7 @@ export function ReviewCard({
                     )}
                 </div>
                 <div className="relative min-w-0 flex-1">
-                    <div className="flex pr-16">
+                    <div className="flex flex-col pr-16 pb-1">
                         <p
                             className="truncate text-base font-bold hover:underline"
                             onClick={(e) => {
@@ -65,6 +66,28 @@ export function ReviewCard({
                         >
                             {user.name}
                         </p>
+                        <span className="text-muted-foreground text-xs">
+                            {review.consumedDate
+                                ? tConsumedDate(
+                                      [
+                                          'film',
+                                          'serie',
+                                          'book',
+                                          'game',
+                                          'music',
+                                      ].includes(mediaType?.toLowerCase() ?? '')
+                                          ? (mediaType?.toLowerCase() as any)
+                                          : 'default',
+                                      {
+                                          date: new Date(
+                                              review.consumedDate
+                                          ).toLocaleDateString(),
+                                      }
+                                  )
+                                : new Date(
+                                      review.createdAt
+                                  ).toLocaleDateString()}
+                        </span>
                     </div>
                     <div className="flex items-center gap-2">
                         {review.rating !== undefined &&

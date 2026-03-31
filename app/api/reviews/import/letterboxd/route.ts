@@ -23,7 +23,15 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        const { Name, Year, Rating, Rewatch, Review: ReviewText } = body;
+        const {
+            Name,
+            Year,
+            Rating,
+            Rewatch,
+            Review: ReviewText,
+            'Watched Date': WatchedDateRaw,
+            Date: PublishDateRaw,
+        } = body;
 
         if (!Name || !Year) {
             return validationError(
@@ -111,6 +119,16 @@ export async function POST(request: NextRequest) {
         const parsedRating = parseFloat(Rating);
         const validRating = !isNaN(parsedRating) ? parsedRating : null;
 
+        // Determine consumed date
+        let consumedDate: Date | undefined = undefined;
+        if (WatchedDateRaw) {
+            const parsed = new Date(WatchedDateRaw);
+            if (!isNaN(parsed.getTime())) consumedDate = parsed;
+        } else if (PublishDateRaw) {
+            const parsed = new Date(PublishDateRaw);
+            if (!isNaN(parsed.getTime())) consumedDate = parsed;
+        }
+
         if (existingReview) {
             // If it exists, update it if it's a rewatch or if the existing one has less info
             await prisma.review.update({
@@ -118,8 +136,10 @@ export async function POST(request: NextRequest) {
                 data: {
                     consumedMoreThanOnce:
                         existingReview.consumedMoreThanOnce || isRewatch,
-                    // We don't overwrite the full review automatically unless empty,
-                    // but we do update the 'consumedMoreThanOnce' flag
+                    ...(consumedDate &&
+                        !(existingReview as any).consumedDate && {
+                            consumedDate,
+                        }),
                 },
             });
 
@@ -139,9 +159,10 @@ export async function POST(request: NextRequest) {
                 rating: validRating,
                 review: ReviewText || null,
                 consumedMoreThanOnce: isRewatch,
+                consumedDate: consumedDate,
                 mediaId: mediaItem.id,
                 userId: session.user.id,
-            },
+            } as any,
         });
 
         logger.info('POST /api/reviews/import/letterboxd', {

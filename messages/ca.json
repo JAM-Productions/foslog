@@ -417,6 +417,24 @@
         "music": "Ha escoltat aquesta música més d'una vegada",
         "default": "Ha consumit això més d'una vegada"
     },
+    "ConsumedDateInput": {
+        "film": "Data de visionat",
+        "series": "Data de visionat",
+        "serie": "Data de visionat",
+        "book": "Data de lectura",
+        "game": "Data de joc",
+        "music": "Data d'escolta",
+        "default": "Data de consum"
+    },
+    "ConsumedDate": {
+        "film": "Vist el {date}",
+        "series": "Vist el {date}",
+        "serie": "Vist el {date}",
+        "book": "Llegit el {date}",
+        "game": "Jugat el {date}",
+        "music": "Escoltat el {date}",
+        "default": "Consumit el {date}"
+    },
     "FollowsModal": {
         "followers": "Seguidors",
         "following": "Seguint",

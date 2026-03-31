@@ -30,6 +30,7 @@ export function ReviewForm({
 }: ReviewFormProps) {
     const t = useTranslations('MediaPage');
     const tConsumed = useTranslations('ConsumedMoreThanOnce');
+    const tConsumedDateInput = useTranslations('ConsumedDateInput');
     const tToast = useTranslations('Toast');
     const tCTA = useTranslations('CTA');
     const router = useRouter();
@@ -40,6 +41,13 @@ export function ReviewForm({
     );
     const [text, setText] = useState(editProps?.review.review ?? '');
     const [consumedMoreThanOnce, setConsumedMoreThanOnce] = useState(false);
+    const [consumedDate, setConsumedDate] = useState<string>(
+        editProps?.review.consumedDate
+            ? new Date(editProps.review.consumedDate)
+                  .toISOString()
+                  .split('T')[0]
+            : new Date().toISOString().split('T')[0]
+    );
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -49,7 +57,13 @@ export function ReviewForm({
     const hasNotBeenEdited = editProps
         ? rating === (editProps.review.rating ?? 0) &&
           liked === (editProps.review.liked ?? null) &&
-          text.trim() === (editProps.review.review ?? '').trim()
+          text.trim() === (editProps.review.review ?? '').trim() &&
+          consumedDate ===
+              (editProps.review.consumedDate
+                  ? new Date(editProps.review.consumedDate)
+                        .toISOString()
+                        .split('T')[0]
+                  : '')
         : false;
 
     const handleSubmitPost = async (e: React.FormEvent) => {
@@ -74,6 +88,7 @@ export function ReviewForm({
                         text: text.trim(),
                         consumedMoreThanOnce:
                             hasReviewed || consumedMoreThanOnce,
+                        consumedDate: consumedDate,
                     },
                 }),
             });
@@ -116,6 +131,7 @@ export function ReviewForm({
                         stars: rating > 0 ? rating : undefined,
                         liked: liked !== null ? liked : undefined,
                         text: text.trim(),
+                        consumedDate: consumedDate,
                     },
                     reviewId: editProps.review.id,
                 }),
@@ -210,6 +226,28 @@ export function ReviewForm({
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex w-full resize-none rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={isSubmitting}
+                />
+            </div>
+            <div className="flex flex-col gap-2">
+                <label
+                    htmlFor="consumedDate"
+                    className="text-foreground text-sm font-semibold"
+                >
+                    {tConsumedDateInput(
+                        ['film', 'serie', 'book', 'game', 'music'].includes(
+                            mediaType.toLowerCase()
+                        )
+                            ? mediaType.toLowerCase()
+                            : 'default'
+                    )}
+                </label>
+                <input
+                    id="consumedDate"
+                    type="date"
+                    value={consumedDate}
+                    onChange={(e) => setConsumedDate(e.target.value)}
+                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={isSubmitting}
                 />
             </div>

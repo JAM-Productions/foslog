@@ -19,6 +19,7 @@ interface Review {
     liked?: boolean;
     text: string;
     consumedMoreThanOnce?: boolean;
+    consumedDate?: string;
 }
 
 export default function ReviewModal() {
@@ -29,6 +30,7 @@ export default function ReviewModal() {
     const tMediaTypes = useTranslations('MediaTypes');
     const tMediaPage = useTranslations('MediaPage');
     const tConsumed = useTranslations('ConsumedMoreThanOnce');
+    const tConsumedDateInput = useTranslations('ConsumedDateInput');
     const tBackButton = useTranslations('BackButton');
 
     const { isReviewModalOpen, setIsReviewModalOpen } = useAppStore();
@@ -45,6 +47,9 @@ export default function ReviewModal() {
     const [reviewText, setReviewText] = useState<string>('');
     const [consumedMoreThanOnce, setConsumedMoreThanOnce] =
         useState<boolean>(false);
+    const [consumedDate, setConsumedDate] = useState<string>(
+        new Date().toISOString().split('T')[0]
+    );
     const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
@@ -74,6 +79,7 @@ export default function ReviewModal() {
 
         setReviewText('');
         setConsumedMoreThanOnce(false);
+        setConsumedDate(new Date().toISOString().split('T')[0]);
         setHasReviewed(false);
         setError(null);
     }, []);
@@ -92,6 +98,7 @@ export default function ReviewModal() {
         // Reset these when going back, although they will be re-checked on Next
         setHasReviewed(false);
         setConsumedMoreThanOnce(false);
+        setConsumedDate(new Date().toISOString().split('T')[0]);
     }, []);
 
     const handleNext = async () => {
@@ -154,6 +161,7 @@ export default function ReviewModal() {
                 liked: reviewLiked !== null ? reviewLiked : undefined,
                 text: reviewText,
                 consumedMoreThanOnce,
+                consumedDate: consumedDate,
             };
             const responseReview = await fetch('/api/review', {
                 method: 'POST',
@@ -339,7 +347,7 @@ export default function ReviewModal() {
                                         'game',
                                         'music',
                                     ].includes(selectedMediaType.toLowerCase())
-                                        ? selectedMediaType.toLowerCase()
+                                        ? (selectedMediaType.toLowerCase() as any)
                                         : 'default'
                                 )}
                                 checked={consumedMoreThanOnce}
@@ -349,6 +357,36 @@ export default function ReviewModal() {
                                     (hasReviewed && consumedMoreThanOnce)
                                 }
                             />
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="modalConsumedDate"
+                                    className="text-foreground text-sm font-semibold"
+                                >
+                                    {tConsumedDateInput(
+                                        [
+                                            'film',
+                                            'serie',
+                                            'book',
+                                            'game',
+                                            'music',
+                                        ].includes(
+                                            selectedMediaType.toLowerCase()
+                                        )
+                                            ? (selectedMediaType.toLowerCase() as any)
+                                            : 'default'
+                                    )}
+                                </label>
+                                <input
+                                    id="modalConsumedDate"
+                                    type="date"
+                                    value={consumedDate}
+                                    onChange={(e) =>
+                                        setConsumedDate(e.target.value)
+                                    }
+                                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={isLoadingSubmit}
+                                />
+                            </div>
                         </form>
                     </div>
                 )}

@@ -115,6 +115,7 @@ model Review {
   media     MediaItem @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   consumedMoreThanOnce Boolean @default(false)
+  consumedDate DateTime @default(now())
   totalComments Int     @default(0)
   comments  Comment[]
   totalLikes           Int       @default(0)

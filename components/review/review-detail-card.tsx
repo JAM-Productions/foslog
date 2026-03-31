@@ -25,6 +25,7 @@ export function ReviewDetailCard({
     const { user } = review;
     const locale = useLocale();
     const t = useTranslations('MediaPage');
+    const tConsumedDate = useTranslations('ConsumedDate');
     const tToast = useTranslations('Toast');
     const { showToast } = useToastStore();
     const { user: currentUser } = useAuth();
@@ -159,9 +160,22 @@ export function ReviewDetailCard({
                 <div className="text-muted-foreground flex items-center gap-1.5">
                     <Calendar className="h-4 w-4 flex-shrink-0" />
                     <p className="text-sm sm:text-base">
-                        {isEdited
-                            ? formatDate(review.updatedAt)
-                            : formatDate(review.createdAt)}
+                        {review.consumedDate
+                            ? tConsumedDate(
+                                  [
+                                      'film',
+                                      'serie',
+                                      'book',
+                                      'game',
+                                      'music',
+                                  ].includes(mediaType?.toLowerCase() ?? '')
+                                      ? (mediaType?.toLowerCase() as any)
+                                      : 'default',
+                                  { date: formatDate(review.consumedDate) }
+                              )
+                            : isEdited
+                              ? formatDate(review.updatedAt)
+                              : formatDate(review.createdAt)}
                     </p>
                 </div>
                 <div>

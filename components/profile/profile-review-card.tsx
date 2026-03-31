@@ -17,6 +17,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
     const { media } = review;
     const t = useTranslations('MediaPage');
     const tTypes = useTranslations('MediaTypes');
+    const tConsumedDate = useTranslations('ConsumedDate');
     const router = useRouter();
 
     return (
@@ -66,8 +67,27 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                                 {media.year}
                             </p>
                         </div>
-                        <span className="text-muted-foreground text-xs">
-                            {new Date(review.createdAt).toLocaleDateString()}
+                        <span className="text-muted-foreground text-right text-xs">
+                            {review.consumedDate
+                                ? tConsumedDate(
+                                      [
+                                          'film',
+                                          'serie',
+                                          'book',
+                                          'game',
+                                          'music',
+                                      ].includes(media.type.toLowerCase())
+                                          ? media.type.toLowerCase()
+                                          : 'default',
+                                      {
+                                          date: new Date(
+                                              review.consumedDate
+                                          ).toLocaleDateString(),
+                                      }
+                                  )
+                                : new Date(
+                                      review.createdAt
+                                  ).toLocaleDateString()}
                         </span>
                     </div>
 
