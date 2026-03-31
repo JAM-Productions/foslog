@@ -381,90 +381,97 @@ export const getUserMediaLists = async (userId: string) => {
 };
 
 export const getUserMediaListData = async (userId: string, listId: string) => {
-    try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-        const currentUserId = session?.user?.id;
-
-        const list = await prisma.list.findFirst({
-            where: {
-                id: listId,
-                userId,
-            },
-            include: {
-                user: true,
-                mediaItems: {
-                    include: {
-                        media: true,
-                    },
-                    orderBy: {
-                        createdAt: 'desc',
+    const list = await (async () => {
+        try {
+            const list = await prisma.list.findFirst({
+                where: {
+                    id: listId,
+                    userId,
+                },
+                include: {
+                    user: true,
+                    mediaItems: {
+                        include: {
+                            media: true,
+                        },
+                        orderBy: {
+                            createdAt: 'desc',
+                        },
                     },
                 },
-            },
-        });
+            });
 
-        if (!list) {
-            logger.warn('GET /actions/user', {
+            if (!list) {
+                logger.warn('GET /actions/user', {
+                    method: 'getUserMediaListData',
+                    warn: 'List not found',
+                    userId,
+                    listId,
+                });
+                return null;
+            }
+
+            return list;
+        } catch (error) {
+            logger.error('GET /actions/user', {
                 method: 'getUserMediaListData',
-                warn: 'List not found',
+                error,
                 userId,
                 listId,
             });
-            return null;
-        }
 
-        if (list.type === ListType.BOOKMARK && currentUserId !== userId) {
-            logger.warn('GET /actions/user', {
-                method: 'getUserMediaListData',
-                warn: 'Cannot access other users bookmark list',
-                userId,
-                listId,
-                currentUserId,
-            });
-            redirect(`/profile/${userId}`);
+            throw new Error('Could not fetch user media list data.');
         }
+    })();
 
-        logger.info('GET /actions/user', {
+    if (!list) return null;
+
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+    const currentUserId = session?.user?.id;
+
+    if (list.type === ListType.BOOKMARK && currentUserId !== userId) {
+        logger.warn('GET /actions/user', {
             method: 'getUserMediaListData',
+            warn: 'Cannot access other users bookmark list',
             userId,
             listId,
-            mediaCount: list.mediaItems.length,
+            currentUserId,
         });
-        return {
-            id: list.id,
-            name: list.name,
-            image: list.image ?? undefined,
-            type: list.type,
-            user: {
-                id: list.user.id,
-                name: list.user.name ?? 'Unknown User',
-                image: list.user.image ?? undefined,
-            },
-            mediaItems: list.mediaItems.map((item) => ({
-                id: item.id,
-                mediaId: item.mediaId,
-                createdAt: item.createdAt,
-                media: {
-                    id: item.media.id,
-                    title: item.media.title,
-                    type: item.media.type.toLowerCase() as MediaType,
-                    year: item.media.year ?? undefined,
-                    poster: item.media.poster ?? undefined,
-                },
-            })),
-        };
-    } catch (error) {
-        logger.error('GET /actions/user', {
-            method: 'getUserMediaListData',
-            error,
-            userId,
-            listId,
-        });
-
-        throw new Error('Could not fetch user media list data.');
+        redirect(`/profile/${userId}`);
     }
+
+    logger.info('GET /actions/user', {
+        method: 'getUserMediaListData',
+        userId,
+        listId,
+        mediaCount: list.mediaItems.length,
+    });
+
+    return {
+        id: list.id,
+        name: list.name,
+        image: list.image ?? undefined,
+        type: list.type,
+        user: {
+            id: list.user.id,
+            name: list.user.name ?? 'Unknown User',
+            image: list.user.image ?? undefined,
+        },
+        mediaItems: list.mediaItems.map((item) => ({
+            id: item.id,
+            mediaId: item.mediaId,
+            createdAt: item.createdAt,
+            media: {
+                id: item.media.id,
+                title: item.media.title,
+                type: item.media.type.toLowerCase() as MediaType,
+                year: item.media.year ?? undefined,
+                poster: item.media.poster ?? undefined,
+            },
+        })),
+    };
 };
 
 export const getUserListMetadata = async (listId: string) => {
