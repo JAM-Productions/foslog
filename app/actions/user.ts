@@ -170,7 +170,7 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
         const averageRating =
             ratedReviews.length > 0
                 ? ratedReviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
-                ratedReviews.length
+                  ratedReviews.length
                 : 0;
 
         const ratingDistribution: Record<number, number> = {};

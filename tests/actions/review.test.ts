@@ -114,6 +114,7 @@ describe('getReviewByIdWithComments Server Action', () => {
             createdAt: mockDate,
             updatedAt: mockDate,
             consumedMoreThanOnce: false,
+            consumedDate: mockDate, // falls back to createdAt when not set
             totalComments: 0,
             totalLikes: 10,
             user: {
