@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
 import { logger } from '@/lib/axiom/server';
+import { parseDateOnly } from '@/lib/date';
 import {
     internalServerError,
     notFound,
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
                 review: review.text,
                 consumedMoreThanOnce: review.consumedMoreThanOnce || false,
                 consumedDate: review.consumedDate
-                    ? new Date(review.consumedDate)
+                    ? parseDateOnly(review.consumedDate)
                     : undefined,
                 mediaId: mediaId,
                 userId: session.user.id,
@@ -237,7 +238,7 @@ export async function PATCH(request: NextRequest) {
                 liked: review.liked ?? null,
                 review: review.text,
                 consumedDate: review.consumedDate
-                    ? new Date(review.consumedDate)
+                    ? parseDateOnly(review.consumedDate)
                     : undefined,
             },
         });

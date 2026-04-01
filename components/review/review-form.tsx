@@ -11,6 +11,8 @@ import { useToastStore } from '@/lib/toast-store';
 import { SafeReview } from '@/lib/types';
 import { Checkbox } from '@/components/input/checkbox';
 import { useRouter } from '@/i18n/navigation';
+import { toLocalDateString } from '@/lib/date';
+
 interface EditProps {
     review: SafeReview;
     setIsEditingReview: (editing: boolean) => void;
@@ -43,10 +45,8 @@ export function ReviewForm({
     const [consumedMoreThanOnce, setConsumedMoreThanOnce] = useState(false);
     const [consumedDate, setConsumedDate] = useState<string>(
         editProps?.review.consumedDate
-            ? new Date(editProps.review.consumedDate)
-                  .toISOString()
-                  .split('T')[0]
-            : new Date().toISOString().split('T')[0]
+            ? toLocalDateString(new Date(editProps.review.consumedDate))
+            : toLocalDateString(new Date())
     );
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,14 +56,14 @@ export function ReviewForm({
 
     const hasNotBeenEdited = editProps
         ? rating === (editProps.review.rating ?? 0) &&
-          liked === (editProps.review.liked ?? null) &&
-          text.trim() === (editProps.review.review ?? '').trim() &&
-          consumedDate ===
-              (editProps.review.consumedDate
-                  ? new Date(editProps.review.consumedDate)
-                        .toISOString()
-                        .split('T')[0]
-                  : '')
+        liked === (editProps.review.liked ?? null) &&
+        text.trim() === (editProps.review.review ?? '').trim() &&
+        consumedDate ===
+        (editProps.review.consumedDate
+            ? new Date(editProps.review.consumedDate)
+                .toISOString()
+                .split('T')[0]
+            : '')
         : false;
 
     const handleSubmitPost = async (e: React.FormEvent) => {
@@ -293,9 +293,8 @@ export function ReviewForm({
                 <div className="relative flex w-full flex-row items-center sm:w-auto">
                     <Button
                         type="submit"
-                        className={`w-full cursor-pointer sm:w-auto ${
-                            isSubmitting ? 'text-transparent' : ''
-                        }`}
+                        className={`w-full cursor-pointer sm:w-auto ${isSubmitting ? 'text-transparent' : ''
+                            }`}
                         disabled={
                             isSubmitting ||
                             (rating === 0 && liked === null) ||

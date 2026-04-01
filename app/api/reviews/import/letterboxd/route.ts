@@ -8,6 +8,7 @@ import {
 } from '@/lib/errors';
 import { logger } from '@/lib/axiom/server';
 import { parseTMDBMovie } from '@/app/api/search/utils/parsers';
+import { parseDateOnlyUTC } from '@/lib/date';
 
 export async function POST(request: NextRequest) {
     try {
@@ -119,14 +120,14 @@ export async function POST(request: NextRequest) {
         const parsedRating = parseFloat(Rating);
         const validRating = !isNaN(parsedRating) ? parsedRating : null;
 
-        // Determine consumed date
+        // Determine consumed date: parse YYYY-MM-DD as noon UTC to avoid day-shift
         let consumedDate: Date | undefined = undefined;
         if (WatchedDateRaw) {
-            const parsed = new Date(WatchedDateRaw);
-            if (!isNaN(parsed.getTime())) consumedDate = parsed;
+            const parsed = parseDateOnlyUTC(WatchedDateRaw);
+            if (parsed) consumedDate = parsed;
         } else if (PublishDateRaw) {
-            const parsed = new Date(PublishDateRaw);
-            if (!isNaN(parsed.getTime())) consumedDate = parsed;
+            const parsed = parseDateOnlyUTC(PublishDateRaw);
+            if (parsed) consumedDate = parsed;
         }
 
         if (existingReview) {
@@ -137,7 +138,7 @@ export async function POST(request: NextRequest) {
                     consumedMoreThanOnce:
                         existingReview.consumedMoreThanOnce || isRewatch,
                     ...(consumedDate &&
-                        !(existingReview as any).consumedDate && {
+                        !(existingReview.consumedDate as any) && {
                             consumedDate,
                         }),
                 },
@@ -162,7 +163,7 @@ export async function POST(request: NextRequest) {
                 consumedDate: consumedDate,
                 mediaId: mediaItem.id,
                 userId: session.user.id,
-            } as any,
+            },
         });
 
         logger.info('POST /api/reviews/import/letterboxd', {

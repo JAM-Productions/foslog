@@ -40,7 +40,7 @@ export const getMedias = async (
                             searchQuery,
                             searchQuery.toUpperCase(),
                             searchQuery.charAt(0).toUpperCase() +
-                                searchQuery.slice(1),
+                            searchQuery.slice(1),
                         ],
                     },
                 },
@@ -262,6 +262,7 @@ export const getMediaByIdWithReviews = async (
                 createdAt: restOfReview.createdAt,
                 updatedAt: restOfReview.updatedAt,
                 consumedMoreThanOnce: restOfReview.consumedMoreThanOnce,
+                consumedDate: (restOfReview as any).consumedDate ?? restOfReview.createdAt,
                 totalComments: restOfReview.totalComments,
                 totalLikes: restOfReview.totalLikes,
                 user: safeUser,

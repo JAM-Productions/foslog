@@ -89,6 +89,7 @@ export const getUserReviews = async (
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
             consumedMoreThanOnce: review.consumedMoreThanOnce,
+            consumedDate: (review as any).consumedDate ?? review.createdAt,
             totalComments: review.totalComments,
             totalLikes: review.totalLikes,
             user: {
@@ -169,7 +170,7 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
         const averageRating =
             ratedReviews.length > 0
                 ? ratedReviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
-                  ratedReviews.length
+                ratedReviews.length
                 : 0;
 
         const ratingDistribution: Record<number, number> = {};

@@ -13,6 +13,7 @@ import { SearchInput, Suggestion } from '@/components/input/search-input';
 import { useRouter } from '@/i18n/navigation';
 import Modal from './modal';
 import { Checkbox } from '@/components/input/checkbox';
+import { toLocalDateString } from '@/lib/date';
 
 interface Review {
     stars?: number;
@@ -48,7 +49,7 @@ export default function ReviewModal() {
     const [consumedMoreThanOnce, setConsumedMoreThanOnce] =
         useState<boolean>(false);
     const [consumedDate, setConsumedDate] = useState<string>(
-        new Date().toISOString().split('T')[0]
+        toLocalDateString(new Date())
     );
     const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
