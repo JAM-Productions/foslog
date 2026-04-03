@@ -16,7 +16,7 @@ import { useAuth } from '@/lib/auth/auth-provider';
 
 export default function Header() {
     const pathname = usePathname();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
     // Check if we're on the home route (with or without locale)
     const isHomePage =
         pathname === '/' ||
@@ -75,9 +75,11 @@ export default function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                        {isAuthenticated && (
+                        {isLoading ? (
+                            <div className="bg-muted h-10 w-30 animate-pulse rounded-md" />
+                        ) : isAuthenticated ? (
                             <CreateReviewButton variant="nav" />
-                        )}
+                        ) : null}
                         <UserMenu />
                     </div>
                 </div>
