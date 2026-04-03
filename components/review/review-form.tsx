@@ -5,7 +5,7 @@ import { RatingInput } from '@/components/input/rating';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { LoaderCircle, ThumbsUp, ThumbsDown, Calendar } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useToastStore } from '@/lib/toast-store';
 import { SafeReview } from '@/lib/types';
@@ -53,6 +53,12 @@ export function ReviewForm({
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
     const { showToast } = useToastStore();
+
+    const openDatePicker = (input: HTMLInputElement) => {
+        if ('showPicker' in input && typeof input.showPicker === 'function') {
+            input.showPicker();
+        }
+    };
 
     const hasNotBeenEdited = editProps
         ? rating === (editProps.review.rating ?? 0) &&
@@ -242,14 +248,32 @@ export function ReviewForm({
                             : 'default'
                     )}
                 </label>
-                <input
-                    id="consumedDate"
-                    type="date"
-                    value={consumedDate}
-                    onChange={(e) => setConsumedDate(e.target.value)}
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                    disabled={isSubmitting}
-                />
+                <div className="relative">
+                    <input
+                        id="consumedDate"
+                        type="date"
+                        value={consumedDate}
+                        onChange={(e) => setConsumedDate(e.target.value)}
+                        className="hide-date-icon border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 pr-10 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={isSubmitting}
+                    />
+                    <button
+                        type="button"
+                        aria-label="Open date picker"
+                        onClick={() => {
+                            const input = document.getElementById(
+                                'consumedDate'
+                            ) as HTMLInputElement | null;
+                            if (input) {
+                                openDatePicker(input);
+                            }
+                        }}
+                        disabled={isSubmitting}
+                        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer disabled:opacity-50"
+                    >
+                        <Calendar className="h-4 w-4" />
+                    </button>
+                </div>
             </div>
             {!editProps && (
                 <Checkbox
