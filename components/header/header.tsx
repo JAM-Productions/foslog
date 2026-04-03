@@ -12,9 +12,11 @@ import { ListFilterPlus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 export default function Header() {
     const pathname = usePathname();
+    const { isAuthenticated } = useAuth();
     // Check if we're on the home route (with or without locale)
     const isHomePage =
         pathname === '/' ||
@@ -73,7 +75,9 @@ export default function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-2">
-                        <CreateReviewButton variant="nav" />
+                        {isAuthenticated && (
+                            <CreateReviewButton variant="nav" />
+                        )}
                         <UserMenu />
                     </div>
                 </div>
