@@ -16,6 +16,10 @@ vi.mock('@/components/header/search-bar', () => ({
     default: () => <div data-testid="search-bar">Search Bar</div>,
 }));
 
+vi.mock('@/components/review/create-review-button', () => ({
+    CreateReviewButton: () => <div data-testid="create-review-button">Create Review Button</div>,
+}));
+
 // Mock Next.js navigation
 vi.mock('next/navigation', () => ({
     usePathname: () => '/',
@@ -95,6 +99,9 @@ describe('Header', () => {
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
+        expect(
+            screen.getByTestId('create-review-button')
+        ).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
 
