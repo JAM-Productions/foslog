@@ -417,6 +417,24 @@
         "music": "Has listened to this music more than once",
         "default": "Has consumed this more than once"
     },
+    "ConsumedDateInput": {
+        "film": "Date watched",
+        "series": "Date watched",
+        "serie": "Date watched",
+        "book": "Date read",
+        "game": "Date played",
+        "music": "Date listened",
+        "default": "Date consumed"
+    },
+    "ConsumedDate": {
+        "film": "Watched on {date}",
+        "series": "Watched on {date}",
+        "serie": "Watched on {date}",
+        "book": "Read on {date}",
+        "game": "Played on {date}",
+        "music": "Listened on {date}",
+        "default": "Consumed on {date}"
+    },
     "FollowsModal": {
         "followers": "Followers",
         "following": "Following",

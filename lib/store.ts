@@ -29,6 +29,7 @@ export interface Review {
     liked?: boolean;
     review?: string;
     consumedMoreThanOnce?: boolean;
+    consumedDate?: Date;
     totalComments: number;
     totalLikes: number;
     createdAt: Date;

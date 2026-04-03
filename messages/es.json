@@ -417,6 +417,24 @@
         "music": "Ha escuchado esta música más de una vez",
         "default": "Ha consumido esto más de una vez"
     },
+    "ConsumedDateInput": {
+        "film": "Fecha de visionado",
+        "series": "Fecha de visionado",
+        "serie": "Fecha de visionado",
+        "book": "Fecha de lectura",
+        "game": "Fecha de juego",
+        "music": "Fecha de escucha",
+        "default": "Fecha de consumo"
+    },
+    "ConsumedDate": {
+        "film": "Visto el {date}",
+        "series": "Visto el {date}",
+        "serie": "Visto el {date}",
+        "book": "Leído el {date}",
+        "game": "Jugado el {date}",
+        "music": "Escuchado el {date}",
+        "default": "Consumido el {date}"
+    },
     "FollowsModal": {
         "followers": "Seguidores",
         "following": "Siguiendo",

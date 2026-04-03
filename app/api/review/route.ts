@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
 import { logger } from '@/lib/axiom/server';
+import { parseDateOnly } from '@/lib/date';
 import {
     internalServerError,
     notFound,
@@ -61,6 +62,10 @@ export async function POST(request: NextRequest) {
             return validationError('consumedMoreThanOnce must be a boolean');
         }
 
+        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
+            return validationError('consumedDate must be a valid date');
+        }
+
         if (!mediaId) {
             return validationError('Media ID is required');
         }
@@ -79,6 +84,9 @@ export async function POST(request: NextRequest) {
                 liked: review.liked !== undefined ? review.liked : null,
                 review: review.text,
                 consumedMoreThanOnce: review.consumedMoreThanOnce || false,
+                consumedDate: review.consumedDate
+                    ? parseDateOnly(review.consumedDate)
+                    : undefined,
                 mediaId: mediaId,
                 userId: session.user.id,
             },
@@ -207,6 +215,11 @@ export async function PATCH(request: NextRequest) {
         if (review.text && review.text.length > 5000) {
             return validationError('Review text is too long');
         }
+
+        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
+            return validationError('consumedDate must be a valid date');
+        }
+
         const existingReview = await prisma.review.findUnique({
             where: { id: reviewId },
         });
@@ -224,6 +237,9 @@ export async function PATCH(request: NextRequest) {
                 rating: review.stars ?? null,
                 liked: review.liked ?? null,
                 review: review.text,
+                consumedDate: review.consumedDate
+                    ? parseDateOnly(review.consumedDate)
+                    : undefined,
             },
         });
         const mediaId = existingReview.mediaId;

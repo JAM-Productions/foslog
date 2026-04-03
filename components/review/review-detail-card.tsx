@@ -77,6 +77,15 @@ export function ReviewDetailCard({
         });
     };
 
+    const formatDateOnly = (date: Date | string) => {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleDateString(locale, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
+
     const isEdited = review.updatedAt && review.updatedAt !== review.createdAt;
 
     return (
@@ -159,9 +168,11 @@ export function ReviewDetailCard({
                 <div className="text-muted-foreground flex items-center gap-1.5">
                     <Calendar className="h-4 w-4 flex-shrink-0" />
                     <p className="text-sm sm:text-base">
-                        {isEdited
-                            ? formatDate(review.updatedAt)
-                            : formatDate(review.createdAt)}
+                        {review.consumedDate
+                            ? formatDateOnly(review.consumedDate)
+                            : isEdited
+                              ? formatDate(review.updatedAt)
+                              : formatDate(review.createdAt)}
                     </p>
                 </div>
                 <div>

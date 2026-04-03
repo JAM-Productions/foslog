@@ -145,7 +145,7 @@ describe('User Actions', () => {
             expect(prisma.review.findMany).toHaveBeenCalledWith({
                 where: { userId: 'user1' },
                 include: { media: true, user: true },
-                orderBy: { createdAt: 'desc' },
+                orderBy: { consumedDate: 'desc' } as any,
                 skip: 0,
                 take: 12,
             });

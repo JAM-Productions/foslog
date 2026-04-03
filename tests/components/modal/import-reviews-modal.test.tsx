@@ -135,7 +135,7 @@ describe('ImportReviewsModal', () => {
         (Papa.parse as Mock).mockImplementation((file, config) => {
             config.complete({
                 data: [
-                    { Name: 'Dune', Year: '2021', Rating: '4.5' }
+                    { Name: 'Dune', Year: '2021', Rating: '4.5', 'Watched Date': '2021-10-22' }
                 ]
             });
         });
@@ -161,7 +161,10 @@ describe('ImportReviewsModal', () => {
         expect(Papa.parse).toHaveBeenCalled();
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/reviews/import/letterboxd', expect.any(Object));
+            expect(global.fetch).toHaveBeenCalledWith('/api/reviews/import/letterboxd', expect.objectContaining({
+                method: 'POST',
+                body: expect.stringContaining('"Watched Date":"2021-10-22"')
+            }));
         });
 
         expect(screen.getByText('Completed!')).toBeInTheDocument();

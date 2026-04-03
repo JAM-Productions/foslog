@@ -13,6 +13,7 @@ vi.mock('@/lib/store', () => ({
 vi.mock('next-intl', () => ({
     useTranslations: (namespace: string) => (key: string) => {
         if (namespace === 'ConsumedMoreThanOnce') return `Consumed ${key}`;
+        if (namespace === 'ConsumedDateInput') return `Date consumed ${key}`;
         if (namespace === 'CTA') return key === 'next' ? 'Next' : key;
         return key;
     },
@@ -145,6 +146,9 @@ describe('ReviewModal', () => {
         const checkbox = screen.getByRole('checkbox');
         expect(checkbox).toBeChecked();
         expect(checkbox).toBeDisabled();
+
+        // 8. Verify the Date input continues to be shown (because we removed !hasReviewed wrapper)
+        expect(screen.getByLabelText('Date consumed film')).toBeInTheDocument();
     });
 
     it('handleNext sets checkbox unchecked if not reviewed', async () => {
@@ -172,6 +176,11 @@ describe('ReviewModal', () => {
             expect(checkbox).not.toBeChecked();
             expect(checkbox).not.toBeDisabled();
         });
+
+        // 5. Verify Date input
+        const dateInput = screen.getByLabelText('Date consumed film');
+        expect(dateInput).toBeInTheDocument();
+        expect(dateInput).not.toBeDisabled();
     });
 
     it('uses fallback translation for checkbox label in modal', async () => {
@@ -201,7 +210,7 @@ describe('ReviewModal', () => {
         vi.mocked(useRouter).mockReturnValue({
             push: mockRouterPush,
             refresh: vi.fn(),
-        });
+        } as any);
 
         render(<ReviewModal />);
 
@@ -242,7 +251,14 @@ describe('ReviewModal', () => {
                 '/api/review',
                 expect.objectContaining({
                     method: 'POST',
-                    body: expect.stringContaining('"mediaId":"test-media-id"'),
+                    body: expect.stringMatching(/"mediaId":"test-media-id"/),
+                })
+            );
+            expect(global.fetch).toHaveBeenLastCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringMatching(/"consumedDate":/),
                 })
             );
         });

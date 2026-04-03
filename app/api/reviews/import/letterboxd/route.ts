@@ -8,6 +8,7 @@ import {
 } from '@/lib/errors';
 import { logger } from '@/lib/axiom/server';
 import { parseTMDBMovie } from '@/app/api/search/utils/parsers';
+import { parseDateOnlyUTC } from '@/lib/date';
 
 export async function POST(request: NextRequest) {
     try {
@@ -23,7 +24,15 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        const { Name, Year, Rating, Rewatch, Review: ReviewText } = body;
+        const {
+            Name,
+            Year,
+            Rating,
+            Rewatch,
+            Review: ReviewText,
+            'Watched Date': WatchedDateRaw,
+            Date: PublishDateRaw,
+        } = body;
 
         if (!Name || !Year) {
             return validationError(
@@ -111,6 +120,16 @@ export async function POST(request: NextRequest) {
         const parsedRating = parseFloat(Rating);
         const validRating = !isNaN(parsedRating) ? parsedRating : null;
 
+        // Determine consumed date: parse YYYY-MM-DD as noon UTC to avoid day-shift
+        let consumedDate: Date | undefined = undefined;
+        if (WatchedDateRaw) {
+            const parsed = parseDateOnlyUTC(WatchedDateRaw);
+            if (parsed) consumedDate = parsed;
+        } else if (PublishDateRaw) {
+            const parsed = parseDateOnlyUTC(PublishDateRaw);
+            if (parsed) consumedDate = parsed;
+        }
+
         if (existingReview) {
             // If it exists, update it if it's a rewatch or if the existing one has less info
             await prisma.review.update({
@@ -118,8 +137,10 @@ export async function POST(request: NextRequest) {
                 data: {
                     consumedMoreThanOnce:
                         existingReview.consumedMoreThanOnce || isRewatch,
-                    // We don't overwrite the full review automatically unless empty,
-                    // but we do update the 'consumedMoreThanOnce' flag
+                    ...(consumedDate &&
+                        !(existingReview.consumedDate as any) && {
+                            consumedDate,
+                        }),
                 },
             });
 
@@ -139,6 +160,7 @@ export async function POST(request: NextRequest) {
                 rating: validRating,
                 review: ReviewText || null,
                 consumedMoreThanOnce: isRewatch,
+                consumedDate: consumedDate,
                 mediaId: mediaItem.id,
                 userId: session.user.id,
             },

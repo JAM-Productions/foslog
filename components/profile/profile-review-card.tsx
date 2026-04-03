@@ -66,8 +66,14 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                                 {media.year}
                             </p>
                         </div>
-                        <span className="text-muted-foreground text-xs">
-                            {new Date(review.createdAt).toLocaleDateString()}
+                        <span className="text-muted-foreground text-right text-xs">
+                            {review.consumedDate
+                                ? new Date(
+                                      review.consumedDate
+                                  ).toLocaleDateString()
+                                : new Date(
+                                      review.createdAt
+                                  ).toLocaleDateString()}
                         </span>
                     </div>
 
