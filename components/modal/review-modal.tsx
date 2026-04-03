@@ -4,7 +4,7 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/button/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from '@/components/input/select';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { X, LoaderCircle, ThumbsUp, ThumbsDown, Calendar } from 'lucide-react';
 import { RatingInput } from '@/components/input/rating';
@@ -56,13 +56,17 @@ export default function ReviewModal() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
     const [mediaId, setMediaId] = useState<string | null>(null);
     const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
+    const consumedDateInputRef = useRef<HTMLInputElement>(null);
 
     const [error, setError] = useState<string | null>(null);
 
     const openDatePicker = (input: HTMLInputElement) => {
+        input.focus();
         if ('showPicker' in input && typeof input.showPicker === 'function') {
             input.showPicker();
+            return;
         }
+        input.click();
     };
 
     const options: SelectOption[] = [
@@ -385,6 +389,7 @@ export default function ReviewModal() {
                                 </label>
                                 <div className="relative">
                                     <input
+                                        ref={consumedDateInputRef}
                                         id="modalConsumedDate"
                                         type="date"
                                         value={consumedDate}
@@ -398,12 +403,10 @@ export default function ReviewModal() {
                                         type="button"
                                         aria-label="Open date picker"
                                         onClick={() => {
-                                            const input =
-                                                document.getElementById(
-                                                    'modalConsumedDate'
-                                                ) as HTMLInputElement | null;
-                                            if (input) {
-                                                openDatePicker(input);
+                                            if (consumedDateInputRef.current) {
+                                                openDatePicker(
+                                                    consumedDateInputRef.current
+                                                );
                                             }
                                         }}
                                         disabled={isLoadingSubmit}

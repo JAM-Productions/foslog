@@ -165,8 +165,3 @@ html {
 .hide-date-icon::-webkit-clear-button {
     display: none;
 }
-
-.hide-date-icon {
-    appearance: textfield;
-    -moz-appearance: textfield;
-}

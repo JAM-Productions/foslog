@@ -3,7 +3,7 @@
 import { Button } from '@/components/button/button';
 import { RatingInput } from '@/components/input/rating';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { LoaderCircle, ThumbsUp, ThumbsDown, Calendar } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-provider';
@@ -53,11 +53,15 @@ export function ReviewForm({
     const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
     const { showToast } = useToastStore();
+    const consumedDateInputRef = useRef<HTMLInputElement>(null);
 
     const openDatePicker = (input: HTMLInputElement) => {
+        input.focus();
         if ('showPicker' in input && typeof input.showPicker === 'function') {
             input.showPicker();
+            return;
         }
+        input.click();
     };
 
     const hasNotBeenEdited = editProps
@@ -250,6 +254,7 @@ export function ReviewForm({
                 </label>
                 <div className="relative">
                     <input
+                        ref={consumedDateInputRef}
                         id="consumedDate"
                         type="date"
                         value={consumedDate}
@@ -261,11 +266,8 @@ export function ReviewForm({
                         type="button"
                         aria-label="Open date picker"
                         onClick={() => {
-                            const input = document.getElementById(
-                                'consumedDate'
-                            ) as HTMLInputElement | null;
-                            if (input) {
-                                openDatePicker(input);
+                            if (consumedDateInputRef.current) {
+                                openDatePicker(consumedDateInputRef.current);
                             }
                         }}
                         disabled={isSubmitting}
