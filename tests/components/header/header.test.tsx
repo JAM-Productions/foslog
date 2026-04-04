@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import Header from '@/components/header/header';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 // Mock all the sub-components
 vi.mock('@/components/media/media-type-filter', () => ({
@@ -17,7 +18,13 @@ vi.mock('@/components/header/search-bar', () => ({
 }));
 
 vi.mock('@/components/review/create-review-button', () => ({
-    CreateReviewButton: () => <div data-testid="create-review-button">Create Review Button</div>,
+    CreateReviewButton: () => (
+        <div data-testid="create-review-button">Create Review Button</div>
+    ),
+}));
+
+vi.mock('@/lib/auth/auth-provider', () => ({
+    useAuth: vi.fn(),
 }));
 
 // Mock Next.js navigation
@@ -57,8 +64,17 @@ vi.mock('next/image', () => ({
 }));
 
 describe('Header', () => {
+    const mockedUseAuth = vi.mocked(useAuth);
+
     beforeEach(() => {
         vi.clearAllMocks();
+        mockedUseAuth.mockReturnValue({
+            user: null,
+            session: null,
+            isLoading: false,
+            isAuthenticated: true,
+            refetchSession: vi.fn(),
+        });
     });
 
     it('renders the header with correct structure', () => {
@@ -99,9 +115,7 @@ describe('Header', () => {
 
         expect(screen.getByTestId('media-type-filter')).toBeInTheDocument();
         expect(screen.getByTestId('user-menu')).toBeInTheDocument();
-        expect(
-            screen.getByTestId('create-review-button')
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('create-review-button')).toBeInTheDocument();
         expect(screen.getAllByTestId('search-bar')).toHaveLength(2); // Desktop and mobile versions
     });
 
