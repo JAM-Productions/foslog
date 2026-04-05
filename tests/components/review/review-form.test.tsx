@@ -63,6 +63,18 @@ describe('ReviewForm', () => {
         expect(checkbox).not.toBeChecked();
     });
 
+    it('opens the consumed date picker when the calendar button is clicked', () => {
+        const focusSpy = vi.spyOn(HTMLInputElement.prototype, 'focus');
+        const clickSpy = vi.spyOn(HTMLInputElement.prototype, 'click');
+
+        render(<ReviewForm {...defaultProps} />);
+
+        fireEvent.click(screen.getByLabelText('Open date picker'));
+
+        expect(focusSpy).toHaveBeenCalled();
+        expect(clickSpy).toHaveBeenCalled();
+    });
+
     it('submits consumedMoreThanOnce as true when checked manually', async () => {
         (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
             ok: true,
