@@ -4,9 +4,9 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/button/button';
 import { useTranslations } from 'next-intl';
 import Select, { SelectOption } from '@/components/input/select';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
-import { X, LoaderCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { X, LoaderCircle, ThumbsUp, ThumbsDown, Calendar } from 'lucide-react';
 import { RatingInput } from '@/components/input/rating';
 import Image from 'next/image';
 import { SearchInput, Suggestion } from '@/components/input/search-input';
@@ -56,8 +56,18 @@ export default function ReviewModal() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
     const [mediaId, setMediaId] = useState<string | null>(null);
     const [isLoadingNext, setIsLoadingNext] = useState<boolean>(false);
+    const consumedDateInputRef = useRef<HTMLInputElement>(null);
 
     const [error, setError] = useState<string | null>(null);
+
+    const openDatePicker = (input: HTMLInputElement) => {
+        input.focus();
+        if ('showPicker' in input && typeof input.showPicker === 'function') {
+            input.showPicker();
+            return;
+        }
+        input.click();
+    };
 
     const options: SelectOption[] = [
         { value: 'film', label: tMediaTypes('films'), disabled: false },
@@ -377,16 +387,34 @@ export default function ReviewModal() {
                                             : 'default'
                                     )}
                                 </label>
-                                <input
-                                    id="modalConsumedDate"
-                                    type="date"
-                                    value={consumedDate}
-                                    onChange={(e) =>
-                                        setConsumedDate(e.target.value)
-                                    }
-                                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                                    disabled={isLoadingSubmit}
-                                />
+                                <div className="relative">
+                                    <input
+                                        ref={consumedDateInputRef}
+                                        id="modalConsumedDate"
+                                        type="date"
+                                        value={consumedDate}
+                                        onChange={(e) =>
+                                            setConsumedDate(e.target.value)
+                                        }
+                                        className="hide-date-icon border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 pr-10 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                        disabled={isLoadingSubmit}
+                                    />
+                                    <button
+                                        type="button"
+                                        aria-label="Open date picker"
+                                        onClick={() => {
+                                            if (consumedDateInputRef.current) {
+                                                openDatePicker(
+                                                    consumedDateInputRef.current
+                                                );
+                                            }
+                                        }}
+                                        disabled={isLoadingSubmit}
+                                        className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer disabled:opacity-50"
+                                    >
+                                        <Calendar className="h-4 w-4" />
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>

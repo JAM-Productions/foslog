@@ -153,3 +153,15 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--muted-foreground);
 }
+
+/* Hide native date icon */
+.hide-date-icon::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    pointer-events: none;
+}
+
+.hide-date-icon::-webkit-inner-spin-button,
+.hide-date-icon::-webkit-clear-button {
+    display: none;
+}

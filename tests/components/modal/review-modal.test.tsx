@@ -205,6 +205,35 @@ describe('ReviewModal', () => {
         });
     });
 
+    it('opens the consumed date picker when the calendar button is clicked', async () => {
+        const focusSpy = vi.spyOn(HTMLInputElement.prototype, 'focus');
+        const clickSpy = vi.spyOn(HTMLInputElement.prototype, 'click');
+
+        render(<ReviewModal />);
+
+        fireEvent.click(screen.getByText('films'));
+        fireEvent.keyDown(screen.getByTestId('search-input'), { key: 'Enter' });
+
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                hasReviewed: false,
+                media: { id: 'test-media-id' },
+            }),
+        });
+
+        fireEvent.click(screen.getByText('Next'));
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('Open date picker')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByLabelText('Open date picker'));
+
+        expect(focusSpy).toHaveBeenCalled();
+        expect(clickSpy).toHaveBeenCalled();
+    });
+
     it('submitReview makes only one API call to /api/review', async () => {
         const mockRouterPush = vi.fn();
         vi.mocked(useRouter).mockReturnValue({
