@@ -160,57 +160,93 @@ export async function GET(
             return notFound('User ID is required.');
         }
 
-        const currentUserFollowing = await prisma.follow.findMany({
-            where: { followerId: currentUserId },
-            select: { followingId: true },
-        });
+        const { searchParams } = new URL(request.url);
+        const type = searchParams.get('type') as 'followers' | 'following' | null;
+        const page = parseInt(searchParams.get('page') || '1');
+        const pageSize = parseInt(searchParams.get('pageSize') || '50');
+        const skip = (page - 1) * pageSize;
 
-        const followingIds = new Set(
-            currentUserFollowing.map((f) => f.followingId)
-        );
-
-        const followers = await prisma.follow.findMany({
-            where: { followingId: targetUserId },
-            select: {
-                follower: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
+        const userSelect = {
+            id: true,
+            name: true,
+            image: true,
+            followers: {
+                where: {
+                    followerId: currentUserId,
+                },
+                select: {
+                    followerId: true,
                 },
             },
-        });
+        };
 
-        const following = await prisma.follow.findMany({
-            where: { followerId: targetUserId },
-            select: {
-                following: {
-                    select: {
-                        id: true,
-                        name: true,
-                        image: true,
-                    },
-                },
-            },
-        });
+        const fetchFollowers =
+            !type || type === 'followers'
+                ? prisma.follow.findMany({
+                      where: { followingId: targetUserId },
+                      select: {
+                          follower: {
+                              select: userSelect,
+                          },
+                      },
+                      orderBy: { createdAt: 'desc' },
+                      skip,
+                      take: pageSize + 1,
+                  })
+                : Promise.resolve([]);
+
+        const fetchFollowing =
+            !type || type === 'following'
+                ? prisma.follow.findMany({
+                      where: { followerId: targetUserId },
+                      select: {
+                          following: {
+                              select: userSelect,
+                          },
+                      },
+                      orderBy: { createdAt: 'desc' },
+                      skip,
+                      take: pageSize + 1,
+                  })
+                : Promise.resolve([]);
+
+        const [rawFollowers, rawFollowing] = await Promise.all([
+            fetchFollowers,
+            fetchFollowing,
+        ]);
+
+        const hasMoreFollowers = rawFollowers.length > pageSize;
+        const hasMoreFollowing = rawFollowing.length > pageSize;
+
+        const followers = rawFollowers.slice(0, pageSize).map((f) => ({
+            id: f.follower.id,
+            name: f.follower.name,
+            image: f.follower.image,
+            isFollowing: f.follower.followers.length > 0,
+        }));
+
+        const following = rawFollowing.slice(0, pageSize).map((f) => ({
+            id: f.following.id,
+            name: f.following.name,
+            image: f.following.image,
+            isFollowing: f.following.followers.length > 0,
+        }));
 
         logger.info('GET /api/user/[id]/follow', {
             targetUserId,
+            type,
+            page,
+            pageSize,
             followersCount: followers.length,
             followingCount: following.length,
         });
 
         return NextResponse.json(
             {
-                followers: followers.map((f) => ({
-                    ...f.follower,
-                    isFollowing: followingIds.has(f.follower.id),
-                })),
-                following: following.map((f) => ({
-                    ...f.following,
-                    isFollowing: followingIds.has(f.following.id),
-                })),
+                followers,
+                following,
+                hasMoreFollowers,
+                hasMoreFollowing,
             },
             { status: 200 }
         );

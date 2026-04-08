@@ -441,7 +441,9 @@
         "following": "Seguint",
         "noFollowers": "No hi ha seguidors per mostrar",
         "noFollowing": "No hi ha usuaris seguits per mostrar",
-        "follow": "Seguir"
+        "follow": "Seguir",
+        "loadMore": "Carregar més",
+        "loading": "Carregant..."
     },
     "ListPage": {
         "loadError": "S'ha produït un error en carregar la llista. Si us plau, torna-ho a intentar més tard.",

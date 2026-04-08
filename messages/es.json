@@ -441,7 +441,9 @@
         "following": "Siguiendo",
         "noFollowers": "No hay seguidores para mostrar",
         "noFollowing": "No hay usuarios seguidos para mostrar",
-        "follow": "Seguir"
+        "follow": "Seguir",
+        "loadMore": "Cargar más",
+        "loading": "Cargando..."
     },
     "ListPage": {
         "loadError": "Se produjo un error al cargar la lista. Por favor, inténtalo de nuevo más tarde.",
