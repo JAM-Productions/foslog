@@ -1,11 +1,9 @@
-﻿import { render, screen, waitFor } from '@testing-library/react';
+﻿import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MediaDetails } from '@/components/media/media-details';
 import { MediaItem } from '@/lib/store';
 import { useTranslations } from 'next-intl';
-
-const originalFetch = global.fetch;
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
