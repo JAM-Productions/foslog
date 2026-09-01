@@ -19,8 +19,8 @@ export function ConsumedBadge({ mediaType, className }: ConsumedBadgeProps) {
                 className
             )}
         >
-            <Repeat className="h-3 w-3" />
-            <span>
+            <Repeat className="h-3 w-3 shrink-0" />
+            <span className="min-w-0 truncate">
                 {tConsumed(
                     ['film', 'series', 'book', 'game', 'music'].includes(
                         mediaType.toLowerCase()

@@ -24,9 +24,9 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
             className="hover:border-accent h-full cursor-pointer overflow-hidden transition-all"
             onClick={() => router.push(`/review/${review.id}`)}
         >
-            <div className="flex h-full flex-col sm:flex-row">
+            <div className="flex h-full min-h-28 sm:min-h-44">
                 <div
-                    className="group relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-32"
+                    className="group relative w-24 shrink-0 overflow-hidden sm:w-32"
                     onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/media/${media.id}`);
@@ -47,12 +47,12 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                     )}
                 </div>
 
-                <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <div className="mb-2 flex items-start justify-between">
-                        <div>
+                <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-5">
+                    <div className="mb-1.5 flex items-start justify-between gap-2">
+                        <div className="min-w-0">
                             <button
                                 type="button"
-                                className="line-clamp-1 cursor-pointer text-lg font-bold hover:underline"
+                                className="line-clamp-1 cursor-pointer text-left text-base font-bold hover:underline sm:text-lg"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     router.push(`/media/${media.id}`);
@@ -66,7 +66,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                                 {media.year}
                             </p>
                         </div>
-                        <span className="text-muted-foreground text-right text-xs">
+                        <span className="text-muted-foreground shrink-0 text-right text-xs">
                             {review.consumedDate
                                 ? new Date(
                                       review.consumedDate
@@ -78,7 +78,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                     </div>
 
                     <div>
-                        <div className="mb-3 flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                             {review.rating !== undefined &&
                                 review.rating !== null && (
                                     <RatingDisplay
@@ -109,7 +109,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                         </div>
 
                         {review.review && (
-                            <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
+                            <p className="mt-2 line-clamp-2 text-sm leading-relaxed sm:line-clamp-3">
                                 &ldquo;{review.review}&rdquo;
                             </p>
                         )}
@@ -118,7 +118,7 @@ export function ProfileReviewCard({ review }: ProfileReviewCardProps) {
                     {review.consumedMoreThanOnce && (
                         <ConsumedBadge
                             mediaType={media.type}
-                            className="mt-auto pt-2 text-xs"
+                            className="mt-auto pt-1.5 text-xs"
                         />
                     )}
                 </div>
