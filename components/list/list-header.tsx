@@ -2,13 +2,13 @@
 
 import { useRouter } from '@/i18n/navigation';
 import { ListType } from '@prisma/client';
-import { Bookmark, User } from 'lucide-react';
+import { Bookmark, Library, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 export interface ListHeaderProps {
     listName: string;
-    /* listImage?: string; */
+    listImage?: string;
     itemCount: number;
     type: ListType;
     listUser: {
@@ -20,7 +20,7 @@ export interface ListHeaderProps {
 
 export function ListHeader({
     listName,
-    /* listImage, */
+    listImage,
     itemCount,
     type,
     listUser,
@@ -32,9 +32,25 @@ export function ListHeader({
 
     return (
         <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:gap-4">
-            {type === ListType.BOOKMARK && (
+            {type === ListType.BOOKMARK ? (
                 <div className="flex h-48 w-48 items-center justify-center self-center rounded-lg bg-green-700 sm:self-auto">
                     <Bookmark className="h-12 w-12 fill-green-500 text-green-500" />
+                </div>
+            ) : listImage ? (
+                <Image
+                    src={listImage}
+                    alt={listName}
+                    width={192}
+                    height={192}
+                    className="h-48 w-48 self-center rounded-lg object-cover sm:self-auto"
+                    unoptimized
+                />
+            ) : (
+                <div
+                    className="bg-muted flex h-48 w-48 items-center justify-center self-center rounded-lg border sm:self-auto"
+                    data-testid="list-image-placeholder"
+                >
+                    <Library className="h-12 w-12 text-gray-400" />
                 </div>
             )}
             <div className="flex flex-col justify-normal gap-1 sm:h-48">

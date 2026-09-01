@@ -161,6 +161,11 @@
             "title": "Términos de Servicio - Foslog",
             "description": "Lee los términos de servicio de Foslog para entender las reglas y pautas para usar nuestra plataforma."
         },
+        "ListsPage": {
+            "userNotFound": "Foslog - Usuario No Encontrado",
+            "listsTitle": "Listas de {name} - Foslog",
+            "listsDescription": "Explora todas las listas creadas por {name} en Foslog."
+        },
         "ListPage": {
             "listNotFound": "Lista No Encontrada - Foslog",
             "listTitle": "{title} - Foslog",
@@ -255,7 +260,9 @@
         "share": "Compartir",
         "myProfile": "Mi Perfil",
         "goBack": "Volver",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "create": "Crear",
+        "close": "Cerrar"
     },
     "Toast": {
         "linkCopied": "Enlace copiado al portapapeles!",
@@ -287,7 +294,22 @@
         "bookmarkRemoved": "¡Contenido eliminado de guardados!",
         "toggleBookmarkFailed": "Error al actualizar tu marcador. Por favor inténtalo de nuevo.",
         "mediaRemovedFromList": "Medio eliminado de la lista exitosamente!",
-        "mediaRemoveFromListFailed": "Error al eliminar el medio de la lista. Por favor inténtalo de nuevo."
+        "mediaRemoveFromListFailed": "Error al eliminar el medio de la lista. Por favor inténtalo de nuevo.",
+        "listCreated": "¡Lista creada exitosamente!",
+        "listCreateFailed": "Error al crear la lista. Por favor inténtalo de nuevo.",
+        "listLimitReached": "Has alcanzado el límite de {count} listas. Elimina alguna para crear una nueva.",
+        "imageTooLarge": "La imagen es demasiado grande. Por favor elige una más pequeña.",
+        "toggleListFailed": "Error al actualizar la lista. Por favor inténtalo de nuevo.",
+        "listUpdated": "¡Lista actualizada exitosamente!",
+        "listUpdateFailed": "Error al actualizar la lista. Por favor inténtalo de nuevo.",
+        "listDeleted": "¡Lista eliminada exitosamente!",
+        "listDeleteFailed": "Error al eliminar la lista. Por favor inténtalo de nuevo.",
+        "listsDeleted": "{count, plural, one {¡# lista eliminada exitosamente!} other {¡# listas eliminadas exitosamente!}}",
+        "listsPartiallyDeleted": "{count, plural, one {No se pudo eliminar # lista.} other {No se pudieron eliminar # listas.}}",
+        "listsDeleteFailed": "Error al eliminar las listas. Por favor inténtalo de nuevo.",
+        "listMadePublic": "La lista ahora es pública. Cualquiera con el enlace puede verla.",
+        "listMadePrivate": "La lista ahora es privada. Solo tú puedes verla.",
+        "listVisibilityFailed": "Error al cambiar la visibilidad de la lista. Por favor inténtalo de nuevo."
     },
     "ProfilePage": {
         "loadError": "Se produjo un error al cargar el perfil. Por favor, inténtalo de nuevo más tarde.",
@@ -315,7 +337,10 @@
         "noLists": "{user} listas todavía.",
         "you": "No tienes",
         "thisUser": "Este usuario no tiene",
-        "viewProfile": "Ver perfil de {name}"
+        "viewProfile": "Ver perfil de {name}",
+        "createList": "Crear lista",
+        "seeMore": "Ver más",
+        "itemsCount": "{count, plural, =0 {Sin elementos} one {# elemento} other {# elementos}}"
     },
     "MediaPage": {
         "loadError": "Se produjo un error al cargar el medio. Por favor, inténtalo de nuevo más tarde.",
@@ -342,7 +367,18 @@
         "consumedMoreThanOnce": "He visto/jugado/leído esto más de una vez",
         "toggleLike": "Alternar Me gusta",
         "bookmark": "Marcar",
-        "unbookmark": "Desmarcar"
+        "unbookmark": "Desmarcar",
+        "addToList": "Añadir a una lista"
+    },
+    "AddToListModal": {
+        "title": "Añadir a una lista",
+        "searchPlaceholder": "Busca tus listas",
+        "add": "Añadir",
+        "added": "Añadido",
+        "noLists": "Todavía no tienes ninguna lista.",
+        "noResults": "Ninguna lista coincide con tu búsqueda.",
+        "loadError": "No se pudieron cargar tus listas. Por favor, inténtalo de nuevo más tarde.",
+        "itemsCount": "{count, plural, =0 {Sin elementos} one {# elemento} other {# elementos}}"
     },
     "BackButton": {
         "back": "Atrás"
@@ -456,7 +492,44 @@
         "deleteMediaFromListDescription": "¿Estás seguro de que deseas eliminar este medio de la lista? Esta acción no se puede deshacer.",
         "emptyList": "Esta lista todavía no tiene elementos añadidos.",
         "searchMedia": "Buscar medios",
-        "list": "Lista"
+        "list": "Lista",
+        "otherLists": "Otras listas",
+        "noOtherLists": "No hay otras listas que mostrar.",
+        "noSearchResults": "Ningún elemento coincide con tu búsqueda.",
+        "sortByYearReleased": "Ordenar por fecha de lanzamiento",
+        "sortByDateAdded": "Ordenar por fecha en que se añadió",
+        "yearReleasedShort": "Lanzamiento",
+        "dateAddedShort": "Añadido",
+        "listOptions": "Opciones de la lista",
+        "makePublic": "Hacer pública",
+        "makePrivate": "Hacer privada",
+        "shareList": "Compartir",
+        "editList": "Editar lista",
+        "deleteList": "Eliminar lista",
+        "deleteListTitle": "Eliminar {name}",
+        "deleteListDescription": "¿Seguro que quieres eliminar esta lista? Se eliminarán todos sus elementos y esta acción no se puede deshacer."
+    },
+    "ListsPage": {
+        "loadError": "Se produjo un error al cargar las listas. Por favor, inténtalo de nuevo más tarde.",
+        "title": "Listas de {name}",
+        "noLists": "Todavía no hay listas que mostrar.",
+        "deleteLists": "Eliminar listas",
+        "selectAll": "Seleccionar todas",
+        "deselectAll": "Deseleccionar todas",
+        "deleteSelected": "{count, plural, =0 {Eliminar} other {Eliminar #}}",
+        "deleteListsTitle": "{count, plural, one {Eliminar # lista} other {Eliminar # listas}}",
+        "deleteListsDescription": "¿Seguro que quieres eliminar las listas seleccionadas? Se eliminarán todos sus elementos y esta acción no se puede deshacer."
+    },
+    "CreateListModal": {
+        "title": "Crear lista",
+        "editTitle": "Editar lista",
+        "nameLabel": "Nombre",
+        "namePlaceholder": "p. ej. Películas imprescindibles",
+        "imageLabel": "Imagen de la lista (opcional)",
+        "upload": "Subir",
+        "remove": "Eliminar",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿De qué trata esta lista?"
     },
     "Sort": {
         "sortBy": "Ordenar por",

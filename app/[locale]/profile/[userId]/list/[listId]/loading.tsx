@@ -1,3 +1,5 @@
+import { ListPreviewRowSkeleton } from '@/components/list/list-preview-row-skeleton';
+
 export default function Loading() {
     return (
         <div className="container mx-auto px-4 py-8">
@@ -84,6 +86,11 @@ export default function Loading() {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* other lists skeleton */}
+            <div className="mt-12">
+                <ListPreviewRowSkeleton />
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import {
+﻿import {
     getUserProfile,
     getUserReviews,
     getUserStats,
@@ -6,6 +6,8 @@ import {
     hasUserReviewed,
     hasUserBookmarked,
     getUserMediaLists,
+    getAllUserLists,
+    getOtherUserLists,
     getUserMediaListData,
     getUserListMetadata,
 } from '@/app/actions/user';
@@ -30,9 +32,11 @@ vi.mock('@/lib/prisma', () => ({
             findFirst: vi.fn(),
             findMany: vi.fn(),
             findUnique: vi.fn(),
+            count: vi.fn(),
         },
         listMediaItem: {
             findUnique: vi.fn(),
+            count: vi.fn(),
         },
     },
 }));
@@ -462,113 +466,249 @@ describe('User Actions', () => {
         });
     });
 
+    const mockListRow = (
+        id: string,
+        name: string,
+        type: 'LIST' | 'BOOKMARK' = 'LIST',
+        mediaItems = 0
+    ) => ({
+        id,
+        name,
+        image: `${id}.jpg`,
+        type,
+        _count: { mediaItems },
+    });
+
+    const mockSession = async (userId: string | null) => {
+        const { auth } = await import('@/lib/auth/auth');
+        vi.mocked(auth.api.getSession).mockResolvedValue(
+            userId ? ({ user: { id: userId }, session: {} } as any) : null
+        );
+    };
+
     describe('getUserMediaLists', () => {
         test('should return user lists when user is viewing their own profile', async () => {
-            const { auth } = await import('@/lib/auth/auth');
-            vi.mocked(auth.api.getSession).mockResolvedValue({
-                user: { id: 'user1' },
-                session: {},
-            } as any);
+            await mockSession('user1');
 
-            const mockLists = [
-                {
-                    id: 'list1',
-                    name: 'My Favorites',
-                    image: 'image1.jpg',
-                    type: 'LIST',
-                    mediaItems: [],
-                },
-                {
-                    id: 'list2',
-                    name: 'To Watch',
-                    image: 'image2.jpg',
-                    type: 'LIST',
-                    mediaItems: [],
-                },
-            ];
-
-            vi.mocked(prisma.list.findMany).mockResolvedValue(mockLists as any);
+            vi.mocked(prisma.list.findMany).mockResolvedValue([
+                mockListRow('list1', 'My Favorites', 'LIST', 3),
+                mockListRow('list2', 'To Watch'),
+            ] as any);
+            vi.mocked(prisma.list.count).mockResolvedValue(2 as any);
 
             const result = await getUserMediaLists('user1');
 
-            expect(prisma.list.findMany).toHaveBeenCalledWith({
-                where: { userId: 'user1' },
-                select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                    type: true,
-                },
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: { userId: 'user1' },
+                    take: 5,
+                })
+            );
+            expect(result.total).toBe(2);
+            expect(result.lists).toHaveLength(2);
+            expect(result.lists[0]).toEqual({
+                id: 'list1',
+                name: 'My Favorites',
+                image: 'list1.jpg',
+                type: 'LIST',
+                totalItems: 3,
             });
+        });
+
+        test('should exclude bookmark lists when viewing other users profile', async () => {
+            await mockSession('currentUser');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([
+                mockListRow('list1', 'Recommendations'),
+            ] as any);
+            vi.mocked(prisma.list.count).mockResolvedValue(1 as any);
+
+            const result = await getUserMediaLists('otherUser');
+
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        userId: 'otherUser',
+                        type: 'LIST',
+                        isPublic: true,
+                    },
+                })
+            );
+            expect(result.lists).toHaveLength(1);
+        });
+
+        test('should exclude bookmark lists for anonymous visitors', async () => {
+            await mockSession(null);
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([]);
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            await getUserMediaLists('user1');
+
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: { userId: 'user1', type: 'LIST', isPublic: true },
+                })
+            );
+        });
+
+        test('should respect the given limit', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([]);
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            await getUserMediaLists('user1', 2);
+
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ take: 2 })
+            );
+        });
+
+        test('should return empty result when user has no lists', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([]);
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            const result = await getUserMediaLists('user1');
+
+            expect(result).toEqual({ lists: [], total: 0 });
+        });
+
+        test('should throw error when database query fails', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockRejectedValue(
+                new Error('Database error')
+            );
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            await expect(getUserMediaLists('user1')).rejects.toThrow(
+                'Could not fetch user media lists.'
+            );
+        });
+    });
+
+    describe('getAllUserLists', () => {
+        test('should return every visible list without limiting or paginating', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([
+                mockListRow('list1', 'My Favorites', 'LIST', 1),
+                mockListRow('list2', 'To Watch'),
+            ] as any);
+
+            const result = await getAllUserLists('user1');
+
+            const args = vi.mocked(prisma.list.findMany).mock
+                .calls[0][0] as any;
+            expect(args.where).toEqual({ userId: 'user1' });
+            expect(args.take).toBeUndefined();
+            expect(args.skip).toBeUndefined();
             expect(result).toHaveLength(2);
             expect(result[0]).toEqual({
                 id: 'list1',
                 name: 'My Favorites',
-                image: 'image1.jpg',
+                image: 'list1.jpg',
                 type: 'LIST',
+                totalItems: 1,
             });
         });
 
-        test('should return only public lists when viewing other users profile', async () => {
-            const { auth } = await import('@/lib/auth/auth');
-            vi.mocked(auth.api.getSession).mockResolvedValue({
-                user: { id: 'currentUser' },
-                session: {},
-            } as any);
-
-            const mockLists = [
-                {
-                    id: 'list1',
-                    name: 'Recommendations',
-                    image: 'image1.jpg',
-                    type: 'LIST',
-                    mediaItems: [],
-                },
-            ];
-
-            vi.mocked(prisma.list.findMany).mockResolvedValue(mockLists as any);
-
-            const result = await getUserMediaLists('otherUser');
-
-            expect(prisma.list.findMany).toHaveBeenCalledWith({
-                where: { userId: 'otherUser', type: 'LIST' },
-                select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                    type: true,
-                },
-            });
-            expect(result).toHaveLength(1);
-        });
-
-        test('should return empty array when user has no lists', async () => {
-            const { auth } = await import('@/lib/auth/auth');
-            vi.mocked(auth.api.getSession).mockResolvedValue({
-                user: { id: 'user1' },
-                session: {},
-            } as any);
+        test('should exclude bookmark lists when viewing other users lists', async () => {
+            await mockSession('currentUser');
 
             vi.mocked(prisma.list.findMany).mockResolvedValue([]);
 
-            const result = await getUserMediaLists('user1');
+            const result = await getAllUserLists('otherUser');
 
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        userId: 'otherUser',
+                        type: 'LIST',
+                        isPublic: true,
+                    },
+                })
+            );
             expect(result).toEqual([]);
         });
 
         test('should throw error when database query fails', async () => {
-            const { auth } = await import('@/lib/auth/auth');
-            vi.mocked(auth.api.getSession).mockResolvedValue({
-                user: { id: 'user1' },
-                session: {},
-            } as any);
+            await mockSession('user1');
 
             vi.mocked(prisma.list.findMany).mockRejectedValue(
                 new Error('Database error')
             );
 
-            await expect(getUserMediaLists('user1')).rejects.toThrow(
-                'Could not fetch user media lists.'
+            await expect(getAllUserLists('user1')).rejects.toThrow(
+                'Could not fetch user lists.'
+            );
+        });
+    });
+
+    describe('getOtherUserLists', () => {
+        test('should exclude the list currently being viewed', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([
+                mockListRow('list2', 'To Watch'),
+            ] as any);
+            vi.mocked(prisma.list.count).mockResolvedValue(1 as any);
+
+            const result = await getOtherUserLists('user1', 'list1');
+
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: { userId: 'user1', id: { not: 'list1' } },
+                    take: 5,
+                })
+            );
+            expect(result).toEqual({
+                lists: [
+                    {
+                        id: 'list2',
+                        name: 'To Watch',
+                        image: 'list2.jpg',
+                        type: 'LIST',
+                        totalItems: 0,
+                    },
+                ],
+                total: 1,
+            });
+        });
+
+        test('should exclude bookmark lists when viewing other users lists', async () => {
+            await mockSession('currentUser');
+
+            vi.mocked(prisma.list.findMany).mockResolvedValue([]);
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            await getOtherUserLists('otherUser', 'list1');
+
+            expect(prisma.list.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        userId: 'otherUser',
+                        type: 'LIST',
+                        isPublic: true,
+                        id: { not: 'list1' },
+                    },
+                })
+            );
+        });
+
+        test('should throw error when database query fails', async () => {
+            await mockSession('user1');
+
+            vi.mocked(prisma.list.findMany).mockRejectedValue(
+                new Error('Database error')
+            );
+            vi.mocked(prisma.list.count).mockResolvedValue(0 as any);
+
+            await expect(getOtherUserLists('user1', 'list1')).rejects.toThrow(
+                'Could not fetch other user lists.'
             );
         });
     });
@@ -587,6 +727,7 @@ describe('User Actions', () => {
                 image: 'image.jpg',
                 type: 'LIST',
                 user: { id: 'user1', name: 'Test User', image: 'user.jpg' },
+                _count: { mediaItems: 1 },
                 mediaItems: [
                     {
                         id: 'item1',
@@ -611,15 +752,56 @@ describe('User Actions', () => {
                 where: { id: 'list1', userId: 'user1' },
                 include: {
                     user: true,
+                    _count: { select: { mediaItems: true } },
                     mediaItems: {
+                        where: undefined,
                         include: { media: true },
-                        orderBy: { createdAt: 'desc' },
+                        orderBy: [{ createdAt: 'desc' }],
+                        skip: 0,
+                        take: 15,
                     },
                 },
             });
             expect(result?.id).toBe('list1');
             expect(result?.mediaItems).toHaveLength(1);
             expect(result?.mediaItems[0].media.title).toBe('Movie 1');
+            expect(result?.totalItems).toBe(1);
+            expect(result?.totalPages).toBe(1);
+            expect(result?.currentPage).toBe(1);
+        });
+
+        test('should page through the media items 15 at a time', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+
+            const result = await getUserMediaListData('user1', 'list1', 3);
+
+            expect(prisma.list.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    include: expect.objectContaining({
+                        mediaItems: expect.objectContaining({
+                            skip: 30,
+                            take: 15,
+                        }),
+                    }),
+                })
+            );
+            expect(result?.totalItems).toBe(40);
+            expect(result?.totalPages).toBe(3);
+            expect(result?.currentPage).toBe(3);
         });
 
         test('should return null when list not found', async () => {
@@ -636,6 +818,339 @@ describe('User Actions', () => {
             expect(result).toBeNull();
         });
 
+        test('should filter the media items by title and paginate the matches', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+            vi.mocked(prisma.listMediaItem.count).mockResolvedValue(2 as any);
+
+            const result = await getUserMediaListData(
+                'user1',
+                'list1',
+                1,
+                15,
+                '  matrix  '
+            );
+
+            const expectedWhere = {
+                media: {
+                    title: { contains: 'matrix', mode: 'insensitive' },
+                },
+            };
+
+            expect(prisma.list.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    include: expect.objectContaining({
+                        mediaItems: expect.objectContaining({
+                            where: expectedWhere,
+                        }),
+                    }),
+                })
+            );
+            expect(prisma.listMediaItem.count).toHaveBeenCalledWith({
+                where: { listId: 'list1', ...expectedWhere },
+            });
+            // The header keeps the list size; pagination follows the matches.
+            expect(result?.totalItems).toBe(40);
+            expect(result?.matchingItems).toBe(2);
+            expect(result?.totalPages).toBe(1);
+        });
+
+        test('should let a visitor open a public list', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'someoneElse' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                isPublic: true,
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 0 },
+                mediaItems: [],
+            } as any);
+
+            const result = await getUserMediaListData('user1', 'list1');
+
+            expect(result?.id).toBe('list1');
+            expect(result?.isPublic).toBe(true);
+        });
+
+        test('should redirect a visitor away from a private list', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'someoneElse' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                isPublic: false,
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 0 },
+                mediaItems: [],
+            } as any);
+
+            // `redirect` throws to unwind the render, which surfaces here as
+            // the action's own error.
+            await expect(
+                getUserMediaListData('user1', 'list1')
+            ).rejects.toThrow();
+        });
+
+        test('should filter the media items by media type', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+            vi.mocked(prisma.listMediaItem.count).mockResolvedValue(7 as any);
+
+            const result = await getUserMediaListData(
+                'user1',
+                'list1',
+                1,
+                15,
+                '',
+                'film'
+            );
+
+            expect(prisma.list.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    include: expect.objectContaining({
+                        mediaItems: expect.objectContaining({
+                            where: { media: { type: 'FILM' } },
+                        }),
+                    }),
+                })
+            );
+            expect(result?.matchingItems).toBe(7);
+        });
+
+        test('should combine the search and the media type filters', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+            vi.mocked(prisma.listMediaItem.count).mockResolvedValue(1 as any);
+
+            await getUserMediaListData(
+                'user1',
+                'list1',
+                1,
+                15,
+                'matrix',
+                'film'
+            );
+
+            expect(prisma.listMediaItem.count).toHaveBeenCalledWith({
+                where: {
+                    listId: 'list1',
+                    media: {
+                        title: { contains: 'matrix', mode: 'insensitive' },
+                        type: 'FILM',
+                    },
+                },
+            });
+        });
+
+        test('should ignore the "all" media type', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+
+            await getUserMediaListData('user1', 'list1', 1, 15, '', 'all');
+
+            expect(prisma.list.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    include: expect.objectContaining({
+                        mediaItems: expect.objectContaining({
+                            where: undefined,
+                        }),
+                    }),
+                })
+            );
+            expect(prisma.listMediaItem.count).not.toHaveBeenCalled();
+        });
+
+        describe('ordering', () => {
+            const mockList = async () => {
+                const { auth } = await import('@/lib/auth/auth');
+                vi.mocked(auth.api.getSession).mockResolvedValue({
+                    user: { id: 'user1' },
+                    session: {},
+                } as any);
+
+                vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                    id: 'list1',
+                    name: 'My Favorites',
+                    image: null,
+                    type: 'LIST',
+                    user: { id: 'user1', name: 'Test User', image: null },
+                    _count: { mediaItems: 3 },
+                    mediaItems: [],
+                } as any);
+            };
+
+            const orderByOf = () =>
+                (vi.mocked(prisma.list.findFirst).mock.calls[0][0] as any)
+                    .include.mediaItems.orderBy;
+
+            test('should default to newest added first', async () => {
+                await mockList();
+
+                await getUserMediaListData('user1', 'list1');
+
+                expect(orderByOf()).toEqual([{ createdAt: 'desc' }]);
+            });
+
+            test('should sort by release date descending, nulls last', async () => {
+                await mockList();
+
+                await getUserMediaListData(
+                    'user1',
+                    'list1',
+                    1,
+                    15,
+                    '',
+                    '',
+                    'year-desc'
+                );
+
+                expect(orderByOf()).toEqual([
+                    { media: { year: { sort: 'desc', nulls: 'last' } } },
+                    { createdAt: 'desc' },
+                ]);
+            });
+
+            test('should sort by release date ascending, nulls last', async () => {
+                await mockList();
+
+                await getUserMediaListData(
+                    'user1',
+                    'list1',
+                    1,
+                    15,
+                    '',
+                    '',
+                    'year-asc'
+                );
+
+                expect(orderByOf()).toEqual([
+                    { media: { year: { sort: 'asc', nulls: 'last' } } },
+                    { createdAt: 'desc' },
+                ]);
+            });
+
+            test('should sort by oldest added first', async () => {
+                await mockList();
+
+                await getUserMediaListData(
+                    'user1',
+                    'list1',
+                    1,
+                    15,
+                    '',
+                    '',
+                    'added-asc'
+                );
+
+                expect(orderByOf()).toEqual([{ createdAt: 'asc' }]);
+            });
+
+            test('should fall back to the default order for an unknown sort', async () => {
+                await mockList();
+
+                await getUserMediaListData(
+                    'user1',
+                    'list1',
+                    1,
+                    15,
+                    '',
+                    '',
+                    'bogus'
+                );
+
+                expect(orderByOf()).toEqual([{ createdAt: 'desc' }]);
+            });
+        });
+
+        test('should not run an extra count query when there is no search', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findFirst).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                image: null,
+                type: 'LIST',
+                user: { id: 'user1', name: 'Test User', image: null },
+                _count: { mediaItems: 40 },
+                mediaItems: [],
+            } as any);
+
+            const result = await getUserMediaListData('user1', 'list1');
+
+            expect(prisma.listMediaItem.count).not.toHaveBeenCalled();
+            expect(result?.matchingItems).toBe(40);
+            expect(result?.totalPages).toBe(3);
+        });
+
         test('should handle undefined values in media', async () => {
             const { auth } = await import('@/lib/auth/auth');
             vi.mocked(auth.api.getSession).mockResolvedValue({
@@ -649,6 +1164,7 @@ describe('User Actions', () => {
                 image: null,
                 type: 'LIST',
                 user: { id: 'user1', name: null, image: null },
+                _count: { mediaItems: 1 },
                 mediaItems: [
                     {
                         id: 'item1',
@@ -692,10 +1208,19 @@ describe('User Actions', () => {
     });
 
     describe('getUserListMetadata', () => {
-        test('should return list metadata', async () => {
+        test('should return list metadata for the owner', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
             const mockList = {
                 id: 'list1',
                 name: 'My Favorites',
+                type: 'LIST',
+                userId: 'user1',
+                isPublic: false,
                 user: { name: 'Test User' },
             };
 
@@ -712,6 +1237,7 @@ describe('User Actions', () => {
                     name: true,
                     type: true,
                     userId: true,
+                    isPublic: true,
                     user: {
                         select: {
                             name: true,
@@ -726,6 +1252,48 @@ describe('User Actions', () => {
             });
         });
 
+        test('should return metadata of a public list to a visitor', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'someoneElse' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findUnique).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                type: 'LIST',
+                userId: 'user1',
+                isPublic: true,
+                user: { name: 'Test User' },
+            } as any);
+
+            const result = await getUserListMetadata('list1');
+
+            expect(result?.name).toBe('My Favorites');
+        });
+
+        test('should hide the metadata of a private list from a visitor', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'someoneElse' },
+                session: {},
+            } as any);
+
+            vi.mocked(prisma.list.findUnique).mockResolvedValue({
+                id: 'list1',
+                name: 'My Favorites',
+                type: 'LIST',
+                userId: 'user1',
+                isPublic: false,
+                user: { name: 'Test User' },
+            } as any);
+
+            const result = await getUserListMetadata('list1');
+
+            expect(result).toBeNull();
+        });
+
         test('should return null when list not found', async () => {
             vi.mocked(prisma.list.findUnique).mockResolvedValue(null);
 
@@ -735,9 +1303,18 @@ describe('User Actions', () => {
         });
 
         test('should handle null user name', async () => {
+            const { auth } = await import('@/lib/auth/auth');
+            vi.mocked(auth.api.getSession).mockResolvedValue({
+                user: { id: 'user1' },
+                session: {},
+            } as any);
+
             const mockList = {
                 id: 'list1',
                 name: 'My Favorites',
+                type: 'LIST',
+                userId: 'user1',
+                isPublic: false,
                 user: { name: null },
             };
 

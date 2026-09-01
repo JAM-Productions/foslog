@@ -1,3 +1,4 @@
+import { ListPreviewRowSkeleton } from '@/components/list/list-preview-row-skeleton';
 import { Skeleton } from '@/components/skeleton';
 
 export function ProfileSkeleton() {
@@ -69,6 +70,9 @@ export function ProfileSkeleton() {
                     </div>
                 </div>
             </div>
+
+            {/* Library Section */}
+            <ListPreviewRowSkeleton withCreateButton />
 
             {/* Reviews Section */}
             <div className="mb-6 flex items-center justify-between border-b pb-4">

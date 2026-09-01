@@ -3,9 +3,14 @@
 import { auth } from '@/lib/auth/auth';
 import { logger } from '@/lib/axiom/server';
 import { prisma } from '@/lib/prisma';
+import { LIST_MEDIA_PAGE_SIZE, LISTS_PREVIEW_LIMIT } from '@/lib/constants';
 import { MediaType, User } from '@/lib/store';
-import { SafeReviewWithMedia } from '@/lib/types';
-import { ListType } from '@prisma/client';
+import {
+    SafeMediaList,
+    SafeMediaListPreview,
+    SafeReviewWithMedia,
+} from '@/lib/types';
+import { ListType, Prisma, MediaType as PrismaMediaType } from '@prisma/client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -338,39 +343,82 @@ export const hasUserBookmarked = async (
     }
 };
 
-export const getUserMediaLists = async (userId: string) => {
+/**
+ * Owners see everything. Everyone else only sees lists explicitly made
+ * public; bookmark lists are managed by the app and are never public.
+ */
+const buildVisibleListsWhereClause = async (userId: string) => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+    const currentUserId = session?.user?.id;
+
+    return currentUserId === userId
+        ? { userId }
+        : { userId, type: ListType.LIST, isPublic: true };
+};
+
+const LIST_SUMMARY_SELECT = {
+    id: true,
+    name: true,
+    image: true,
+    type: true,
+    _count: {
+        select: { mediaItems: true },
+    },
+} as const;
+
+// The `ListType` enum declares BOOKMARK first, so ascending order puts the
+// bookmark list at the front of every listing.
+const LIST_SUMMARY_ORDER_BY = [
+    { type: 'asc' as const },
+    { createdAt: 'desc' as const },
+];
+
+type ListSummaryRow = {
+    id: string;
+    name: string;
+    image: string | null;
+    type: ListType;
+    _count: { mediaItems: number };
+};
+
+const toSafeMediaList = (list: ListSummaryRow): SafeMediaList => ({
+    id: list.id,
+    name: list.name,
+    image: list.image ?? undefined,
+    type: list.type,
+    totalItems: list._count.mediaItems,
+});
+
+export const getUserMediaLists = async (
+    userId: string,
+    limit: number = LISTS_PREVIEW_LIMIT
+): Promise<SafeMediaListPreview> => {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-        const currentUserId = session?.user?.id;
+        const whereClause = await buildVisibleListsWhereClause(userId);
 
-        const whereClause =
-            currentUserId === userId
-                ? { userId }
-                : { userId, type: ListType.LIST };
-
-        const lists = await prisma.list.findMany({
-            where: whereClause,
-            select: {
-                id: true,
-                name: true,
-                image: true,
-                type: true,
-            },
-        });
+        const [lists, total] = await prisma.$transaction([
+            prisma.list.findMany({
+                where: whereClause,
+                select: LIST_SUMMARY_SELECT,
+                orderBy: LIST_SUMMARY_ORDER_BY,
+                take: limit,
+            }),
+            prisma.list.count({ where: whereClause }),
+        ]);
 
         logger.info('GET /actions/user', {
             method: 'getUserMediaLists',
             userId,
             listCount: lists.length,
+            total,
         });
-        return lists.map((list) => ({
-            id: list.id,
-            name: list.name,
-            image: list.image ?? undefined,
-            type: list.type,
-        }));
+
+        return {
+            lists: (lists as ListSummaryRow[]).map(toSafeMediaList),
+            total,
+        };
     } catch (error) {
         logger.error('GET /actions/user', {
             method: 'getUserMediaLists',
@@ -381,12 +429,135 @@ export const getUserMediaLists = async (userId: string) => {
     }
 };
 
-export const getUserMediaListData = async (userId: string, listId: string) => {
+/**
+ * Every list visible to the viewer. Capped per user by MAX_LISTS_PER_USER,
+ * so the whole set is safe to render in one go.
+ */
+export const getAllUserLists = async (
+    userId: string
+): Promise<SafeMediaList[]> => {
+    try {
+        const whereClause = await buildVisibleListsWhereClause(userId);
+
+        const lists = await prisma.list.findMany({
+            where: whereClause,
+            select: LIST_SUMMARY_SELECT,
+            orderBy: LIST_SUMMARY_ORDER_BY,
+        });
+
+        logger.info('GET /actions/user', {
+            method: 'getAllUserLists',
+            userId,
+            total: lists.length,
+        });
+
+        return (lists as ListSummaryRow[]).map(toSafeMediaList);
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'getAllUserLists',
+            error,
+            userId,
+        });
+        throw new Error('Could not fetch user lists.');
+    }
+};
+
+export const getOtherUserLists = async (
+    userId: string,
+    excludeListId: string,
+    limit: number = LISTS_PREVIEW_LIMIT
+): Promise<SafeMediaListPreview> => {
+    try {
+        const visibleWhereClause = await buildVisibleListsWhereClause(userId);
+        const whereClause = {
+            ...visibleWhereClause,
+            id: { not: excludeListId },
+        };
+
+        const [lists, total] = await prisma.$transaction([
+            prisma.list.findMany({
+                where: whereClause,
+                select: LIST_SUMMARY_SELECT,
+                orderBy: LIST_SUMMARY_ORDER_BY,
+                take: limit,
+            }),
+            prisma.list.count({ where: whereClause }),
+        ]);
+
+        logger.info('GET /actions/user', {
+            method: 'getOtherUserLists',
+            userId,
+            excludeListId,
+            total,
+        });
+
+        return {
+            lists: (lists as ListSummaryRow[]).map(toSafeMediaList),
+            total,
+        };
+    } catch (error) {
+        logger.error('GET /actions/user', {
+            method: 'getOtherUserLists',
+            error,
+            userId,
+            excludeListId,
+        });
+        throw new Error('Could not fetch other user lists.');
+    }
+};
+
+export const getUserMediaListData = async (
+    userId: string,
+    listId: string,
+    page: number = 1,
+    pageSize: number = LIST_MEDIA_PAGE_SIZE,
+    query: string = '',
+    mediaType?: string,
+    sort: string = ''
+) => {
     try {
         const session = await auth.api.getSession({
             headers: await headers(),
         });
         const currentUserId = session?.user?.id;
+
+        // Filtering happens in the database so the search spans the whole list,
+        // not just the page currently on screen.
+        const trimmedQuery = query.trim();
+        const mediaWhere: Prisma.MediaItemWhereInput = {};
+
+        if (trimmedQuery) {
+            mediaWhere.title = {
+                contains: trimmedQuery,
+                mode: 'insensitive',
+            };
+        }
+
+        if (mediaType && mediaType !== 'all') {
+            mediaWhere.type = mediaType.toUpperCase() as PrismaMediaType;
+        }
+
+        const mediaItemsWhere =
+            Object.keys(mediaWhere).length > 0
+                ? { media: mediaWhere }
+                : undefined;
+
+        // Items without a release year always sink to the bottom, whichever
+        // way the year column is sorted.
+        const mediaItemsOrderBy: Prisma.ListMediaItemOrderByWithRelationInput[] =
+            sort === 'year-desc'
+                ? [
+                      { media: { year: { sort: 'desc', nulls: 'last' } } },
+                      { createdAt: 'desc' },
+                  ]
+                : sort === 'year-asc'
+                  ? [
+                        { media: { year: { sort: 'asc', nulls: 'last' } } },
+                        { createdAt: 'desc' },
+                    ]
+                  : sort === 'added-asc'
+                    ? [{ createdAt: 'asc' }]
+                    : [{ createdAt: 'desc' }];
 
         const list = await prisma.list.findFirst({
             where: {
@@ -395,13 +566,17 @@ export const getUserMediaListData = async (userId: string, listId: string) => {
             },
             include: {
                 user: true,
+                _count: {
+                    select: { mediaItems: true },
+                },
                 mediaItems: {
+                    where: mediaItemsWhere,
                     include: {
                         media: true,
                     },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
+                    orderBy: mediaItemsOrderBy,
+                    skip: (page - 1) * pageSize,
+                    take: pageSize,
                 },
             },
         });
@@ -416,10 +591,15 @@ export const getUserMediaListData = async (userId: string, listId: string) => {
             return null;
         }
 
-        if (list.type === ListType.BOOKMARK && currentUserId !== userId) {
+        // Only the owner reaches a bookmark list or a list left private.
+        const isVisibleToViewer =
+            currentUserId === userId ||
+            (list.type === ListType.LIST && list.isPublic);
+
+        if (!isVisibleToViewer) {
             logger.warn('GET /actions/user', {
                 method: 'getUserMediaListData',
-                warn: 'Cannot access other users bookmark list',
+                warn: 'Cannot access a list that is not public',
                 userId,
                 listId,
                 currentUserId,
@@ -427,17 +607,35 @@ export const getUserMediaListData = async (userId: string, listId: string) => {
             redirect(`/profile/${userId}`);
         }
 
+        // The header always shows the list size; pagination follows the
+        // filtered set, so a search only needs its own count.
+        const totalItems = list._count.mediaItems;
+        const matchingItems = mediaItemsWhere
+            ? await prisma.listMediaItem.count({
+                  where: { listId, ...mediaItemsWhere },
+              })
+            : totalItems;
+
         logger.info('GET /actions/user', {
             method: 'getUserMediaListData',
             userId,
             listId,
             mediaCount: list.mediaItems.length,
+            totalItems,
+            matchingItems,
+            currentPage: page,
         });
         return {
             id: list.id,
             name: list.name,
+            description: list.description ?? undefined,
             image: list.image ?? undefined,
             type: list.type,
+            isPublic: list.isPublic,
+            totalItems,
+            matchingItems,
+            totalPages: Math.ceil(matchingItems / pageSize),
+            currentPage: page,
             user: {
                 id: list.user.id,
                 name: list.user.name ?? 'Unknown User',
@@ -482,6 +680,7 @@ export const getUserListMetadata = async (listId: string) => {
                 name: true,
                 type: true,
                 userId: true,
+                isPublic: true,
                 user: {
                     select: {
                         name: true,
@@ -499,10 +698,15 @@ export const getUserListMetadata = async (listId: string) => {
             return null;
         }
 
-        if (list.type === ListType.BOOKMARK && currentUserId !== list.userId) {
+        // A private list must not leak its name through page metadata either.
+        const isVisibleToViewer =
+            currentUserId === list.userId ||
+            (list.type === ListType.LIST && list.isPublic);
+
+        if (!isVisibleToViewer) {
             logger.warn('GET /actions/user', {
                 method: 'getUserListMetadata',
-                warn: 'Cannot access other users bookmark metadata',
+                warn: 'Cannot access metadata for a list that is not public',
                 listId,
                 currentUserId,
             });

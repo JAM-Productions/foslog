@@ -5,6 +5,7 @@ import { MediaType } from '@/lib/store';
 import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '../button/button';
+import { getListSortState, ListSortButton } from './list-sort-button';
 
 export interface ListTableFormatProps {
     mediaItems: {
@@ -21,16 +22,28 @@ export interface ListTableFormatProps {
     }[];
     isOwner: boolean;
     openDeleteModal: (mediaId: string, mediaTitle: string) => void;
+    /** True while a search is narrowing the list down. */
+    isFiltered?: boolean;
+    /** Current `sort` search param; empty means the default order. */
+    sort?: string;
+    /** False only when the list itself is empty, filters aside. */
+    hasItems?: boolean;
 }
 
 export function ListTableFormat({
     mediaItems,
     isOwner,
     openDeleteModal,
+    isFiltered = false,
+    sort = '',
+    hasItems = true,
 }: ListTableFormatProps) {
     const tLP = useTranslations('ListPage');
     const tMediaType = useTranslations('MediaTypes');
     const router = useRouter();
+
+    const { yearDirection, yearNextSort, addedDirection, addedNextSort } =
+        getListSortState(sort);
 
     return (
         <table className="w-full">
@@ -41,12 +54,28 @@ export function ListTableFormat({
                     </th>
                     <th className="px-2 py-3 text-left text-sm font-semibold">
                         {tLP('yearReleased')}
+                        {hasItems && (
+                            <ListSortButton
+                                direction={yearDirection}
+                                nextSort={yearNextSort}
+                                label={tLP('sortByYearReleased')}
+                                testId="sort-year-released"
+                            />
+                        )}
                     </th>
                     <th className="px-2 py-3 text-left text-sm font-semibold">
                         {tLP('type')}
                     </th>
                     <th className="px-2 py-3 text-left text-sm font-semibold">
                         {tLP('dateAdded')}
+                        {hasItems && (
+                            <ListSortButton
+                                direction={addedDirection}
+                                nextSort={addedNextSort}
+                                label={tLP('sortByDateAdded')}
+                                testId="sort-date-added"
+                            />
+                        )}
                     </th>
                     {isOwner && <th className="w-16"></th>}
                 </tr>
@@ -59,9 +88,11 @@ export function ListTableFormat({
                             className="py-12 text-center"
                         >
                             <p className="text-muted-foreground mb-4">
-                                {tLP('emptyList')}
+                                {isFiltered
+                                    ? tLP('noSearchResults')
+                                    : tLP('emptyList')}
                             </p>
-                            {isOwner && (
+                            {isOwner && !isFiltered && (
                                 <Button onClick={() => router.push('/')}>
                                     {tLP('searchMedia')}
                                 </Button>

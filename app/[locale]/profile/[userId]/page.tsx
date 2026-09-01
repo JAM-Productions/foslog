@@ -94,7 +94,8 @@ export default async function ProfilePage({
                 />
 
                 <UserMediaLists
-                    mediaLists={mediaLists}
+                    mediaLists={mediaLists.lists}
+                    total={mediaLists.total}
                     userId={userId}
                 />
 

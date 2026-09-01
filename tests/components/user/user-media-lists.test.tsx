@@ -18,6 +18,13 @@ vi.mock('@/lib/auth/auth-provider', () => ({
 }));
 const mockedUseAuth = vi.mocked(useAuth);
 
+// Mock the create list modal store
+import { useCreateListModalStore } from '@/lib/create-list-modal-store';
+vi.mock('@/lib/create-list-modal-store', () => ({
+    useCreateListModalStore: vi.fn(),
+}));
+const mockedUseCreateListModalStore = vi.mocked(useCreateListModalStore);
+
 // Mock translations
 vi.mock('next-intl', () => ({
     useTranslations: () => (key: string, params?: any) => {
@@ -28,25 +35,45 @@ vi.mock('next-intl', () => ({
             you: 'you',
             thisUser: 'this user',
             bookmarked: 'Bookmarked',
+            createList: 'Create list',
+            seeMore: 'See more',
+            itemsCount: `${params?.count ?? 0} items`,
         };
         return translations[key] || key;
     },
 }));
 
+const bookmarkList: MediaList = {
+    id: 'bookmark1',
+    name: 'Bookmarks',
+    type: ListType.BOOKMARK,
+    totalItems: 4,
+};
+
+const customList: MediaList = {
+    id: 'list1',
+    name: 'Essential movies',
+    type: ListType.LIST,
+    image: '/list.jpg',
+    totalItems: 12,
+};
+
 describe('UserMediaLists', () => {
     const push = vi.fn();
+    const showModal = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
         mockedUseRouter.mockReturnValue({ push } as any);
         mockedUseAuth.mockReturnValue({ user: { id: 'user1' } } as any);
+        mockedUseCreateListModalStore.mockReturnValue({ showModal } as any);
     });
 
     it('renders the component with title for current user', () => {
-        const lists: MediaList[] = [];
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[]}
+                total={0}
                 userId="user1"
             />
         );
@@ -55,10 +82,10 @@ describe('UserMediaLists', () => {
     });
 
     it('renders title for another user library', () => {
-        const lists: MediaList[] = [];
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[]}
+                total={0}
                 userId="user2"
             />
         );
@@ -67,10 +94,10 @@ describe('UserMediaLists', () => {
     });
 
     it('displays no lists message when mediaLists is empty', () => {
-        const lists: MediaList[] = [];
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[]}
+                total={0}
                 userId="user1"
             />
         );
@@ -79,10 +106,10 @@ describe('UserMediaLists', () => {
     });
 
     it('displays no lists message for other user', () => {
-        const lists: MediaList[] = [];
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[]}
+                total={0}
                 userId="user2"
             />
         );
@@ -93,301 +120,172 @@ describe('UserMediaLists', () => {
     });
 
     it('renders bookmark list for current user', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-                image: '/bookmark.jpg',
-            },
-        ];
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[bookmarkList]}
+                total={1}
                 userId="user1"
             />
         );
 
         expect(screen.getByText('Bookmarked')).toBeInTheDocument();
         expect(screen.getByTestId('bookmark-list-button')).toBeInTheDocument();
+        expect(screen.getByText('4 items')).toBeInTheDocument();
     });
 
-    it('hides bookmark list for other users', () => {
-        mockedUseAuth.mockReturnValue({ user: { id: 'user1' } } as any);
-
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('renders custom lists', () => {
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[customList]}
+                total={1}
+                userId="user1"
+            />
+        );
+
+        expect(screen.getByText('Essential movies')).toBeInTheDocument();
+        expect(screen.getByTestId('media-list-button')).toBeInTheDocument();
+        expect(screen.getByText('12 items')).toBeInTheDocument();
+    });
+
+    it('navigates to list detail on bookmark button click', async () => {
+        const user = userEvent.setup();
+        render(
+            <UserMediaLists
+                mediaLists={[bookmarkList]}
+                total={1}
+                userId="user1"
+            />
+        );
+
+        await user.click(screen.getByTestId('bookmark-list-button'));
+
+        expect(push).toHaveBeenCalledWith('/profile/user1/list/bookmark1');
+    });
+
+    it('navigates to list detail on custom list name click', async () => {
+        const user = userEvent.setup();
+        render(
+            <UserMediaLists
+                mediaLists={[customList]}
+                total={1}
+                userId="user1"
+            />
+        );
+
+        await user.click(screen.getByTestId('media-list-name-button'));
+
+        expect(push).toHaveBeenCalledWith('/profile/user1/list/list1');
+    });
+
+    it('shows the create list button to the profile owner', () => {
+        render(
+            <UserMediaLists
+                mediaLists={[]}
+                total={0}
+                userId="user1"
+            />
+        );
+
+        expect(screen.getByTestId('create-list-button')).toBeInTheDocument();
+    });
+
+    it('hides the create list button from other users', () => {
+        render(
+            <UserMediaLists
+                mediaLists={[]}
+                total={0}
                 userId="user2"
             />
         );
 
-        // Should show no lists message instead
         expect(
-            screen.getByText('No lists found for this user')
-        ).toBeInTheDocument();
-        expect(screen.queryByText('Bookmarked')).not.toBeInTheDocument();
+            screen.queryByTestId('create-list-button')
+        ).not.toBeInTheDocument();
     });
 
-    it('navigates to list detail on bookmark button click', async () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('opens the create list modal when the create button is clicked', async () => {
+        const user = userEvent.setup();
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[]}
+                total={0}
                 userId="user1"
             />
         );
 
-        const button = screen.getByTestId('bookmark-list-button');
-        await userEvent.click(button);
+        await user.click(screen.getByTestId('create-list-button'));
 
-        expect(push).toHaveBeenCalledWith('/profile/user1/list/bookmark1');
+        expect(showModal).toHaveBeenCalled();
     });
 
-    it('navigates to list detail on bookmark text click', async () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('shows the mobile see more button when there are more lists than shown', async () => {
+        const user = userEvent.setup();
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[customList]}
+                total={8}
                 userId="user1"
             />
         );
 
-        const textElement = screen.getByText('Bookmarked').closest('button');
-        if (textElement) {
-            await userEvent.click(textElement);
-        }
+        const seeMore = screen.getByTestId('see-more-lists-button');
+        expect(seeMore).toBeInTheDocument();
 
-        expect(push).toHaveBeenCalledWith('/profile/user1/list/bookmark1');
+        await user.click(seeMore);
+
+        expect(push).toHaveBeenCalledWith('/profile/user1/lists');
     });
 
-    it('renders multiple lists', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('shows the see more card alongside the lists', async () => {
+        const user = userEvent.setup();
         render(
             <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[customList]}
+                total={8}
                 userId="user1"
             />
         );
 
-        const bookmarkItem = screen.getByText('Bookmarked');
-        expect(bookmarkItem).toBeInTheDocument();
-    });
-
-    it('renders bookmark icon with correct styling', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
-        const { container } = render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
+        const seeMoreCard = screen.getByTestId('see-more-lists-card');
+        expect(seeMoreCard).toBeInTheDocument();
+        // It sits in the same row as the list cards.
+        expect(seeMoreCard.parentElement).toBe(
+            screen.getByTestId('media-list-button').closest('div')
+                ?.parentElement
         );
 
-        const svg = container.querySelector('svg');
-        expect(svg).toBeInTheDocument();
-        expect(svg?.className.baseVal).toContain('fill-green-500');
-        expect(svg?.className.baseVal).toContain('text-green-500');
+        await user.click(seeMoreCard);
+
+        expect(push).toHaveBeenCalledWith('/profile/user1/lists');
     });
 
-    it('renders bookmark button with green background', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('hides both see more affordances when every list is shown', () => {
         render(
             <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
-        );
-
-        const button = screen.getByTestId('bookmark-list-button');
-        expect(button).toHaveClass('bg-green-700');
-    });
-
-    it('applies correct border styling to header', () => {
-        const lists: MediaList[] = [];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
-        );
-
-        const headerDiv = screen.getByText('Your Library').closest('div.flex');
-        expect(headerDiv).toHaveClass('border-b');
-    });
-
-    it('shows no lists even when auth is null', () => {
-        mockedUseAuth.mockReturnValue({ user: null } as any);
-
-        const lists: MediaList[] = [];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[customList]}
+                total={1}
                 userId="user1"
             />
         );
 
         expect(
-            screen.getByText('No lists found for this user')
-        ).toBeInTheDocument();
-    });
-
-    it('preserves original lists array when filtering', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-            {
-                id: 'bookmark2',
-                name: 'BookmarkedOther',
-                type: ListType.BOOKMARK,
-            },
-        ];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
-        );
-
-        // Both bookmarks should be visible since current user is user1
-        const bookmarks = screen.getAllByText(/Bookmarked/);
-        expect(bookmarks.length).toBe(2);
-    });
-
-    it('hides all bookmarks when viewing other user profile with non-bookmark lists filter', () => {
-        mockedUseAuth.mockReturnValue({ user: { id: 'user1' } } as any);
-
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="otheruser"
-            />
-        );
-
-        expect(screen.queryByText('Bookmarked')).not.toBeInTheDocument();
-    });
-
-    it('handles empty name in lists gracefully', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: '',
-                type: ListType.BOOKMARK,
-            },
-        ];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
-        );
-
-        // Should still render the bookmark button with aria-label
+            screen.queryByTestId('see-more-lists-button')
+        ).not.toBeInTheDocument();
         expect(
-            screen.getByTestId('bookmark-list-name-button')
-        ).toBeInTheDocument();
+            screen.queryByTestId('see-more-lists-card')
+        ).not.toBeInTheDocument();
     });
 
-    it('constructs correct URL with userId and listId', async () => {
-        mockedUseAuth.mockReturnValue({ user: { id: 'user123' } } as any);
-
-        const lists: MediaList[] = [
-            {
-                id: 'my-bookmark-list',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
+    it('renders bookmark and custom lists together', () => {
         render(
             <UserMediaLists
-                mediaLists={lists}
-                userId="user123"
-            />
-        );
-
-        const button = screen.getByTestId('bookmark-list-button');
-        await userEvent.click(button);
-
-        expect(push).toHaveBeenCalledWith(
-            '/profile/user123/list/my-bookmark-list'
-        );
-    });
-
-    it('renders container with correct responsive layout classes', () => {
-        const lists: MediaList[] = [
-            {
-                id: 'bookmark1',
-                name: 'Bookmarked',
-                type: ListType.BOOKMARK,
-            },
-        ];
-        const { container } = render(
-            <UserMediaLists
-                mediaLists={lists}
+                mediaLists={[bookmarkList, customList]}
+                total={2}
                 userId="user1"
             />
         );
 
-        const layoutDiv = container.querySelector('.flex.flex-col.gap-4');
-        expect(layoutDiv).toHaveClass('sm:flex-row');
-    });
-
-    it('applies correct heading styling', () => {
-        const lists: MediaList[] = [];
-        render(
-            <UserMediaLists
-                mediaLists={lists}
-                userId="user1"
-            />
-        );
-
-        const heading = screen.getByText('Your Library');
-        expect(heading).toHaveClass('text-xl', 'font-bold');
+        expect(screen.getByTestId('bookmark-list-button')).toBeInTheDocument();
+        expect(screen.getByTestId('media-list-button')).toBeInTheDocument();
     });
 });

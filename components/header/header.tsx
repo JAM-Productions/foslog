@@ -8,11 +8,11 @@ import { CreateReviewButton } from '@/components/review/create-review-button';
 import SearchBar from '@/components/header/search-bar';
 import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
 import { useState, Suspense } from 'react';
-import { ListFilterPlus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { useAuth } from '@/lib/auth/auth-provider';
+import { FilterToggleButton } from '@/components/header/filter-toggle-button';
 
 export default function Header() {
     const pathname = usePathname();
@@ -25,20 +25,6 @@ export default function Header() {
         );
 
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
-
-    const FilterToggleButton = () => (
-        <button
-            type="button"
-            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
-            className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
-            aria-label={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
-            title={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
-        >
-            <ListFilterPlus
-                className={`${isFilterExpanded ? 'text-primary' : ''} h-5 w-5`}
-            />
-        </button>
-    );
 
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b backdrop-blur transition-all duration-300">
@@ -66,7 +52,12 @@ export default function Header() {
                     {/* Search - Always visible on desktop when on home page */}
                     {isHomePage && (
                         <div className="mx-8 hidden max-w-lg flex-1 lg:flex lg:max-w-3xl lg:gap-2">
-                            <FilterToggleButton />
+                            <FilterToggleButton
+                                isFilterExpanded={isFilterExpanded}
+                                onToggle={() =>
+                                    setIsFilterExpanded((prev) => !prev)
+                                }
+                            />
                             <Suspense fallback={<SearchBarSkeleton />}>
                                 <SearchBar />
                             </Suspense>
@@ -87,7 +78,12 @@ export default function Header() {
                 {/* Mobile Search - Always visible when on home page */}
                 {isHomePage && (
                     <div className="flex max-h-20 gap-2 pb-4 opacity-100 transition-all duration-300 lg:hidden">
-                        <FilterToggleButton />
+                        <FilterToggleButton
+                            isFilterExpanded={isFilterExpanded}
+                            onToggle={() =>
+                                setIsFilterExpanded((prev) => !prev)
+                            }
+                        />
                         <Suspense fallback={<SearchBarSkeleton />}>
                             <SearchBar />
                         </Suspense>

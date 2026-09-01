@@ -1,6 +1,6 @@
 import { getMediaByIdWithReviews, getMediaMetadata } from '@/app/actions/media';
 import { MediaClient } from './media-client';
-import { hasUserReviewed, hasUserBookmarked } from '@/app/actions/user';
+import { hasUserReviewed } from '@/app/actions/user';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
@@ -45,14 +45,12 @@ export default async function MediaPage({
     const t = await getTranslations('MediaPage');
 
     let mediaItem: Awaited<ReturnType<typeof getMediaByIdWithReviews>>,
-        hasReviewed: Awaited<ReturnType<typeof hasUserReviewed>>,
-        hasBookmarked: Awaited<ReturnType<typeof hasUserBookmarked>>;
+        hasReviewed: Awaited<ReturnType<typeof hasUserReviewed>>;
 
     try {
-        [mediaItem, hasReviewed, hasBookmarked] = await Promise.all([
+        [mediaItem, hasReviewed] = await Promise.all([
             getMediaByIdWithReviews(resolvedParams.id, page),
             hasUserReviewed(resolvedParams.id),
-            hasUserBookmarked(resolvedParams.id),
         ]);
     } catch (error) {
         console.error(
@@ -75,7 +73,6 @@ export default async function MediaPage({
         <MediaClient
             mediaItem={mediaItem}
             hasReviewed={hasReviewed}
-            hasBookmarked={hasBookmarked}
         />
     );
 }
