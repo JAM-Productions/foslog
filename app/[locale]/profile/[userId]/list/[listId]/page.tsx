@@ -103,8 +103,6 @@ export default async function ListPage({
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="mb-6 flex items-center justify-between gap-4">
                     <BackButton />
-                    {/* No `overflow` here: it would clip the options dropdown,
-                        which is positioned absolutely inside this row. */}
                     <div className="flex gap-2">
                         <ListShareButton
                             listId={listData.id}
@@ -129,13 +127,11 @@ export default async function ListPage({
                 <ListHeader
                     listName={listData.name}
                     listImage={listData.image}
+                    listDescription={listData.description}
                     itemCount={listData.totalItems}
                     type={listData.type}
                     listUser={listData.user}
                 />
-                {/* `totalItems` ignores the filters, so the controls stay put
-                    when a search returns nothing and only disappear on a
-                    genuinely empty list. */}
                 {listData.totalItems > 0 && <ListMediaFilters />}
                 <ListMediaContent
                     listId={listId}
