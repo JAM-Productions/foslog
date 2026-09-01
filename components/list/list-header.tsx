@@ -70,7 +70,9 @@ export function ListHeader({
                                 router.push(`/profile/${listUser.id}`);
                             }}
                             className="cursor-pointer transition-opacity hover:opacity-80"
-                            aria-label={t('viewProfile', { name: listUser.name })}
+                            aria-label={t('viewProfile', {
+                                name: listUser.name,
+                            })}
                         >
                             {listUser.image ? (
                                 <Image
