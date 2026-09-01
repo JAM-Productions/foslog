@@ -500,6 +500,8 @@
         "sortByDateAdded": "Ordenar per data d'afegit",
         "yearReleasedShort": "Llançament",
         "dateAddedShort": "Afegit",
+        "expandFilter": "Expandeix el filtre",
+        "collapseFilter": "Redueix el filtre",
         "listOptions": "Opcions de la llista",
         "makePublic": "Fer pública",
         "makePrivate": "Fer privada",

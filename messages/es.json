@@ -500,6 +500,8 @@
         "sortByDateAdded": "Ordenar por fecha en que se añadió",
         "yearReleasedShort": "Lanzamiento",
         "dateAddedShort": "Añadido",
+        "expandFilter": "Expandir filtro",
+        "collapseFilter": "Contraer filtro",
         "listOptions": "Opciones de la lista",
         "makePublic": "Hacer pública",
         "makePrivate": "Hacer privada",

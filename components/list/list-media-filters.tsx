@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { ListFilterPlus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import SearchBar from '@/components/header/search-bar';
 import SearchBarSkeleton from '@/components/header/search-bar-skeleton';
@@ -15,6 +16,8 @@ import MediaTypeFilterSkeleton from '@/components/media/media-type-filter-skelet
  */
 export function ListMediaFilters() {
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+    const t = useTranslations('ListPage');
+    const ariaLabel = isFilterExpanded ? t('collapseFilter') : t('expandFilter');
 
     return (
         <div className="mt-8">
@@ -23,12 +26,8 @@ export function ListMediaFilters() {
                     type="button"
                     onClick={() => setIsFilterExpanded(!isFilterExpanded)}
                     className="hover:bg-accent cursor-pointer rounded-md p-2 transition-colors"
-                    aria-label={
-                        isFilterExpanded ? 'Collapse filter' : 'Expand filter'
-                    }
-                    title={
-                        isFilterExpanded ? 'Collapse filter' : 'Expand filter'
-                    }
+                    aria-label={ariaLabel}
+                    title={ariaLabel}
                     data-testid="list-filter-toggle"
                 >
                     <ListFilterPlus

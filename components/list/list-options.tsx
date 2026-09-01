@@ -48,16 +48,13 @@ export function ListOptions({ list, userId }: ListOptionsProps) {
 
     useClickOutside(menuRef, isOpen, setIsOpen);
 
-    if (
-        optimisticVisibility &&
-        (optimisticVisibility.listId !== list.id ||
-            optimisticVisibility.from !== list.isPublic)
-    ) {
-        setOptimisticVisibility(null);
-    }
+    const activeOptimisticVisibility =
+        optimisticVisibility && optimisticVisibility.listId === list.id
+            ? optimisticVisibility
+            : null;
 
-    const isPublic = optimisticVisibility
-        ? optimisticVisibility.to
+    const isPublic = activeOptimisticVisibility
+        ? activeOptimisticVisibility.to
         : list.isPublic;
 
     // Bookmark lists are managed by the app, so they cannot be edited.

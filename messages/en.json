@@ -500,6 +500,8 @@
         "sortByDateAdded": "Sort by date added",
         "yearReleasedShort": "Released",
         "dateAddedShort": "Added",
+        "expandFilter": "Expand filter",
+        "collapseFilter": "Collapse filter",
         "listOptions": "List options",
         "makePublic": "Make public",
         "makePrivate": "Make private",
