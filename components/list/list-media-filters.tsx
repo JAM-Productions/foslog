@@ -17,7 +17,9 @@ import MediaTypeFilterSkeleton from '@/components/media/media-type-filter-skelet
 export function ListMediaFilters() {
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
     const t = useTranslations('ListPage');
-    const ariaLabel = isFilterExpanded ? t('collapseFilter') : t('expandFilter');
+    const ariaLabel = isFilterExpanded
+        ? t('collapseFilter')
+        : t('expandFilter');
 
     return (
         <div className="mt-8">
