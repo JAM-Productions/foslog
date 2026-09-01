@@ -2,10 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import {
-    listSortIcons,
-    type ListSortDirection,
-} from '@/utils/list-sort';
+import { listSortIcons, type ListSortDirection } from '@/utils/list-sort';
 
 export type { ListSortDirection, ListSortState } from '@/utils/list-sort';
 export { getListSortState } from '@/utils/list-sort';

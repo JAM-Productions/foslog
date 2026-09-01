@@ -23,12 +23,7 @@ interface ListRowProps {
     onToggle: () => void;
 }
 
-export function ListRow({
-    entry,
-    label,
-    isPending,
-    onToggle,
-}: ListRowProps) {
+export function ListRow({ entry, label, isPending, onToggle }: ListRowProps) {
     const t = useTranslations('AddToListModal');
     const isBookmark = entry.type === ListType.BOOKMARK;
 
