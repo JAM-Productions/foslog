@@ -4,36 +4,79 @@ import { describe, expect, test, vi } from 'vitest';
 
 // Mock translations
 vi.mock('next-intl', () => ({
+    useLocale: () => 'en',
     useTranslations: () => (key: string) => key,
 }));
 
 describe('RatingDistribution', () => {
-    test('renders distribution bars correctly', () => {
+    test('renders a column per half star step', () => {
         const distribution = {
             5: 10,
             4: 5,
             1: 2,
         };
 
-        render(<RatingDistribution distribution={distribution} />);
+        const { container } = render(
+            <RatingDistribution distribution={distribution} />
+        );
 
         expect(screen.getByText('ratingDistribution')).toBeInTheDocument();
 
-        // Check labels
-        const rating5Label = screen.getAllByText('5')[0]; // The label "5"
-        expect(rating5Label).toBeInTheDocument();
+        // Ten steps: 0.5 through 5.
+        expect(container.querySelectorAll('[title]')).toHaveLength(10);
 
-        // Check counts
-        expect(screen.getByText('10')).toBeInTheDocument(); // Count for 5 stars
-        expect(screen.getAllByText('5')).toHaveLength(2); // One label "5", one count "5"
-        expect(screen.getAllByText('1')).toHaveLength(1); // Only label "1". Count is "2".
-        expect(screen.getAllByText('2')).toHaveLength(2); // One label "2", one count "2" (for rating 1)
-
-        expect(screen.getByText('10')).toBeInTheDocument();
-        expect(screen.getAllByText('0')).toHaveLength(2); // 0 counts should be shown (for rating 3 and 2)
+        // Each count is printed above its own column.
+        expect(screen.getByTitle('5 ★ — 10')).toHaveTextContent('10');
+        expect(screen.getByTitle('4 ★ — 5')).toHaveTextContent('5');
+        expect(screen.getByTitle('1 ★ — 2')).toHaveTextContent('2');
+        expect(screen.getByTitle('3.5 ★ — 0')).toHaveTextContent(/^$/);
     });
 
-    test('renders nothing when distribution is empty/zeros', () => {
+    test('gives half star ratings their own bucket', () => {
+        const distribution = {
+            5: 1,
+            2.5: 3,
+        };
+
+        render(<RatingDistribution distribution={distribution} />);
+
+        expect(screen.getByTitle('2.5 ★ — 3')).toHaveTextContent('3');
+        expect(screen.getByTitle('3 ★ — 0')).toHaveTextContent(/^$/);
+        expect(screen.getByTitle('2 ★ — 0')).toHaveTextContent(/^$/);
+    });
+
+    test('renders the likes and dislikes the user gave', () => {
+        render(
+            <RatingDistribution
+                distribution={{ 5: 1 }}
+                likesGiven={8}
+                dislikesGiven={7}
+            />
+        );
+
+        expect(screen.getByText('8')).toBeInTheDocument();
+        expect(screen.getByText('likesGiven')).toBeInTheDocument();
+        expect(screen.getByText('7')).toBeInTheDocument();
+        expect(screen.getByText('dislikesGiven')).toBeInTheDocument();
+    });
+
+    test('still renders when the user only gave likes and dislikes', () => {
+        render(
+            <RatingDistribution
+                distribution={{}}
+                likesGiven={3}
+                dislikesGiven={0}
+            />
+        );
+
+        expect(screen.getByText('3')).toBeInTheDocument();
+        expect(screen.getByText('likesGiven')).toBeInTheDocument();
+        expect(screen.getByText('0')).toBeInTheDocument();
+        expect(screen.getByText('dislikesGiven')).toBeInTheDocument();
+        expect(screen.queryByTitle('5 ★ — 0')).not.toBeInTheDocument();
+    });
+
+    test('renders nothing without ratings, likes or dislikes', () => {
         const distribution = {
             5: 0,
             4: 0,

@@ -151,14 +151,11 @@ export default function CreateListModal() {
             );
             hideModal();
             resetForm();
+            router.refresh();
 
-            // Take the user straight into the list they just created; editing
-            // happens on the list itself, so a refresh is enough there.
             const newListId = !isEditing && data.list?.id;
             if (newListId && currentUser) {
                 router.push(`/profile/${currentUser.id}/list/${newListId}`);
-            } else {
-                router.refresh();
             }
         } catch (error) {
             showToast(

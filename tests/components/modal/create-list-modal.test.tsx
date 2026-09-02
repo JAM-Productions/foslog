@@ -180,7 +180,7 @@ describe('CreateListModal', () => {
         expect(mockHideModal).toHaveBeenCalled();
     });
 
-    it('navigates to the list it just created', async () => {
+    it('navigates to the list it just created and refreshes the pages behind it', async () => {
         const user = userEvent.setup();
         render(<CreateListModal />);
 
@@ -192,10 +192,13 @@ describe('CreateListModal', () => {
                 '/profile/user1/list/newList1'
             );
         });
-        expect(mockRefresh).not.toHaveBeenCalled();
+        expect(mockRefresh).toHaveBeenCalled();
+        expect(mockRefresh.mock.invocationCallOrder[0]).toBeLessThan(
+            mockPush.mock.invocationCallOrder[0]
+        );
     });
 
-    it('falls back to a refresh when the response carries no list', async () => {
+    it('only refreshes when the response carries no list', async () => {
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: () => Promise.resolve({}),
