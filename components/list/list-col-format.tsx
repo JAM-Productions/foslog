@@ -5,6 +5,7 @@ import { MediaType } from '@/lib/store';
 import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '../button/button';
+import { getListSortState, ListSortButton } from './list-sort-button';
 
 export interface ListColFormatProps {
     mediaItems: {
@@ -21,24 +22,36 @@ export interface ListColFormatProps {
     }[];
     isOwner: boolean;
     openDeleteModal: (mediaId: string, mediaTitle: string) => void;
+    /** True while a search is narrowing the list down. */
+    isFiltered?: boolean;
+    /** Current `sort` search param; empty means the default order. */
+    sort?: string;
+    /** False only when the list itself is empty, filters aside. */
+    hasItems?: boolean;
 }
 
 export function ListColFormat({
     mediaItems,
     isOwner,
     openDeleteModal,
+    isFiltered = false,
+    sort = '',
+    hasItems = true,
 }: ListColFormatProps) {
     const tLP = useTranslations('ListPage');
     const tMediaType = useTranslations('MediaTypes');
     const router = useRouter();
 
+    const { yearDirection, yearNextSort, addedDirection, addedNextSort } =
+        getListSortState(sort);
+
     if (mediaItems.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12">
                 <p className="text-muted-foreground mb-4 text-center">
-                    {tLP('emptyList')}
+                    {isFiltered ? tLP('noSearchResults') : tLP('emptyList')}
                 </p>
-                {isOwner && (
+                {isOwner && !isFiltered && (
                     <Button onClick={() => router.push('/')}>
                         {tLP('searchMedia')}
                     </Button>
@@ -49,6 +62,24 @@ export function ListColFormat({
 
     return (
         <div className="flex flex-col gap-4">
+            {hasItems && (
+                <div className="mb-2 flex items-center gap-2">
+                    <ListSortButton
+                        direction={yearDirection}
+                        nextSort={yearNextSort}
+                        label={tLP('sortByYearReleased')}
+                        text={tLP('yearReleasedShort')}
+                        testId="sort-year-released-mobile"
+                    />
+                    <ListSortButton
+                        direction={addedDirection}
+                        nextSort={addedNextSort}
+                        label={tLP('sortByDateAdded')}
+                        text={tLP('dateAddedShort')}
+                        testId="sort-date-added-mobile"
+                    />
+                </div>
+            )}
             {mediaItems.map(({ media, createdAt }) => (
                 <div
                     key={media.id}
@@ -97,6 +128,7 @@ export function ListColFormat({
                         <Button
                             variant="ghost"
                             size="sm"
+                            data-testid="delete-media-button"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 openDeleteModal(media.id, media.title);

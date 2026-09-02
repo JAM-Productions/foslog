@@ -28,12 +28,21 @@ export interface ListMediaContentProps {
         name: string;
         image?: string;
     };
+    /** True while a search is narrowing the list down. */
+    isFiltered?: boolean;
+    /** Current `sort` search param; empty means the default order. */
+    sort?: string;
+    /** False only when the list itself is empty, filters aside. */
+    hasItems?: boolean;
 }
 
 export function ListMediaContent({
     listId,
     mediaItems,
     listUser,
+    isFiltered = false,
+    sort = '',
+    hasItems = true,
 }: ListMediaContentProps) {
     const { user: currentUser } = useAuth();
     const isOwner = currentUser?.id === listUser.id;
@@ -83,13 +92,16 @@ export function ListMediaContent({
     };
 
     return (
-        <div className="mt-8">
+        <div className="mt-4">
             {/* Mobile View */}
             <div className="lg:hidden">
                 <ListColFormat
                     mediaItems={mediaItems}
                     isOwner={isOwner}
                     openDeleteModal={openDeleteModal}
+                    isFiltered={isFiltered}
+                    sort={sort}
+                    hasItems={hasItems}
                 />
             </div>
 
@@ -99,6 +111,9 @@ export function ListMediaContent({
                     mediaItems={mediaItems}
                     isOwner={isOwner}
                     openDeleteModal={openDeleteModal}
+                    isFiltered={isFiltered}
+                    sort={sort}
+                    hasItems={hasItems}
                 />
             </div>
         </div>

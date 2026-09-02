@@ -13,6 +13,7 @@ import { useToastStore } from '@/lib/toast-store';
 import { useState, useEffect, useRef } from 'react';
 import { Input } from '../input/input';
 import Image from 'next/image';
+import { compressImageToBase64 } from '@/utils/image-utils';
 
 export default function ConfigModal() {
     const tConfigModal = useTranslations('ConfigModal');
@@ -86,42 +87,19 @@ export default function ConfigModal() {
         }
     };
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new window.Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 400;
-                const MAX_HEIGHT = 400;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx?.drawImage(img, 0, 0, width, height);
-                const base64Image = canvas.toDataURL('image/jpeg', 0.7);
-                updateUserImage(base64Image);
-            };
-            img.src = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
+        try {
+            const base64Image = await compressImageToBase64(file);
+            await updateUserImage(base64Image);
+        } catch (error) {
+            showToast(tToast('imageUpdateFailed'), 'error');
+            console.error('Error processing image:', error);
+        }
     };
 
     const updateUserImage = async (base64Image: string | null) => {

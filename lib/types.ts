@@ -1,3 +1,4 @@
+import { ListType } from '@prisma/client';
 import { Comment, MediaItem, Review, User } from './store';
 
 export type SafeMediaItem = MediaItem;
@@ -16,4 +17,17 @@ export type SafeReviewWithComments = SafeReview & {
     comments: SafeComment[];
     totalPages: number;
     currentPage: number;
+};
+
+export type SafeMediaList = {
+    id: string;
+    name: string;
+    image?: string;
+    type: ListType;
+    totalItems: number;
+};
+
+export type SafeMediaListPreview = {
+    lists: SafeMediaList[];
+    total: number;
 };

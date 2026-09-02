@@ -2,13 +2,14 @@
 
 import { useRouter } from '@/i18n/navigation';
 import { ListType } from '@prisma/client';
-import { Bookmark, User } from 'lucide-react';
+import { Bookmark, Library, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 export interface ListHeaderProps {
     listName: string;
-    /* listImage?: string; */
+    listImage?: string;
+    listDescription?: string | null;
     itemCount: number;
     type: ListType;
     listUser: {
@@ -20,7 +21,8 @@ export interface ListHeaderProps {
 
 export function ListHeader({
     listName,
-    /* listImage, */
+    listImage,
+    listDescription,
     itemCount,
     type,
     listUser,
@@ -31,57 +33,82 @@ export function ListHeader({
     const displayName = type === ListType.BOOKMARK ? t('bookmarked') : listName;
 
     return (
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:gap-4">
-            {type === ListType.BOOKMARK && (
-                <div className="flex h-48 w-48 items-center justify-center self-center rounded-lg bg-green-700 sm:self-auto">
-                    <Bookmark className="h-12 w-12 fill-green-500 text-green-500" />
-                </div>
-            )}
-            <div className="flex flex-col justify-normal gap-1 sm:h-48">
-                <div className="flex flex-col justify-center sm:flex-1">
-                    <p className="text-sm font-semibold">{tLP('list')}</p>
-                    <h1 className="text-3xl font-bold sm:text-5xl">
-                        {displayName}
-                    </h1>
-                </div>
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            router.push(`/profile/${listUser.id}`);
-                        }}
-                        className="cursor-pointer transition-opacity hover:opacity-80"
-                        aria-label={t('viewProfile', { name: listUser.name })}
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:gap-4">
+                {type === ListType.BOOKMARK ? (
+                    <div className="flex h-48 w-48 items-center justify-center self-center rounded-lg bg-green-700 sm:self-auto">
+                        <Bookmark className="h-12 w-12 fill-green-500 text-green-500" />
+                    </div>
+                ) : listImage ? (
+                    <Image
+                        src={listImage}
+                        alt={listName}
+                        width={192}
+                        height={192}
+                        className="h-48 w-48 self-center rounded-lg object-cover sm:self-auto"
+                        unoptimized
+                    />
+                ) : (
+                    <div
+                        className="bg-muted flex h-48 w-48 items-center justify-center self-center rounded-lg border sm:self-auto"
+                        data-testid="list-image-placeholder"
                     >
-                        {listUser.image ? (
-                            <Image
-                                src={listUser.image}
-                                alt={listUser.name}
-                                width={40}
-                                height={40}
-                                className="h-7 w-7 rounded-full"
-                                unoptimized
-                            />
-                        ) : (
-                            <div className="bg-muted flex h-7 w-7 items-center justify-center rounded-full border">
-                                <User className="h-4 w-4" />
-                            </div>
-                        )}
-                    </button>
-                    <p
-                        className="cursor-pointer text-sm hover:underline"
-                        onClick={() => {
-                            router.push(`/profile/${listUser.id}`);
-                        }}
-                    >
-                        {listUser.name}
-                    </p>
-                    <span className="text-sm">·</span>
-                    <span className="text-sm">
-                        {tLP('itemsAdded', { count: itemCount })}
-                    </span>
+                        <Library className="h-12 w-12 text-gray-400" />
+                    </div>
+                )}
+                <div className="flex flex-col justify-normal gap-1 sm:h-48">
+                    <div className="flex flex-col justify-center sm:flex-1">
+                        <p className="text-sm font-semibold">{tLP('list')}</p>
+                        <h1 className="text-3xl font-bold sm:text-5xl">
+                            {displayName}
+                        </h1>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                router.push(`/profile/${listUser.id}`);
+                            }}
+                            className="cursor-pointer transition-opacity hover:opacity-80"
+                            aria-label={t('viewProfile', {
+                                name: listUser.name,
+                            })}
+                        >
+                            {listUser.image ? (
+                                <Image
+                                    src={listUser.image}
+                                    alt={listUser.name}
+                                    width={40}
+                                    height={40}
+                                    className="h-7 w-7 rounded-full"
+                                    unoptimized
+                                />
+                            ) : (
+                                <div className="bg-muted flex h-7 w-7 items-center justify-center rounded-full border">
+                                    <User className="h-4 w-4" />
+                                </div>
+                            )}
+                        </button>
+                        <p
+                            className="cursor-pointer text-sm hover:underline"
+                            onClick={() => {
+                                router.push(`/profile/${listUser.id}`);
+                            }}
+                        >
+                            {listUser.name}
+                        </p>
+                        <span className="text-sm">·</span>
+                        <span className="text-sm">
+                            {tLP('itemsAdded', { count: itemCount })}
+                        </span>
+                    </div>
                 </div>
             </div>
+            {listDescription && (
+                <p className="text-foreground/80 text-sm sm:text-base">
+                    {listDescription}
+                </p>
+            )}
         </div>
     );
 }

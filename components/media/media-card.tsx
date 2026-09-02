@@ -1,81 +1,17 @@
 'use client';
 
-import {
-    Star,
-    StarHalf,
-    Eye,
-    Calendar,
-    Clapperboard,
-    Tv,
-    Gamepad2,
-    Book,
-    Music,
-    StickyNote,
-    ThumbsUp,
-    ThumbsDown,
-} from 'lucide-react';
+import { Eye, Calendar, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Image from 'next/image';
 import { Card } from '@/components/card';
-import { MediaItem } from '@/lib/store';
+import { type MediaItem } from '@/lib/store';
 import { useTranslations } from 'next-intl';
+import { getMediaTypeIcon } from '@/utils/media-type';
+import { StarRating } from '@/components/media/star-rating';
 
 interface MediaCardProps {
     media: MediaItem;
     className?: string;
 }
-
-const getMediaIcon = (type: MediaItem['type']) => {
-    switch (type) {
-        case 'film':
-            return Clapperboard;
-        case 'series':
-            return Tv;
-        case 'game':
-            return Gamepad2;
-        case 'book':
-            return Book;
-        case 'music':
-            return Music;
-        default:
-            return StickyNote;
-    }
-};
-
-const StarRating = ({
-    rating,
-    size = 'sm',
-}: {
-    rating: number;
-    size?: 'sm' | 'md';
-}) => {
-    const stars = Array.from({ length: 5 }, (_, i) => {
-        const filled = i < Math.floor(rating);
-        const halfFilled = i === Math.floor(rating) && rating % 1 >= 0.5;
-
-        return (
-            <div
-                key={i}
-                className="relative"
-            >
-                <Star
-                    className={`text-muted-foreground ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
-                />
-                {filled && (
-                    <Star
-                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
-                    />
-                )}
-                {halfFilled && (
-                    <StarHalf
-                        className={`absolute top-0 left-0 fill-amber-400 text-amber-400 ${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`}
-                    />
-                )}
-            </div>
-        );
-    });
-
-    return <div className="flex items-center gap-0.5">{stars}</div>;
-};
 
 export default function MediaCard({ media, className }: MediaCardProps) {
     const t = useTranslations('MediaCard');
@@ -92,7 +28,7 @@ export default function MediaCard({ media, className }: MediaCardProps) {
     const imageUrl = media.poster || media.cover;
     const creatorLabel = getCreatorLabel(media);
 
-    const MediaIcon = getMediaIcon(media.type);
+    const MediaIcon = getMediaTypeIcon(media.type);
 
     return (
         <Card

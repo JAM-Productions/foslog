@@ -22,6 +22,14 @@ const ImportReviewsModal = dynamic(() => import('./import-reviews-modal'), {
     ssr: false,
 });
 
+const CreateListModal = dynamic(() => import('./create-list-modal'), {
+    ssr: false,
+});
+
+const AddToListModal = dynamic(() => import('./add-to-list-modal'), {
+    ssr: false,
+});
+
 export default function DynamicModalWrapper() {
     return (
         <>
@@ -30,6 +38,8 @@ export default function DynamicModalWrapper() {
             <OptionsModal />
             <FollowsModal />
             <ImportReviewsModal />
+            <CreateListModal />
+            <AddToListModal />
         </>
     );
 }

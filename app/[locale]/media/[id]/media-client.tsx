@@ -11,13 +11,11 @@ import Pagination from '@/components/pagination/pagination';
 interface MediaClientProps {
     mediaItem: SafeMediaItemWithReviews;
     hasReviewed?: boolean;
-    hasBookmarked: boolean;
 }
 
 export function MediaClient({
     mediaItem,
     hasReviewed = false,
-    hasBookmarked = false,
 }: MediaClientProps) {
     const t = useTranslations('MediaPage');
     const { reviews, totalPages, currentPage, ...media } = mediaItem;
@@ -32,10 +30,7 @@ export function MediaClient({
 
                 {/* Media Details Section */}
                 <div className="mb-8 sm:mb-12 lg:mb-16">
-                    <MediaDetails
-                        media={media}
-                        hasBookmarked={hasBookmarked}
-                    />
+                    <MediaDetails media={media} />
                 </div>
 
                 {/* Reviews Section */}

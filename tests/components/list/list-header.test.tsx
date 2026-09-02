@@ -80,6 +80,46 @@ describe('ListHeader component', () => {
         expect(svg).toBeInTheDocument();
     });
 
+    it('renders the list image when the list has one', () => {
+        render(
+            <ListHeader
+                {...baseProps}
+                listImage="/cover.jpg"
+            />
+        );
+
+        expect(screen.getByAltText('My List')).toHaveAttribute(
+            'src',
+            '/cover.jpg'
+        );
+        expect(
+            screen.queryByTestId('list-image-placeholder')
+        ).not.toBeInTheDocument();
+    });
+
+    it('keeps the cover space with a placeholder when the list has no image', () => {
+        render(<ListHeader {...baseProps} />);
+
+        const placeholder = screen.getByTestId('list-image-placeholder');
+        expect(placeholder).toBeInTheDocument();
+        expect(placeholder.className).toContain('h-48');
+        expect(placeholder.className).toContain('w-48');
+        expect(screen.queryByAltText('My List')).not.toBeInTheDocument();
+    });
+
+    it('does not render the placeholder for bookmark lists', () => {
+        render(
+            <ListHeader
+                {...baseProps}
+                type={ListType.BOOKMARK}
+            />
+        );
+
+        expect(
+            screen.queryByTestId('list-image-placeholder')
+        ).not.toBeInTheDocument();
+    });
+
     it('displays bookmark layout and "bookmarked" label when type is BOOKMARK', () => {
         const props = {
             ...baseProps,

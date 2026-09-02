@@ -1,20 +1,10 @@
 import { Card } from '@/components/card';
 import { useTranslations } from 'next-intl';
-import {
-    Book,
-    Clapperboard,
-    Eye,
-    Gamepad2,
-    Music,
-    Star,
-    StickyNote,
-    ThumbsDown,
-    ThumbsUp,
-    Tv,
-} from 'lucide-react';
+import { Eye, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { SafeMediaItem } from '@/lib/types';
 import Image from 'next/image';
 import { useRouter } from '@/i18n/navigation';
+import { getMediaTypeIcon } from '@/utils/media-type';
 
 interface MediaContextProps {
     media: SafeMediaItem;
@@ -27,20 +17,7 @@ export function MediaContext({ media }: MediaContextProps) {
     const tMC = useTranslations('MediaCard');
     const router = useRouter();
 
-    const mediaTypes = [
-        { value: 'film', Icon: Clapperboard },
-        { value: 'series', Icon: Tv },
-        { value: 'game', Icon: Gamepad2 },
-        { value: 'book', Icon: Book },
-        { value: 'music', Icon: Music },
-    ] as const;
-
-    const getMediaIcon = () => {
-        const mediaType = mediaTypes.find((type) => type.value === media.type);
-        return mediaType ? mediaType.Icon : StickyNote;
-    };
-
-    const MediaIcon = getMediaIcon();
+    const MediaIcon = getMediaTypeIcon(media.type);
 
     return (
         <div className="flex md:flex-col">

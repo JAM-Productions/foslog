@@ -5,99 +5,32 @@ import { RatingDisplay } from '@/components/input/rating';
 import { MediaItem } from '@/lib/store';
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
-import {
-    Book,
-    Clapperboard,
-    Gamepad2,
-    Music,
-    StickyNote,
-    Tv,
-    ThumbsUp,
-    ThumbsDown,
-    Bookmark,
-} from 'lucide-react';
+import { ThumbsUp, ThumbsDown, SquarePlus } from 'lucide-react';
 import { AITranslateText } from '@/components/ai-translate-text';
-import { startTransition, useOptimistic, useState } from 'react';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from '@/i18n/navigation';
-import { useToastStore } from '@/lib/toast-store';
+import { useAddToListModalStore } from '@/lib/add-to-list-modal-store';
+import { getMediaTypeIcon } from '@/utils/media-type';
 
-export function MediaDetails({
-    media,
-    hasBookmarked,
-}: {
-    media: MediaItem;
-    hasBookmarked: boolean;
-}) {
+export function MediaDetails({ media }: { media: MediaItem }) {
     const imageUrl = media.poster || media.cover;
     const tMP = useTranslations('MediaPage');
     const tMT = useTranslations('MediaTypes');
     const tGenres = useTranslations('MediaGenres');
-    const tToast = useTranslations('Toast');
     const locale = useLocale();
-    const { showToast } = useToastStore();
 
-    const mediaTypes = [
-        { value: 'film', Icon: Clapperboard },
-        { value: 'series', Icon: Tv },
-        { value: 'game', Icon: Gamepad2 },
-        { value: 'book', Icon: Book },
-        { value: 'music', Icon: Music },
-    ] as const;
-
-    const getMediaIcon = () => {
-        const mediaType = mediaTypes.find((type) => type.value === media.type);
-        return mediaType ? mediaType.Icon : StickyNote;
-    };
-
-    const MediaIcon = getMediaIcon();
+    const MediaIcon = getMediaTypeIcon(media.type);
 
     const router = useRouter();
     const { user: currentUser } = useAuth();
-    const [isBookmarking, setIsBookmarking] = useState(false);
-    const [optimisticBookmarked, setOptimisticBookmarked] = useOptimistic(
-        hasBookmarked,
-        (prev) => !prev
-    );
+    const { showModal: showAddToListModal } = useAddToListModalStore();
 
-    const bookmarkMedia = () => {
+    const openAddToList = () => {
         if (!currentUser) {
             return router.push('/login');
         }
 
-        if (isBookmarking) return;
-
-        setIsBookmarking(true);
-
-        const prevState = optimisticBookmarked;
-        const method = optimisticBookmarked ? 'DELETE' : 'POST';
-        startTransition(async () => {
-            setOptimisticBookmarked(!prevState);
-
-            try {
-                const response = await fetch(
-                    `/api/media/${media.id}/bookmark`,
-                    {
-                        method,
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error('Toggle bookmark failed');
-                }
-
-                router.refresh();
-                showToast(
-                    tToast(prevState ? 'bookmarkRemoved' : 'bookmarkAdded'),
-                    'success'
-                );
-            } catch {
-                setOptimisticBookmarked(prevState);
-                showToast(tToast('toggleBookmarkFailed'), 'error');
-            } finally {
-                setIsBookmarking(false);
-            }
-        });
+        showAddToListModal(media.id, media.title);
     };
 
     return (
@@ -118,24 +51,19 @@ export function MediaDetails({
                     <div className="flex flex-col gap-4 sm:gap-6">
                         {/* Title and Type */}
                         <div className="flex flex-col gap-2 sm:gap-3">
-                            <h1 className="text-foreground text-3xl leading-tight font-bold lg:text-4xl">
-                                {media.title}
+                            <div className="flex items-start justify-between gap-4">
+                                <h1 className="text-foreground text-3xl leading-tight font-bold lg:text-4xl">
+                                    {media.title}
+                                </h1>
                                 <button
-                                    className="ml-3 inline-flex flex-shrink-0 cursor-pointer items-center align-middle transition-colors disabled:opacity-70"
-                                    data-testid="bookmark-button"
-                                    aria-label={
-                                        optimisticBookmarked
-                                            ? tMP('unbookmark')
-                                            : tMP('bookmark')
-                                    }
-                                    disabled={isBookmarking}
-                                    onClick={() => bookmarkMedia()}
+                                    className="text-primary hover:text-foreground inline-flex shrink-0 cursor-pointer items-center transition-colors"
+                                    data-testid="add-to-list-button"
+                                    aria-label={tMP('addToList')}
+                                    onClick={openAddToList}
                                 >
-                                    <Bookmark
-                                        className={`${optimisticBookmarked ? 'fill-green-600 text-green-600' : 'text-green-600 hover:fill-green-600'} h-6 w-6 transition-all lg:h-7 lg:w-7`}
-                                    />
+                                    <SquarePlus className="h-6 w-6 lg:h-7 lg:w-7" />
                                 </button>
-                            </h1>
+                            </div>
 
                             <div className="flex flex-wrap gap-1">
                                 <span className="bg-secondary text-secondary-foreground flex items-center gap-1 rounded px-1.5 py-0.5 text-sm">

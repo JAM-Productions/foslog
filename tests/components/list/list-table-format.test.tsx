@@ -26,6 +26,13 @@ vi.mock('@/lib/auth/auth-provider', () => ({
 }));
 const mockedUseAuth = vi.mocked(useAuth);
 
+// the sort buttons drive the URL through next/navigation
+const sortPush = vi.fn();
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({ push: sortPush }),
+    usePathname: () => '/en/profile/user1/list/list1',
+}));
+
 describe('ListTableFormat component', () => {
     const push = vi.fn();
     beforeEach(() => {
@@ -226,5 +233,134 @@ describe('ListTableFormat component', () => {
         // Date formatting is locale-dependent, just verify the dates are rendered
         const dateStr = new Date('2025-01-15').toLocaleDateString();
         expect(screen.getByText(dateStr)).toBeInTheDocument();
+    });
+
+    describe('column sorting', () => {
+        const renderWithSort = (sort?: string) =>
+            render(
+                <ListTableFormat
+                    mediaItems={baseItems}
+                    isOwner={false}
+                    openDeleteModal={vi.fn()}
+                    sort={sort}
+                />
+            );
+
+        const yearButton = () => screen.getByTestId('sort-year-released');
+        const addedButton = () => screen.getByTestId('sort-date-added');
+
+        it('renders a sort control next to both date columns', () => {
+            renderWithSort();
+
+            expect(yearButton()).toBeInTheDocument();
+            expect(addedButton()).toBeInTheDocument();
+        });
+
+        it('starts with the release date unsorted and date added descending', () => {
+            renderWithSort();
+
+            expect(yearButton()).toHaveAttribute('data-direction', 'none');
+            expect(addedButton()).toHaveAttribute('data-direction', 'desc');
+        });
+
+        it('cycles the release date from default to newest first', async () => {
+            const user = userEvent.setup();
+            renderWithSort();
+
+            await user.click(yearButton());
+
+            expect(sortPush).toHaveBeenCalledWith(
+                '/en/profile/user1/list/list1?sort=year-desc'
+            );
+        });
+
+        it('cycles the release date from newest to oldest first', async () => {
+            const user = userEvent.setup();
+            renderWithSort('year-desc');
+
+            expect(yearButton()).toHaveAttribute('data-direction', 'desc');
+            await user.click(yearButton());
+
+            expect(sortPush).toHaveBeenCalledWith(
+                '/en/profile/user1/list/list1?sort=year-asc'
+            );
+        });
+
+        it('cycles the release date back to the default order', async () => {
+            const user = userEvent.setup();
+            renderWithSort('year-asc');
+
+            expect(yearButton()).toHaveAttribute('data-direction', 'asc');
+            await user.click(yearButton());
+
+            expect(sortPush).toHaveBeenCalledWith(
+                '/en/profile/user1/list/list1'
+            );
+        });
+
+        it('toggles date added to oldest first and back', async () => {
+            const user = userEvent.setup();
+            const { unmount } = renderWithSort();
+
+            await user.click(addedButton());
+            expect(sortPush).toHaveBeenCalledWith(
+                '/en/profile/user1/list/list1?sort=added-asc'
+            );
+            unmount();
+
+            renderWithSort('added-asc');
+            expect(addedButton()).toHaveAttribute('data-direction', 'asc');
+
+            await user.click(addedButton());
+            expect(sortPush).toHaveBeenCalledWith(
+                '/en/profile/user1/list/list1'
+            );
+        });
+
+        it('shows date added as inactive while the release date drives the order', () => {
+            renderWithSort('year-desc');
+
+            expect(addedButton()).toHaveAttribute('data-direction', 'none');
+        });
+
+        it('shows the release date as inactive while date added drives the order', () => {
+            renderWithSort('added-asc');
+
+            expect(yearButton()).toHaveAttribute('data-direction', 'none');
+        });
+
+        it('hides the sort controls when the list itself is empty', () => {
+            render(
+                <ListTableFormat
+                    mediaItems={[]}
+                    isOwner={false}
+                    openDeleteModal={vi.fn()}
+                    hasItems={false}
+                />
+            );
+
+            expect(
+                screen.queryByTestId('sort-year-released')
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByTestId('sort-date-added')
+            ).not.toBeInTheDocument();
+        });
+
+        it('keeps the sort controls when a search returns nothing', () => {
+            render(
+                <ListTableFormat
+                    mediaItems={[]}
+                    isOwner={false}
+                    openDeleteModal={vi.fn()}
+                    isFiltered
+                    hasItems
+                />
+            );
+
+            expect(
+                screen.getByTestId('sort-year-released')
+            ).toBeInTheDocument();
+        });
     });
 });

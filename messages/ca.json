@@ -161,6 +161,11 @@
             "title": "Termes de Servei - Foslog",
             "description": "Llegeix els termes de servei de Foslog per entendre les regles i directrius per utilitzar la nostra plataforma."
         },
+        "ListsPage": {
+            "userNotFound": "Foslog - Usuari No Trobat",
+            "listsTitle": "Llistes de {name} - Foslog",
+            "listsDescription": "Explora totes les llistes creades per {name} a Foslog."
+        },
         "ListPage": {
             "listNotFound": "Llista No Trobada - Foslog",
             "listTitle": "{title} - Foslog",
@@ -255,7 +260,9 @@
         "share": "Compartir",
         "myProfile": "El Meu Perfil",
         "goBack": "Tornar Enrere",
-        "cancel": "Cancel·lar"
+        "cancel": "Cancel·lar",
+        "create": "Crear",
+        "close": "Tancar"
     },
     "Toast": {
         "linkCopied": "Enllaç copiat al porta-retalls!",
@@ -287,7 +294,22 @@
         "bookmarkRemoved": "Contingut eliminat de guardats!",
         "toggleBookmarkFailed": "Error al actualitzar el teu marcador. Si us plau, torna-ho a provar.",
         "mediaRemovedFromList": "Mitjà eliminat de la llista amb èxit!",
-        "mediaRemoveFromListFailed": "Error al eliminar el mitjà de la llista. Si us plau, torna-ho a intentar."
+        "mediaRemoveFromListFailed": "Error al eliminar el mitjà de la llista. Si us plau, torna-ho a intentar.",
+        "listCreated": "Llista creada amb èxit!",
+        "listCreateFailed": "Error al crear la llista. Si us plau, torna-ho a intentar.",
+        "listLimitReached": "Has arribat al límit de {count} llistes. Elimina'n alguna per crear-ne una de nova.",
+        "imageTooLarge": "La imatge és massa gran. Si us plau, tria'n una de més petita.",
+        "toggleListFailed": "Error al actualitzar la llista. Si us plau, torna-ho a intentar.",
+        "listUpdated": "Llista actualitzada amb èxit!",
+        "listUpdateFailed": "Error al actualitzar la llista. Si us plau, torna-ho a intentar.",
+        "listDeleted": "Llista eliminada amb èxit!",
+        "listDeleteFailed": "Error al eliminar la llista. Si us plau, torna-ho a intentar.",
+        "listsDeleted": "{count, plural, one {# llista eliminada amb èxit!} other {# llistes eliminades amb èxit!}}",
+        "listsPartiallyDeleted": "{count, plural, one {No s'ha pogut eliminar # llista.} other {No s'han pogut eliminar # llistes.}}",
+        "listsDeleteFailed": "Error al eliminar les llistes. Si us plau, torna-ho a intentar.",
+        "listMadePublic": "La llista ara és pública. Qualsevol amb l'enllaç pot veure-la.",
+        "listMadePrivate": "La llista ara és privada. Només tu pots veure-la.",
+        "listVisibilityFailed": "Error al canviar la visibilitat de la llista. Si us plau, torna-ho a intentar."
     },
     "ProfilePage": {
         "loadError": "S'ha produït un error en carregar el perfil. Si us plau, torna-ho a provar més tard.",
@@ -315,7 +337,10 @@
         "noLists": "{user} cap llista encara.",
         "you": "No tens",
         "thisUser": "Aquest usuari no té",
-        "viewProfile": "Veure perfil de {name}"
+        "viewProfile": "Veure perfil de {name}",
+        "createList": "Crear llista",
+        "seeMore": "Veure més",
+        "itemsCount": "{count, plural, =0 {Sense elements} one {# element} other {# elements}}"
     },
     "MediaPage": {
         "loadError": "S'ha produït un error en carregar el mitjà. Si us plau, torna-ho a provar més tard.",
@@ -342,7 +367,18 @@
         "consumedMoreThanOnce": "He vist/jugat/llegit això més d'una vegada",
         "toggleLike": "Alternar Me gusta",
         "bookmark": "Marcar",
-        "unbookmark": "Desmarcar"
+        "unbookmark": "Desmarcar",
+        "addToList": "Afegir a una llista"
+    },
+    "AddToListModal": {
+        "title": "Afegir a una llista",
+        "searchPlaceholder": "Cerca les teves llistes",
+        "add": "Afegir",
+        "added": "Afegit",
+        "noLists": "Encara no tens cap llista.",
+        "noResults": "Cap llista coincideix amb la teva cerca.",
+        "loadError": "No s'han pogut carregar les teves llistes. Si us plau, torna-ho a intentar més tard.",
+        "itemsCount": "{count, plural, =0 {Sense elements} one {# element} other {# elements}}"
     },
     "BackButton": {
         "back": "Enrere"
@@ -456,7 +492,46 @@
         "deleteMediaFromListDescription": "Estàs segur que vols eliminar aquest mitjà de la llista? Aquesta acció no es pot desfer.",
         "emptyList": "Aquesta llista encara no té elements afegits.",
         "searchMedia": "Buscar mitjans",
-        "list": "Llista"
+        "list": "Llista",
+        "otherLists": "Altres llistes",
+        "noOtherLists": "No hi ha altres llistes per mostrar.",
+        "noSearchResults": "Cap element coincideix amb la teva cerca.",
+        "sortByYearReleased": "Ordenar per data de llançament",
+        "sortByDateAdded": "Ordenar per data d'afegit",
+        "yearReleasedShort": "Llançament",
+        "dateAddedShort": "Afegit",
+        "expandFilter": "Expandeix el filtre",
+        "collapseFilter": "Redueix el filtre",
+        "listOptions": "Opcions de la llista",
+        "makePublic": "Fer pública",
+        "makePrivate": "Fer privada",
+        "shareList": "Compartir",
+        "editList": "Editar llista",
+        "deleteList": "Eliminar llista",
+        "deleteListTitle": "Eliminar {name}",
+        "deleteListDescription": "Segur que vols eliminar aquesta llista? S'eliminaran tots els seus elements i aquesta acció no es pot desfer."
+    },
+    "ListsPage": {
+        "loadError": "S'ha produït un error en carregar les llistes. Si us plau, torna-ho a intentar més tard.",
+        "title": "Llistes de {name}",
+        "noLists": "Encara no hi ha llistes per mostrar.",
+        "deleteLists": "Eliminar llistes",
+        "selectAll": "Seleccionar totes",
+        "deselectAll": "Desseleccionar totes",
+        "deleteSelected": "{count, plural, =0 {Eliminar} other {Eliminar #}}",
+        "deleteListsTitle": "{count, plural, one {Eliminar # llista} other {Eliminar # llistes}}",
+        "deleteListsDescription": "Segur que vols eliminar les llistes seleccionades? S'eliminaran tots els seus elements i aquesta acció no es pot desfer."
+    },
+    "CreateListModal": {
+        "title": "Crear llista",
+        "editTitle": "Editar llista",
+        "nameLabel": "Nom",
+        "namePlaceholder": "p. ex. Pel·lícules imprescindibles",
+        "imageLabel": "Imatge de la llista (opcional)",
+        "upload": "Pujar",
+        "remove": "Eliminar",
+        "descriptionLabel": "Descripció (opcional)",
+        "descriptionPlaceholder": "De què tracta aquesta llista?"
     },
     "Sort": {
         "sortBy": "Ordenar per",

@@ -9,6 +9,29 @@ vi.mock('@/components/media/media-type-filter', () => ({
     default: () => <div data-testid="media-type-filter">Media Type Filter</div>,
 }));
 
+vi.mock('@/components/header/filter-toggle-button', () => ({
+    FilterToggleButton: ({
+        isFilterExpanded,
+        onToggle,
+    }: {
+        isFilterExpanded: boolean;
+        onToggle: () => void;
+    }) => (
+        <button
+            type="button"
+            aria-label={isFilterExpanded ? 'Collapse filter' : 'Expand filter'}
+            onClick={onToggle}
+        >
+            <span
+                data-testid="list-filter-plus"
+                className="inline-block"
+            >
+                🔍+
+            </span>
+        </button>
+    ),
+}));
+
 vi.mock('@/components/header/user-menu', () => ({
     default: () => <div data-testid="user-menu">User Menu</div>,
 }));
