@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { getMediaTypeMessageKey } from '@/utils/media-type';
 import { Repeat } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -21,13 +22,7 @@ export function ConsumedBadge({ mediaType, className }: ConsumedBadgeProps) {
         >
             <Repeat className="h-3 w-3 shrink-0" />
             <span className="min-w-0 truncate">
-                {tConsumed(
-                    ['film', 'series', 'book', 'game', 'music'].includes(
-                        mediaType.toLowerCase()
-                    )
-                        ? mediaType.toLowerCase()
-                        : 'default'
-                )}
+                {tConsumed(getMediaTypeMessageKey(mediaType))}
             </span>
         </div>
     );

@@ -93,7 +93,7 @@ describe('Feed Actions', () => {
     });
 
     describe('getFeedReviewsPreview', () => {
-        test('only asks for reviews consumed in the last 30 days', async () => {
+        test('only asks for reviews posted in the last 30 days', async () => {
             await getFeedReviewsPreview(12);
 
             const { where } = vi.mocked(prisma.review.findMany).mock
@@ -103,21 +103,17 @@ describe('Feed Actions', () => {
 
             expect(
                 Math.abs(
-                    where.consumedDate.gte.getTime() - expectedStart.getTime()
+                    where.createdAt.gte.getTime() - expectedStart.getTime()
                 )
             ).toBeLessThan(5000);
-            // Consumed dates are stored at noon, so today must stay inside.
-            expect(where.consumedDate.lte.getTime()).toBeGreaterThan(
-                Date.now()
-            );
         });
 
-        test('orders by consumed date with a stable tiebreaker', async () => {
+        test('orders by post date with a stable tiebreaker', async () => {
             await getFeedReviewsPreview(12);
 
             expect(prisma.review.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    orderBy: [{ consumedDate: 'desc' }, { id: 'asc' }],
+                    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
                 })
             );
         });

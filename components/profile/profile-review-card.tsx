@@ -4,6 +4,8 @@ import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReviewWithMedia } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
+import { ConsumedDate } from '@/components/review/consumed-date';
+import { RelativeDate } from '@/components/relative-date';
 import { ThumbsDown, ThumbsUp, User } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
@@ -56,37 +58,45 @@ export function ProfileReviewCard({
                 </div>
 
                 <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-5">
+                    {/* The date sits next to whichever line heads the card:
+                        the author in the feed, the media title on a profile. */}
                     {showAuthor && (
-                        <button
-                            type="button"
-                            data-testid="review-author"
-                            className="mb-2 flex cursor-pointer items-center gap-2 self-start transition-opacity hover:opacity-80"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/profile/${user.id}`);
-                            }}
-                        >
-                            {user.image ? (
-                                <Image
-                                    src={user.image}
-                                    alt={user.name}
-                                    width={24}
-                                    height={24}
-                                    className="h-6 w-6 rounded-full"
-                                    unoptimized
-                                />
-                            ) : (
-                                <span className="bg-muted flex h-6 w-6 items-center justify-center rounded-full border">
-                                    <User className="h-4 w-4" />
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                            <button
+                                type="button"
+                                data-testid="review-author"
+                                className="flex min-w-0 cursor-pointer items-center gap-2 transition-opacity hover:opacity-80"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/profile/${user.id}`);
+                                }}
+                            >
+                                {user.image ? (
+                                    <Image
+                                        src={user.image}
+                                        alt={user.name}
+                                        width={24}
+                                        height={24}
+                                        className="h-6 w-6 shrink-0 rounded-full"
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <span className="bg-muted flex h-6 w-6 shrink-0 items-center justify-center rounded-full border">
+                                        <User className="h-4 w-4" />
+                                    </span>
+                                )}
+                                <span className="truncate text-xs font-semibold hover:underline sm:text-sm">
+                                    {user.name}
                                 </span>
-                            )}
-                            <span className="max-w-40 truncate text-xs font-semibold hover:underline sm:max-w-56 sm:text-sm">
-                                {user.name}
-                            </span>
-                        </button>
+                            </button>
+                            <RelativeDate
+                                date={review.createdAt}
+                                className="text-muted-foreground shrink-0 text-right text-xs"
+                            />
+                        </div>
                     )}
 
-                    <div className="mb-1.5 flex items-start justify-between gap-2">
+                    <div className="mb-1.5 flex items-baseline justify-between gap-2">
                         <div className="min-w-0">
                             <button
                                 type="button"
@@ -104,15 +114,12 @@ export function ProfileReviewCard({
                                 {media.year}
                             </p>
                         </div>
-                        <span className="text-muted-foreground shrink-0 text-right text-xs">
-                            {review.consumedDate
-                                ? new Date(
-                                      review.consumedDate
-                                  ).toLocaleDateString()
-                                : new Date(
-                                      review.createdAt
-                                  ).toLocaleDateString()}
-                        </span>
+                        {!showAuthor && (
+                            <RelativeDate
+                                date={review.createdAt}
+                                className="text-muted-foreground shrink-0 text-right text-xs"
+                            />
+                        )}
                     </div>
 
                     <div>
@@ -153,12 +160,19 @@ export function ProfileReviewCard({
                         )}
                     </div>
 
-                    {review.consumedMoreThanOnce && (
-                        <ConsumedBadge
+                    <div className="mt-auto space-y-1 pt-1.5">
+                        <ConsumedDate
+                            date={review.consumedDate}
                             mediaType={media.type}
-                            className="mt-auto pt-1.5 text-xs"
+                            className="text-xs"
                         />
-                    )}
+                        {review.consumedMoreThanOnce && (
+                            <ConsumedBadge
+                                mediaType={media.type}
+                                className="text-xs"
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </Card>

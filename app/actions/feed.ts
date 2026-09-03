@@ -16,27 +16,20 @@ import { headers } from 'next/headers';
 const FEED_INCLUDE = { user: true, media: true } as const;
 
 /**
- * The feed follows the consumed date, like the rest of the app. `id` breaks
- * ties so paging never repeats or skips a review.
+ * The feed follows the post date, like the rest of the app. `id` breaks ties
+ * so paging never repeats or skips a review.
  */
 const FEED_ORDER_BY: Prisma.ReviewOrderByWithRelationInput[] = [
-    { consumedDate: 'desc' },
+    { createdAt: 'desc' },
     { id: 'asc' },
 ];
 
-/**
- * Reviews consumed in the last {@link FEED_WINDOW_DAYS} days. The upper bound
- * is the end of today rather than the current instant: consumed dates are
- * stored at noon, so anything else would hide reviews logged this morning.
- */
+/** Reviews posted in the last {@link FEED_WINDOW_DAYS} days. */
 const feedWindow = (): Prisma.DateTimeFilter => {
     const start = new Date();
     start.setDate(start.getDate() - FEED_WINDOW_DAYS);
 
-    const end = new Date();
-    end.setHours(23, 59, 59, 999);
-
-    return { gte: start, lte: end };
+    return { gte: start };
 };
 
 /** Ids the viewer follows. Empty for anonymous visitors and for loners alike. */
@@ -63,7 +56,7 @@ const getFollowingIds = async (): Promise<string[]> => {
 export const getFeedReviewsPreview = async (
     limit: number = FEED_PREVIEW_LIMIT
 ): Promise<SafeFeedPreview> => {
-    const where: Prisma.ReviewWhereInput = { consumedDate: feedWindow() };
+    const where: Prisma.ReviewWhereInput = { createdAt: feedWindow() };
 
     try {
         const followingIds = await getFollowingIds();
@@ -118,7 +111,7 @@ export const getFeedReviewsPreview = async (
 };
 
 /**
- * Feed screen: one page of reviews, newest consumed first. `following` narrows
+ * Feed screen: one page of reviews, newest posted first. `following` narrows
  * the feed to the people the viewer follows; `all` mixes everyone together.
  */
 export const getFeedReviews = async (
@@ -127,7 +120,7 @@ export const getFeedReviews = async (
     filter: FeedFilter = 'all'
 ): Promise<SafeFeedPage> => {
     try {
-        const where: Prisma.ReviewWhereInput = { consumedDate: feedWindow() };
+        const where: Prisma.ReviewWhereInput = { createdAt: feedWindow() };
 
         if (filter === 'following') {
             const followingIds = await getFollowingIds();

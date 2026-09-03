@@ -4,10 +4,12 @@ import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
-import { Calendar, User, ThumbsUp, ThumbsDown, Heart } from 'lucide-react';
+import { ConsumedDate } from '@/components/review/consumed-date';
+import { RelativeDate } from '@/components/relative-date';
+import { User, ThumbsUp, ThumbsDown, Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useRouter } from '@/i18n/navigation';
 import { startTransition, useOptimistic, useState } from 'react';
@@ -23,7 +25,6 @@ export function ReviewDetailCard({
     userLiked: boolean;
 }) {
     const { user } = review;
-    const locale = useLocale();
     const t = useTranslations('MediaPage');
     const tToast = useTranslations('Toast');
     const { showToast } = useToastStore();
@@ -66,26 +67,6 @@ export function ReviewDetailCard({
         });
     };
 
-    const formatDate = (date: Date | string) => {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return dateObj.toLocaleString(locale, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
-    const formatDateOnly = (date: Date | string) => {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return dateObj.toLocaleDateString(locale, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
-
     const isEdited = review.updatedAt && review.updatedAt !== review.createdAt;
 
     return (
@@ -125,15 +106,27 @@ export function ReviewDetailCard({
                         )}
                     </Link>
                     <div className="min-w-0 flex-1 pr-8">
-                        <div className="flex">
+                        {/* Name and date share a column so the date keeps its
+                            own line height, as on the media page cards. */}
+                        <div className="flex flex-col pb-1">
                             <Link
                                 href={`/profile/${user.id}`}
-                                className="truncate hover:underline"
+                                // `self-start` keeps the link as wide as the
+                                // name, so the hover only reacts over it.
+                                className="max-w-full self-start truncate hover:underline"
                             >
                                 <p className="truncate text-base font-bold">
                                     {user.name}
                                 </p>
                             </Link>
+                            <RelativeDate
+                                date={
+                                    isEdited
+                                        ? review.updatedAt
+                                        : review.createdAt
+                                }
+                                className="text-muted-foreground text-xs"
+                            />
                         </div>
                         <div className="flex items-center gap-2">
                             {review.rating !== undefined &&
@@ -164,23 +157,18 @@ export function ReviewDetailCard({
                     </div>
                 </div>
             </div>
-            <div className="mt-3 flex flex-col gap-2.5 sm:mt-4">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 flex-shrink-0" />
-                    <p className="text-sm sm:text-base">
-                        {review.consumedDate
-                            ? formatDateOnly(review.consumedDate)
-                            : isEdited
-                              ? formatDate(review.updatedAt)
-                              : formatDate(review.createdAt)}
-                    </p>
-                </div>
-                <div>
-                    <p className="text-base leading-relaxed">{review.review}</p>
+            <div className="mt-3 sm:mt-4">
+                <p className="text-base leading-relaxed">{review.review}</p>
+                <div className={`${review.review ? 'mt-1' : 'mt-3'} space-y-1`}>
+                    <ConsumedDate
+                        date={review.consumedDate}
+                        mediaType={mediaType}
+                        className="text-sm"
+                    />
                     {review.consumedMoreThanOnce && (
                         <ConsumedBadge
                             mediaType={mediaType}
-                            className={`${review.review ? 'mt-1' : 'mt-3'} text-sm`}
+                            className="text-sm"
                         />
                     )}
                 </div>

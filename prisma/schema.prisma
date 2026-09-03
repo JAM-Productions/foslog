@@ -122,8 +122,8 @@ model Review {
   reviewLikes          ReviewLike[]
 
   @@index([mediaId])
-  @@index([consumedDate])
-  @@index([userId, consumedDate])
+  @@index([createdAt])
+  @@index([userId, createdAt])
   @@map("reviews")
 }
 

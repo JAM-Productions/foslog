@@ -587,7 +587,7 @@ describe('getMediaByIdWithReviews Server Action', () => {
             include: { user: true },
             skip: 0,
             take: 5,
-            orderBy: { consumedDate: 'desc' } as any,
+            orderBy: { createdAt: 'desc' },
         });
     });
 
@@ -598,7 +598,7 @@ describe('getMediaByIdWithReviews Server Action', () => {
             include: { user: true },
             skip: 10,
             take: 5,
-            orderBy: { consumedDate: 'desc' } as any,
+            orderBy: { createdAt: 'desc' },
         });
     });
 
@@ -614,7 +614,7 @@ describe('getMediaByIdWithReviews Server Action', () => {
             include: { user: true },
             skip: 0,
             take: 5,
-            orderBy: { consumedDate: 'desc' } as any,
+            orderBy: { createdAt: 'desc' },
         });
     });
 

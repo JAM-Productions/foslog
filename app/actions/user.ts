@@ -74,7 +74,7 @@ export const getUserReviews = async (
                     media: true,
                     user: true,
                 },
-                orderBy: { consumedDate: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take: pageSize,
             }),

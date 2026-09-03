@@ -235,7 +235,7 @@ export const getMediaByIdWithReviews = async (
             include: { user: true },
             skip,
             take: pageSize,
-            orderBy: { consumedDate: 'desc' } as any,
+            orderBy: { createdAt: 'desc' },
         });
 
         const safeReviews: SafeReview[] = reviews.map((review) => {

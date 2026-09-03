@@ -1,3 +1,47 @@
+/** Units the relative formatter walks through, largest first. */
+const RELATIVE_TIME_UNITS: {
+    unit: Intl.RelativeTimeFormatUnit;
+    seconds: number;
+}[] = [
+    { unit: 'year', seconds: 365 * 24 * 60 * 60 },
+    { unit: 'month', seconds: 30 * 24 * 60 * 60 },
+    { unit: 'week', seconds: 7 * 24 * 60 * 60 },
+    { unit: 'day', seconds: 24 * 60 * 60 },
+    { unit: 'hour', seconds: 60 * 60 },
+    { unit: 'minute', seconds: 60 },
+];
+
+/**
+ * Formats a date the way someone would say it out loud: "25 minutes ago",
+ * "Yesterday", "Last week". Picks the largest unit that still fits the gap and
+ * rounds towards it, so 90 minutes reads as an hour rather than two. The result
+ * is capitalized, since it always starts a line of its own.
+ */
+export function formatRelativeTime(
+    date: Date | string,
+    locale: string,
+    now: Date = new Date()
+): string {
+    const target = typeof date === 'string' ? new Date(date) : date;
+    const elapsedSeconds = (target.getTime() - now.getTime()) / 1000;
+    const distance = Math.abs(elapsedSeconds);
+    // "auto" is what turns -1 day into "yesterday" instead of "1 day ago".
+    const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+
+    const match = RELATIVE_TIME_UNITS.find(
+        ({ seconds }) => distance >= seconds
+    );
+
+    const formatted = match
+        ? formatter.format(
+              Math.trunc(elapsedSeconds / match.seconds),
+              match.unit
+          )
+        : formatter.format(Math.trunc(elapsedSeconds), 'second');
+
+    return formatted.charAt(0).toLocaleUpperCase(locale) + formatted.slice(1);
+}
+
 /**
  * Returns a local-timezone YYYY-MM-DD string suitable for <input type="date"> values.
  * Avoids the UTC off-by-one-day issue that occurs when using toISOString().split('T')[0].

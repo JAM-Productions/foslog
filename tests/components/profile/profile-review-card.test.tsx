@@ -7,6 +7,7 @@ import { describe, expect, test, vi } from 'vitest';
 // Mock translations
 vi.mock('next-intl', () => ({
     useTranslations: () => (key: string) => key,
+    useLocale: () => 'en',
 }));
 
 // Mock next/image
@@ -93,5 +94,29 @@ describe('ProfileReviewCard', () => {
 
         // Should render initials or fallback, but definitely not the img tag with poster source
         expect(screen.queryByAltText('The Matrix')).not.toBeInTheDocument();
+    });
+
+    test('lines the date up with the media title on a profile', () => {
+        const { container } = render(<ProfileReviewCard review={mockReview} />);
+
+        const date = container.querySelector('time');
+        const title = screen.getByText('The Matrix');
+
+        expect(screen.queryByTestId('review-author')).not.toBeInTheDocument();
+        expect(date?.parentElement).toContainElement(title);
+    });
+
+    test('lines the date up with the author in the feed', () => {
+        const { container } = render(
+            <ProfileReviewCard
+                review={mockReview}
+                showAuthor
+            />
+        );
+
+        const date = container.querySelector('time');
+        const author = screen.getByTestId('review-author');
+
+        expect(date?.parentElement).toContainElement(author);
     });
 });

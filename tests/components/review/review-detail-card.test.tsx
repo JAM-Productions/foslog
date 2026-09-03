@@ -353,11 +353,12 @@ describe('ReviewDetailCard', () => {
     });
 
     describe('Date formatting', () => {
-        it('displays creation date when review is not edited', () => {
+        it('displays how long ago the review was posted', () => {
+            const createdAt = new Date(Date.now() - 25 * 60 * 1000);
             const review = {
                 ...mockReview,
-                createdAt: new Date('2024-01-15T10:30:00'),
-                updatedAt: new Date('2024-01-15T10:30:00'),
+                createdAt,
+                updatedAt: createdAt,
             };
 
             render(
@@ -367,16 +368,18 @@ describe('ReviewDetailCard', () => {
                 />
             );
 
-            expect(
-                screen.getByText(/January 15, 2024.*10:30/i)
-            ).toBeInTheDocument();
+            expect(screen.getByText(/25 minutes ago/i)).toHaveAttribute(
+                'datetime',
+                createdAt.toISOString()
+            );
         });
 
-        it('displays updated date when review is edited', () => {
+        it('displays how long ago the review was edited', () => {
+            const updatedAt = new Date(Date.now() - 2 * 60 * 60 * 1000);
             const review = {
                 ...mockReview,
                 createdAt: new Date('2024-01-15T10:30:00'),
-                updatedAt: new Date('2024-01-20T14:45:00'),
+                updatedAt,
             };
 
             render(
@@ -386,7 +389,10 @@ describe('ReviewDetailCard', () => {
                 />
             );
 
-            expect(screen.getByText(/January 20, 2024/i)).toBeInTheDocument();
+            expect(screen.getByText(/2 hours ago/i)).toHaveAttribute(
+                'datetime',
+                updatedAt.toISOString()
+            );
         });
     });
 

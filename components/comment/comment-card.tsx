@@ -1,6 +1,7 @@
 'use client';
 
 import { Card } from '@/components/card';
+import { RelativeDate } from '@/components/relative-date';
 import { SafeComment } from '@/lib/types';
 import { Trash, User } from 'lucide-react';
 import Image from 'next/image';
@@ -75,15 +76,23 @@ export function CommentCard({ comment }: { comment: SafeComment }) {
                 </div>
                 <div className="relative min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                        <p
-                            className="cursor-pointer truncate text-base font-bold hover:underline"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/profile/${user.id}`);
-                            }}
-                        >
-                            {user.name}
-                        </p>
+                        <div className="flex min-w-0 flex-col">
+                            <p
+                                // `self-start` keeps the name as wide as its
+                                // text, so the hover only reacts over the name.
+                                className="max-w-full cursor-pointer self-start truncate text-base font-bold hover:underline"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/profile/${user.id}`);
+                                }}
+                            >
+                                {user.name}
+                            </p>
+                            <RelativeDate
+                                date={comment.createdAt}
+                                className="text-muted-foreground text-xs"
+                            />
+                        </div>
                         {user.id === currentUser?.id && (
                             <Button
                                 variant="ghost"
