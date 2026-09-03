@@ -8,6 +8,7 @@ import Modal from './modal';
 import { Button } from '../button/button';
 import { Input } from '../input/input';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
+import { useAuth } from '@/lib/auth/auth-provider';
 import { useAddToListModalStore } from '@/lib/add-to-list-modal-store';
 import { useToastStore } from '@/lib/toast-store';
 import { useRouter } from '@/i18n/navigation';
@@ -34,6 +35,7 @@ export default function AddToListModal() {
     const { isModalOpen, mediaId, mediaTitle, hideModal } =
         useAddToListModalStore();
     const { showToast } = useToastStore();
+    const { user: currentUser } = useAuth();
     const router = useRouter();
 
     const [bookmark, setBookmark] = useState<ListEntry>(emptyBookmarkEntry);
@@ -92,6 +94,15 @@ export default function AddToListModal() {
             router.refresh();
             setHasChanges(false);
         }
+    };
+
+    /** The bookmark placeholder has no id yet, so it has no page to open. */
+    const canNavigate = (entry: ListEntry) => Boolean(currentUser && entry.id);
+
+    const handleNavigate = (entry: ListEntry) => {
+        if (!canNavigate(entry) || !currentUser) return;
+        handleClose();
+        router.push(`/profile/${currentUser.id}/list/${entry.id}`);
     };
 
     const applyToggle = (entry: ListEntry, added: boolean): ListEntry => ({
@@ -220,6 +231,11 @@ export default function AddToListModal() {
                                 label={bookmarkLabel}
                                 isPending={pendingIds.includes('bookmark')}
                                 onToggle={() => toggleEntry(bookmark, true)}
+                                onNavigate={
+                                    canNavigate(bookmark)
+                                        ? () => handleNavigate(bookmark)
+                                        : undefined
+                                }
                             />
                         </div>
 
@@ -239,6 +255,11 @@ export default function AddToListModal() {
                                         isPending={pendingIds.includes(list.id)}
                                         onToggle={() =>
                                             toggleEntry(list, false)
+                                        }
+                                        onNavigate={
+                                            canNavigate(list)
+                                                ? () => handleNavigate(list)
+                                                : undefined
                                         }
                                     />
                                 ))

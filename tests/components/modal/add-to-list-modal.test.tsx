@@ -3,17 +3,23 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import AddToListModal from '@/components/modal/add-to-list-modal';
 import { useAddToListModalStore } from '@/lib/add-to-list-modal-store';
+import { useAuth } from '@/lib/auth/auth-provider';
 
 vi.mock('@/lib/add-to-list-modal-store', () => ({
     useAddToListModalStore: vi.fn(),
 }));
 
 const mockRefresh = vi.fn();
+const mockPush = vi.fn();
 vi.mock('@/i18n/navigation', () => ({
     useRouter: vi.fn(() => ({
-        push: vi.fn(),
+        push: mockPush,
         refresh: mockRefresh,
     })),
+}));
+
+vi.mock('@/lib/auth/auth-provider', () => ({
+    useAuth: vi.fn(),
 }));
 
 const mockShowToast = vi.fn();
@@ -84,6 +90,7 @@ const listEntries = [
 describe('AddToListModal', () => {
     const mockHideModal = vi.fn();
     const mockedUseAddToListModalStore = vi.mocked(useAddToListModalStore);
+    const mockedUseAuth = vi.mocked(useAuth);
 
     const mockFetchOk = (payload: unknown) =>
         vi.fn().mockResolvedValue({
@@ -100,6 +107,7 @@ describe('AddToListModal', () => {
             showModal: vi.fn(),
             hideModal: mockHideModal,
         } as any);
+        mockedUseAuth.mockReturnValue({ user: { id: 'user1' } } as any);
         global.fetch = mockFetchOk({
             bookmark: bookmarkEntry,
             lists: listEntries,
@@ -296,6 +304,38 @@ describe('AddToListModal', () => {
                 screen.getByText('Could not load your lists')
             ).toBeInTheDocument();
         });
+    });
+
+    it('opens the list page and closes the modal when a list is clicked', async () => {
+        const user = userEvent.setup();
+        render(<AddToListModal />);
+        await waitForLoad();
+
+        await user.click(screen.getByTestId('navigate-list1'));
+
+        expect(mockHideModal).toHaveBeenCalled();
+        expect(mockPush).toHaveBeenCalledWith('/profile/user1/list/list1');
+    });
+
+    it('opens the bookmark list page when the bookmark row is clicked', async () => {
+        const user = userEvent.setup();
+        render(<AddToListModal />);
+        await waitForLoad();
+
+        await user.click(screen.getByTestId('navigate-bookmark'));
+
+        expect(mockPush).toHaveBeenCalledWith('/profile/user1/list/bookmark1');
+    });
+
+    it('does not navigate from the bookmark placeholder', async () => {
+        const user = userEvent.setup();
+        global.fetch = mockFetchOk({ bookmark: null, lists: listEntries });
+        render(<AddToListModal />);
+        await waitForLoad();
+
+        await user.click(screen.getByTestId('navigate-bookmark'));
+
+        expect(mockPush).not.toHaveBeenCalled();
     });
 
     it('refreshes the route on close only when something changed', async () => {

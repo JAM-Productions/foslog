@@ -19,6 +19,20 @@ export type SafeReviewWithComments = SafeReview & {
     currentPage: number;
 };
 
+/** Feed tabs: only people the viewer follows, or everyone. */
+export type FeedFilter = 'following' | 'all';
+
+export type SafeFeedPreview = {
+    reviews: SafeReviewWithMedia[];
+    /** Reviews inside the feed window, used to decide whether "see more" shows. */
+    total: number;
+};
+
+export type SafeFeedPage = SafeFeedPreview & {
+    totalPages: number;
+    currentPage: number;
+};
+
 export type SafeMediaList = {
     id: string;
     name: string;

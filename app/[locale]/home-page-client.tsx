@@ -9,9 +9,10 @@ import { Button } from '@/components/button/button';
 import { TrendingUp, Clock, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/auth/auth-provider';
-import { SafeMediaItem } from '@/lib/types';
+import { SafeMediaItem, SafeReviewWithMedia } from '@/lib/types';
 import Pagination from '@/components/pagination/pagination';
 import Select from '@/components/input/select';
+import { FeedSection } from '@/components/feed/feed-section';
 
 export default function HomePageClient({
     mediaItems: initialMediaItems,
@@ -23,6 +24,8 @@ export default function HomePageClient({
     selectedSort,
     globalStats,
     isMobile,
+    feedReviews,
+    feedTotal,
 }: {
     mediaItems: SafeMediaItem[];
     total: number;
@@ -36,6 +39,8 @@ export default function HomePageClient({
         recentlyAdded: number;
     };
     isMobile: boolean;
+    feedReviews: SafeReviewWithMedia[];
+    feedTotal: number;
 }) {
     const t = useTranslations('HomePage');
     const tMediaTypes = useTranslations('MediaTypes');
@@ -276,6 +281,15 @@ export default function HomePageClient({
                     />
                 )}
             </div>
+
+            {/* Community Feed Section — hidden while searching, since the page
+                is then a results view */}
+            {!searchQuery && (
+                <FeedSection
+                    reviews={feedReviews}
+                    total={feedTotal}
+                />
+            )}
 
             {/* Add CTA for more content */}
             <div className="border-t py-8 text-center">

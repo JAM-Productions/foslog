@@ -170,6 +170,10 @@
             "listNotFound": "Lista No Encontrada - Foslog",
             "listTitle": "{title} - Foslog",
             "listDescription": "Ver los elementos añadidos a {title} por {user} en Foslog."
+        },
+        "FeedPage": {
+            "title": "Feed - Foslog",
+            "description": "Las últimas reseñas de la comunidad de Foslog y de la gente a la que sigues."
         }
     },
     "Header": {
@@ -545,6 +549,17 @@
         "topRated": "Mejor valorados",
         "newest": "Más recientes",
         "mostReviewed": "Con más reseñas"
+    },
+    "FeedPage": {
+        "title": "Reseñas recientes",
+        "subtitle": "Lo que la comunidad ha estado viendo, leyendo y jugando últimamente",
+        "seeMore": "Ver más reseñas",
+        "filterAll": "Todas",
+        "filterFollowing": "Siguiendo",
+        "noReviews": "Todavía no hay reseñas de los últimos 30 días.",
+        "noFollowingReviews": "La gente a la que sigues no ha reseñado nada en los últimos 30 días.",
+        "loginToSeeFollowing": "Inicia sesión para seguir a gente",
+        "loadError": "Ha ocurrido un error al cargar el feed. Inténtalo de nuevo más tarde."
     },
     "ImportReviewsModal": {
         "title": "Importar Reseñas",

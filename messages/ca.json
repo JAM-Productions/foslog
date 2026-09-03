@@ -170,6 +170,10 @@
             "listNotFound": "Llista No Trobada - Foslog",
             "listTitle": "{title} - Foslog",
             "listDescription": "Consulta la llista {title} creada per {user} a Foslog."
+        },
+        "FeedPage": {
+            "title": "Feed - Foslog",
+            "description": "Les últimes ressenyes de la comunitat de Foslog i de la gent que segueixes."
         }
     },
     "Header": {
@@ -545,6 +549,17 @@
         "topRated": "Millor valorats",
         "newest": "Més recents",
         "mostReviewed": "Amb més ressenyes"
+    },
+    "FeedPage": {
+        "title": "Ressenyes recents",
+        "subtitle": "Què ha estat veient, llegint i jugant la comunitat últimament",
+        "seeMore": "Veure més ressenyes",
+        "filterAll": "Totes",
+        "filterFollowing": "Seguint",
+        "noReviews": "Encara no hi ha ressenyes dels últims 30 dies.",
+        "noFollowingReviews": "La gent que segueixes no ha ressenyat res en els últims 30 dies.",
+        "loginToSeeFollowing": "Inicia sessió per seguir gent",
+        "loadError": "S'ha produït un error en carregar el feed. Torna-ho a provar més tard."
     },
     "ImportReviewsModal": {
         "title": "Importar Ressenyes",

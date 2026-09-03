@@ -10,13 +10,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const sitemap: MetadataRoute.Sitemap = [];
 
     // Static routes for each locale
-    const staticRoutes = ['', '/blog', '/privacy-policy', '/terms-of-service'];
+    const staticRoutes = [
+        '',
+        '/feed',
+        '/blog',
+        '/privacy-policy',
+        '/terms-of-service',
+    ];
 
     for (const locale of LOCALES) {
         for (const route of staticRoutes) {
             sitemap.push({
                 url: `${baseUrl}/${locale}${route}`,
-                changeFrequency: route === '/blog' ? 'weekly' : 'monthly',
+                changeFrequency:
+                    route === '/feed'
+                        ? 'daily'
+                        : route === '/blog'
+                          ? 'weekly'
+                          : 'monthly',
                 priority: route === '' ? 1.0 : 0.8,
             });
         }

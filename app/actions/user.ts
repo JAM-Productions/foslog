@@ -13,6 +13,7 @@ import {
 import { ListType, Prisma, MediaType as PrismaMediaType } from '@prisma/client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { toSafeReviewWithMedia } from '@/utils/review-utils';
 
 export const getUserProfile = async (userId: string): Promise<User | null> => {
     try {
@@ -73,7 +74,7 @@ export const getUserReviews = async (
                     media: true,
                     user: true,
                 },
-                orderBy: { consumedDate: 'desc' } as any,
+                orderBy: { consumedDate: 'desc' },
                 skip,
                 take: pageSize,
             }),
@@ -84,47 +85,7 @@ export const getUserReviews = async (
 
         const totalPages = Math.ceil(total / pageSize);
 
-        const safeReviews = reviews.map((review) => ({
-            id: review.id,
-            mediaId: review.mediaId,
-            userId: review.userId,
-            rating: review.rating ?? undefined,
-            liked: review.liked ?? undefined,
-            review: review.review ?? undefined,
-            createdAt: review.createdAt,
-            updatedAt: review.updatedAt,
-            consumedMoreThanOnce: review.consumedMoreThanOnce,
-            consumedDate: (review as any).consumedDate ?? review.createdAt,
-            totalComments: review.totalComments,
-            totalLikes: review.totalLikes,
-            user: {
-                id: review.user.id,
-                name: review.user.name ?? 'Unknown User',
-                email: '', // Don't expose email
-                image: review.user.image ?? undefined,
-                bio: review.user.bio ?? undefined,
-                joinedAt: review.user.createdAt,
-                totalFollowers: review.user.totalFollowers,
-                totalFollowing: review.user.totalFollowing,
-            },
-            media: {
-                id: review.media.id,
-                title: review.media.title,
-                type: review.media.type.toLowerCase() as MediaType,
-                year: review.media.year ?? undefined,
-                director: review.media.director ?? undefined,
-                author: review.media.author ?? undefined,
-                artist: review.media.artist ?? undefined,
-                genre: review.media.genre,
-                poster: review.media.poster ?? undefined,
-                cover: review.media.cover ?? undefined,
-                description: review.media.description,
-                averageRating: review.media.averageRating,
-                totalReviews: review.media.totalReviews,
-                totalLikes: review.media.totalLikes,
-                totalDislikes: review.media.totalDislikes,
-            },
-        }));
+        const safeReviews = reviews.map(toSafeReviewWithMedia);
 
         logger.info('GET /actions/user', {
             method: 'getUserReviews',
