@@ -4,6 +4,7 @@ import { Button } from '@/components/button/button';
 import { useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { FeedFilter } from '@/lib/types';
+import { Inbox } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 export interface FeedEmptyStateProps {
@@ -27,7 +28,7 @@ export function FeedEmptyState({ filter }: FeedEmptyStateProps) {
             data-testid="feed-empty-state"
         >
             <div className="bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                <span className="text-2xl">📭</span>
+                <Inbox className="text-muted-foreground h-7 w-7" />
             </div>
             <p className="text-muted-foreground mb-4">
                 {isFollowing ? t('noFollowingReviews') : t('noReviews')}
