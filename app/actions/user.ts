@@ -148,10 +148,19 @@ export const getUserReviews = async (
     }
 };
 
+/** Media types shown in the profile breakdown, most reviewed first. */
+const MEDIA_TYPE_BREAKDOWN_LIMIT = 3;
+
 export interface UserStats {
     totalReviews: number;
     totalLikesReceived: number;
+    totalLikesGiven: number;
+    totalDislikesGiven: number;
     averageRating: number;
+    activityYear: number;
+    reviewsThisYear: number;
+    lastReviewAt: Date | null;
+    mediaTypeBreakdown: { type: MediaType; count: number }[];
     ratingDistribution: Record<number, number>;
     favoriteGenres: { genre: string; count: number }[];
 }
@@ -167,9 +176,14 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
 
         const totalReviews = reviews.length;
         const totalLikesReceived = reviews.reduce(
-            (acc, review) => acc + (review.liked ? 1 : 0),
+            (acc, review) => acc + (review.totalLikes ?? 0),
             0
         );
+
+        const totalLikesGiven = reviews.filter((r) => r.liked === true).length;
+        const totalDislikesGiven = reviews.filter(
+            (r) => r.liked === false
+        ).length;
 
         const ratedReviews = reviews.filter((r) => r.rating !== null);
         const averageRating =
@@ -196,19 +210,53 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
 
+        const typeCounts: Record<string, number> = {};
+        reviews.forEach((r) => {
+            const type = r.media.type.toLowerCase();
+            typeCounts[type] = (typeCounts[type] || 0) + 1;
+        });
+
+        const mediaTypeBreakdown = Object.entries(typeCounts)
+            .map(([type, count]) => ({ type: type as MediaType, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, MEDIA_TYPE_BREAKDOWN_LIMIT);
+
+        const consumedDates = reviews
+            .map((r) => r.consumedDate ?? r.createdAt)
+            .filter((d): d is Date => d instanceof Date && !isNaN(d.getTime()));
+
+        const activityYear = new Date().getFullYear();
+        const reviewsThisYear = consumedDates.filter(
+            (d) => d.getFullYear() === activityYear
+        ).length;
+
+        const lastReviewAt = consumedDates.length
+            ? new Date(Math.max(...consumedDates.map((d) => d.getTime())))
+            : null;
+
         logger.info('GET /actions/user', {
             method: 'getUserStats',
             userId,
             totalReviews,
             totalLikesReceived,
+            totalLikesGiven,
+            totalDislikesGiven,
             averageRating,
+            reviewsThisYear,
+            mediaTypeBreakdown,
             ratingDistribution,
             favoriteGenres,
         });
         return {
             totalReviews,
             totalLikesReceived,
+            totalLikesGiven,
+            totalDislikesGiven,
             averageRating,
+            activityYear,
+            reviewsThisYear,
+            lastReviewAt,
+            mediaTypeBreakdown,
             ratingDistribution,
             favoriteGenres,
         };

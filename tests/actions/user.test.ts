@@ -163,21 +163,31 @@ describe('User Actions', () => {
 
     describe('getUserStats', () => {
         test('should calculate stats correctly', async () => {
+            const currentYear = new Date().getFullYear();
             const mockReviews = [
                 {
                     rating: 5,
                     liked: true,
-                    media: { genre: ['Action'] },
+                    totalLikes: 4,
+                    consumedDate: new Date(`${currentYear}-02-01`),
+                    createdAt: new Date(`${currentYear}-02-01`),
+                    media: { genre: ['Action'], type: 'FILM' },
                 },
                 {
                     rating: 3,
                     liked: false,
-                    media: { genre: ['Action', 'Comedy'] },
+                    totalLikes: 0,
+                    consumedDate: new Date(`${currentYear}-03-01`),
+                    createdAt: new Date(`${currentYear}-03-01`),
+                    media: { genre: ['Action', 'Comedy'], type: 'FILM' },
                 },
                 {
                     rating: 4,
                     liked: true,
-                    media: { genre: ['Drama'] },
+                    totalLikes: 6,
+                    consumedDate: new Date(`${currentYear - 1}-05-01`),
+                    createdAt: new Date(`${currentYear - 1}-05-01`),
+                    media: { genre: ['Drama'], type: 'BOOK' },
                 },
             ];
 
@@ -188,8 +198,19 @@ describe('User Actions', () => {
             const result = await getUserStats('user1');
 
             expect(result.totalReviews).toBe(3);
-            expect(result.totalLikesReceived).toBe(2);
+            expect(result.totalLikesReceived).toBe(10);
+            expect(result.totalLikesGiven).toBe(2);
+            expect(result.totalDislikesGiven).toBe(1);
             expect(result.averageRating).toBeCloseTo(4);
+            expect(result.activityYear).toBe(currentYear);
+            expect(result.reviewsThisYear).toBe(2);
+            expect(result.lastReviewAt).toEqual(
+                new Date(`${currentYear}-03-01`)
+            );
+            expect(result.mediaTypeBreakdown).toEqual([
+                { type: 'film', count: 2 },
+                { type: 'book', count: 1 },
+            ]);
             expect(result.ratingDistribution).toEqual({
                 5: 1,
                 3: 1,
@@ -200,6 +221,61 @@ describe('User Actions', () => {
                 { genre: 'Comedy', count: 1 },
                 { genre: 'Drama', count: 1 },
             ]);
+        });
+
+        test('should keep only the three most reviewed media types', async () => {
+            const buildReview = (type: string) => ({
+                rating: 4,
+                liked: null,
+                totalLikes: 0,
+                consumedDate: new Date(),
+                createdAt: new Date(),
+                media: { genre: [], type },
+            });
+
+            vi.mocked(prisma.review.findMany).mockResolvedValue([
+                ...Array(4).fill(buildReview('GAME')),
+                ...Array(3).fill(buildReview('FILM')),
+                ...Array(2).fill(buildReview('SERIES')),
+                buildReview('BOOK'),
+                buildReview('MUSIC'),
+            ] as any);
+
+            const result = await getUserStats('user1');
+
+            expect(result.mediaTypeBreakdown).toEqual([
+                { type: 'game', count: 4 },
+                { type: 'film', count: 3 },
+                { type: 'series', count: 2 },
+            ]);
+        });
+
+        test('should keep half star ratings in their own bucket', async () => {
+            vi.mocked(prisma.review.findMany).mockResolvedValue([
+                {
+                    rating: 4.5,
+                    liked: null,
+                    totalLikes: 0,
+                    consumedDate: new Date(),
+                    createdAt: new Date(),
+                    media: { genre: [], type: 'FILM' },
+                },
+                {
+                    rating: null,
+                    liked: true,
+                    totalLikes: 0,
+                    consumedDate: new Date(),
+                    createdAt: new Date(),
+                    media: { genre: [], type: 'FILM' },
+                },
+            ] as any);
+
+            const result = await getUserStats('user1');
+
+            expect(result.ratingDistribution).toEqual({ 4.5: 1 });
+            expect(result.totalLikesGiven).toBe(1);
+            // A thumbs-up review carries no rating, so it stays out of the average.
+            expect(result.averageRating).toBeCloseTo(4.5);
         });
     });
 

@@ -7,12 +7,15 @@ const mockPush = vi.fn();
 const mockRefresh = vi.fn();
 const mockShowToast = vi.fn();
 const mockShowModal = vi.fn();
+const mockShowImportModal = vi.fn();
 const mockUseAuth = vi.fn();
 
 // Mock translations
 vi.mock('next-intl', () => ({
+    useLocale: () => 'en',
     useTranslations: () => (key: string, params?: any) => {
-        if (key === 'joined' && params?.date) return `Joined ${params.date}`;
+        if (params?.date) return `${key} ${params.date}`;
+        if (params?.year) return `${key} ${params.year}`;
         return key;
     },
 }));
@@ -61,6 +64,13 @@ vi.mock('@/lib/follows-modal-store', () => ({
     }),
 }));
 
+// Mock import reviews modal store
+vi.mock('@/lib/import-reviews-modal-store', () => ({
+    useImportReviewsModalStore: () => ({
+        showModal: mockShowImportModal,
+    }),
+}));
+
 describe('ProfileHeader', () => {
     const mockUser = {
         id: 'user1',
@@ -76,7 +86,16 @@ describe('ProfileHeader', () => {
     const mockStats = {
         totalReviews: 10,
         totalLikesReceived: 50,
+        totalLikesGiven: 4,
+        totalDislikesGiven: 1,
         averageRating: 4.5,
+        activityYear: 2026,
+        reviewsThisYear: 3,
+        lastReviewAt: new Date('2024-06-01'),
+        mediaTypeBreakdown: [
+            { type: 'film' as const, count: 7 },
+            { type: 'book' as const, count: 3 },
+        ],
         ratingDistribution: { 5: 10 },
         favoriteGenres: [{ genre: 'Action', count: 5 }],
     };
@@ -96,7 +115,8 @@ describe('ProfileHeader', () => {
         );
 
         expect(screen.getByText('Test User')).toBeInTheDocument();
-        expect(screen.getByText(/Joined/)).toBeInTheDocument();
+        expect(screen.getByText(/memberSince/)).toBeInTheDocument();
+        expect(screen.getByText(/lastReview/)).toBeInTheDocument();
         expect(screen.getByText('Test Bio')).toBeInTheDocument();
         expect(screen.getByAltText('Test User')).toHaveAttribute(
             'src',
@@ -125,6 +145,54 @@ describe('ProfileHeader', () => {
         expect(screen.getByText('totalLikesReceived')).toBeInTheDocument();
         expect(screen.getByText('4.5')).toBeInTheDocument(); // averageRating
         expect(screen.getByText('averageRating')).toBeInTheDocument();
+        // The activity metric names the year it covers.
+        expect(screen.getByText('reviewsThisYear 2026')).toBeInTheDocument();
+        expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1);
+    });
+
+    test('renders the media type breakdown', () => {
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={mockStats}
+                isUserFollowing={false}
+            />
+        );
+
+        expect(
+            screen.getByRole('button', { name: 'activityByType' })
+        ).toBeInTheDocument();
+        expect(screen.getByText('films')).toBeInTheDocument();
+        expect(screen.getByText('books')).toBeInTheDocument();
+        expect(screen.getByText('· 70%')).toBeInTheDocument();
+        expect(screen.getByText('· 30%')).toBeInTheDocument();
+    });
+
+    test('hides the insight cards when the user has no activity', () => {
+        render(
+            <ProfileHeader
+                user={mockUser}
+                stats={{
+                    totalReviews: 0,
+                    totalLikesReceived: 0,
+                    totalLikesGiven: 0,
+                    totalDislikesGiven: 0,
+                    averageRating: 0,
+                    activityYear: 2026,
+                    reviewsThisYear: 0,
+                    lastReviewAt: null,
+                    mediaTypeBreakdown: [],
+                    ratingDistribution: {},
+                    favoriteGenres: [],
+                }}
+                isUserFollowing={false}
+            />
+        );
+
+        expect(screen.queryByText('activityByType')).not.toBeInTheDocument();
+        expect(screen.queryByText('favoriteGenres')).not.toBeInTheDocument();
+        expect(screen.queryByText(/lastReview/)).not.toBeInTheDocument();
+        expect(screen.getByText('—')).toBeInTheDocument(); // no average rating yet
     });
 
     test('renders favorite genres', () => {
