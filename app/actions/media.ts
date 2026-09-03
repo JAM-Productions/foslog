@@ -263,8 +263,7 @@ export const getMediaByIdWithReviews = async (
                 updatedAt: restOfReview.updatedAt,
                 consumedMoreThanOnce: restOfReview.consumedMoreThanOnce,
                 consumedDate:
-                    (restOfReview as any).consumedDate ??
-                    restOfReview.createdAt,
+                    restOfReview.consumedDate ?? restOfReview.createdAt,
                 totalComments: restOfReview.totalComments,
                 totalLikes: restOfReview.totalLikes,
                 user: safeUser,

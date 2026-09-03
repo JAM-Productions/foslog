@@ -12,6 +12,18 @@ import {
     validationError,
 } from '@/lib/errors';
 
+/**
+ * Nobody consumes media in the future. The server clock may sit a day away
+ * from the reviewer's, so only dates beyond that slack are rejected.
+ */
+const isInTheFuture = (dateStr: string): boolean => {
+    const limit = new Date();
+    limit.setDate(limit.getDate() + 1);
+    limit.setHours(23, 59, 59, 999);
+
+    return parseDateOnly(dateStr).getTime() > limit.getTime();
+};
+
 export async function POST(request: NextRequest) {
     try {
         const session = await auth.api.getSession({
@@ -64,6 +76,10 @@ export async function POST(request: NextRequest) {
 
         if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
             return validationError('consumedDate must be a valid date');
+        }
+
+        if (review.consumedDate && isInTheFuture(review.consumedDate)) {
+            return validationError('consumedDate cannot be in the future');
         }
 
         if (!mediaId) {
@@ -218,6 +234,10 @@ export async function PATCH(request: NextRequest) {
 
         if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
             return validationError('consumedDate must be a valid date');
+        }
+
+        if (review.consumedDate && isInTheFuture(review.consumedDate)) {
+            return validationError('consumedDate cannot be in the future');
         }
 
         const existingReview = await prisma.review.findUnique({

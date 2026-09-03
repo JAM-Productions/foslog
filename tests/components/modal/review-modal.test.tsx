@@ -32,13 +32,23 @@ vi.mock('@/hooks/use-body-scroll-lock', () => ({
 
 // Mock child components to simplify integration test
 vi.mock('@/components/modal/modal', () => ({
-    default: ({ children, isModalOpen }: { children: React.ReactNode, isModalOpen: boolean }) =>
-        isModalOpen ? <div data-testid="modal">{children}</div> : null,
+    default: ({
+        children,
+        isModalOpen,
+    }: {
+        children: React.ReactNode;
+        isModalOpen: boolean;
+    }) => (isModalOpen ? <div data-testid="modal">{children}</div> : null),
 }));
 
 // Mock SearchInput since it has complex logic
 vi.mock('@/components/input/search-input', () => ({
-    SearchInput: ({ onChange, setSelectedMedia, setMediaTitle, disabled }: any) => (
+    SearchInput: ({
+        onChange,
+        setSelectedMedia,
+        setMediaTitle,
+        disabled,
+    }: any) => (
         <input
             data-testid="search-input"
             disabled={disabled}
@@ -50,7 +60,7 @@ vi.mock('@/components/input/search-input', () => ({
                         title: 'Test Movie',
                         year: '2023',
                         poster: '/poster.jpg',
-                        type: 'film'
+                        type: 'film',
                     });
                     setMediaTitle('Test Movie');
                 }
@@ -131,10 +141,13 @@ describe('ReviewModal', () => {
 
         // 5. Verify API Call
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledWith('/api/media', expect.objectContaining({
-                method: 'POST',
-                body: expect.stringContaining('"title":"Test Movie"'),
-            }));
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/media',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining('"title":"Test Movie"'),
+                })
+            );
         });
 
         // 6. Verify Step 2 rendered
@@ -225,7 +238,9 @@ describe('ReviewModal', () => {
         fireEvent.click(screen.getByText('Next'));
 
         await waitFor(() => {
-            expect(screen.getByLabelText('Open date picker')).toBeInTheDocument();
+            expect(
+                screen.getByLabelText('Open date picker')
+            ).toBeInTheDocument();
         });
 
         fireEvent.click(screen.getByLabelText('Open date picker'));
@@ -294,9 +309,7 @@ describe('ReviewModal', () => {
 
         // 5. Verify redirect
         await waitFor(() => {
-            expect(mockRouterPush).toHaveBeenCalledWith(
-                '/media/test-media-id'
-            );
+            expect(mockRouterPush).toHaveBeenCalledWith('/media/test-media-id');
         });
     });
 });

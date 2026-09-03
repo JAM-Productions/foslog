@@ -48,6 +48,7 @@ export function ReviewForm({
             ? toLocalDateString(new Date(editProps.review.consumedDate))
             : toLocalDateString(new Date())
     );
+    const today = toLocalDateString(new Date());
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -70,9 +71,7 @@ export function ReviewForm({
           text.trim() === (editProps.review.review ?? '').trim() &&
           consumedDate ===
               (editProps.review.consumedDate
-                  ? new Date(editProps.review.consumedDate)
-                        .toISOString()
-                        .split('T')[0]
+                  ? toLocalDateString(new Date(editProps.review.consumedDate))
                   : '')
         : false;
 
@@ -258,6 +257,7 @@ export function ReviewForm({
                         id="consumedDate"
                         type="date"
                         value={consumedDate}
+                        max={today}
                         onChange={(e) => setConsumedDate(e.target.value)}
                         className="hide-date-icon border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 pr-10 text-base focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={isSubmitting}
