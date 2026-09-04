@@ -11,9 +11,9 @@ export default function Modal({ isModalOpen, children }: ModalProps) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
+        <div className="animate-modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/60 sm:p-5">
             <div
-                className="bg-muted flex h-screen w-full max-w-4xl flex-col p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-lg sm:border"
+                className="animate-modal-content bg-muted flex h-screen w-full max-w-4xl flex-col p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-lg sm:border"
                 aria-modal="true"
                 aria-labelledby="modal-title"
                 role="dialog"

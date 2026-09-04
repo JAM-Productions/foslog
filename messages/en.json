@@ -556,6 +556,7 @@
         },
         "close": "Close",
         "comingSoon": "Coming soon!",
+        "willImportTitle": "What will be imported:",
         "letterboxd": {
             "instructionsTitle": "How to export your data from Letterboxd:",
             "step1": "Go to Account settings > Data > Export Data",
@@ -571,6 +572,18 @@
             "noValidRows": "No valid reviews found in the CSV. Please make sure you selected the correct file.",
             "importing": "Importing...",
             "estimatedTime": "Estimated time: {time}"
+        },
+        "goodreads": {
+            "description": "Goodreads imports are on the way. Just like Letterboxd, the import will only bring over your reviews.",
+            "feature1": "The reviews you wrote on Goodreads",
+            "feature2": "The rating you gave each book",
+            "feature3": "The date of each review"
+        },
+        "steam": {
+            "description": "Steam imports are on the way. Just like Letterboxd, the import will only bring over your reviews.",
+            "feature1": "The reviews you wrote on Steam",
+            "feature2": "The rating you gave each game",
+            "feature3": "The date of each review"
         },
         "importProfileButton": "Import Reviews"
     }

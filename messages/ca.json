@@ -556,6 +556,7 @@
         },
         "close": "Tancar",
         "comingSoon": "Aviat disponible!",
+        "willImportTitle": "Què s'importarà:",
         "letterboxd": {
             "instructionsTitle": "Com exportar les teves dades de Letterboxd:",
             "step1": "Ves a Configuració del compte > Dades > Exportar Dades",
@@ -571,6 +572,18 @@
             "noValidRows": "No s'han trobat ressenyes vàlides al CSV. Assegura't d'haver seleccionat l'arxiu correcte.",
             "importing": "Important...",
             "estimatedTime": "Temps estimat: {time}"
+        },
+        "goodreads": {
+            "description": "La importació des de Goodreads està en camí. Igual que amb Letterboxd, només s'importaran les teves ressenyes.",
+            "feature1": "Les ressenyes que vas escriure a Goodreads",
+            "feature2": "La valoració que vas donar a cada llibre",
+            "feature3": "La data de cada ressenya"
+        },
+        "steam": {
+            "description": "La importació des de Steam està en camí. Igual que amb Letterboxd, només s'importaran les teves ressenyes.",
+            "feature1": "Les ressenyes que vas escriure a Steam",
+            "feature2": "La valoració que vas donar a cada joc",
+            "feature3": "La data de cada ressenya"
         },
         "importProfileButton": "Importar Ressenyes"
     }

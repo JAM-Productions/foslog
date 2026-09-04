@@ -48,7 +48,8 @@ export function ListCard({
         >
             <button
                 type="button"
-                className={`ring-ring ring-offset-background relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-offset-2 transition group-has-[button:hover]:opacity-80 group-has-[button:hover]:ring-2 sm:h-24 sm:w-24 ${
+                data-hover-target
+                className={`ring-offset-background relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-offset-2 transition-opacity group-has-[[data-hover-target]:hover]:opacity-80 sm:h-24 sm:w-24 ${
                     isSelected ? 'ring-primary ring-2' : ''
                 } ${isBookmark ? 'bg-green-700' : 'bg-muted border'}`}
                 aria-label={displayName}
@@ -107,7 +108,10 @@ export function ListCard({
                 className="flex min-w-0 flex-1 cursor-pointer flex-col text-left sm:w-24 sm:flex-none"
                 onClick={goToList}
             >
-                <span className="text-foreground truncate group-has-[button:hover]:underline sm:text-sm">
+                <span
+                    data-hover-target
+                    className="text-foreground w-fit max-w-full truncate group-has-[[data-hover-target]:hover]:underline sm:text-sm"
+                >
                     {displayName}
                 </span>
                 <span className="text-muted-foreground text-sm sm:text-xs">
