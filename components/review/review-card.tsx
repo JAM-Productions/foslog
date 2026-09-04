@@ -4,6 +4,8 @@ import { Card } from '@/components/card';
 import { RatingDisplay } from '@/components/input/rating';
 import { SafeReview } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
+import { ConsumedDate } from '@/components/review/consumed-date';
+import { RelativeDate } from '@/components/relative-date';
 import {
     User,
     ThumbsUp,
@@ -57,7 +59,9 @@ export function ReviewCard({
                 <div className="relative min-w-0 flex-1">
                     <div className="flex flex-col pr-16 pb-1">
                         <p
-                            className="truncate text-base font-bold hover:underline"
+                            // `self-start` keeps the name as wide as its text,
+                            // so the hover only reacts over the name itself.
+                            className="max-w-full self-start truncate text-base font-bold hover:underline"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/profile/${user.id}`);
@@ -65,15 +69,10 @@ export function ReviewCard({
                         >
                             {user.name}
                         </p>
-                        <span className="text-muted-foreground text-xs">
-                            {review.consumedDate
-                                ? new Date(
-                                      review.consumedDate
-                                  ).toLocaleDateString()
-                                : new Date(
-                                      review.createdAt
-                                  ).toLocaleDateString()}
-                        </span>
+                        <RelativeDate
+                            date={review.createdAt}
+                            className="text-muted-foreground text-xs"
+                        />
                     </div>
                     <div className="flex items-center gap-2">
                         {review.rating !== undefined &&
@@ -124,12 +123,21 @@ export function ReviewCard({
                     </p>
                 )}
             </div>
-            {review.consumedMoreThanOnce && (
-                <ConsumedBadge
+            <div
+                className={`${review.review ? 'mt-auto pt-1' : 'mt-3'} space-y-1`}
+            >
+                <ConsumedDate
+                    date={review.consumedDate}
                     mediaType={mediaType}
-                    className={`${review.review ? 'mt-auto pt-1' : 'mt-3'} text-sm`}
+                    className="text-sm"
                 />
-            )}
+                {review.consumedMoreThanOnce && (
+                    <ConsumedBadge
+                        mediaType={mediaType}
+                        className="text-sm"
+                    />
+                )}
+            </div>
         </Card>
     );
 }

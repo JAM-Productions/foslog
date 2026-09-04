@@ -4,13 +4,25 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
 import { logger } from '@/lib/axiom/server';
-import { parseDateOnly } from '@/lib/date';
+import { isDateOnly, parseDateOnly } from '@/lib/date';
 import {
     internalServerError,
     notFound,
     unauthorized,
     validationError,
 } from '@/lib/errors';
+
+/**
+ * Nobody consumes media in the future. The server clock may sit a day away
+ * from the reviewer's, so only dates beyond that slack are rejected.
+ */
+const isInTheFuture = (dateStr: string): boolean => {
+    const limit = new Date();
+    limit.setDate(limit.getDate() + 1);
+    limit.setHours(23, 59, 59, 999);
+
+    return parseDateOnly(dateStr).getTime() > limit.getTime();
+};
 
 export async function POST(request: NextRequest) {
     try {
@@ -62,8 +74,14 @@ export async function POST(request: NextRequest) {
             return validationError('consumedMoreThanOnce must be a boolean');
         }
 
-        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
-            return validationError('consumedDate must be a valid date');
+        if (review.consumedDate && !isDateOnly(review.consumedDate)) {
+            return validationError(
+                'consumedDate must be a valid date (YYYY-MM-DD)'
+            );
+        }
+
+        if (review.consumedDate && isInTheFuture(review.consumedDate)) {
+            return validationError('consumedDate cannot be in the future');
         }
 
         if (!mediaId) {
@@ -216,8 +234,14 @@ export async function PATCH(request: NextRequest) {
             return validationError('Review text is too long');
         }
 
-        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
-            return validationError('consumedDate must be a valid date');
+        if (review.consumedDate && !isDateOnly(review.consumedDate)) {
+            return validationError(
+                'consumedDate must be a valid date (YYYY-MM-DD)'
+            );
+        }
+
+        if (review.consumedDate && isInTheFuture(review.consumedDate)) {
+            return validationError('consumedDate cannot be in the future');
         }
 
         const existingReview = await prisma.review.findUnique({

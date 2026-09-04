@@ -122,6 +122,8 @@ model Review {
   reviewLikes          ReviewLike[]
 
   @@index([mediaId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
   @@map("reviews")
 }
 

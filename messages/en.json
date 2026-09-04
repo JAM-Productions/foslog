@@ -170,6 +170,10 @@
             "userNotFound": "Foslog - User Not Found",
             "listsTitle": "{name}'s lists - Foslog",
             "listsDescription": "Browse all the lists created by {name} on Foslog."
+        },
+        "FeedPage": {
+            "title": "Feed - Foslog",
+            "description": "The latest reviews from the Foslog community and from the people you follow."
         }
     },
     "Header": {
@@ -545,6 +549,17 @@
         "topRated": "Top Rated",
         "newest": "Newest",
         "mostReviewed": "Most Reviewed"
+    },
+    "FeedPage": {
+        "title": "Fresh Reviews",
+        "subtitle": "What the community has been watching, reading and playing lately",
+        "seeMore": "See more reviews",
+        "filterAll": "Everyone",
+        "filterFollowing": "Following",
+        "noReviews": "There are no reviews from the last 30 days yet.",
+        "noFollowingReviews": "The people you follow haven't reviewed anything in the last 30 days.",
+        "loginToSeeFollowing": "Log in to follow people",
+        "loadError": "An error occurred while loading the feed. Please try again later."
     },
     "ImportReviewsModal": {
         "title": "Import Reviews",

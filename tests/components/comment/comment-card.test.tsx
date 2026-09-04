@@ -32,6 +32,7 @@ vi.mock('next-intl', () => ({
         };
         return translations[namespace]?.[key] || key;
     },
+    useLocale: () => 'en',
 }));
 
 const mockShowModal = vi.fn();
@@ -111,6 +112,17 @@ describe('CommentCard', () => {
 
         expect(screen.getByText('John Doe')).toBeInTheDocument();
         expect(screen.getByText('This is a test comment')).toBeInTheDocument();
+    });
+
+    it('tells how long ago the comment was posted', () => {
+        const createdAt = new Date(Date.now() - 25 * 60 * 1000);
+
+        render(<CommentCard comment={{ ...mockComment, createdAt }} />);
+
+        expect(screen.getByText('25 minutes ago')).toHaveAttribute(
+            'datetime',
+            createdAt.toISOString()
+        );
     });
 
     it('renders user avatar when image is provided', () => {

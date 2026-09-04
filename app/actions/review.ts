@@ -140,7 +140,7 @@ export const getReviewByIdWithComments = async (
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
             consumedMoreThanOnce: review.consumedMoreThanOnce,
-            consumedDate: (review as any).consumedDate ?? review.createdAt,
+            consumedDate: review.consumedDate ?? review.createdAt,
             totalComments: review.totalComments,
             totalLikes: review.totalLikes,
             user: safeUser,

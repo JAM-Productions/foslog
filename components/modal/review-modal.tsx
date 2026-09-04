@@ -51,6 +51,7 @@ export default function ReviewModal() {
     const [consumedDate, setConsumedDate] = useState<string>(
         toLocalDateString(new Date())
     );
+    const today = toLocalDateString(new Date());
     const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
     const [isLoadingSubmit, setIsLoadingSubmit] = useState<boolean>(false);
@@ -90,7 +91,7 @@ export default function ReviewModal() {
 
         setReviewText('');
         setConsumedMoreThanOnce(false);
-        setConsumedDate(new Date().toISOString().split('T')[0]);
+        setConsumedDate(toLocalDateString(new Date()));
         setHasReviewed(false);
         setError(null);
     }, []);
@@ -109,7 +110,7 @@ export default function ReviewModal() {
         // Reset these when going back, although they will be re-checked on Next
         setHasReviewed(false);
         setConsumedMoreThanOnce(false);
-        setConsumedDate(new Date().toISOString().split('T')[0]);
+        setConsumedDate(toLocalDateString(new Date()));
     }, []);
 
     const handleNext = async () => {
@@ -393,6 +394,7 @@ export default function ReviewModal() {
                                         id="modalConsumedDate"
                                         type="date"
                                         value={consumedDate}
+                                        max={today}
                                         onChange={(e) =>
                                             setConsumedDate(e.target.value)
                                         }

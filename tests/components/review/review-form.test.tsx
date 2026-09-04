@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReviewForm } from '@/components/review/review-form';
+import { toLocalDateString } from '@/lib/date';
 
 // Mock dependencies
 const mockRouterPush = vi.fn();
@@ -106,6 +107,42 @@ describe('ReviewForm', () => {
                 })
             );
         });
+    });
+
+    it('submits the consumed date once it is picked', async () => {
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+            ok: true,
+            json: async () => ({}),
+        });
+
+        const { container } = render(<ReviewForm {...defaultProps} />);
+
+        fireEvent.change(container.querySelector('#consumedDate')!, {
+            target: { value: '2024-03-09' },
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'like' }));
+        fireEvent.click(screen.getByRole('button', { name: 'submitReview' }));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith(
+                '/api/review',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining(
+                        '"consumedDate":"2024-03-09"'
+                    ),
+                })
+            );
+        });
+    });
+
+    it('does not let the consumed date reach into the future', () => {
+        const { container } = render(<ReviewForm {...defaultProps} />);
+
+        expect(container.querySelector('#consumedDate')).toHaveAttribute(
+            'max',
+            toLocalDateString(new Date())
+        );
     });
 
     it('submits consumedMoreThanOnce as false when NOT checked', async () => {

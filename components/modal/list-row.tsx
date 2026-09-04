@@ -21,22 +21,38 @@ interface ListRowProps {
     label: string;
     isPending: boolean;
     onToggle: () => void;
+    /** When given, the list name and image open the list page. */
+    onNavigate?: () => void;
 }
 
-export function ListRow({ entry, label, isPending, onToggle }: ListRowProps) {
+export function ListRow({
+    entry,
+    label,
+    isPending,
+    onToggle,
+    onNavigate,
+}: ListRowProps) {
     const t = useTranslations('AddToListModal');
     const isBookmark = entry.type === ListType.BOOKMARK;
+    const rowKey = isBookmark ? 'bookmark' : entry.id;
 
     return (
         <div
             className="flex items-center justify-between gap-4 py-2"
-            data-testid={`list-row-${isBookmark ? 'bookmark' : entry.id}`}
+            data-testid={`list-row-${rowKey}`}
         >
-            <div className="flex min-w-0 items-center gap-3">
+            <button
+                type="button"
+                className="group flex min-w-0 cursor-pointer items-center gap-3 text-left disabled:cursor-default"
+                disabled={!onNavigate}
+                onClick={onNavigate}
+                data-testid={`navigate-${rowKey}`}
+                aria-label={label}
+            >
                 <div
                     className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md ${
                         isBookmark ? 'bg-green-700' : 'bg-muted border'
-                    }`}
+                    } ${onNavigate ? 'group-hover:opacity-80' : ''}`}
                 >
                     {isBookmark ? (
                         <Bookmark className="h-5 w-5 fill-green-500 text-green-500" />
@@ -54,18 +70,22 @@ export function ListRow({ entry, label, isPending, onToggle }: ListRowProps) {
                     )}
                 </div>
                 <div className="flex min-w-0 flex-col">
-                    <span className="truncate">{label}</span>
+                    <span
+                        className={`truncate ${onNavigate ? 'group-hover:underline' : ''}`}
+                    >
+                        {label}
+                    </span>
                     <span className="text-muted-foreground text-sm">
                         {t('itemsCount', { count: entry.totalItems })}
                     </span>
                 </div>
-            </div>
+            </button>
             <Button
                 size="sm"
                 variant={entry.containsMedia ? 'secondary' : 'outline'}
                 disabled={isPending}
                 onClick={onToggle}
-                data-testid={`toggle-${isBookmark ? 'bookmark' : entry.id}`}
+                data-testid={`toggle-${rowKey}`}
                 aria-pressed={entry.containsMedia}
             >
                 {entry.containsMedia ? (

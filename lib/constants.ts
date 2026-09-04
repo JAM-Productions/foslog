@@ -13,3 +13,11 @@ export const MAX_LISTS_PER_USER = 30;
 export const LISTS_PREVIEW_LIMIT = 5;
 /** Media items per page inside a list. */
 export const LIST_MEDIA_PAGE_SIZE = 15;
+
+// Feed
+/** Only reviews posted within this many days reach the feed. */
+export const FEED_WINDOW_DAYS = 30;
+/** Reviews shown in the home feed section before "see more". */
+export const FEED_PREVIEW_LIMIT = 12;
+/** Reviews per page on the feed screen. */
+export const FEED_PAGE_SIZE = 12;

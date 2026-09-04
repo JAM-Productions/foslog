@@ -1,4 +1,5 @@
 import { getMedias, getGlobalMediaStats } from '@/app/actions/media';
+import { getFeedReviewsPreview } from '@/app/actions/feed';
 import HomePageClient from './home-page-client';
 import { headers } from 'next/headers';
 
@@ -26,15 +27,11 @@ export default async function HomePage({
         );
     const pageSize = isMobile ? 8 : 12;
 
-    const { items, total } = await getMedias(
-        page,
-        pageSize,
-        mediaType,
-        searchQuery,
-        sort
-    );
-
-    const globalStats = await getGlobalMediaStats();
+    const [{ items, total }, globalStats, feedPreview] = await Promise.all([
+        getMedias(page, pageSize, mediaType, searchQuery, sort),
+        getGlobalMediaStats(),
+        getFeedReviewsPreview(pageSize),
+    ]);
 
     return (
         <HomePageClient
@@ -47,6 +44,8 @@ export default async function HomePage({
             selectedSort={sort}
             globalStats={globalStats}
             isMobile={isMobile}
+            feedReviews={feedPreview.reviews}
+            feedTotal={feedPreview.total}
         />
     );
 }
