@@ -373,8 +373,6 @@ export default function ImportReviewsModal() {
                         ))}
                     </div>
 
-                    {/* Matches the letterboxd tab height so the modal does not
-                        resize when switching tabs. */}
                     <div className="flex flex-1 flex-col sm:min-h-[400px]">
                         {activeTab === 'letterboxd' && renderLetterboxdTab()}
                         {activeTab === 'steam' && renderComingSoonTab('steam')}

@@ -124,8 +124,6 @@ export default function FollowsModal() {
 
     return (
         <Modal isModalOpen={modal.isOpen}>
-            {/* Minimum height matches the loading skeleton, so the modal keeps
-                its size once the list resolves. */}
             <div className="flex min-h-0 w-full flex-1 flex-col sm:min-h-[409px]">
                 <div className="relative mb-10 flex w-full flex-col items-center justify-between text-center">
                     <h1
