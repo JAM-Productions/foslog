@@ -1,3 +1,4 @@
+import { toDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
 import { getMediaTypeMessageKey } from '@/utils/media-type';
 import { CalendarCheck } from 'lucide-react';
@@ -20,7 +21,7 @@ export function ConsumedDate({
 
     if (!date) return null;
 
-    const consumedDate = typeof date === 'string' ? new Date(date) : date;
+    const consumedDate = toDate(date);
 
     return (
         <div

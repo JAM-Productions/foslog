@@ -358,7 +358,9 @@ describe('ReviewDetailCard', () => {
             const review = {
                 ...mockReview,
                 createdAt,
-                updatedAt: createdAt,
+                // Same instant, different object: an untouched review is not
+                // an edited one.
+                updatedAt: new Date(createdAt.getTime()),
             };
 
             render(

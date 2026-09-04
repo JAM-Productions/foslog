@@ -30,7 +30,7 @@ export default async function HomePage({
     const [{ items, total }, globalStats, feedPreview] = await Promise.all([
         getMedias(page, pageSize, mediaType, searchQuery, sort),
         getGlobalMediaStats(),
-        getFeedReviewsPreview(),
+        getFeedReviewsPreview(pageSize),
     ]);
 
     return (

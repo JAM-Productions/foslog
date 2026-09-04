@@ -1,6 +1,6 @@
 'use client';
 
-import { formatRelativeTime } from '@/lib/date';
+import { formatRelativeTime, toDate } from '@/lib/date';
 import { useLocale } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -17,10 +17,7 @@ export function RelativeDate({ date, className }: RelativeDateProps) {
     const locale = useLocale();
     const [now, setNow] = useState(() => new Date());
 
-    const target = useMemo(
-        () => (typeof date === 'string' ? new Date(date) : date),
-        [date]
-    );
+    const target = useMemo(() => toDate(date), [date]);
 
     useEffect(() => {
         const interval = setInterval(

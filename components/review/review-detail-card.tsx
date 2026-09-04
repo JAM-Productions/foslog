@@ -6,6 +6,7 @@ import { SafeReview } from '@/lib/types';
 import { ConsumedBadge } from '@/components/review/consumed-badge';
 import { ConsumedDate } from '@/components/review/consumed-date';
 import { RelativeDate } from '@/components/relative-date';
+import { toDate } from '@/lib/date';
 import { User, ThumbsUp, ThumbsDown, Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -67,7 +68,10 @@ export function ReviewDetailCard({
         });
     };
 
-    const isEdited = review.updatedAt && review.updatedAt !== review.createdAt;
+    const isEdited =
+        !!review.updatedAt &&
+        toDate(review.updatedAt).getTime() !==
+            toDate(review.createdAt).getTime();
 
     return (
         <Card className="p-4 sm:p-6">

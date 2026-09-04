@@ -53,6 +53,25 @@ export function toLocalDateString(date: Date): string {
     return `${year}-${month}-${day}`;
 }
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * True for a plain "YYYY-MM-DD" naming a real calendar day. Guards the callers
+ * of {@link parseDateOnly}, which assumes that exact shape.
+ */
+export function isDateOnly(value: string): boolean {
+    if (!DATE_ONLY_PATTERN.test(value)) return false;
+
+    const [year, month, day] = value.split('-').map(Number);
+    const parsed = parseDateOnly(value);
+
+    return (
+        parsed.getFullYear() === year &&
+        parsed.getMonth() === month - 1 &&
+        parsed.getDate() === day
+    );
+}
+
 /**
  * Parses a "YYYY-MM-DD" date-only string to a Date at local noon to avoid UTC midnight
  * causing the date to shift when converted back to local time.
@@ -60,6 +79,19 @@ export function toLocalDateString(date: Date): string {
 export function parseDateOnly(dateStr: string): Date {
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day, 12, 0, 0);
+}
+
+/**
+ * Normalizes a date that may arrive as a string. A plain "YYYY-MM-DD" is
+ * anchored at local noon, like the values the app stores, so it never renders
+ * as the previous day west of UTC; anything else is parsed as an instant.
+ */
+export function toDate(value: Date | string): Date {
+    if (typeof value !== 'string') return value;
+
+    return DATE_ONLY_PATTERN.test(value)
+        ? parseDateOnly(value)
+        : new Date(value);
 }
 
 /**

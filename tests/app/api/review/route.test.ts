@@ -178,6 +178,24 @@ describe('POST /api/review', () => {
         expect(prisma.review.create).toHaveBeenCalled();
     });
 
+    it('should return 400 Validation Error for a consumedDate that is not a plain date', async () => {
+        (auth.api.getSession as unknown as Mock).mockResolvedValue({
+            user: { id: '1' },
+        });
+        (prisma.mediaItem.findUnique as Mock).mockResolvedValue({ id: '1' });
+
+        const req = mockRequest({
+            review: { stars: 5, consumedDate: '2024-03-09T10:00:00Z' },
+            mediaId: '1',
+        });
+        const response = await POST(req);
+        const data = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(data.code).toBe(ApiErrorType.VALIDATION_ERROR);
+        expect(prisma.review.create).not.toHaveBeenCalled();
+    });
+
     it('should return 400 Validation Error for a consumedDate in the future', async () => {
         (auth.api.getSession as unknown as Mock).mockResolvedValue({
             user: { id: '1' },

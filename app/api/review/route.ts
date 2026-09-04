@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { LOCALES } from '@/lib/constants';
 import { logger } from '@/lib/axiom/server';
-import { parseDateOnly } from '@/lib/date';
+import { isDateOnly, parseDateOnly } from '@/lib/date';
 import {
     internalServerError,
     notFound,
@@ -74,8 +74,10 @@ export async function POST(request: NextRequest) {
             return validationError('consumedMoreThanOnce must be a boolean');
         }
 
-        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
-            return validationError('consumedDate must be a valid date');
+        if (review.consumedDate && !isDateOnly(review.consumedDate)) {
+            return validationError(
+                'consumedDate must be a valid date (YYYY-MM-DD)'
+            );
         }
 
         if (review.consumedDate && isInTheFuture(review.consumedDate)) {
@@ -232,8 +234,10 @@ export async function PATCH(request: NextRequest) {
             return validationError('Review text is too long');
         }
 
-        if (review.consumedDate && isNaN(Date.parse(review.consumedDate))) {
-            return validationError('consumedDate must be a valid date');
+        if (review.consumedDate && !isDateOnly(review.consumedDate)) {
+            return validationError(
+                'consumedDate must be a valid date (YYYY-MM-DD)'
+            );
         }
 
         if (review.consumedDate && isInTheFuture(review.consumedDate)) {

@@ -8,6 +8,7 @@ import { FEED_PAGE_SIZE } from '@/lib/constants';
 import { FeedFilter } from '@/lib/types';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 
 export async function generateMetadata({
     params,
@@ -39,7 +40,14 @@ export default async function FeedPage({
 
     let feed: Awaited<ReturnType<typeof getFeedReviews>>;
     try {
-        feed = await getFeedReviews(currentPage, FEED_PAGE_SIZE, filter);
+        const headersList = await headers();
+        const userAgent = headersList.get('user-agent') || '';
+        const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            userAgent
+        );
+        const pageSize = isMobile ? 8 : 12;
+        feed = await getFeedReviews(currentPage, pageSize, filter);
     } catch (error) {
         console.error('[FeedPage] Failed to load the feed', error);
         return (

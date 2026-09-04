@@ -1,7 +1,9 @@
 import {
     formatRelativeTime,
+    isDateOnly,
     parseDateOnly,
     parseDateOnlyUTC,
+    toDate,
     toLocalDateString,
 } from '@/lib/date';
 import { describe, expect, test } from 'vitest';
@@ -22,6 +24,46 @@ describe('parseDateOnly', () => {
         expect(parsed.getMonth()).toBe(2);
         expect(parsed.getDate()).toBe(9);
         expect(parsed.getHours()).toBe(12);
+    });
+});
+
+describe('isDateOnly', () => {
+    test('accepts a plain calendar day', () => {
+        expect(isDateOnly('2024-03-09')).toBe(true);
+    });
+
+    test('rejects a full timestamp, which parseDateOnly cannot read', () => {
+        expect(isDateOnly('2024-03-09T10:00:00Z')).toBe(false);
+    });
+
+    test('rejects a day that does not exist', () => {
+        expect(isDateOnly('2024-02-31')).toBe(false);
+    });
+
+    test('rejects other date formats', () => {
+        expect(isDateOnly('09/03/2024')).toBe(false);
+    });
+});
+
+describe('toDate', () => {
+    test('returns a Date untouched', () => {
+        const date = new Date('2024-03-09T10:00:00Z');
+
+        expect(toDate(date)).toBe(date);
+    });
+
+    test('anchors a plain calendar day at local noon', () => {
+        const parsed = toDate('2024-03-09');
+
+        // Not UTC midnight, which would read as the 8th west of Greenwich.
+        expect(parsed.getDate()).toBe(9);
+        expect(parsed.getHours()).toBe(12);
+    });
+
+    test('parses a timestamp as the instant it names', () => {
+        expect(toDate('2024-03-09T10:00:00Z').toISOString()).toBe(
+            '2024-03-09T10:00:00.000Z'
+        );
     });
 });
 
