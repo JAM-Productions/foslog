@@ -4,7 +4,6 @@ import { FeedEmptyState } from '@/components/feed/feed-empty-state';
 import { FeedFilterTabs } from '@/components/feed/feed-filter-tabs';
 import { FeedList } from '@/components/feed/feed-list';
 import Pagination from '@/components/pagination/pagination';
-import { FEED_PAGE_SIZE } from '@/lib/constants';
 import { FeedFilter } from '@/lib/types';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
@@ -43,9 +42,9 @@ export default async function FeedPage({
         const headersList = await headers();
         const userAgent = headersList.get('user-agent') || '';
         const isMobile =
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            userAgent
-        );
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                userAgent
+            );
         const pageSize = isMobile ? 8 : 12;
         feed = await getFeedReviews(currentPage, pageSize, filter);
     } catch (error) {
