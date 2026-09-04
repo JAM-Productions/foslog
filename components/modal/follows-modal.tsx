@@ -124,7 +124,7 @@ export default function FollowsModal() {
 
     return (
         <Modal isModalOpen={modal.isOpen}>
-            <div className="flex w-full flex-col sm:min-h-[50vh]">
+            <div className="flex min-h-0 w-full flex-1 flex-col sm:min-h-[409px]">
                 <div className="relative mb-10 flex w-full flex-col items-center justify-between text-center">
                     <h1
                         id="modal-title"
@@ -148,38 +148,29 @@ export default function FollowsModal() {
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
-                <div className="flex">
-                    <div className="flex w-full flex-col">
-                        <Button
-                            variant="ghost"
-                            size="lg"
-                            className={`w-full rounded-b-none ${modal.behavior === 'followers' ? '' : 'text-muted-foreground'}`}
-                            onClick={() => setBehavior('followers')}
+                <div className="mb-6 flex h-10 w-full items-center justify-start rounded-none border-b bg-transparent p-0">
+                    {(['followers', 'following'] as const).map((behavior) => (
+                        <button
+                            key={behavior}
+                            data-testid={`follows-tab-${behavior}`}
+                            onClick={() => setBehavior(behavior)}
+                            className={`relative h-10 cursor-pointer px-4 text-sm font-medium transition-colors sm:text-base ${
+                                modal.behavior === behavior
+                                    ? 'text-foreground'
+                                    : 'text-muted-foreground hover:text-foreground'
+                            }`}
                         >
-                            {tFollowsModal('followers')}
-                        </Button>
-                        {modal.behavior === 'followers' && (
-                            <div className="bg-primary h-0.5 rounded-full" />
-                        )}
-                    </div>
-                    <div className="flex w-full flex-col">
-                        <Button
-                            variant="ghost"
-                            size="lg"
-                            className={`w-full rounded-b-none ${modal.behavior === 'following' ? '' : 'text-muted-foreground'}`}
-                            onClick={() => setBehavior('following')}
-                        >
-                            {tFollowsModal('following')}
-                        </Button>
-                        {modal.behavior === 'following' && (
-                            <div className="bg-primary h-0.5 rounded-full" />
-                        )}
-                    </div>
+                            {tFollowsModal(behavior)}
+                            {modal.behavior === behavior && (
+                                <div className="bg-primary absolute right-0 bottom-0 left-0 h-0.5 rounded-t-full" />
+                            )}
+                        </button>
+                    ))}
                 </div>
                 {isLoading ? (
                     <UserListSkeleton />
                 ) : (
-                    <div className="mt-4">
+                    <div className="min-h-0 flex-1 overflow-y-auto">
                         <div className="flex flex-col gap-2">
                             {usersList.length === 0 && (
                                 <p className="text-muted-foreground mt-2">

@@ -7,7 +7,13 @@ import { useImportReviewsModalStore } from '@/lib/import-reviews-modal-store';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
 import { useState } from 'react';
 import { Button } from '../button/button';
-import { XIcon, UploadCloudIcon } from 'lucide-react';
+import {
+    XIcon,
+    UploadCloudIcon,
+    Gamepad2Icon,
+    BookOpenIcon,
+    CheckIcon,
+} from 'lucide-react';
 import Papa from 'papaparse';
 
 type TabType = 'letterboxd' | 'steam' | 'goodreads';
@@ -153,11 +159,11 @@ export default function ImportReviewsModal() {
 
         return (
             <div className="animate-in fade-in zoom-in-95 flex h-full flex-1 flex-col gap-6 duration-200">
-                <div className="bg-muted/50 rounded-lg p-4 text-sm">
+                <div className="bg-muted/50 rounded-lg p-4 text-left text-sm sm:text-base">
                     <h4 className="mb-2 font-semibold">
                         {t('letterboxd.instructionsTitle')}
                     </h4>
-                    <ol className="text-muted-foreground ml-1 list-inside list-decimal space-y-1">
+                    <ol className="text-muted-foreground list-outside list-decimal space-y-1 pl-5 text-left">
                         <li>{t('letterboxd.step1')}</li>
                         <li>{t('letterboxd.step2')}</li>
                         <li>{t('letterboxd.step3')}</li>
@@ -181,11 +187,11 @@ export default function ImportReviewsModal() {
                             <div className="flex flex-col items-center justify-center px-4 pt-5 pb-6 text-center">
                                 <UploadCloudIcon className="text-muted-foreground mb-3 h-8 w-8" />
                                 {file ? (
-                                    <p className="text-primary text-sm font-medium break-all">
+                                    <p className="text-primary text-sm font-medium break-all sm:text-base">
                                         {file.name}
                                     </p>
                                 ) : (
-                                    <p className="text-muted-foreground text-sm">
+                                    <p className="text-muted-foreground text-sm sm:text-base">
                                         {t('letterboxd.dragAndDrop')}
                                     </p>
                                 )}
@@ -201,7 +207,7 @@ export default function ImportReviewsModal() {
                         </label>
 
                         {importError && (
-                            <p className="text-sm font-medium text-red-500">
+                            <p className="text-sm font-medium text-red-500 sm:text-base">
                                 {importError}
                             </p>
                         )}
@@ -222,7 +228,7 @@ export default function ImportReviewsModal() {
 
                 {isImporting && (
                     <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-sm sm:text-base">
                             <span className="text-muted-foreground">
                                 {t('letterboxd.uploading', {
                                     current: progress.current,
@@ -244,7 +250,7 @@ export default function ImportReviewsModal() {
                                 }}
                             />
                         </div>
-                        <div className="text-muted-foreground mt-1 text-center text-xs">
+                        <div className="text-muted-foreground mt-1 text-center text-xs sm:text-sm">
                             {t('letterboxd.estimatedTime', {
                                 time: remainingTimeText,
                             })}
@@ -254,7 +260,7 @@ export default function ImportReviewsModal() {
 
                 {importSuccess && (
                     <div
-                        className={`animate-in fade-in slide-in-from-bottom-2 rounded-lg p-4 text-center ${failedRows > 0 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400' : 'bg-green-500/10 text-green-600 dark:text-green-400'}`}
+                        className={`animate-in fade-in slide-in-from-bottom-2 mt-auto rounded-lg p-4 text-center ${failedRows > 0 ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400' : 'bg-green-500/10 text-green-600 dark:text-green-400'}`}
                     >
                         <p className="font-medium">
                             {failedRows > 0
@@ -276,17 +282,42 @@ export default function ImportReviewsModal() {
         );
     };
 
-    const renderComingSoonTab = (tab: TabType) => (
-        <div className="animate-in fade-in zoom-in-95 flex flex-col items-center justify-center py-12 text-center duration-200">
-            <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                <span className="text-2xl opacity-50">
-                    {tab === 'steam' ? '🎮' : '📚'}
-                </span>
+    const renderComingSoonTab = (tab: TabType) => {
+        const Icon = tab === 'steam' ? Gamepad2Icon : BookOpenIcon;
+
+        return (
+            <div className="animate-in fade-in zoom-in-95 flex flex-1 flex-col items-center text-center duration-200">
+                <div className="bg-muted mb-3 flex h-14 w-14 items-center justify-center rounded-full">
+                    <Icon className="text-muted-foreground h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold sm:text-xl">
+                    {t(`tabs.${tab}`)}
+                </h3>
+                <p className="text-primary mt-1 text-sm font-medium sm:text-base">
+                    {t('comingSoon')}
+                </p>
+                <p className="text-muted-foreground mt-3 max-w-lg text-sm sm:text-base">
+                    {t(`${tab}.description`)}
+                </p>
+                <p className="text-foreground mt-5 text-sm font-medium sm:text-base">
+                    {t('willImportTitle')}
+                </p>
+                <ul className="text-muted-foreground mt-2 space-y-2 text-left text-sm sm:text-base">
+                    {(['feature1', 'feature2', 'feature3'] as const).map(
+                        (feature) => (
+                            <li
+                                key={feature}
+                                className="flex items-start gap-2"
+                            >
+                                <CheckIcon className="text-primary mt-1 h-4 w-4 shrink-0" />
+                                <span>{t(`${tab}.${feature}`)}</span>
+                            </li>
+                        )
+                    )}
+                </ul>
             </div>
-            <h3 className="mb-2 text-lg font-semibold">{t(`tabs.${tab}`)}</h3>
-            <p className="text-muted-foreground">{t('comingSoon')}</p>
-        </div>
-    );
+        );
+    };
 
     return (
         <Modal isModalOpen={isModalOpen}>
@@ -298,7 +329,7 @@ export default function ImportReviewsModal() {
                     >
                         {t('title')}
                     </h1>
-                    <p className="text-muted-foreground mx-auto mt-2 max-w-[90%] text-sm">
+                    <p className="text-muted-foreground mx-auto mt-2 max-w-[90%] text-sm sm:text-base">
                         {t('description')}
                     </p>
                     <Button
@@ -324,7 +355,7 @@ export default function ImportReviewsModal() {
                                     !isImporting && setActiveTab(tab)
                                 }
                                 disabled={isImporting}
-                                className={`relative h-10 px-4 text-sm font-medium transition-colors ${
+                                className={`relative h-10 px-4 text-sm font-medium transition-colors sm:text-base ${
                                     activeTab === tab
                                         ? 'text-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
@@ -342,7 +373,7 @@ export default function ImportReviewsModal() {
                         ))}
                     </div>
 
-                    <div className="mt-6 flex flex-1 flex-col">
+                    <div className="flex flex-1 flex-col sm:min-h-[400px]">
                         {activeTab === 'letterboxd' && renderLetterboxdTab()}
                         {activeTab === 'steam' && renderComingSoonTab('steam')}
                         {activeTab === 'goodreads' &&

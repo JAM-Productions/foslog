@@ -509,15 +509,10 @@ describe('FollowsModal', () => {
                 expect(screen.getByText('Follower One')).toBeInTheDocument();
             });
 
-            const tabs = screen.getAllByRole('button', { name: 'Following' });
-            const followingTab = tabs.find((btn) =>
-                btn.className.includes('rounded-b-none')
-            );
+            const followingTab = screen.getByTestId('follows-tab-following');
 
-            if (followingTab) {
-                await user.click(followingTab);
-                expect(mockSetBehavior).toHaveBeenCalledWith('following');
-            }
+            await user.click(followingTab);
+            expect(mockSetBehavior).toHaveBeenCalledWith('following');
         });
 
         it('switches to followers tab when clicked', async () => {
@@ -547,17 +542,10 @@ describe('FollowsModal', () => {
                 expect(screen.getByText('Following One')).toBeInTheDocument();
             });
 
-            const tabs = screen.getAllByRole('button');
-            const followersTab = tabs.find(
-                (btn) =>
-                    btn.textContent === 'Followers' &&
-                    btn.className.includes('rounded-b-none')
-            );
+            const followersTab = screen.getByTestId('follows-tab-followers');
 
-            if (followersTab) {
-                await user.click(followersTab);
-                expect(mockSetBehavior).toHaveBeenCalledWith('followers');
-            }
+            await user.click(followersTab);
+            expect(mockSetBehavior).toHaveBeenCalledWith('followers');
         });
     });
 
@@ -634,7 +622,7 @@ describe('FollowsModal', () => {
             const followingButtons = allButtons.filter(
                 (btn) =>
                     btn.textContent === 'Following' &&
-                    !btn.className.includes('rounded-b-none')
+                    !btn.dataset.testid?.startsWith('follows-tab-')
             );
 
             await user.click(followingButtons[0]);
@@ -792,7 +780,8 @@ describe('FollowsModal', () => {
             // Filter to get only follow/following action buttons (exclude tabs and close button)
             const actionButtons = allButtons.filter((btn) => {
                 const text = btn.textContent;
-                const isTabButton = btn.className.includes('rounded-b-none');
+                const isTabButton =
+                    btn.dataset.testid?.startsWith('follows-tab-') ?? false;
                 const isCloseButton =
                     btn.getAttribute('aria-label') === 'Close';
                 return (
